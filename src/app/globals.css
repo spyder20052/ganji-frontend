@@ -107,3 +107,10 @@ h1, h2, h3 { text-wrap: balance; line-height: 1.2; }
 /* Mode simple (réglages) : seulement l'essentiel, en plus gros. */
 [data-simple] .simple-hide { display: none !important; }
 [data-simple] .simple-big { font-size: 1.4rem; }
+
+/* Rangée qui passe à la ligne (texte + bouton) : la colonne de texte garde une largeur
+   lisible, c'est le bouton qui descend. Sans cela, `flex-1` (base 0 %) écrase le texte
+   à un mot par ligne sur un écran de 360 px. Hors couche : l'emporte sur les utilitaires. */
+.flex-wrap > .min-w-0.flex-1:not([class*='basis-']) {
+  flex-basis: 12rem;
+}

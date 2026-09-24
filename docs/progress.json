@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T18:02:18+01:00",
+  "updatedAt": "2026-09-24T18:08:12+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -96,6 +96,11 @@
           "sha": "dcd4e43",
           "repo": "backend",
           "message": "feat(c0-socle): API NestJS qui compile, auth OTP et comptes de démo, journal d'audit"
+        },
+        {
+          "sha": "ac82b56",
+          "repo": "frontend",
+          "message": "feat(c0-socle): PWA qui compile, connexion OTP et par persona, coques des espaces"
         }
       ]
     },
@@ -107,7 +112,7 @@
         "M2"
       ],
       "window": "18:00 – 18:30",
-      "status": "doing",
+      "status": "done",
       "repos": [
         "backend",
         "frontend"
@@ -116,35 +121,40 @@
       "items": [
         {
           "label": "Gestionnaire de consentements (donner, voir, retirer)",
-          "done": false
+          "done": true
         },
         {
           "label": "QR / code de partage 24 h",
-          "done": false
+          "done": true
         },
         {
           "label": "Journal d'accès visible par le patient",
-          "done": false
+          "done": true
         },
         {
           "label": "Fiche vitale, chronologie de soins",
-          "done": false
+          "done": true
         },
         {
           "label": "Courbes d'analyses (hémoglobine, plaquettes, glycémie)",
-          "done": false
+          "done": true
         },
         {
           "label": "Comptes délégués (aidant)",
-          "done": false
+          "done": true
         },
         {
           "label": "Documents (photo compressée)",
-          "done": false
+          "done": true
         }
       ],
-      "commits": [],
-      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
+      "commits": [
+        {
+          "sha": "8a7b937",
+          "repo": "backend",
+          "message": "feat(c1-consentement): consentement, partage 24 h, journal d'accès et carnet"
+        }
+      ]
     },
     {
       "id": "C2",
@@ -574,6 +584,10 @@
     {
       "at": "2026-09-24T18:02:18+01:00",
       "text": "C0 validé : API et PWA compilent (typecheck, lint, tests verts), /health OK, base seedée, connexion OTP simulée et par persona vérifiées dans le navigateur."
+    },
+    {
+      "at": "2026-09-24T18:08:12+01:00",
+      "text": "C1 validé dans le navigateur : Dr Dansou refusé puis tentative au journal de Koffi ; partage par code, accès 24 h accordé et visible des deux côtés ; délégation Afiavi ; photo de 4,7 Mo compressée à 294 Ko. Corrigés : 413 à l'envoi de document, rangées écrasées à 390 px."
     }
   ]
 }
