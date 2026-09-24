@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T18:25:44+01:00",
+  "updatedAt": "2026-09-24T18:29:56+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -321,6 +321,11 @@
           "sha": "5db3653",
           "repo": "backend",
           "message": "feat(m7-urgence): carte QR publique minimale, bris de glace justifié et SOS avec position"
+        },
+        {
+          "sha": "a98bfeb",
+          "repo": "frontend",
+          "message": "feat(m7-urgence): carte d'urgence hors ligne, bris de glace et SOS"
         }
       ]
     },
@@ -331,7 +336,7 @@
         "M10"
       ],
       "window": "20:30 – 21:00",
-      "status": "doing",
+      "status": "done",
       "repos": [
         "backend",
         "frontend"
@@ -340,19 +345,24 @@
       "items": [
         {
           "label": "Suivi de grossesse (4 consultations prénatales)",
-          "done": false
+          "done": true
         },
         {
           "label": "Signes de danger → alerte relais + orientation maternité",
-          "done": false
+          "done": true
         },
         {
           "label": "Carnet de vaccination (calendrier PEV) + preuve QR",
-          "done": false
+          "done": true
         }
       ],
-      "commits": [],
-      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
+      "commits": [
+        {
+          "sha": "b5fe1ba",
+          "repo": "backend",
+          "message": "feat(m10-mere-enfant): suivi de grossesse, signes de danger et rappels CPN et vaccins par SMS et voix"
+        }
+      ]
     },
     {
       "id": "C7",
@@ -644,6 +654,10 @@
     {
       "at": "2026-09-24T18:25:44+01:00",
       "text": "C5 validé : en build de production, hors ligne, la carte d'urgence de Koffi s'affiche (groupe, allergie, traitement, contact) ; bris de glace et SOS vérifiés avec leurs SMS. Corrigé (sécurité) : le service worker mettait en cache toutes les pages visitées, dossiers soignants compris ; il ne garde plus qu'une liste blanche et se vide à la déconnexion."
+    },
+    {
+      "at": "2026-09-24T18:29:56+01:00",
+      "text": "C6 validé : rappel de 3e CPN de Rafiatou en SMS et voix bariba, rappel des vaccins de 10 semaines des jumeaux en SMS, voix et notification ; saignement signalé → relais prévenu et orientation maternité. Corrigés : mode discret qui révélait la grossesse, rappels non rejouables après la date du seed, page et rappel qui ne donnaient pas la même date."
     }
   ]
 }
