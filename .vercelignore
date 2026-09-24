@@ -1,0 +1,9 @@
+# Jamais de secret local ni d artefact dans un déploiement Vercel.
+node_modules
+.next
+.env
+.env.*
+!.env.example
+test-results
+playwright-report
+*.tsbuildinfo
