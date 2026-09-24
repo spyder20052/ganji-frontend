@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T19:17:47+01:00",
+  "updatedAt": "2026-09-24T19:19:59+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -526,6 +526,11 @@
           "sha": "6c7fd65",
           "repo": "backend",
           "message": "fix(securite): deepmerge-ts corrigé sous @prisma/config (npm audit sans faille haute)"
+        },
+        {
+          "sha": "58ba69f",
+          "repo": "frontend",
+          "message": "feat(c10-hors-ligne): carnet chiffré lisible en mode avion, budget de poids tenu, thème sombre lisible"
         }
       ]
     },
@@ -539,7 +544,7 @@
         "M15"
       ],
       "window": "22:45 – 23:00",
-      "status": "doing",
+      "status": "done",
       "repos": [
         "frontend"
       ],
@@ -547,23 +552,22 @@
       "items": [
         {
           "label": "Assistant Alafia (garde-fous)",
-          "done": false
+          "done": true
         },
         {
           "label": "Écoute anonyme + numéro de crise",
-          "done": false
+          "done": true
         },
         {
           "label": "Mes droits, estimation du coût, mobile money",
-          "done": false
+          "done": true
         },
         {
           "label": "Cercle de soin (aidants)",
-          "done": false
+          "done": true
         }
       ],
-      "commits": [],
-      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
+      "commits": []
     },
     {
       "id": "C12",
@@ -715,6 +719,10 @@
     {
       "at": "2026-09-24T19:17:47+01:00",
       "text": "C10 validé en build de production : première page 148,6 Ko (mesurée 159,8 Ko dans le navigateur, budget 200 Ko), Lighthouse mobile 3G lente : accessibilité 96-100, performance 98-99, LCP 2,0-2,4 s ; file hors ligne du relais synchronisée au retour du réseau ; carnet chiffré par PIN lisible en mode avion. JS initial 106,7 Ko (cible 100 Ko, plancher React + Next ≈ 100 Ko). Corrigés : copie PIN inaccessible hors ligne, préchargement des liens qui dépassait le budget, thème sombre illisible (0 violation axe-core en clair et en sombre), failles hautes npm audit (postcss, deepmerge-ts)."
+    },
+    {
+      "at": "2026-09-24T19:19:59+01:00",
+      "text": "C11 validé : écoute anonyme (un mot de crise affiche tout de suite l'aide et propose un rappel), droits et coût estimé, assistant avec ses garde-fous, cercle de soin ; chaque écran marqué « Aperçu · maquette cliquable » avec ce qui est simulé. Corrigé : texte rose pâle sur boutons blancs en thème sombre."
     }
   ]
 }

@@ -121,6 +121,23 @@ h1, h2, h3 { text-wrap: balance; line-height: 1.2; }
 
 :focus-visible { outline: 3px solid var(--color-ocre-500); outline-offset: 2px; border-radius: 6px; }
 
+/* En thème sombre, une surface restée blanche (pastille, bouton sur fond rouge) garde les encres
+   du thème clair : sinon un texte rose pâle se retrouverait sur du blanc. */
+:root[data-theme='dark'] .bg-white {
+  --color-danger-50: #fdecea;
+  --color-danger-800: #8e1b1b;
+  --color-ocre-100: #fbf0d9;
+  --color-ocre-700: #8a5d06;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .bg-white {
+    --color-danger-50: #fdecea;
+    --color-danger-800: #8e1b1b;
+    --color-ocre-100: #fbf0d9;
+    --color-ocre-700: #8a5d06;
+  }
+}
+
 /* Rouge d'urgence employé comme texte sur fond sombre : éclairci pour rester lisible (≥ 4,5:1),
    sauf sur les pastilles blanches où il garde sa valeur. */
 :root[data-theme='dark'] .text-\[var\(--color-danger-600\)\]:not(.bg-white) {
