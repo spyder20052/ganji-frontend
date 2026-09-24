@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T18:15:29+01:00",
+  "updatedAt": "2026-09-24T18:17:40+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -241,6 +241,11 @@
           "sha": "9fe7a9e",
           "repo": "backend",
           "message": "feat(m4-sang): demande de sang, appel ciblé aux donneurs et réponse par SMS"
+        },
+        {
+          "sha": "0ea4833",
+          "repo": "frontend",
+          "message": "feat(m4-sang): suivi en direct de la demande, stocks ANTS et simulateur de téléphone simple"
         }
       ]
     },
@@ -251,7 +256,7 @@
         "M5"
       ],
       "window": "19:45 – 20:15",
-      "status": "doing",
+      "status": "done",
       "repos": [
         "backend",
         "frontend"
@@ -260,19 +265,24 @@
       "items": [
         {
           "label": "Ordonnance numérique signée (QR)",
-          "done": false
+          "done": true
         },
         {
           "label": "« Qui a mon médicament ? »",
-          "done": false
+          "done": true
         },
         {
           "label": "Délivrance tracée à usage unique",
-          "done": false
+          "done": true
         }
       ],
-      "commits": [],
-      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
+      "commits": [
+        {
+          "sha": "df9c111",
+          "repo": "backend",
+          "message": "feat(m5-medicaments): ordonnance signée, recherche par pharmacie et délivrance à usage unique"
+        }
+      ]
     },
     {
       "id": "C5",
@@ -616,6 +626,10 @@
     {
       "at": "2026-09-24T18:15:29+01:00",
       "text": "C3 validé : parcours héros complet en ligne locale, 14 donneurs alertés, réponse « 1 » de Rodrigue dans le simulateur, « donneur trouvé » en direct en moins de 3 s, voix en fon pour Afiavi, transfusion inscrite au carnet. Corrigés : stock du seed jugé suffisant (aucun donneur alerté), homonymes de personas parmi les donneurs, simulateur illisible à 390 px, transfusion sans compte rendu."
+    },
+    {
+      "at": "2026-09-24T18:17:40+01:00",
+      "text": "C4 validé : ordonnance délivrée à Camp Guézo puis refusée à Parakou avec motif ; QR falsifié rejeté ; recherche de l'imatinib sans compte avec pharmacies de garde. Corrigé : double bouton d'effacement dans la recherche."
     }
   ]
 }
