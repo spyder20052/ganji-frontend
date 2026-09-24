@@ -145,9 +145,13 @@ function rank(code: string) {
   return i === -1 ? SERIES_ORDER.length : i;
 }
 
+/** « jusqu’à 17:30 » le jour même, « jusqu’à demain 06:19 » le lendemain, sinon la date complète. */
 function until(d: string) {
-  const soon = new Date(d).getTime() - Date.now() < 20 * 3600_000;
-  return soon ? `jusqu’à ${fmtTime(d)}` : `jusqu’au ${fmtDateTime(d)}`;
+  const day = (t: Date) => fmtDate(t, { day: 'numeric', month: 'numeric', year: 'numeric' });
+  const end = new Date(d);
+  if (day(end) === day(new Date())) return `jusqu’à ${fmtTime(d)}`;
+  if (day(end) === day(new Date(Date.now() + 86_400_000))) return `jusqu’à demain ${fmtTime(d)}`;
+  return `jusqu’au ${fmtDateTime(d)}`;
 }
 
 function AccessBanner({ access }: { access: Summary['access'] }) {

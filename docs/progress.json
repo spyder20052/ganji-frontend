@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T18:17:40+01:00",
+  "updatedAt": "2026-09-24T18:25:44+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -281,6 +281,11 @@
           "sha": "df9c111",
           "repo": "backend",
           "message": "feat(m5-medicaments): ordonnance signée, recherche par pharmacie et délivrance à usage unique"
+        },
+        {
+          "sha": "1a73015",
+          "repo": "frontend",
+          "message": "feat(m5-medicaments): recherche de médicament sans compte, comptoir de délivrance et ordonnances du patient"
         }
       ]
     },
@@ -291,7 +296,7 @@
         "M7"
       ],
       "window": "20:15 – 20:30",
-      "status": "doing",
+      "status": "done",
       "repos": [
         "backend",
         "frontend"
@@ -300,19 +305,24 @@
       "items": [
         {
           "label": "Carte d'urgence QR (hors ligne, imprimable)",
-          "done": false
+          "done": true
         },
         {
           "label": "Accès « bris de glace » justifié et notifié",
-          "done": false
+          "done": true
         },
         {
           "label": "Bouton SOS vers les proches et le relais",
-          "done": false
+          "done": true
         }
       ],
-      "commits": [],
-      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
+      "commits": [
+        {
+          "sha": "5db3653",
+          "repo": "backend",
+          "message": "feat(m7-urgence): carte QR publique minimale, bris de glace justifié et SOS avec position"
+        }
+      ]
     },
     {
       "id": "C6",
@@ -630,6 +640,10 @@
     {
       "at": "2026-09-24T18:17:40+01:00",
       "text": "C4 validé : ordonnance délivrée à Camp Guézo puis refusée à Parakou avec motif ; QR falsifié rejeté ; recherche de l'imatinib sans compte avec pharmacies de garde. Corrigé : double bouton d'effacement dans la recherche."
+    },
+    {
+      "at": "2026-09-24T18:25:44+01:00",
+      "text": "C5 validé : en build de production, hors ligne, la carte d'urgence de Koffi s'affiche (groupe, allergie, traitement, contact) ; bris de glace et SOS vérifiés avec leurs SMS. Corrigé (sécurité) : le service worker mettait en cache toutes les pages visitées, dossiers soignants compris ; il ne garde plus qu'une liste blanche et se vide à la déconnexion."
     }
   ]
 }

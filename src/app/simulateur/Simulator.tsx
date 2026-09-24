@@ -5,7 +5,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { ListenButton } from '@/components/ListenButton';
 import { api, ApiError } from '@/lib/api';
-import { fmtTime } from '@/lib/format';
+import { fmtTime, fmtPhone } from '@/lib/format';
 
 interface OutboxItem {
   id: string;
@@ -48,11 +48,6 @@ const USSD_CODE = '*229*25#';
 const POLL_MS = 3000;
 
 /** 0196000123 → 01 96 00 01 23 (lisible à voix haute). */
-function fmtPhone(p: string) {
-  const intl = p.startsWith('+229') ? '+229 ' : '';
-  const rest = p.replace(/^\+229/, '');
-  return /^\d+$/.test(rest) ? intl + rest.replace(/(\d{2})(?=\d)/g, '$1 ') : p;
-}
 
 function voiceText(body: string) {
   return body.replace(/^Message vocal \([^)]*\)\s*:\s*/i, '');

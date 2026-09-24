@@ -20,3 +20,10 @@ export function relative(d: string | Date) {
 export function fcfa(n: number | null | undefined) {
   return n == null ? '—' : `${n.toLocaleString('fr-FR')} FCFA`;
 }
+/** « 0190000002 » → « 01 90 00 00 02 » (lisible et dictable). */
+export function fmtPhone(p: string) {
+  const intl = p.startsWith('+229') ? '+229 ' : '';
+  const rest = p.replace(/^\+229/, '');
+  // Les numéros courts (118, 117) restent d'un seul tenant.
+  return /^\d{8,}$/.test(rest) ? intl + rest.replace(/(\d{2})(?=\d)/g, '$1 ') : p;
+}

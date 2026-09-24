@@ -14,6 +14,7 @@ export function LogoutButton() {
       onClick={async () => {
         await api('/auth/logout', { method: 'POST' }).catch(() => undefined);
         try { localStorage.removeItem('alafia-summary'); } catch {}
+        navigator.serviceWorker?.controller?.postMessage({ type: 'alafia-logout' });
         router.push('/');
         router.refresh();
       }}
