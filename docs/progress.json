@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T18:08:12+01:00",
+  "updatedAt": "2026-09-24T18:10:01+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -153,6 +153,11 @@
           "sha": "8a7b937",
           "repo": "backend",
           "message": "feat(c1-consentement): consentement, partage 24 h, journal d'accès et carnet"
+        },
+        {
+          "sha": "5e2f28c",
+          "repo": "frontend",
+          "message": "feat(c1-consentement): carnet, partage par QR ou code, journal d'accès et fiche patient soignant"
         }
       ]
     },
@@ -163,7 +168,7 @@
         "M11"
       ],
       "window": "18:30 – 19:00",
-      "status": "doing",
+      "status": "done",
       "repos": [
         "backend",
         "frontend"
@@ -172,19 +177,24 @@
       "items": [
         {
           "label": "Arbre de décision par pictogrammes (fièvre, enfant, grossesse…)",
-          "done": false
+          "done": true
         },
         {
           "label": "Carte des lieux de soin et pharmacies de garde",
-          "done": false
+          "done": true
         },
         {
           "label": "Lieu ouvert le plus proche + itinéraire",
-          "done": false
+          "done": true
         }
       ],
-      "commits": [],
-      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
+      "commits": [
+        {
+          "sha": "5919a88",
+          "repo": "backend",
+          "message": "feat(c2-orientation): orientation anonyme rejouée côté serveur et lieux ouverts les plus proches"
+        }
+      ]
     },
     {
       "id": "C3",
@@ -588,6 +598,10 @@
     {
       "at": "2026-09-24T18:08:12+01:00",
       "text": "C1 validé dans le navigateur : Dr Dansou refusé puis tentative au journal de Koffi ; partage par code, accès 24 h accordé et visible des deux côtés ; délégation Afiavi ; photo de 4,7 Mo compressée à 294 Ko. Corrigés : 413 à l'envoi de document, rangées écrasées à 390 px."
+    },
+    {
+      "at": "2026-09-24T18:10:01+01:00",
+      "text": "C2 validé sans compte : fièvre et convulsions d'un enfant classées URGENCE, CHUD Ouémé-Plateau ouvert 24 h/24 à 2,2 km ; carte OpenStreetMap avec 72 lieux et filtres."
     }
   ]
 }
