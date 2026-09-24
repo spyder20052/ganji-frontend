@@ -6,7 +6,7 @@ import { PrefsMenu } from './PrefsMenu';
 export function TopBar({ home = '/', who, links = [] }: { home?: string; who?: string; links?: { href: string; label: string }[] }) {
   return (
     <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-[var(--bg)]/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
         <Logo href={home} />
         <nav aria-label="Navigation principale" className="ml-4 hidden gap-1 md:flex">
           {links.map((l) => (

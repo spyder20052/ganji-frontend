@@ -92,7 +92,7 @@ export function SosButton() {
           type="button"
           onClick={() => setStep('confirm')}
           disabled={step === 'sending'}
-          className="grid h-56 w-56 place-items-center rounded-full bg-[var(--color-danger-600)] text-white shadow-[0_0_0_16px_var(--color-danger-50)] transition-transform active:scale-95 disabled:opacity-70"
+          className="grid h-[min(14rem,70vw)] w-[min(14rem,70vw)] place-items-center rounded-full bg-[var(--color-danger-600)] text-white shadow-[0_0_0_16px_var(--color-danger-50)] transition-transform active:scale-95 disabled:opacity-70"
           aria-describedby="sos-aide"
         >
           <span className="flex flex-col items-center gap-1">

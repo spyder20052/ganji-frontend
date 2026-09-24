@@ -55,10 +55,10 @@ export default function UrgencePage() {
                 aria-label={`Appeler le ${x.n}, ${x.label}`}
               >
                 <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-white text-[var(--color-danger-600)]"><Phone size={32} aria-hidden /></span>
-                <span>
-                  <span className="num block text-6xl font-bold leading-none">{x.n}</span>
+                <span className="min-w-0">
+                  <span className="num block text-[clamp(2.5rem,16vw,3.75rem)] font-bold leading-none">{x.n}</span>
                   <span className="mt-1 block text-xl font-bold">{x.label}</span>
-                  <span className="block text-base text-white/85">{x.hint}</span>
+                  <span className="block text-base text-white">{x.hint}</span>
                 </span>
               </a>
             ))}

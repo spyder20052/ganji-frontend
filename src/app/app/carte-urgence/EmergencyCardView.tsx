@@ -125,7 +125,7 @@ export function EmergencyCardView() {
         <>
           <article aria-labelledby="h-carte" className="card overflow-hidden !border-2 !border-[var(--color-danger-600)] print:hidden">
             <header className="flex flex-wrap items-center justify-between gap-2 bg-[var(--color-danger-600)] px-5 py-4 text-white">
-              <p className="text-sm font-bold tracking-widest uppercase">Carte d’urgence · Alafia</p>
+              <p className="text-sm font-bold tracking-widest uppercase">Carte d’urgence<En>Emergency card</En></p>
               <h1 id="h-carte" className="text-2xl font-bold sm:text-3xl">
                 {name} <span className="font-normal">· {card.age} ans</span>
               </h1>
@@ -133,7 +133,7 @@ export function EmergencyCardView() {
 
             <div className="grid gap-5 p-5 sm:grid-cols-[auto_1fr] sm:items-center">
               <div className="flex flex-col items-center rounded-3xl bg-[var(--color-danger-50)] px-8 py-4 text-[var(--color-danger-800)]">
-                <p className="text-base font-bold">Groupe sanguin</p>
+                <p className="text-base font-bold">Groupe sanguin<En>Blood group</En></p>
                 <p className="num text-[7rem] leading-none font-bold">{card.bloodGroup ?? '?'}</p>
               </div>
               <dl className="space-y-4">
@@ -142,7 +142,7 @@ export function EmergencyCardView() {
                   <dd className="text-3xl font-bold">{card.allergies.length ? card.allergies.join(', ') : 'Aucune connue'}</dd>
                 </div>
                 <div>
-                  <dt className="label flex items-center gap-2"><Pill size={16} aria-hidden /> Traitement en cours</dt>
+                  <dt className="label flex items-center gap-2"><Pill size={16} aria-hidden /> <span>Traitement en cours<En>Current treatment</En></span></dt>
                   <dd className="text-2xl font-bold">{card.treatments ?? 'Aucun renseigné'}</dd>
                 </div>
               </dl>
@@ -151,7 +151,7 @@ export function EmergencyCardView() {
             {card.emergencyContact && (
               <div className="mx-5 mb-5 flex flex-wrap items-center justify-between gap-3 rounded-3xl bg-[var(--bg)] p-4">
                 <div>
-                  <p className="label">Personne à prévenir</p>
+                  <p className="label">Personne à prévenir<En>Emergency contact</En></p>
                   <p className="text-2xl font-bold">{card.emergencyContact.name}</p>
                 </div>
                 {card.emergencyContact.phone && (
@@ -164,7 +164,7 @@ export function EmergencyCardView() {
 
             {qrValue && (
               <div className="flex flex-col items-center gap-3 border-t border-[var(--border)] p-5 text-center">
-                <p className="text-2xl font-bold">Secouriste : scannez ce code</p>
+                <p className="text-2xl font-bold">Secouriste : scannez ce code<span lang="en" className="block text-lg font-normal">Rescuer: scan this code</span></p>
                 <QrClient value={qrValue} size={260} label="QR de la carte d’urgence, à scanner par les secours" />
                 <p className="max-w-md text-base text-[var(--fg-muted)]">
                   Le QR ouvre la fiche d’urgence (sans maladie ni détail privé). Chaque lecture est enregistrée et le titulaire est prévenu.
@@ -197,26 +197,36 @@ export function EmergencyCardView() {
           >
             <div className="flex min-w-0 flex-1 flex-col justify-between p-[3mm]">
               <div>
-                <p className="text-[6pt] font-bold tracking-widest text-[#c62828] uppercase">Carte d’urgence · Alafia</p>
+                <p className="text-[6pt] font-bold tracking-widest text-[#c62828] uppercase">Carte d’urgence · <span lang="en">Emergency card</span></p>
                 <p className="text-[10pt] leading-tight font-bold">{name} · {card.age} ans</p>
               </div>
               <p className="text-[22pt] leading-none font-bold text-[#c62828]">{card.bloodGroup ?? '?'}</p>
               <div className="space-y-[0.6mm] text-[6.5pt] leading-tight">
                 <p><b>Allergies :</b> {card.allergies.length ? card.allergies.join(', ') : 'aucune connue'}</p>
-                {card.treatments && <p className="line-clamp-2"><b>Traitement :</b> {card.treatments}</p>}
-                {card.emergencyContact && <p><b>Prévenir :</b> {card.emergencyContact.name} {card.emergencyContact.phone ? fmtPhone(card.emergencyContact.phone) : ''}</p>}
+                {card.treatments && <p className="line-clamp-2"><b>Traitement · <span lang="en">Treatment</span> :</b> {card.treatments}</p>}
+                {card.emergencyContact && <p><b>Prévenir · <span lang="en">Contact</span> :</b> {card.emergencyContact.name} {card.emergencyContact.phone ? fmtPhone(card.emergencyContact.phone) : ''}</p>}
                 <p>Urgence : pompiers 118</p>
               </div>
             </div>
             {qrValue && (
               <div className="flex w-[32mm] shrink-0 flex-col items-center justify-center gap-[1mm] border-l border-dashed border-black/40 p-[2mm]">
                 <QrClient value={qrValue} size={110} label="QR de la carte d’urgence" />
-                <p className="text-center text-[5.5pt] leading-tight font-bold">Secouriste : scannez</p>
+                <p className="text-center text-[5.5pt] leading-tight font-bold">Secouriste : scannez<br /><span lang="en">Rescuer: scan</span></p>
               </div>
             )}
           </div>
         </>
       )}
     </main>
+  );
+}
+
+/** Étiquette anglaise à côté du français : la carte sert aussi aux secours étrangers et à la diaspora. */
+function En({ children }: { children: React.ReactNode }) {
+  return (
+    <span lang="en" className="font-normal">
+      {' · '}
+      {children}
+    </span>
   );
 }

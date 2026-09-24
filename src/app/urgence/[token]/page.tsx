@@ -4,6 +4,7 @@ import { AlertTriangle, Eye, Phone, ShieldAlert } from 'lucide-react';
 import { ListenButton } from '@/components/ListenButton';
 import { Pictogram } from '@/components/Pictogram';
 import { TopBar } from '@/components/TopBar';
+import { fmtPhone } from '@/lib/format';
 import { tryServerApi } from '@/lib/server-api';
 
 export const dynamic = 'force-dynamic';
@@ -88,7 +89,7 @@ export default async function EmergencyCardPage({ params }: { params: Promise<{ 
         <section aria-label="Groupe sanguin" className="card flex items-center gap-5 !border-0 bg-[var(--color-danger-600)] p-6 text-white">
           <span className="grid h-20 w-20 shrink-0 place-items-center rounded-3xl bg-white text-[var(--color-danger-600)]"><Pictogram name="blood" size={44} /></span>
           <div>
-            <p className="text-lg font-bold text-white/85">Groupe sanguin</p>
+            <p className="text-lg font-bold text-white">Groupe sanguin<En>Blood group</En></p>
             <p className="num text-7xl font-bold leading-none sm:text-8xl">{card.bloodGroup ?? '?'}</p>
             {!card.bloodGroup && <p className="text-base">Non renseigné : faire un groupage avant toute transfusion.</p>}
           </div>
@@ -110,18 +111,18 @@ export default async function EmergencyCardPage({ params }: { params: Promise<{ 
         </section>
 
         <section aria-labelledby="h-treat" className="card p-5">
-          <h2 id="h-treat" className="flex items-center gap-2 text-xl font-bold"><Pictogram name="pill" size={24} /> Traitements en cours</h2>
+          <h2 id="h-treat" className="flex items-center gap-2 text-xl font-bold"><Pictogram name="pill" size={24} /> <span>Traitements en cours<En>Current treatment</En></span></h2>
           <p className="mt-2 text-xl">{card.treatments || 'Aucun traitement déclaré'}</p>
         </section>
 
         <section aria-labelledby="h-contact" className="card space-y-3 p-5">
-          <h2 id="h-contact" className="flex items-center gap-2 text-xl font-bold"><Pictogram name="people" size={24} /> Personne à prévenir</h2>
+          <h2 id="h-contact" className="flex items-center gap-2 text-xl font-bold"><Pictogram name="people" size={24} /> <span>Personne à prévenir<En>Emergency contact</En></span></h2>
           {card.emergencyContact ? (
             <>
               <p className="text-xl font-bold">{card.emergencyContact.name ?? 'Contact'}</p>
               {contactPhone && (
                 <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="btn btn-primary !min-h-14 text-xl">
-                  <Phone size={24} aria-hidden /> <span className="num">{contactPhone}</span>
+                  <Phone size={24} aria-hidden /> <span className="num">{fmtPhone(contactPhone)}</span>
                 </a>
               )}
             </>
@@ -143,5 +144,15 @@ export default async function EmergencyCardPage({ params }: { params: Promise<{ 
         <a href="tel:118" className="btn btn-danger w-full !min-h-14 text-lg"><Phone size={22} aria-hidden /> Sapeurs-pompiers <span className="num">118</span></a>
       </main>
     </>
+  );
+}
+
+/** Étiquette anglaise à côté du français : la carte sert aussi aux secours étrangers et à la diaspora. */
+function En({ children }: { children: React.ReactNode }) {
+  return (
+    <span lang="en" className="font-normal">
+      {' · '}
+      {children}
+    </span>
   );
 }

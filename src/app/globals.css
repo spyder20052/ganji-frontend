@@ -1,5 +1,18 @@
 @import 'tailwindcss';
 
+/* `dark:` suit le choix de l'utilisateur (Réglages → Sombre) comme la préférence du système,
+   sauf s'il a choisi « Clair ». Sans cela, les utilitaires `dark:` ignorent le choix manuel. */
+@custom-variant dark {
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme='light']) *) {
+      @slot;
+    }
+  }
+}
+
 /* ── Jetons Alafia ─────────────────────────────────────────────
    Vert profond = santé et confiance ; ocre = rappels et actions secondaires ;
    rouge = urgence et sang UNIQUEMENT. Contrastes vérifiés AA (≥ 4,5:1). */
@@ -106,6 +119,8 @@ h1, h2, h3 { text-wrap: balance; line-height: 1.2; }
 
 /* Mode simple (réglages) : seulement l'essentiel, en plus gros. */
 [data-simple] .simple-hide { display: none !important; }
+.simple-only { display: none; }
+[data-simple] .simple-only { display: revert; }
 [data-simple] .simple-big { font-size: 1.4rem; }
 
 /* Rangée qui passe à la ligne (texte + bouton) : la colonne de texte garde une largeur
@@ -119,4 +134,19 @@ h1, h2, h3 { text-wrap: balance; line-height: 1.2; }
 input[type='search']::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;
+}
+
+/* Texte agrandi jusqu'à 200 % sur un écran de 360 px : une case de grille peut rétrécir sous la
+   largeur de son plus long mot au lieu de pousser la page hors de l'écran, et les mots longs se
+   coupent (césure française). La césure reste réservée aux grandes tailles : à taille normale,
+   un mot coupé gêne les personnes qui lisent difficilement. */
+body {
+  overflow-wrap: break-word;
+}
+:root[style*='--text-scale: 1.5'] body,
+:root[style*='--text-scale: 2'] body {
+  hyphens: auto;
+}
+.grid > * {
+  min-width: 0;
 }

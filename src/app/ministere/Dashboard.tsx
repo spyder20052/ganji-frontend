@@ -515,7 +515,7 @@ function Reports({ reports }: { reports: CommunityReport[] | null }) {
       {!reports && <p className="text-[var(--fg-muted)]" role="status">Chargement…</p>}
       {reports?.length === 0 && <p className="text-[var(--fg-muted)]">Aucun signalement sur la période.</p>}
       {reports && reports.length > 0 && (
-        <div className="card -mx-0 overflow-x-auto p-4">
+        <div className="card overflow-x-auto p-4" tabIndex={0} role="region" aria-label="Tableau des signalements, défilable horizontalement">
           <table className="w-full min-w-[680px] border-collapse text-base">
             <caption className="sr-only">Signalements des relais communautaires, du plus récent au plus ancien</caption>
             <thead>

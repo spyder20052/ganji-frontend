@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T18:38:41+01:00",
+  "updatedAt": "2026-09-24T19:01:27+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -451,6 +451,11 @@
           "sha": "748942d",
           "repo": "backend",
           "message": "feat(m3-m6-soins): journal de symptômes, rappels et télé-expertise avec photos"
+        },
+        {
+          "sha": "387fe9f",
+          "repo": "frontend",
+          "message": "feat(m3-m6-soins): symptômes en deux gestes et demande d'avis avec photos"
         }
       ]
     },
@@ -467,19 +472,25 @@
       "items": [
         {
           "label": "Bouton « écouter » sur chaque écran patient",
-          "done": false
+          "done": true
         },
         {
           "label": "Mode simple (4 actions) et mode discret",
-          "done": false
+          "done": true
         },
         {
-          "label": "Interface FR / EN",
+          "label": "Interface FR / EN (carte d'urgence bilingue livrée ; reste de l'interface en français)",
           "done": false
         }
       ],
-      "commits": [],
-      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
+      "commits": [
+        {
+          "sha": "11f4e9a",
+          "repo": "backend",
+          "message": "docs(c9-inclusion): les langues des messages vocaux sont visées, pas livrées"
+        }
+      ],
+      "note": "Livré : bouton Écouter sur chaque écran patient, mode simple à 4 actions, mode discret, 0 violation axe-core sur 30 écrans, texte à 200 % sans débordement, carte d'urgence bilingue. Manque : enregistrements fon et bariba par un locuteur natif (docs/ENREGISTREMENTS.md) et interface anglaise complète."
     },
     {
       "id": "C10",
@@ -686,6 +697,10 @@
     {
       "at": "2026-09-24T18:38:41+01:00",
       "text": "C8 validé : demande d'avis depuis Djougou avec deux photos, réponse de Dr Houngbédji visible par l'infirmière et inscrite au carnet ; saignement fort de Koffi → équipe prévenue. Ajouté : photos jointes à la demande d'avis (exigence MVP du cahier). Corrigé : « Avis de hematologie »."
+    },
+    {
+      "at": "2026-09-24T19:01:27+01:00",
+      "text": "C9 partiel : 0 violation axe-core (WCAG 2.2 AA) sur 30 écrans après 4 corrections, clavier seul OK, texte à 200 % sans débordement, mode simple conforme au cahier (carnet, médicaments, appeler, urgence), thème sombre manuel réparé, carte d'urgence bilingue FR/EN. Voix en langues nationales : script d'enregistrement prêt, fichiers à produire par un locuteur natif."
     }
   ]
 }

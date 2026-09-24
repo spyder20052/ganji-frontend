@@ -26,12 +26,23 @@ interface HealthAlert {
   national: boolean;
 }
 
-const TILES = [
-  { href: '/app/carnet', icon: 'carnet', title: 'Mon carnet', text: 'Fiche vitale, soins, analyses' },
-  { href: '/app/medicaments', icon: 'pill', title: 'Mes médicaments', text: 'Ordonnances à montrer' },
-  { href: '/app/sang', icon: 'blood', title: 'Sang', text: 'Demandes et dons' },
-  { href: '/app/carte-urgence', icon: 'emergency', title: 'Urgence', text: 'Ma carte QR, même sans réseau', danger: true },
-];
+interface Tile { href: string; icon: string; title: string; text: string; danger?: boolean; only?: 'standard' | 'simple' }
+
+/**
+ * Les 4 tuiles de l'accueil. En mode simple (personne âgée), le cahier fixe les 4 actions :
+ * mon carnet, mes médicaments, appeler, urgence ; « Sang » cède sa place à « Appeler ».
+ */
+function tiles(contact: Summary['emergencyContact'] | undefined): Tile[] {
+  return [
+    { href: '/app/carnet', icon: 'carnet', title: 'Mon carnet', text: 'Fiche vitale, soins, analyses' },
+    { href: '/app/medicaments', icon: 'pill', title: 'Mes médicaments', text: 'Ordonnances à montrer' },
+    { href: '/app/sang', icon: 'blood', title: 'Sang', text: 'Demandes et dons', only: 'standard' },
+    contact?.phone
+      ? { href: `tel:${contact.phone}`, icon: 'phone', title: 'Appeler', text: contact.name, only: 'simple' }
+      : { href: 'tel:118', icon: 'phone', title: 'Appeler', text: 'Sapeurs-pompiers 118', only: 'simple' },
+    { href: '/app/carte-urgence', icon: 'emergency', title: 'Urgence', text: 'Ma carte QR, même sans réseau', danger: true },
+  ];
+}
 
 const PREVIEWS = [
   { href: '/app/ecoute', icon: 'listen', title: 'Écoute anonyme', text: 'Parler à quelqu’un, sans donner son nom' },
@@ -86,8 +97,8 @@ export default async function AppHome() {
 
       <nav aria-label="Actions principales">
         <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {TILES.map((t) => (
-            <li key={t.href}>
+          {tiles(s?.emergencyContact).map((t) => (
+            <li key={t.href} className={t.only === 'standard' ? 'simple-hide' : t.only === 'simple' ? 'simple-only' : undefined}>
               <Link
                 href={t.href}
                 className={`card flex h-full min-h-40 flex-col justify-between gap-4 p-5 transition-shadow hover:shadow-md ${t.danger ? '!border-transparent !bg-[var(--color-danger-600)] text-white' : ''}`}
@@ -196,7 +207,7 @@ export default async function AppHome() {
           {alerts.map((a) => (
             <Notice key={a.id} tone={a.severity === 'URGENCE' ? 'danger' : a.severity === 'ATTENTION' ? 'warn' : 'info'} title={a.title}>
               <p>{a.message}</p>
-              <p className="mt-1 text-sm opacity-80">
+              <p className="mt-1 text-sm">
                 {a.source} · {fmtDate(a.createdAt, { day: 'numeric', month: 'long' })} · {a.national ? 'tout le pays' : a.communes.join(', ')}
               </p>
             </Notice>

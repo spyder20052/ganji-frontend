@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { EyeOff, Phone } from 'lucide-react';
 import { LineChart } from '@/components/LineChart';
 import { Pictogram } from '@/components/Pictogram';
-import { fmtDate, fmtDateTime } from '@/lib/format';
+import { fmtDate, fmtDateTime, fmtPhone } from '@/lib/format';
 import type { Series, Summary, TimelineItem } from '@/lib/types';
 import { Empty, ErrorNote, Notice, PageHead, Section } from '../../_components/ui';
 import { TIMELINE_ICON } from '../../_lib/labels';
@@ -147,7 +147,7 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
                       <p className="font-bold">{s.emergencyContact.name}</p>
                       {s.emergencyContact.phone && (
                         <a href={`tel:${s.emergencyContact.phone}`} className="btn btn-soft mt-2 !min-h-11">
-                          <Phone size={18} aria-hidden /> <span className="num">{s.emergencyContact.phone}</span>
+                          <Phone size={18} aria-hidden /> <span className="num">{fmtPhone(s.emergencyContact.phone)}</span>
                         </a>
                       )}
                     </>

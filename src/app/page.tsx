@@ -20,9 +20,9 @@ const SITUATIONS = [
 export default function Home() {
   return (
     <>
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+      <header className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
         <Logo />
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <PrefsMenu />
           <Link href="/connexion" className="btn btn-primary"><LogIn size={20} aria-hidden /> Se connecter</Link>
         </div>
@@ -85,7 +85,8 @@ export default function Home() {
 
         <section aria-labelledby="h-sit">
           <h2 id="h-sit" className="text-xl font-bold">Chaque situation de vie, une réponse</h2>
-          <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {/* Colonnes de 11rem au moins : une seule colonne quand le texte est agrandi à 200 %. */}
+          <ul className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(100%,11rem),1fr))] gap-3">
             {SITUATIONS.map(([icon, label]) => (
               <li key={label} className="card flex items-center gap-3 p-4">
                 <span className="chip-round shrink-0 text-[var(--color-brand-900)]"><Pictogram name={icon} size={22} /></span>
