@@ -1,0 +1,109 @@
+@import 'tailwindcss';
+
+/* ── Jetons Alafia ─────────────────────────────────────────────
+   Vert profond = santé et confiance ; ocre = rappels et actions secondaires ;
+   rouge = urgence et sang UNIQUEMENT. Contrastes vérifiés AA (≥ 4,5:1). */
+@theme {
+  --color-brand-50: #f0f7f3;
+  --color-brand-100: #e3f1eb;
+  --color-brand-200: #c3e2d3;
+  --color-brand-500: #1f7a5a;
+  --color-brand-700: #0f5f47;
+  --color-brand-900: #0b4f3c;
+  --color-brand-950: #06291f;
+  --color-ocre-100: #fbf0d9;
+  --color-ocre-500: #d99a1e;
+  --color-ocre-700: #8a5d06;
+  --color-danger-50: #fdecea;
+  --color-danger-600: #c62828;
+  --color-danger-800: #8e1b1b;
+  --color-surface: #f3f6f4;
+  --color-ink: #13241e;
+  --color-muted: #52635b;
+  --color-line: #d5e0da;
+  --radius-card: 1.5rem;
+  --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  --bg: var(--color-surface);
+  --card: #ffffff;
+  --fg: var(--color-ink);
+  --fg-muted: var(--color-muted);
+  --border: var(--color-line);
+  color-scheme: light;
+}
+:root[data-theme='dark'] {
+  --bg: #0c1512;
+  --card: #14201c;
+  --fg: #e6efeb;
+  --fg-muted: #9db0a7;
+  --border: #25352f;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0c1512;
+    --card: #14201c;
+    --fg: #e6efeb;
+    --fg-muted: #9db0a7;
+    --border: #25352f;
+    color-scheme: dark;
+  }
+}
+
+html {
+  font-size: calc(100% * var(--text-scale, 1));
+}
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 1.125rem; /* 18 px minimum côté patient */
+  line-height: 1.55;
+  -webkit-tap-highlight-color: transparent;
+}
+h1, h2, h3 { text-wrap: balance; line-height: 1.2; }
+
+@layer components {
+  .card {
+    background: var(--card);
+    border-radius: var(--radius-card);
+    border: 1px solid var(--border);
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    min-height: 3rem; padding: 0 1.25rem; border-radius: 999px; font-weight: 700;
+    transition: background-color .15s, transform .1s;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-primary { background: var(--color-brand-900); color: #fff; }
+  .btn-primary:hover { background: var(--color-brand-700); }
+  .btn-soft { background: var(--color-brand-100); color: var(--color-brand-900); }
+  .btn-ghost { border: 1px solid var(--border); background: var(--card); color: var(--fg); }
+  .btn-danger { background: var(--color-danger-600); color: #fff; }
+  .btn:disabled { opacity: .55; cursor: not-allowed; }
+  .chip-round {
+    display: inline-grid; place-items: center; width: 3rem; height: 3rem; border-radius: 999px;
+    background: var(--card); border: 1px solid var(--border);
+  }
+  .label { font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; color: var(--fg-muted); }
+  .input {
+    width: 100%; min-height: 3rem; border-radius: 1rem; border: 1px solid var(--border);
+    background: var(--card); padding: .5rem 1rem; color: var(--fg);
+  }
+  .pill { display: inline-flex; align-items: center; gap: .35rem; border-radius: 999px; padding: .15rem .7rem; font-size: .85rem; font-weight: 700; }
+  .num { font-variant-numeric: tabular-nums; }
+}
+
+:focus-visible { outline: 3px solid var(--color-ocre-500); outline-offset: 2px; border-radius: 6px; }
+
+/* Mode économie (batterie faible) : pas d'animation. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+.leaflet-container { font: inherit; border-radius: var(--radius-card); }
+
+/* Mode simple (réglages) : seulement l'essentiel, en plus gros. */
+[data-simple] .simple-hide { display: none !important; }
+[data-simple] .simple-big { font-size: 1.4rem; }
