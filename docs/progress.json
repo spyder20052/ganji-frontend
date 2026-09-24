@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T18:10:01+01:00",
+  "updatedAt": "2026-09-24T18:15:29+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -193,6 +193,11 @@
           "sha": "5919a88",
           "repo": "backend",
           "message": "feat(c2-orientation): orientation anonyme rejouée côté serveur et lieux ouverts les plus proches"
+        },
+        {
+          "sha": "1a0fabb",
+          "repo": "frontend",
+          "message": "feat(c2-orientation): orientation par pictogrammes sans compte et carte des lieux de soin"
         }
       ]
     },
@@ -203,7 +208,7 @@
         "M4"
       ],
       "window": "19:00 – 19:45",
-      "status": "doing",
+      "status": "done",
       "repos": [
         "backend",
         "frontend"
@@ -212,27 +217,32 @@
       "items": [
         {
           "label": "Demande de produit sanguin",
-          "done": false
+          "done": true
         },
         {
           "label": "Stocks des sites ANTS (carte + liste)",
-          "done": false
+          "done": true
         },
         {
           "label": "Appel ciblé aux donneurs compatibles et proches",
-          "done": false
+          "done": true
         },
         {
           "label": "Réponse du donneur (app + SMS), RDV proposé",
-          "done": false
+          "done": true
         },
         {
           "label": "Simulateur SMS / USSD",
-          "done": false
+          "done": true
         }
       ],
-      "commits": [],
-      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
+      "commits": [
+        {
+          "sha": "9fe7a9e",
+          "repo": "backend",
+          "message": "feat(m4-sang): demande de sang, appel ciblé aux donneurs et réponse par SMS"
+        }
+      ]
     },
     {
       "id": "C4",
@@ -602,6 +612,10 @@
     {
       "at": "2026-09-24T18:10:01+01:00",
       "text": "C2 validé sans compte : fièvre et convulsions d'un enfant classées URGENCE, CHUD Ouémé-Plateau ouvert 24 h/24 à 2,2 km ; carte OpenStreetMap avec 72 lieux et filtres."
+    },
+    {
+      "at": "2026-09-24T18:15:29+01:00",
+      "text": "C3 validé : parcours héros complet en ligne locale, 14 donneurs alertés, réponse « 1 » de Rodrigue dans le simulateur, « donneur trouvé » en direct en moins de 3 s, voix en fon pour Afiavi, transfusion inscrite au carnet. Corrigés : stock du seed jugé suffisant (aucun donneur alerté), homonymes de personas parmi les donneurs, simulateur illisible à 390 px, transfusion sans compte rendu."
     }
   ]
 }
