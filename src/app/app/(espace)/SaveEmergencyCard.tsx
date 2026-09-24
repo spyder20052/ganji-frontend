@@ -13,11 +13,14 @@ export function SaveEmergencyCard({ card }: { card: EmergencyCard }) {
   }, [json]);
   if (!saved) return null;
   return (
-    <p role="status" className="flex items-center gap-2 text-base text-[var(--fg-muted)]">
-      <CheckCircle2 size={18} aria-hidden className="text-[var(--color-brand-700)]" />
-      <span>
-        <Link href="/app/carte-urgence" className="font-bold underline underline-offset-2">Carte d’urgence</Link> à jour sur ce téléphone, disponible sans réseau.
+    <Link
+      href="/app/carte-urgence"
+      className="inline-flex items-center gap-2 rounded-full bg-[var(--card)] py-1.5 pr-4 pl-2 text-sm font-medium text-[var(--fg)]"
+    >
+      <span className="grid h-6 w-6 place-items-center rounded-full bg-[var(--color-leaf)] text-[var(--color-ink)]">
+        <CheckCircle2 size={14} aria-hidden />
       </span>
-    </p>
+      Carte d’urgence prête sans réseau
+    </Link>
   );
 }

@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T19:19:59+01:00",
+  "updatedAt": "2026-09-24T20:16:04+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -567,7 +567,13 @@
           "done": true
         }
       ],
-      "commits": []
+      "commits": [
+        {
+          "sha": "b05931e",
+          "repo": "frontend",
+          "message": "feat(c11-apercus): écoute anonyme, droits et frais, assistant et cercle de soin en aperçus cliquables"
+        }
+      ]
     },
     {
       "id": "C12",
@@ -723,6 +729,10 @@
     {
       "at": "2026-09-24T19:19:59+01:00",
       "text": "C11 validé : écoute anonyme (un mot de crise affiche tout de suite l'aide et propose un rappel), droits et coût estimé, assistant avec ses garde-fous, cercle de soin ; chaque écran marqué « Aperçu · maquette cliquable » avec ce qui est simulé. Corrigé : texte rose pâle sur boutons blancs en thème sombre."
+    },
+    {
+      "at": "2026-09-24T20:16:04+01:00",
+      "text": "Refonte visuelle demandée : DA des références (fond menthe, vert pastel, ardoise-sarcelle, couleurs mesurées), Atkinson Hyperlegible Next variable, barre d'onglets flottante sur téléphone avec l'urgence au centre, accueils et écrans patients allégés (un mot par case, intros retirées de l'affichage mais lues par Écouter). Vérifié : 0 violation axe-core en clair et en sombre, texte à 200 % sans débordement, clavier, mouvement réduit."
     }
   ]
 }

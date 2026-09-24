@@ -128,8 +128,22 @@ export function ShareFlow() {
           Le QR n’a pas été scanné à temps. Il ne marche plus : créez-en un nouveau.
         </p>
       )}
-      <fieldset>
-        <legend className="mb-2 text-lg font-bold">Ce que le soignant pourra voir</legend>
+      <details className="group rounded-3xl bg-[var(--bg)] p-4">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
+          <span className="min-w-0">
+            <span className="block text-sm text-[var(--fg-muted)]">Le soignant verra</span>
+            <span className="block font-semibold">
+              {scopes.length === SCOPES.length ? 'Tout le carnet' : `${scopes.length} partie${scopes.length > 1 ? 's' : ''} sur ${SCOPES.length}`}
+              {sensitive ? ', très sensible compris' : ', sauf le très sensible'}
+            </span>
+          </span>
+          <span className="pill shrink-0 bg-[var(--card)]">
+            <span className="group-open:hidden">Modifier</span>
+            <span className="hidden group-open:inline">Fermer</span>
+          </span>
+        </summary>
+      <fieldset className="mt-4">
+        <legend className="sr-only">Ce que le soignant pourra voir</legend>
         <div className="grid gap-2 sm:grid-cols-2">
           {SCOPES.map((s) => (
             <label key={s.key} className="flex min-h-14 cursor-pointer items-center gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 has-[:checked]:border-[var(--color-brand-500)] has-[:checked]:bg-[var(--color-brand-50)] has-[:checked]:text-[var(--color-brand-950)]">
@@ -151,9 +165,10 @@ export function ShareFlow() {
           </span>
         </label>
       </fieldset>
+      </details>
 
       <fieldset>
-        <legend className="mb-2 text-lg font-bold">Pendant combien de temps ?</legend>
+        <legend className="mb-2 font-semibold">Pendant combien de temps ?</legend>
         <div className="grid grid-cols-3 gap-2">
           {DURATIONS.map((h) => (
             <button key={h} type="button" aria-pressed={hours === h} onClick={() => setHours(h)} className={`btn !min-h-14 text-lg ${hours === h ? 'btn-primary' : 'btn-ghost'}`}>

@@ -1,12 +1,13 @@
 import Link from 'next/link';
 
+/** Bandeau permanent exigé par le cahier : données fictives. Une ligne, discret. */
 export function DemoBanner() {
   return (
-    <div className="bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)] text-sm font-bold">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-1.5">
-        <span>Données fictives · démonstration</span>
-        <span className="flex gap-4">
-          <Link prefetch={false} href="/demo" className="underline underline-offset-2">Comptes de démo</Link>
+    <div className="bg-[var(--color-ocre-100)] text-sm text-[var(--color-ocre-700)]">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-1">
+        <span className="font-semibold">Démo · données fictives</span>
+        <span className="flex gap-3">
+          <Link prefetch={false} href="/demo" className="underline underline-offset-2">Comptes</Link>
           <Link prefetch={false} href="/simulateur" className="underline underline-offset-2">Simulateur SMS</Link>
         </span>
       </div>

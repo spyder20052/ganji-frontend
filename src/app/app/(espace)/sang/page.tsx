@@ -145,8 +145,8 @@ export default async function SangPage() {
       <Section id="h-donneur" title="Moi, donneur de sang" icon="care" className="simple-hide">
         {donorRes.error && <ErrorNote error={donorRes.error} />}
         {donorRes.data && !donor && (
-          <Notice tone="info" title="Vous n’êtes pas encore inscrit comme donneur">
-            Un don dure environ 45 minutes et peut sauver jusqu’à trois vies. Inscrivez-vous au site de transfusion le plus proche : vous serez ensuite appelé seulement quand votre groupe manque près de chez vous.
+          <Notice tone="info" title="Pas encore donneur">
+            Un don peut sauver trois vies. Inscrivez-vous au site de transfusion le plus proche.
           </Notice>
         )}
         {donor && (

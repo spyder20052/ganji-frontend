@@ -5,7 +5,7 @@ import {
   AlertTriangle, Bed, Droplet, EyeOff, FileText, Lock, MessagesSquare, Phone, Pill, QrCode, ShieldAlert, ShieldCheck, Siren, Stethoscope, Syringe, type LucideIcon,
 } from 'lucide-react';
 import { LineChart } from '@/components/LineChart';
-import { fmtDate, fmtDateTime, fmtTime } from '@/lib/format';
+import { fmtDate, fmtDateTime, fmtPhone, fmtTime } from '@/lib/format';
 import { serverApi, ServerApiError } from '@/lib/server-api';
 import type { Series, Summary, TimelineItem } from '@/lib/types';
 import { SPECIALTY_LABEL } from '../../_lib/labels';
@@ -198,7 +198,7 @@ function VitalCard({ s }: { s: Summary }) {
             <p className="font-bold">{s.emergencyContact.name}</p>
             {s.emergencyContact.phone && (
               <a href={`tel:${s.emergencyContact.phone}`} className="inline-flex min-h-11 items-center gap-1 font-bold text-[var(--color-brand-700)] underline">
-                <Phone size={16} aria-hidden /> {s.emergencyContact.phone}
+                <Phone size={16} aria-hidden /> {fmtPhone(s.emergencyContact.phone)}
               </a>
             )}
           </div>

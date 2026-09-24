@@ -14,36 +14,43 @@
 }
 
 /* ── Jetons Alafia ─────────────────────────────────────────────
-   Vert profond = santé et confiance ; ocre = rappels et actions secondaires ;
-   rouge = urgence et sang UNIQUEMENT. Contrastes vérifiés AA (≥ 4,5:1). */
+   DA : fond menthe, cartes presque blanches, vert pastel pour l'action et l'onglet actif,
+   ardoise-sarcelle pour les surfaces sombres (valeurs mesurées sur les références).
+   Rouge = urgence et sang UNIQUEMENT ; ocre = rappels. Contrastes vérifiés AA (≥ 4,5:1). */
 @theme {
-  --color-brand-50: #f0f7f3;
-  --color-brand-100: #e3f1eb;
-  --color-brand-200: #c3e2d3;
-  --color-brand-500: #1f7a5a;
-  --color-brand-700: #0f5f47;
-  --color-brand-900: #0b4f3c;
-  --color-brand-950: #06291f;
-  --color-ocre-100: #fbf0d9;
+  --color-brand-50: #f1f7ee;
+  --color-brand-100: #e4f1dc;
+  --color-brand-200: #c9e6b6;
+  --color-leaf: #b1de97;
+  --color-leaf-strong: #9fd483;
+  --color-sage: #cfddd2;
+  --color-brand-500: #3e7d57;
+  --color-brand-700: #3c6d84;
+  --color-brand-900: #2a5669;
+  --color-brand-950: #17323e;
+  --color-ocre-100: #f6ecd0;
   --color-ocre-500: #d99a1e;
   --color-ocre-700: #8a5d06;
-  --color-danger-50: #fdecea;
+  --color-danger-50: #fbe4e5;
   --color-danger-600: #c62828;
   --color-danger-800: #8e1b1b;
-  --color-surface: #f3f6f4;
-  --color-ink: #13241e;
-  --color-muted: #52635b;
-  --color-line: #d5e0da;
-  --radius-card: 1.5rem;
+  --color-surface: #e2ede7;
+  --color-ink: #19201d;
+  --color-muted: #4e5a54;
+  --color-line: #d3dfd7;
+  --radius-card: 1.75rem;
   --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+  /* Graisses allégées : « gras » = demi-gras, comme les références. */
+  --font-weight-bold: 600;
 }
 
 :root {
   --bg: var(--color-surface);
-  --card: #ffffff;
+  --card: #fcfdfc;
   --fg: var(--color-ink);
   --fg-muted: var(--color-muted);
   --border: var(--color-line);
+  --shadow-soft: 0 1px 2px rgb(25 32 29 / 0.04), 0 8px 24px -12px rgb(42 86 105 / 0.12);
   color-scheme: light;
 }
 /* Thème sombre : surfaces sombres, et les fonds teintés (alerte, rappel, urgence) deviennent des
@@ -86,54 +93,66 @@ body {
   line-height: 1.55;
   -webkit-tap-highlight-color: transparent;
 }
-h1, h2, h3 { text-wrap: balance; line-height: 1.2; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.15; letter-spacing: -0.015em; }
 
 @layer components {
+  /* Cartes plates, sans bordure : c'est la différence de teinte avec le fond qui les dessine. */
   .card {
     background: var(--card);
     border-radius: var(--radius-card);
-    border: 1px solid var(--border);
+    box-shadow: 0 1px 2px rgb(25 32 29 / 0.04);
   }
   .btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
-    min-height: 3rem; padding: 0 1.25rem; border-radius: 999px; font-weight: 700;
-    transition: background-color .15s, transform .1s;
+    min-height: 3.25rem; padding: 0 1.4rem; border-radius: 999px; font-weight: 600;
+    transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .btn:active { transform: scale(.98); }
-  .btn-primary { background: var(--color-brand-900); color: #fff; }
-  .btn-primary:hover { background: var(--color-brand-700); }
-  .btn-soft { background: var(--color-brand-100); color: var(--color-brand-900); }
-  .btn-ghost { border: 1px solid var(--border); background: var(--card); color: var(--fg); }
+  .btn:active { transform: scale(0.98); }
+  /* Action principale : vert pastel, texte encre (10,9:1). */
+  .btn-primary { background: var(--color-leaf); color: var(--color-ink); }
+  .btn-primary:hover { background: var(--color-leaf-strong); }
+  .btn-dark { background: var(--color-brand-900); color: #fff; }
+  .btn-dark:hover { background: var(--color-brand-700); }
+  .btn-soft { background: var(--color-brand-100); color: var(--color-ink); }
+  .btn-soft:hover { background: var(--color-brand-200); }
+  .btn-ghost { background: var(--card); color: var(--fg); box-shadow: inset 0 0 0 1px var(--border); }
   .btn-danger { background: var(--color-danger-600); color: #fff; }
-  .btn:disabled { opacity: .55; cursor: not-allowed; }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
   .chip-round {
     display: inline-grid; place-items: center; width: 3rem; height: 3rem; border-radius: 999px;
-    background: var(--card); border: 1px solid var(--border);
+    background: var(--card); box-shadow: 0 1px 2px rgb(25 32 29 / 0.06);
   }
-  .label { font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; color: var(--fg-muted); }
+  /* Petite étiquette en casse normale (plus de majuscules espacées partout). */
+  .label { font-size: 0.875rem; font-weight: 500; color: var(--fg-muted); }
   .input {
-    width: 100%; min-height: 3rem; border-radius: 1rem; border: 1px solid var(--border);
-    background: var(--card); padding: .5rem 1rem; color: var(--fg);
+    width: 100%; min-height: 3.25rem; border-radius: 1.25rem; border: 1px solid var(--border);
+    background: var(--card); padding: 0.5rem 1.1rem; color: var(--fg);
   }
-  .pill { display: inline-flex; align-items: center; gap: .35rem; border-radius: 999px; padding: .15rem .7rem; font-size: .85rem; font-weight: 700; }
+  .pill { display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 999px; padding: 0.2rem 0.75rem; font-size: 0.875rem; font-weight: 600; }
   .num { font-variant-numeric: tabular-nums; }
+  /* Grand chiffre fin, signature des références (« 120/80 », « 46,5 »). */
+  .display { font-weight: 300; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
 }
 
-:focus-visible { outline: 3px solid var(--color-ocre-500); outline-offset: 2px; border-radius: 6px; }
+:focus-visible { outline: 3px solid var(--color-brand-900); outline-offset: 2px; border-radius: 6px; }
+:root[data-theme='dark'] :focus-visible { outline-color: var(--color-leaf); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) :focus-visible { outline-color: var(--color-leaf); }
+}
 
 /* En thème sombre, une surface restée blanche (pastille, bouton sur fond rouge) garde les encres
    du thème clair : sinon un texte rose pâle se retrouverait sur du blanc. */
 :root[data-theme='dark'] .bg-white {
-  --color-danger-50: #fdecea;
+  --color-danger-50: #fbe4e5;
   --color-danger-800: #8e1b1b;
-  --color-ocre-100: #fbf0d9;
+  --color-ocre-100: #f6ecd0;
   --color-ocre-700: #8a5d06;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) .bg-white {
-    --color-danger-50: #fdecea;
+    --color-danger-50: #fbe4e5;
     --color-danger-800: #8e1b1b;
-    --color-ocre-100: #fbf0d9;
+    --color-ocre-100: #f6ecd0;
     --color-ocre-700: #8a5d06;
   }
 }
@@ -187,4 +206,23 @@ body {
 }
 .grid > * {
   min-width: 0;
+}
+
+/* Barre d'onglets flottante (téléphone) : le bas de page reste lisible au-dessus d'elle. */
+@media (max-width: 767px) {
+  body:has(.tabbar) {
+    padding-bottom: 104px;
+  }
+}
+/* Barre en pixels (chrome, pas du texte) : à 150 % et 200 %, l'onglet actif ne garde que son icône,
+   le titre de la page dit déjà où l'on est. */
+:root[style*='--text-scale: 1.5'] .tabbar-label,
+:root[style*='--text-scale: 2'] .tabbar-label {
+  display: none;
+}
+
+/* Grands chiffres (indicateurs, compteurs) : graisse fine et approche serrée, comme les références. */
+.num:is(.text-4xl, .text-5xl, .text-6xl, .text-7xl, .text-8xl) {
+  font-weight: 300;
+  letter-spacing: -0.03em;
 }

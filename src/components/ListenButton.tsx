@@ -9,7 +9,20 @@ const LANG_LABEL: Record<string, string> = { fr: 'français', en: 'anglais', fon
  * 1. Enregistrement pré-enregistré en langue nationale (/audio/<langue>/<clé>.mp3) s'il existe ;
  * 2. sinon synthèse vocale du navigateur en français.
  */
-export function ListenButton({ text, audioKey, lang, label = 'Écouter' }: { text: string; audioKey?: string; lang?: string; label?: string }) {
+export function ListenButton({
+  text,
+  audioKey,
+  lang,
+  label = 'Écouter',
+  compact = false,
+}: {
+  text: string;
+  audioKey?: string;
+  lang?: string;
+  label?: string;
+  /** Bouton rond, icône seule (en-têtes d'écran) : le nom reste lu par les lecteurs d'écran. */
+  compact?: boolean;
+}) {
   const [playing, setPlaying] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -47,6 +60,24 @@ export function ListenButton({ text, audioKey, lang, label = 'Écouter' }: { tex
     u.onend = () => setPlaying(false);
     setPlaying(true);
     synth.speak(u);
+  }
+
+  if (compact) {
+    return (
+      <span className="relative inline-flex">
+        <button
+          type="button"
+          onClick={play}
+          className={`grid h-12 w-12 shrink-0 place-items-center rounded-full ${playing ? 'bg-[var(--color-leaf)] text-[var(--color-ink)]' : 'bg-[var(--card)] text-[var(--fg)]'}`}
+          aria-pressed={playing}
+          aria-label={playing ? 'Arrêter la lecture' : label}
+          title={label}
+        >
+          {playing ? <Square size={18} aria-hidden /> : <Volume2 size={22} aria-hidden />}
+        </button>
+        {note && <span className="sr-only" role="status">{note}</span>}
+      </span>
+    );
   }
 
   return (

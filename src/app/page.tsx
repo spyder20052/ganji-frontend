@@ -1,20 +1,31 @@
 import Link from 'next/link';
-import { ArrowUpRight, LogIn } from 'lucide-react';
+import { ArrowUpRight, ChevronRight, LogIn } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { ListenButton } from '@/components/ListenButton';
 import { Pictogram } from '@/components/Pictogram';
 import { PrefsMenu } from '@/components/PrefsMenu';
 
+/** Sans compte : quatre gestes, un mot chacun. */
 const NO_ACCOUNT = [
-  { href: '/orientation', icon: 'fever', title: "J'ai un symptôme", text: 'Où aller : maison, pharmacie, centre de santé ou urgence ?' },
-  { href: '/urgence', icon: 'emergency', title: 'Urgence', text: 'Numéros, hôpital ouvert le plus proche, gestes à faire', danger: true },
-  { href: '/medicaments', icon: 'pill', title: 'Trouver un médicament', text: 'Quelle pharmacie l’a, laquelle est de garde' },
-  { href: '/carte', icon: 'map', title: 'Lieux de soin', text: 'Hôpitaux, maternités, centres de santé, sites de transfusion' },
+  { href: '/orientation', icon: 'fever', title: 'Symptôme', card: 'bg-[var(--color-brand-100)]', chip: 'bg-[var(--card)] text-[var(--color-brand-900)]' },
+  { href: '/urgence', icon: 'emergency', title: 'Urgence', card: 'bg-[var(--color-danger-600)] text-white', chip: 'bg-white text-[var(--color-danger-600)]' },
+  { href: '/medicaments', icon: 'pill', title: 'Médicament', card: 'bg-[var(--card)]', chip: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]' },
+  { href: '/carte', icon: 'map', title: 'Lieux de soin', card: 'bg-[var(--card)]', chip: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]' },
 ];
 
-const SITUATIONS = [
-  ['pregnant', 'Je suis enceinte'], ['baby', 'Mon bébé est né'], ['heart', 'Je vis avec une maladie chronique'], ['blood', "J'ai besoin de sang"],
-  ['mind', 'Je vais mal dans ma tête'], ['elderly', 'Je suis âgé ou dépendant'], ['shield', 'Une épidémie menace'], ['care', 'Je ne peux pas payer'],
+/** La règle des « 5 sans » du cahier, en un mot chacune. */
+const FIVE_WITHOUT = [
+  { icon: 'offline', label: 'réseau' },
+  { icon: 'phone', label: 'smartphone' },
+  { icon: 'listen', label: 'savoir lire' },
+  { icon: 'care', label: 'argent' },
+  { icon: 'no-account', label: 'compte' },
+];
+
+const DEMO = [
+  { href: '/demo', label: 'Comptes de démo' },
+  { href: '/simulateur', label: 'Simulateur SMS' },
+  { href: '/chantier', label: 'Suivi du chantier' },
 ];
 
 // Pas de préchargement des pages liées : en 2G, chaque Ko compte (budget de la première page < 200 Ko).
@@ -25,97 +36,94 @@ export default function Home() {
         <Logo />
         <div className="flex flex-wrap items-center gap-2">
           <PrefsMenu />
-          <Link prefetch={false} href="/connexion" className="btn btn-primary"><LogIn size={20} aria-hidden /> Se connecter</Link>
+          <Link prefetch={false} href="/connexion" className="btn btn-primary">
+            <LogIn size={20} aria-hidden /> Se connecter
+          </Link>
         </div>
       </header>
 
-      <main id="contenu" className="mx-auto max-w-6xl space-y-8 px-4 pb-16">
-        <section className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
-          <div className="card relative overflow-hidden !border-0 bg-[var(--color-brand-900)] p-6 text-white sm:p-10">
-            <p className="label !text-[var(--color-brand-200)]">Alafia · « bien-être » en fon, yoruba et dendi</p>
-            <h1 className="mt-3 text-4xl font-bold sm:text-5xl">La santé de chaque Béninois, à chaque moment de la vie.</h1>
-            <p className="mt-4 max-w-xl text-lg text-[var(--color-brand-100)]">
-              Un carnet qui voyage avec vous, relié à votre NPI et partagé seulement avec votre accord. Le bon soin au bon endroit. Du sang, des médicaments et un spécialiste mobilisés en temps réel.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link prefetch={false} href="/connexion" className="btn bg-white text-[var(--color-brand-900)]">Ouvrir mon carnet</Link>
-              <ListenButton text="Bienvenue sur Alafia. Votre santé, près de chez vous. Sans compte, vous pouvez trouver où vous soigner, un médicament ou de l'aide en urgence." audioKey="welcome" />
+      <main id="contenu" className="mx-auto max-w-6xl space-y-6 px-4 pb-16">
+        <section className="grid gap-5 lg:grid-cols-[1fr_1.1fr] lg:items-end">
+          <div className="space-y-5 pt-2">
+            <p className="text-base text-[var(--fg-muted)]">Alafia · « bien-être » en fon, yoruba et dendi</p>
+            <div className="flex items-start justify-between gap-3">
+              <h1 className="min-w-0 text-[2.6rem] leading-[1.05] font-light tracking-tight sm:text-[3.4rem]">
+                La santé de chaque Béninois, <span className="font-medium">près de chez vous.</span>
+              </h1>
+              <ListenButton
+                compact
+                text="Bienvenue sur Alafia. Votre santé, près de chez vous. Sans compte, vous pouvez trouver où vous soigner, un médicament ou de l'aide en urgence."
+                audioKey="welcome"
+              />
             </div>
-            <svg aria-hidden className="pointer-events-none absolute -right-10 -bottom-10 opacity-10" width="260" height="260" viewBox="0 0 32 32">
-              <path d="M16 3c6 7 9.5 12 9.5 16a9.5 9.5 0 1 1-19 0C6.5 15 10 10 16 3Z" fill="#fff" />
-            </svg>
+            <Link
+              prefetch={false}
+              href="/connexion"
+              className="flex items-center gap-4 rounded-[var(--radius-card)] bg-[var(--color-brand-900)] p-5 text-white"
+            >
+              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-white/15">
+                <Pictogram name="carnet" size={26} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-xl font-semibold">Mon carnet</span>
+                <span className="block text-base text-white/85">Partagé seulement avec votre accord</span>
+              </span>
+              <ChevronRight size={22} aria-hidden />
+            </Link>
           </div>
-          <div className="card p-6">
-            <h2 className="text-xl font-bold">Sans compte, tout de suite</h2>
-            <ul className="mt-4 grid gap-3">
+
+          <nav aria-labelledby="h-sans-compte">
+            <h2 id="h-sans-compte" className="mb-3 text-lg font-semibold">
+              Sans compte, tout de suite
+            </h2>
+            <ul className="grid grid-cols-2 gap-3">
               {NO_ACCOUNT.map((a) => (
                 <li key={a.href}>
-                  <Link prefetch={false} href={a.href} className={`group flex items-center gap-4 rounded-2xl border p-3 hover:shadow-sm ${a.danger ? 'border-[var(--color-danger-600)]/30 bg-[var(--color-danger-50)]' : 'border-[var(--border)] bg-[var(--bg)]'}`}>
-                    <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${a.danger ? 'bg-[var(--color-danger-600)] text-white' : 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]'}`}>
-                      <Pictogram name={a.icon} />
+                  <Link
+                    prefetch={false}
+                    href={a.href}
+                    className={`flex aspect-[1/0.9] flex-col justify-between rounded-[var(--radius-card)] p-4 transition-transform active:scale-[0.98] lg:aspect-[1.6/1] ${a.card}`}
+                  >
+                    <span className="flex items-start justify-between">
+                      <span className={`grid h-14 w-14 place-items-center rounded-full ${a.chip}`}>
+                        <Pictogram name={a.icon} size={28} />
+                      </span>
+                      <ArrowUpRight size={22} aria-hidden className="opacity-60" />
                     </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-bold">{a.title}</span>
-                      <span className="block text-base text-[var(--fg-muted)]">{a.text}</span>
-                    </span>
-                    <ArrowUpRight aria-hidden className="shrink-0 text-[var(--fg-muted)] group-hover:text-[var(--fg)]" />
+                    <span className="text-[1.3rem] leading-tight font-semibold">{a.title}</span>
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
         </section>
 
-        <section aria-labelledby="h-5sans" className="card p-6">
-          <h2 id="h-5sans" className="text-xl font-bold">Utile même sans…</h2>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {[
-              ['réseau', 'Carnet, carte d’urgence et rappels consultables hors ligne'],
-              ['smartphone', 'SMS, menu *229*25#, appel vocal, relais du village'],
-              ['savoir lire', 'Pictogrammes et voix en fon, yoruba, bariba, dendi'],
-              ['argent immédiat', 'Urgence vitale prise en charge, droits ARCH visibles'],
-              ['compte', 'Orientation anonyme et carte QR d’urgence'],
-            ].map(([k, v]) => (
-              <li key={k} className="rounded-2xl bg-[var(--bg)] p-4">
-                <p className="font-bold text-[var(--color-brand-900)] dark:text-[var(--color-brand-200)]">Sans {k}</p>
-                <p className="mt-1 text-base text-[var(--fg-muted)]">{v}</p>
+        <section aria-labelledby="h-5sans" className="card p-5">
+          <h2 id="h-5sans" className="text-lg font-semibold">
+            Utile même sans…
+          </h2>
+          <ul className="mt-4 flex flex-wrap gap-2">
+            {FIVE_WITHOUT.map((x) => (
+              <li key={x.label} className="flex items-center gap-2 rounded-full bg-[var(--bg)] py-2 pr-4 pl-2">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-[var(--color-leaf)] text-[var(--color-ink)]">
+                  <Pictogram name={x.icon} size={16} />
+                </span>
+                <span className="font-medium">{x.label}</span>
               </li>
             ))}
           </ul>
+          <p className="mt-3 text-base text-[var(--fg-muted)]">SMS, menu *229*25#, voix en langues nationales, carte QR imprimée.</p>
         </section>
 
-        <section aria-labelledby="h-sit">
-          <h2 id="h-sit" className="text-xl font-bold">Chaque situation de vie, une réponse</h2>
-          {/* Colonnes de 11rem au moins : une seule colonne quand le texte est agrandi à 200 %. */}
-          <ul className="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(100%,11rem),1fr))] gap-3">
-            {SITUATIONS.map(([icon, label]) => (
-              <li key={label} className="card flex items-center gap-3 p-4">
-                <span className="chip-round shrink-0 text-[var(--color-brand-900)]"><Pictogram name={icon} size={22} /></span>
-                <span className="text-base font-bold">{label}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <nav aria-label="Pour le jury" className="flex flex-wrap gap-2">
+          {DEMO.map((d) => (
+            <Link key={d.href} prefetch={false} href={d.href} className="btn btn-ghost">
+              {d.label}
+            </Link>
+          ))}
+        </nav>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          <Link prefetch={false} href="/demo" className="card p-5 hover:shadow-sm">
-            <p className="label">Jury</p>
-            <p className="mt-1 text-lg font-bold">Comptes de démonstration</p>
-            <p className="text-base text-[var(--fg-muted)]">Patient, aidante, hématologue, pharmacie, ANTS, ministère, relais : connexion en un clic.</p>
-          </Link>
-          <Link prefetch={false} href="/simulateur" className="card p-5 hover:shadow-sm">
-            <p className="label">Sans smartphone</p>
-            <p className="mt-1 text-lg font-bold">Simulateur SMS et USSD</p>
-            <p className="text-base text-[var(--fg-muted)]">Voir les messages reçus par un téléphone simple et y répondre.</p>
-          </Link>
-          <Link prefetch={false} href="/chantier" className="card p-5 hover:shadow-sm">
-            <p className="label">Transparence</p>
-            <p className="mt-1 text-lg font-bold">Suivi du chantier</p>
-            <p className="text-base text-[var(--fg-muted)]">Avancement de chaque module, critères d’acceptation, commits.</p>
-          </Link>
-        </section>
-
-        <footer className="flex flex-wrap justify-between gap-2 border-t border-[var(--border)] pt-6 text-sm text-[var(--fg-muted)]">
+        <footer className="space-y-1 pt-4 text-sm text-[var(--fg-muted)]">
           <p>Alafia ne remplace pas un avis médical. Urgence : sapeurs-pompiers 118.</p>
           <p>Prototype pour le challenge e-Santé du MTDI · données personnelles fictives.</p>
         </footer>

@@ -9,6 +9,7 @@ import { Empty, ErrorNote, Notice, PageHead, Section } from '../../_components/u
 import { TIMELINE_ICON } from '../../_lib/labels';
 import { getMe, load, type Loaded } from '../../_lib/load';
 import { DocumentOpen, DocumentUpload } from './Documents';
+import { SPECIALTY_LABEL } from '../../../pro/_lib/labels';
 
 export const metadata: Metadata = { title: 'Mon carnet' };
 
@@ -94,7 +95,7 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
           <div className="grid gap-4 md:grid-cols-[auto_1fr]">
             <div className="flex flex-col items-center justify-center rounded-3xl bg-[var(--color-danger-50)] px-8 py-6 text-[var(--color-danger-800)]">
               <Pictogram name="blood" size={30} />
-              <p className="num text-6xl font-bold leading-none">{s.bloodGroup ?? '?'}</p>
+              <p className="display text-[4.5rem]">{s.bloodGroup ?? '?'}</p>
               <p className="mt-1 text-sm font-bold">Groupe sanguin</p>
             </div>
             <dl className="grid gap-3 sm:grid-cols-2">
@@ -168,7 +169,7 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
                   <span className="chip-round shrink-0 text-[var(--color-brand-900)] dark:text-[var(--color-brand-200)]"><Pictogram name="stethoscope" size={20} /></span>
                   <span>
                     <span className="block font-bold">{m.name}</span>
-                    <span className="block text-base text-[var(--fg-muted)]">{[m.specialty, m.facility].filter(Boolean).join(' · ')}</span>
+                    <span className="block text-base text-[var(--fg-muted)]">{[m.specialty ? (SPECIALTY_LABEL[m.specialty] ?? m.specialty) : null, m.facility].filter(Boolean).join(' · ')}</span>
                   </span>
                 </li>
               ))}
@@ -178,38 +179,29 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
       </Section>
 
       {/* Chronologie */}
-      <Section id="h-chrono" title="Mes soins, du plus récent au plus ancien" icon="calendar" className="simple-hide">
+      <Section id="h-chrono" title="Mes soins" icon="calendar" className="simple-hide">
         {tlRes.error && <ErrorNote error={tlRes.error} />}
         {tlRes.data && tlRes.data.length === 0 && <Empty>Aucun soin enregistré pour le moment.</Empty>}
         {tlRes.data && tlRes.data.length > 0 && (
-          <ol className="relative space-y-5 before:absolute before:top-2 before:bottom-2 before:left-6 before:w-0.5 before:bg-[var(--border)]">
-            {tlRes.data.map((t) => {
-              const blood = t.kind === 'TRANSFUSION';
-              return (
-                <li key={`${t.kind}-${t.id}`} className="relative flex gap-4">
-                  <span
-                    className={`z-10 grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-[var(--card)] ${blood ? 'bg-[var(--color-danger-600)] text-white' : 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]'}`}
-                  >
-                    <Pictogram name={TIMELINE_ICON[t.kind] ?? 'stethoscope'} size={22} />
-                  </span>
-                  <div className="min-w-0 flex-1 rounded-2xl bg-[var(--bg)] p-4">
-                    <p className="text-sm font-bold text-[var(--fg-muted)]">
-                      <time dateTime={t.date}>{fmtDate(t.date)}</time>
-                      {t.place ? ` · ${t.place}` : ''}
-                    </p>
-                    <p className="text-lg font-bold">{t.title}</p>
-                    {t.detail && <p className="text-base">{t.detail}</p>}
-                    {t.author && <p className="text-sm text-[var(--fg-muted)]">Par {t.author}</p>}
-                  </div>
-                </li>
-              );
-            })}
-          </ol>
+          <>
+            <Timeline items={tlRes.data.slice(0, RECENT)} />
+            {tlRes.data.length > RECENT && (
+              <details className="group mt-4">
+                <summary className="btn btn-soft w-full cursor-pointer list-none">
+                  <span className="group-open:hidden">Voir tout l’historique ({tlRes.data.length})</span>
+                  <span className="hidden group-open:inline">Masquer l’historique</span>
+                </summary>
+                <div className="mt-5">
+                  <Timeline items={tlRes.data.slice(RECENT)} />
+                </div>
+              </details>
+            )}
+          </>
         )}
       </Section>
 
       {/* Analyses */}
-      <Section id="h-analyses" title="Mes analyses dans le temps" icon="heart" className="simple-hide">
+      <Section id="h-analyses" title="Mes analyses" icon="heart" className="simple-hide">
         {obsRes.error && <ErrorNote error={obsRes.error} />}
         {obsRes.data && obsRes.data.length === 0 && <Empty>Aucun résultat d’analyse pour le moment.</Empty>}
         {obsRes.data && obsRes.data.length > 0 && (
@@ -249,5 +241,35 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
         {!docRes.error && <DocumentUpload patientId={patientId} />}
       </Section>
     </>
+  );
+}
+
+/** Soins affichés d'emblée ; les plus anciens restent dans « Voir tout l'historique ». */
+const RECENT = 4;
+
+function Timeline({ items }: { items: TimelineItem[] }) {
+  return (
+    <ol className="relative space-y-4 before:absolute before:top-2 before:bottom-2 before:left-6 before:w-0.5 before:bg-[var(--border)]">
+      {items.map((t) => {
+        const blood = t.kind === 'TRANSFUSION';
+        return (
+          <li key={`${t.kind}-${t.id}`} className="relative flex gap-4">
+            <span
+              className={`z-10 grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-[var(--card)] ${blood ? 'bg-[var(--color-danger-600)] text-white' : 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]'}`}
+            >
+              <Pictogram name={TIMELINE_ICON[t.kind] ?? 'stethoscope'} size={22} />
+            </span>
+            <div className="min-w-0 flex-1 rounded-3xl bg-[var(--bg)] p-4">
+              <p className="text-sm text-[var(--fg-muted)]">
+                <time dateTime={t.date}>{fmtDate(t.date, { day: 'numeric', month: 'short', year: 'numeric' })}</time>
+                {t.place ? ` · ${t.place}` : ''}
+              </p>
+              <p className="text-lg font-semibold">{t.title}</p>
+              {t.detail && <p className="text-base">{t.detail}</p>}
+            </div>
+          </li>
+        );
+      })}
+    </ol>
   );
 }

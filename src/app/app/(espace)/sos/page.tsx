@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
+import { ChevronRight, Phone, QrCode } from 'lucide-react';
 import Link from 'next/link';
 import { Empty, PageHead } from '../../_components/ui';
 import { getMe } from '../../_lib/load';
 import { SosButton } from './SosButton';
 
-export const metadata: Metadata = { title: 'Alerte SOS' };
+export const metadata: Metadata = { title: 'Urgence' };
 
 export default async function SosPage() {
   const me = await getMe();
@@ -13,16 +14,35 @@ export default async function SosPage() {
       <PageHead
         icon="sos"
         danger
-        title="Alerte SOS"
-        listen="Touchez le gros bouton rouge, puis confirmez. Vos proches et le relais de votre commune reçoivent un message avec votre position. Pour une urgence grave, appelez aussi le 118."
+        title="Urgence"
+        listen="Touchez le gros bouton rouge, puis confirmez : vos proches et le relais reçoivent un message avec votre position. Pour une urgence grave, appelez le 118. Pour les secours, montrez votre carte d’urgence."
         audioKey="app.sos"
       />
       <section aria-label="Bouton SOS" className="card p-6 sm:p-10">
         {me.patientId ? <SosButton /> : <Empty>L’alerte SOS est rattachée au carnet du patient. En urgence, appelez le 118.</Empty>}
       </section>
-      <p className="text-base text-[var(--fg-muted)]">
-        Les secours ont besoin de vos informations vitales ? Montrez votre <Link href="/app/carte-urgence" className="font-bold underline">carte d’urgence</Link>.
-      </p>
+      <nav aria-label="Autres gestes d’urgence" className="grid gap-3">
+        <a href="tel:118" className="flex items-center gap-4 rounded-[var(--radius-card)] bg-[var(--card)] p-4">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-danger-50)] text-[var(--color-danger-600)]">
+            <Phone size={22} aria-hidden />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm text-[var(--fg-muted)]">Sapeurs-pompiers</span>
+            <span className="display block text-[2rem]">118</span>
+          </span>
+          <ChevronRight size={20} aria-hidden />
+        </a>
+        <Link href="/app/carte-urgence" className="flex items-center gap-4 rounded-[var(--radius-card)] bg-[var(--card)] p-4">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">
+            <QrCode size={22} aria-hidden />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-lg font-semibold">Ma carte d’urgence</span>
+            <span className="block text-sm text-[var(--fg-muted)]">À montrer aux secours, même sans réseau</span>
+          </span>
+          <ChevronRight size={20} aria-hidden />
+        </Link>
+      </nav>
     </>
   );
 }

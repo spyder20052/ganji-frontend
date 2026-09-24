@@ -14,8 +14,8 @@ export default async function ProLayout({ children }: { children: React.ReactNod
         home="/pro"
         who={site ? `${me.displayName} · ${site}` : me.displayName}
         links={[
-          { href: '/pro', label: 'Patients' },
-          { href: '/pro/tele-expertise', label: 'Télé-expertise' },
+          { href: '/pro', label: 'Patients', icon: 'people' },
+          { href: '/pro/tele-expertise', label: 'Télé-expertise', icon: 'talk' },
         ]}
       />
       <p className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-1.5 text-center text-sm text-[var(--fg-muted)]">

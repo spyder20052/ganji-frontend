@@ -102,10 +102,9 @@ export function SosButton() {
         </button>
       )}
       <p id="sos-aide" role="status" className="max-w-md text-center text-lg text-[var(--fg-muted)]">
-        {step === 'sending' ? 'Envoi de l’alerte… (recherche de votre position, 5 secondes au plus)' : 'Un SMS part vers votre personne à prévenir, vos aidants et le relais de votre commune, avec votre position si vous l’acceptez.'}
+        {step === 'sending' ? 'Envoi de l’alerte…' : 'Vos proches et le relais reçoivent un SMS avec votre position.'}
       </p>
       {error && <p role="alert" className="w-full max-w-md rounded-2xl bg-[var(--color-ocre-100)] p-3 font-bold text-[var(--color-ocre-700)]">{error}</p>}
-      <a href="tel:118" className="btn btn-ghost"><Phone size={20} aria-hidden /> Ou appelez le 118</a>
     </div>
   );
 }

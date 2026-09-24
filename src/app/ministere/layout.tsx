@@ -17,11 +17,11 @@ export default async function MinistereLayout({ children }: { children: ReactNod
         home="/ministere"
         who={me.displayName}
         links={[
-          { href: '/ministere', label: 'Tableau de bord' },
-          { href: '/ministere#alertes', label: 'Alertes' },
-          { href: '/ministere#signalements', label: 'Signalements' },
-          { href: '/carte', label: 'Lieux de soin' },
-          { href: '/simulateur', label: 'Simulateur SMS' },
+          { href: '/ministere', label: 'Tableau de bord', icon: 'heart' },
+          { href: '/ministere#alertes', label: 'Alertes', icon: 'warning' },
+          { href: '/ministere#signalements', label: 'Signalements', icon: 'people' },
+          { href: '/carte', label: 'Lieux de soin', icon: 'map' },
+          { href: '/simulateur', label: 'Simulateur SMS', icon: 'phone' },
         ]}
       />
       {children}

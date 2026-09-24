@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from 'next';
-import { Atkinson_Hyperlegible } from 'next/font/google';
+import { Atkinson_Hyperlegible_Next } from 'next/font/google';
 import { DemoBanner } from '@/components/DemoBanner';
 import { SwRegister } from '@/components/SwRegister';
 import './globals.css';
 
-const atkinson = Atkinson_Hyperlegible({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-atkinson', display: 'swap' });
+// Atkinson Hyperlegible Next (conçue pour les malvoyants, exigence du cahier), en variable : les
+// graisses fines des grands chiffres et le demi-gras des libellés dans un seul fichier.
+const atkinson = Atkinson_Hyperlegible_Next({ subsets: ['latin'], variable: '--font-atkinson', display: 'swap' });
 
 export const metadata: Metadata = {
   title: { default: 'Alafia · la santé de chaque Béninois', template: '%s · Alafia' },
@@ -16,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0b4f3c',
+  themeColor: '#e2ede7',
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',

@@ -79,41 +79,60 @@ export default async function PartagePage() {
       </Section>
 
       <Section id="h-journal" title="Journal d’accès" icon="eye">
-        <p className="mb-4 text-base text-[var(--fg-muted)]">
-          Toutes les lectures de votre carnet par d’autres personnes. Ce journal ne peut être ni modifié ni effacé.
-          {alerts > 0 && <strong className="text-[var(--fg)]"> {alerts} évènement{alerts > 1 ? 's' : ''} à regarder.</strong>}
+        <p className="mb-4 flex flex-wrap items-center gap-2 text-base text-[var(--fg-muted)]">
+          Personne ne peut l’effacer.
+          {alerts > 0 && (
+            <span className="pill bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">
+              {alerts} à regarder
+            </span>
+          )}
         </p>
         {logRes.error && <ErrorNote error={logRes.error} />}
         {logRes.data && log.length === 0 && <Empty>Aucun accès pour le moment.</Empty>}
         {log.length > 0 && (
-          <ol className="space-y-2">
-            {log.map((e) => {
-              const { text, tone } = logSentence(e, me.displayName);
-              if (tone === 'breakglass') {
-                return (
-                  <li key={e.id} className="flex gap-3 rounded-2xl border border-[var(--color-danger-600)]/40 bg-[var(--color-danger-50)] p-3 text-[var(--color-danger-800)]">
-                    <ShieldAlert size={22} aria-hidden className="mt-0.5 shrink-0" />
-                    <p><strong>Accès d’urgence. </strong>{text.replace(/^Accès d’urgence : /, '')}</p>
-                  </li>
-                );
-              }
-              if (tone === 'denied') {
-                return (
-                  <li key={e.id} className="flex gap-3 rounded-2xl border border-[var(--color-ocre-500)]/60 bg-[var(--color-ocre-100)] p-3 text-[var(--color-ocre-700)]">
-                    <ShieldX size={22} aria-hidden className="mt-0.5 shrink-0" />
-                    <p className="font-bold">{text}</p>
-                  </li>
-                );
-              }
-              return (
-                <li key={e.id} className={`rounded-2xl p-3 ${tone === 'self' ? 'text-[var(--fg-muted)]' : 'bg-[var(--bg)]'}`}>
-                  {text}
-                </li>
-              );
-            })}
-          </ol>
+          <>
+            <LogList entries={log.slice(0, RECENT)} me={me.displayName} />
+            {log.length > RECENT && (
+              <details className="group mt-3">
+                <summary className="btn btn-soft w-full cursor-pointer list-none">
+                  <span className="group-open:hidden">Voir tout le journal ({log.length})</span>
+                  <span className="hidden group-open:inline">Masquer</span>
+                </summary>
+                <div className="mt-3">
+                  <LogList entries={log.slice(RECENT)} me={me.displayName} />
+                </div>
+              </details>
+            )}
+          </>
         )}
       </Section>
     </>
+  );
+}
+
+const RECENT = 5;
+
+function LogList({ entries, me }: { entries: AccessLogEntry[]; me: string }) {
+  return (
+    <ol className="space-y-2">
+      {entries.map((e) => {
+        const { text, tone } = logSentence(e, me);
+        const style =
+          tone === 'breakglass'
+            ? 'bg-[var(--color-danger-50)] text-[var(--color-danger-800)]'
+            : tone === 'denied'
+              ? 'bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]'
+              : tone === 'self'
+                ? 'text-[var(--fg-muted)]'
+                : 'bg-[var(--bg)]';
+        const Icon = tone === 'breakglass' ? ShieldAlert : tone === 'denied' ? ShieldX : null;
+        return (
+          <li key={e.id} className={`flex gap-3 rounded-3xl px-4 py-3 text-base ${style}`}>
+            {Icon && <Icon size={20} aria-hidden className="mt-0.5 shrink-0" />}
+            <p>{text}</p>
+          </li>
+        );
+      })}
+    </ol>
   );
 }

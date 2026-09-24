@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, EyeOff, MapPin } from 'lucide-react';
+import { ArrowUpRight, ChevronRight, EyeOff } from 'lucide-react';
 import { ListenButton } from '@/components/ListenButton';
 import { Pictogram } from '@/components/Pictogram';
 import { fmtDate, relative } from '@/lib/format';
 import type { Summary } from '@/lib/types';
-import { ErrorNote, Notice, PreviewBadge } from '../_components/ui';
+import { ErrorNote } from '../_components/ui';
 import { cardFromSummary } from '../_lib/emergency-card';
-import { hourOnly, REMINDER_ICON, SCOPE_LABEL } from '../_lib/labels';
+import { hourOnly, REMINDER_ICON } from '../_lib/labels';
 import { getMe, load } from '../_lib/load';
 import { SaveEmergencyCard } from './SaveEmergencyCard';
 
@@ -26,7 +26,7 @@ interface HealthAlert {
   national: boolean;
 }
 
-interface Tile { href: string; icon: string; title: string; text: string; danger?: boolean; only?: 'standard' | 'simple' }
+interface Tile { href: string; icon: string; title: string; tone: 'paper' | 'leaf' | 'blood' | 'danger'; only?: 'standard' | 'simple' }
 
 /**
  * Les 4 tuiles de l'accueil. En mode simple (personne âgée), le cahier fixe les 4 actions :
@@ -34,21 +34,27 @@ interface Tile { href: string; icon: string; title: string; text: string; danger
  */
 function tiles(contact: Summary['emergencyContact'] | undefined): Tile[] {
   return [
-    { href: '/app/carnet', icon: 'carnet', title: 'Mon carnet', text: 'Fiche vitale, soins, analyses' },
-    { href: '/app/medicaments', icon: 'pill', title: 'Mes médicaments', text: 'Ordonnances à montrer' },
-    { href: '/app/sang', icon: 'blood', title: 'Sang', text: 'Demandes et dons', only: 'standard' },
-    contact?.phone
-      ? { href: `tel:${contact.phone}`, icon: 'phone', title: 'Appeler', text: contact.name, only: 'simple' }
-      : { href: 'tel:118', icon: 'phone', title: 'Appeler', text: 'Sapeurs-pompiers 118', only: 'simple' },
-    { href: '/app/carte-urgence', icon: 'emergency', title: 'Urgence', text: 'Ma carte QR, même sans réseau', danger: true },
+    { href: '/app/carnet', icon: 'carnet', title: 'Carnet', tone: 'paper' },
+    { href: '/app/medicaments', icon: 'pill', title: 'Médicaments', tone: 'leaf' },
+    { href: '/app/sang', icon: 'blood', title: 'Sang', tone: 'blood', only: 'standard' },
+    { href: `tel:${contact?.phone ?? '118'}`, icon: 'phone', title: 'Appeler', tone: 'leaf', only: 'simple' },
+    { href: '/app/sos', icon: 'emergency', title: 'Urgence', tone: 'danger' },
   ];
 }
 
+const TILE_TONE: Record<Tile['tone'], { card: string; chip: string }> = {
+  paper: { card: 'bg-[var(--card)]', chip: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]' },
+  leaf: { card: 'bg-[var(--color-brand-100)] text-[var(--color-ink)]', chip: 'bg-white text-[var(--color-brand-900)]' },
+  blood: { card: 'bg-[var(--color-danger-50)] text-[var(--color-danger-800)]', chip: 'bg-white text-[var(--color-danger-600)]' },
+  danger: { card: 'bg-[var(--color-danger-600)] text-white', chip: 'bg-white text-[var(--color-danger-600)]' },
+};
+
+/** Aperçus (maquettes cliquables) : un mot chacun, regroupés dans une seule carte. */
 const PREVIEWS = [
-  { href: '/app/ecoute', icon: 'listen', title: 'Écoute anonyme', text: 'Parler à quelqu’un, sans donner son nom' },
-  { href: '/app/droits', icon: 'shield', title: 'Mes droits et frais', text: 'ARCH, coût estimé, paiement mobile' },
-  { href: '/app/assistant', icon: 'chat', title: 'Assistant', text: 'Mon ordonnance expliquée simplement' },
-  { href: '/app/cercle', icon: 'people', title: 'Cercle de soin', text: 'Plusieurs aidants, visites du relais' },
+  { href: '/app/ecoute', icon: 'listen', title: 'Écoute' },
+  { href: '/app/droits', icon: 'shield', title: 'Droits' },
+  { href: '/app/assistant', icon: 'chat', title: 'Assistant' },
+  { href: '/app/cercle', icon: 'people', title: 'Cercle' },
 ];
 
 function greeting() {
@@ -65,7 +71,7 @@ export default async function AppHome() {
   ]);
   const s = summaryRes?.data ?? null;
   const alertsRes = s?.commune ? await load<HealthAlert[]>(`/alerts?commune=${encodeURIComponent(s.commune)}`) : null;
-  const alerts = (alertsRes?.data ?? []).slice(0, 3);
+  const alert = (alertsRes?.data ?? [])[0] ?? null;
 
   const firstName = s?.firstName ?? me.displayName.split(' ')[0];
   const next = s?.nextReminders[0] ?? null;
@@ -73,188 +79,175 @@ export default async function AppHome() {
   const listen = [
     `${greeting()} ${firstName}.`,
     next ? `Prochain rendez-vous : ${nextTitle}, le ${fmtDate(next.dueAt, { weekday: 'long', day: 'numeric', month: 'long' })} à ${hourOnly(next.dueAt)}${next.place ? `, à ${next.place}` : ''}.` : 'Aucun rendez-vous prévu pour le moment.',
-    'Touchez une grande case : mon carnet, mes médicaments, sang, ou urgence.',
+    'Touchez une grande case : carnet, médicaments, sang, ou urgence.',
   ].join(' ');
+
+  // Raccourcis : un mot sous chaque icône ; grossesse et enfants seulement quand ils existent.
+  const shortcuts = [
+    ...(s?.pregnancy ? [{ href: '/app/grossesse', icon: 'pregnant', title: 'Grossesse' }] : []),
+    ...(s && s.children.length > 0 ? [{ href: '/app/enfants', icon: 'baby', title: s.children.length > 1 ? 'Enfants' : 'Enfant' }] : []),
+    { href: '/app/symptomes', icon: 'fever', title: 'Symptôme' },
+    { href: '/app/partage', icon: 'qr', title: 'Partager' },
+    { href: '/app/aidants', icon: 'care', title: 'Proches' },
+  ].slice(0, 4);
 
   return (
     <>
-      <header className="space-y-3">
-        <p className="label">{fmtDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-        <h1 className="text-3xl font-bold simple-big sm:text-4xl">
-          {greeting()} {firstName}
-        </h1>
-        <div className="flex flex-wrap items-center gap-3">
-          <ListenButton text={listen} audioKey="app.home" />
+      <header className="space-y-3 pt-2">
+        <p className="text-base text-[var(--fg-muted)] first-letter:uppercase">{fmtDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="min-w-0 text-[2.6rem] leading-[1.05] font-light tracking-tight">
+            {greeting()}, <span className="font-medium">{firstName}</span>
+          </h1>
+          <ListenButton text={listen} audioKey="app.home" compact />
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {s && <SaveEmergencyCard card={cardFromSummary(s)} />}
           {s?.discreetMode && (
-            <span className="pill bg-[var(--card)] text-[var(--fg-muted)] ring-1 ring-[var(--border)]">
-              <EyeOff size={16} aria-hidden /> Mode discret activé
+            <span className="pill bg-[var(--card)] text-[var(--fg-muted)]">
+              <EyeOff size={16} aria-hidden /> Mode discret
             </span>
           )}
         </div>
-        {s && <SaveEmergencyCard card={cardFromSummary(s)} />}
         {summaryRes?.error && <ErrorNote what="Votre carnet" error={summaryRes.error} />}
       </header>
 
       <nav aria-label="Actions principales">
-        <ul className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          {tiles(s?.emergencyContact).map((t) => (
-            <li key={t.href} className={t.only === 'standard' ? 'simple-hide' : t.only === 'simple' ? 'simple-only' : undefined}>
-              <Link
-                href={t.href}
-                className={`card flex h-full min-h-40 flex-col justify-between gap-4 p-5 transition-shadow hover:shadow-md ${t.danger ? '!border-transparent !bg-[var(--color-danger-600)] text-white' : ''}`}
-              >
-                <span className={`grid h-14 w-14 place-items-center rounded-full ${t.danger ? 'bg-white text-[var(--color-danger-600)]' : 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]'}`}>
-                  <Pictogram name={t.icon} size={30} />
+        {/* Deux colonnes sur téléphone, une seule quand le texte est agrandi (largeur minimale en rem). */}
+        <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,9.5rem),1fr))] gap-3 lg:grid-cols-4">
+          {tiles(s?.emergencyContact).map((t) => {
+            const tone = TILE_TONE[t.tone];
+            return (
+              <li key={t.href} className={t.only === 'standard' ? 'simple-hide' : t.only === 'simple' ? 'simple-only' : undefined}>
+                <Link
+                  href={t.href}
+                  className={`flex aspect-[1/1.02] h-full flex-col justify-between rounded-[var(--radius-card)] p-4 transition-transform active:scale-[0.98] lg:aspect-[1.35/1] ${tone.card}`}
+                >
+                  <span className="flex items-start justify-between">
+                    <span className={`grid h-14 w-14 place-items-center rounded-full ${tone.chip}`}>
+                      <Pictogram name={t.icon} size={28} />
+                    </span>
+                    <ArrowUpRight size={22} aria-hidden className="opacity-60" />
+                  </span>
+                  <span className="text-[1.35rem] leading-tight font-semibold simple-big">{t.title}</span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      {me.patientId && (
+        <section aria-labelledby="h-rdv" className="rounded-[var(--radius-card)] bg-[var(--color-brand-900)] p-5 text-white">
+          <h2 id="h-rdv" className="text-base text-white/80">
+            Prochain rendez-vous{next ? ` · ${relative(next.dueAt)}` : ''}
+          </h2>
+          {next ? (
+            <div className="mt-3 flex flex-wrap items-end gap-4">
+              <p className="shrink-0 text-center">
+                <span className="display block text-[3.6rem]">{fmtDate(next.dueAt, { day: 'numeric' })}</span>
+                <span className="block text-base first-letter:uppercase">{fmtDate(next.dueAt, { month: 'short' })}</span>
+              </p>
+              <div className="min-w-0 flex-1 border-l border-white/20 pl-4">
+                <p className="text-xl leading-snug font-semibold simple-big">{nextTitle}</p>
+                <p className="num mt-1 text-base text-white/85">
+                  {hourOnly(next.dueAt)}
+                  {next.place && !s?.discreetMode ? ` · ${next.place}` : ''}
+                </p>
+              </div>
+              <span className="grid h-12 w-12 shrink-0 place-items-center self-start rounded-full bg-white/15">
+                <Pictogram name={REMINDER_ICON[next.kind] ?? 'calendar'} size={22} />
+              </span>
+            </div>
+          ) : (
+            <p className="mt-2 text-lg">Rien de prévu. Vos rappels arrivent aussi par SMS.</p>
+          )}
+        </section>
+      )}
+
+      {helped.map(({ d, res }) => {
+        const p = res.data;
+        const r = p?.nextReminders[0];
+        return (
+          <section key={d.patient.id} aria-label={`${d.patient.firstName}, que vous aidez`} className="card space-y-4 p-5">
+            <div className="flex items-center gap-3">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-leaf)] text-lg font-semibold text-[var(--color-ink)]" aria-hidden>
+                {d.patient.firstName.charAt(0)}
+              </span>
+              <p className="min-w-0 flex-1 text-xl font-semibold simple-big">
+                {d.patient.firstName} <span className="font-normal text-[var(--fg-muted)]">· {d.relation}</span>
+              </p>
+            </div>
+            {res.error && <ErrorNote error={res.error} />}
+            {p && (
+              <dl className="grid grid-cols-[auto_1fr] gap-3">
+                <div className="rounded-3xl bg-[var(--color-danger-50)] px-4 py-3 text-[var(--color-danger-800)]">
+                  <dt className="text-sm">Groupe</dt>
+                  <dd className="display text-[2.2rem]">{p.bloodGroup ?? '?'}</dd>
+                </div>
+                <div className="rounded-3xl bg-[var(--bg)] px-4 py-3">
+                  <dt className="text-sm text-[var(--fg-muted)]">Prochain rendez-vous</dt>
+                  <dd className="font-semibold">{r ? `${fmtDate(r.dueAt, { weekday: 'short', day: 'numeric', month: 'short' })} · ${hourOnly(r.dueAt)}` : 'Aucun'}</dd>
+                </div>
+              </dl>
+            )}
+            <Link href={`/app/carnet?patient=${d.patient.id}`} className="btn btn-primary w-full">
+              Carnet de {d.patient.firstName}
+            </Link>
+          </section>
+        );
+      })}
+
+      {alert && (
+        <Link
+          href={`/alertes${s?.commune ? `?commune=${encodeURIComponent(s.commune)}` : ''}`}
+          className={`simple-hide flex items-center gap-3 rounded-[var(--radius-card)] p-4 ${alert.severity === 'URGENCE' ? 'bg-[var(--color-danger-50)] text-[var(--color-danger-800)]' : 'bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]'}`}
+        >
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--card)]">
+            <Pictogram name="warning" size={22} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm">Alerte santé{s?.commune ? ` · ${s.commune}` : ''}</span>
+            <span className="block font-semibold">{alert.title}</span>
+          </span>
+          <ChevronRight size={20} aria-hidden className="shrink-0" />
+        </Link>
+      )}
+      {alertsRes?.error && <div className="simple-hide"><ErrorNote what="Alertes santé" error={alertsRes.error} /></div>}
+
+      <nav aria-label="Raccourcis" className="simple-hide">
+        <ul className="flex flex-wrap justify-around gap-2">
+          {shortcuts.map((x) => (
+            <li key={x.href}>
+              <Link href={x.href} className="flex flex-col items-center gap-2 rounded-3xl py-2 text-center">
+                <span className="grid h-14 w-14 place-items-center rounded-full bg-[var(--card)] text-[var(--color-brand-900)] dark:text-[var(--color-leaf)]">
+                  <Pictogram name={x.icon} size={24} />
                 </span>
-                <span>
-                  <span className="block text-xl font-bold simple-big">{t.title}</span>
-                  <span className={`simple-hide block text-base ${t.danger ? 'text-white/90' : 'text-[var(--fg-muted)]'}`}>{t.text}</span>
-                </span>
+                <span className="text-base leading-tight font-medium">{x.title}</span>
               </Link>
             </li>
           ))}
         </ul>
       </nav>
 
-      {me.patientId && (
-        <section aria-labelledby="h-rdv" className="card overflow-hidden">
-          <div className="flex flex-wrap items-stretch">
-            {next ? (
-              <>
-                <div className="flex min-w-32 flex-col items-center justify-center gap-0.5 bg-[var(--color-brand-900)] px-6 py-5 text-white">
-                  <span className="label !text-[var(--color-brand-200)]">{fmtDate(next.dueAt, { month: 'short' })}</span>
-                  <span className="num text-5xl font-bold leading-none">{fmtDate(next.dueAt, { day: 'numeric' })}</span>
-                  <span className="num text-lg font-bold">{hourOnly(next.dueAt)}</span>
-                </div>
-                <div className="flex min-w-0 flex-1 items-center gap-4 p-5">
-                  <span className="chip-round shrink-0 text-[var(--color-brand-900)] dark:text-[var(--color-brand-200)]">
-                    <Pictogram name={REMINDER_ICON[next.kind] ?? 'calendar'} size={22} />
-                  </span>
-                  <div className="min-w-0">
-                    <h2 id="h-rdv" className="label">Prochain rendez-vous · {relative(next.dueAt)}</h2>
-                    <p className="text-xl font-bold">{nextTitle}</p>
-                    {next.place && !s?.discreetMode && (
-                      <p className="flex items-center gap-1 text-base text-[var(--fg-muted)]">
-                        <MapPin size={16} aria-hidden /> {next.place}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="flex items-center gap-4 p-5">
-                <span className="chip-round text-[var(--fg-muted)]"><Pictogram name="calendar" size={22} /></span>
-                <div>
-                  <h2 id="h-rdv" className="label">Prochain rendez-vous</h2>
-                  <p className="text-lg">Aucun rendez-vous prévu. Vos rappels arrivent aussi par SMS.</p>
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
-      {helped.length > 0 && (
-        <section aria-labelledby="h-aide" className="space-y-3">
-          <h2 id="h-aide" className="text-xl font-bold">Vous aidez</h2>
-          <ul className="grid gap-3 md:grid-cols-2">
-            {helped.map(({ d, res }) => {
-              const p = res.data;
-              const r = p?.nextReminders[0];
-              return (
-                <li key={d.patient.id} className="card space-y-3 p-5">
-                  <div className="flex items-center gap-3">
-                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-brand-100)] text-lg font-bold text-[var(--color-brand-900)]" aria-hidden>
-                      {d.patient.firstName.charAt(0)}
-                    </span>
-                    <div>
-                      <p className="text-xl font-bold simple-big">
-                        {d.patient.firstName} <span className="font-normal text-[var(--fg-muted)]">({d.relation})</span>
-                      </p>
-                      <p className="text-sm text-[var(--fg-muted)]">Vous pouvez voir : {d.scopes.map((x) => (SCOPE_LABEL[x] ?? x).toLowerCase()).join(', ')}</p>
-                    </div>
-                  </div>
-                  {res.error && <ErrorNote error={res.error} />}
-                  {p && (
-                    <dl className="grid grid-cols-2 gap-3">
-                      <div className="rounded-2xl bg-[var(--color-danger-50)] p-3 text-[var(--color-danger-800)]">
-                        <dt className="text-sm font-bold">Groupe sanguin</dt>
-                        <dd className="num text-3xl font-bold">{p.bloodGroup ?? '?'}</dd>
-                      </div>
-                      <div className="rounded-2xl bg-[var(--bg)] p-3">
-                        <dt className="text-sm font-bold text-[var(--fg-muted)]">Allergies</dt>
-                        <dd className="font-bold">{p.allergies.length ? p.allergies.join(', ') : 'Aucune connue'}</dd>
-                      </div>
-                      <div className="col-span-2 rounded-2xl bg-[var(--bg)] p-3">
-                        <dt className="text-sm font-bold text-[var(--fg-muted)]">Prochain rendez-vous</dt>
-                        <dd className="font-bold">{r ? `${r.title} · ${fmtDate(r.dueAt, { weekday: 'short', day: 'numeric', month: 'short' })} à ${hourOnly(r.dueAt)}` : 'Aucun pour le moment'}</dd>
-                      </div>
-                    </dl>
-                  )}
-                  <Link href={`/app/carnet?patient=${d.patient.id}`} className="btn btn-soft w-full">
-                    Voir le carnet de {d.patient.firstName} <ArrowRight size={18} aria-hidden />
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      )}
-
-      {alerts.length > 0 && (
-        <section aria-labelledby="h-alertes" className="simple-hide space-y-3">
-          <h2 id="h-alertes" className="text-xl font-bold">Alertes santé {s?.commune ? `à ${s.commune}` : ''}</h2>
-          {alerts.map((a) => (
-            <Notice key={a.id} tone={a.severity === 'URGENCE' ? 'danger' : a.severity === 'ATTENTION' ? 'warn' : 'info'} title={a.title}>
-              <p>{a.message}</p>
-              <p className="mt-1 text-sm">
-                {a.source} · {fmtDate(a.createdAt, { day: 'numeric', month: 'long' })} · {a.national ? 'tout le pays' : a.communes.join(', ')}
-              </p>
-            </Notice>
-          ))}
-        </section>
-      )}
-      {alertsRes?.error && <div className="simple-hide"><ErrorNote what="Alertes santé" error={alertsRes.error} /></div>}
-
-      <section aria-labelledby="h-pourvous" className="simple-hide space-y-3">
-        <h2 id="h-pourvous" className="text-xl font-bold">Pour vous</h2>
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {s?.pregnancy && <SituationLink href="/app/grossesse" icon="pregnant" title="Ma grossesse" text={`Terme prévu le ${fmtDate(s.pregnancy.edd, { day: 'numeric', month: 'long' })}`} />}
-          {s && s.children.length > 0 && (
-            <SituationLink href="/app/enfants" icon="baby" title={s.children.length > 1 ? 'Mes enfants' : 'Mon enfant'} text={`Vaccins de ${s.children.map((c) => c.firstName).join(' et ')}`} />
-          )}
-          <SituationLink href="/app/symptomes" icon="fever" title="Je ne me sens pas bien" text="Noter un symptôme, prévenir l’équipe" />
-          <SituationLink href="/app/sos" icon="sos" title="Alerte SOS" text="Prévenir mes proches et le relais" danger />
-          <SituationLink href="/app/partage" icon="qr" title="Partager mon carnet" text="QR pour le soignant, journal d’accès" />
-          <SituationLink href="/app/aidants" icon="care" title="Aidants et réglages" text="Proches, mode discret, code PIN" />
-        </ul>
-        <h3 className="flex flex-wrap items-center gap-2 pt-2 text-lg font-bold">Bientôt <PreviewBadge /></h3>
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {PREVIEWS.map((p) => (
-            <SituationLink key={p.href} {...p} />
+      <section aria-labelledby="h-bientot" className="simple-hide card p-4">
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <h2 id="h-bientot" className="text-lg font-semibold">Bientôt</h2>
+          <span className="pill bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">Aperçus</span>
+        </div>
+        <ul className="grid grid-cols-4 gap-2">
+          {PREVIEWS.map((x) => (
+            <li key={x.href}>
+              <Link href={x.href} className="flex flex-col items-center gap-2 text-center">
+                <span className="grid h-12 w-12 place-items-center rounded-full bg-[var(--bg)] text-[var(--fg-muted)]">
+                  <Pictogram name={x.icon} size={22} />
+                </span>
+                <span className="text-sm font-medium">{x.title}</span>
+              </Link>
+            </li>
           ))}
         </ul>
       </section>
     </>
-  );
-}
-
-function SituationLink({ href, icon, title, text, danger = false }: { href: string; icon: string; title: string; text: string; danger?: boolean }) {
-  return (
-    <li>
-      <Link
-        href={href}
-        className={`group flex h-full items-center gap-4 rounded-3xl border p-4 hover:shadow-sm ${danger ? 'border-[var(--color-danger-600)]/30 bg-[var(--color-danger-50)] text-[var(--color-danger-800)]' : 'border-[var(--border)] bg-[var(--card)]'}`}
-      >
-        <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-full ${danger ? 'bg-[var(--color-danger-600)] text-white' : 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]'}`}>
-          <Pictogram name={icon} size={24} />
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block font-bold">{title}</span>
-          <span className={`block text-base ${danger ? '' : 'text-[var(--fg-muted)]'}`}>{text}</span>
-        </span>
-        <ArrowRight size={20} aria-hidden className="shrink-0 opacity-60 group-hover:opacity-100" />
-      </Link>
-    </li>
   );
 }

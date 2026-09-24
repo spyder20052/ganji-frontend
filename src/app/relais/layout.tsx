@@ -17,10 +17,10 @@ export default async function RelaisLayout({ children }: { children: ReactNode }
         home="/relais"
         who={me.displayName}
         links={[
-          { href: '/relais', label: 'Signaler' },
-          { href: '/relais#activite', label: 'Mes signalements' },
-          { href: '/orientation', label: 'Orientation' },
-          { href: '/urgence', label: 'Urgence' },
+          { href: '/relais', label: 'Signaler', icon: 'warning' },
+          { href: '/relais#activite', label: 'Mes signalements', icon: 'calendar' },
+          { href: '/orientation', label: 'Orientation', icon: 'stethoscope' },
+          { href: '/urgence', label: 'Urgence', icon: 'emergency', danger: true },
         ]}
       />
       {children}

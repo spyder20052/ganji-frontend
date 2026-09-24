@@ -184,10 +184,7 @@ export function Simulator({ initialTel }: { initialTel: string }) {
         <div>
           <p className="label">Sans smartphone · démonstration</p>
           <h1 className="mt-1 text-3xl font-bold">Simulateur de téléphone</h1>
-          <p className="mt-2 max-w-3xl text-[var(--fg-muted)]">
-            Ce que reçoit un téléphone simple : SMS, menu USSD, appel vocal. En production : agrégateur SMS et serveur vocal.
-            Ici, chaque message vient de la vraie file d’envoi de l’API et chaque réponse passe par la même logique que l’application.
-          </p>
+          <p className="mt-2 max-w-3xl text-[var(--fg-muted)]">Ce que reçoit un téléphone simple : SMS, menu USSD, appel vocal.</p>
         </div>
         <div className="space-y-2">
           <button type="button" className="btn btn-primary w-full" onClick={runTick} disabled={tick.loading || demoOff}>

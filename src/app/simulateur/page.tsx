@@ -12,7 +12,7 @@ export default async function SimulateurPage({ searchParams }: { searchParams: P
   const initialTel = (Array.isArray(tel) ? tel[0] : tel)?.replace(/[^\d+]/g, '').slice(0, 16) ?? '';
   return (
     <>
-      <TopBar links={[{ href: '/demo', label: 'Comptes de démo' }, { href: '/chantier', label: 'Suivi du chantier' }]} />
+      <TopBar />
       <main id="contenu" className="mx-auto max-w-7xl space-y-6 px-4 pb-16 pt-6">
         <Simulator initialTel={initialTel} />
       </main>

@@ -85,7 +85,7 @@ export default function ChantierPage() {
 
   return (
     <>
-      <TopBar links={[{ href: '/demo', label: 'Comptes de démo' }, { href: '/simulateur', label: 'Simulateur SMS' }]} />
+      <TopBar />
       <main id="contenu" className="mx-auto max-w-6xl space-y-5 px-4 pb-16 pt-6">
         <header className="card grid items-end gap-6 !border-0 bg-[var(--color-brand-900)] p-6 text-white sm:p-8 lg:grid-cols-[1.3fr_1fr]">
           <div>

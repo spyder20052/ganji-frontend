@@ -1,35 +1,28 @@
-import Link from 'next/link';
+import { NavPills, TabBar, type NavLink } from './EspaceNav';
 import { Logo } from './Logo';
 import { LogoutButton } from './LogoutButton';
 import { PrefsMenu } from './PrefsMenu';
 
-export function TopBar({ home = '/', who, links = [] }: { home?: string; who?: string; links?: { href: string; label: string }[] }) {
+/** En-tête commun : logo, navigation (pilules sur ordinateur, onglets en bas sur téléphone), réglages. */
+export function TopBar({ home = '/', who, links = [] }: { home?: string; who?: string; links?: NavLink[] }) {
   return (
-    <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-[var(--bg)]/95 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
-        <Logo href={home} />
-        <nav aria-label="Navigation principale" className="ml-4 hidden gap-1 md:flex">
-          {links.map((l) => (
-            <Link prefetch={false} key={l.href} href={l.href} className="rounded-full px-3 py-2 text-base font-bold text-[var(--fg-muted)] hover:bg-[var(--card)] hover:text-[var(--fg)]">
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="ml-auto flex items-center gap-2">
-          {who && <span className="hidden text-base text-[var(--fg-muted)] sm:inline">{who}</span>}
-          <PrefsMenu />
-          {who && <LogoutButton />}
+    <>
+      <header className="sticky top-0 z-30 bg-[var(--bg)]/90 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3">
+          <Logo href={home} />
+          {links.length > 0 && (
+            <div className="ml-4">
+              <NavPills links={links} />
+            </div>
+          )}
+          <div className="ml-auto flex items-center gap-2">
+            {who && <span className="hidden max-w-[16rem] truncate text-base text-[var(--fg-muted)] xl:inline">{who}</span>}
+            <PrefsMenu />
+            {who && <LogoutButton />}
+          </div>
         </div>
-      </div>
-      {links.length > 0 && (
-        <nav aria-label="Navigation principale (mobile)" className="flex gap-1 overflow-x-auto px-4 pb-2 md:hidden">
-          {links.map((l) => (
-            <Link prefetch={false} key={l.href} href={l.href} className="whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-sm font-bold">
-              {l.label}
-            </Link>
-          ))}
-        </nav>
-      )}
-    </header>
+      </header>
+      {links.length > 0 && <TabBar links={links} />}
+    </>
   );
 }
