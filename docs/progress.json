@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T18:29:56+01:00",
+  "updatedAt": "2026-09-24T18:32:58+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -361,6 +361,11 @@
           "sha": "b5fe1ba",
           "repo": "backend",
           "message": "feat(m10-mere-enfant): suivi de grossesse, signes de danger et rappels CPN et vaccins par SMS et voix"
+        },
+        {
+          "sha": "c88cfec",
+          "repo": "frontend",
+          "message": "feat(m10-mere-enfant): grossesse, signes de danger en pictogrammes et carnet de vaccination"
         }
       ]
     },
@@ -372,7 +377,7 @@
         "M9"
       ],
       "window": "21:00 – 21:30",
-      "status": "doing",
+      "status": "done",
       "repos": [
         "backend",
         "frontend"
@@ -381,23 +386,28 @@
       "items": [
         {
           "label": "Alertes officielles par commune",
-          "done": false
+          "done": true
         },
         {
           "label": "Signalement communautaire en 3 gestes",
-          "done": false
+          "done": true
         },
         {
           "label": "Tableau de bord national (carte + 4 indicateurs)",
-          "done": false
+          "done": true
         },
         {
           "label": "Agrégats anonymisés, seuil de 10 cas",
-          "done": false
+          "done": true
         }
       ],
-      "commits": [],
-      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
+      "commits": [
+        {
+          "sha": "e966786",
+          "repo": "backend",
+          "message": "feat(m13-m9-alertes): signalement communautaire, détection de regroupements et pilotage national"
+        }
+      ]
     },
     {
       "id": "C8",
@@ -658,6 +668,10 @@
     {
       "at": "2026-09-24T18:29:56+01:00",
       "text": "C6 validé : rappel de 3e CPN de Rafiatou en SMS et voix bariba, rappel des vaccins de 10 semaines des jumeaux en SMS, voix et notification ; saignement signalé → relais prévenu et orientation maternité. Corrigés : mode discret qui révélait la grossesse, rappels non rejouables après la date du seed, page et rappel qui ne donnaient pas la même date."
+    },
+    {
+      "at": "2026-09-24T18:32:58+01:00",
+      "text": "C7 validé : Mathieu signale en 3 gestes, le 3e signalement à Djougou déclenche l'alerte au médecin chef de zone (SMS + tableau de bord) ; tableau de bord national avec 4 indicateurs, carte, ruptures et masquage < 10. Corrigé : le signal automatique non vérifié était publié au grand public."
     }
   ]
 }
