@@ -18,11 +18,11 @@ export async function sealLocal(name: string, pin: string, data: unknown) {
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const key = await keyFrom(pin, salt);
   const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(JSON.stringify(data)));
-  localStorage.setItem(`alafia-sealed-${name}`, JSON.stringify({ v: 1, salt: b64(salt), iv: b64(iv), ct: b64(ct), at: new Date().toISOString() }));
+  localStorage.setItem(`ganji-sealed-${name}`, JSON.stringify({ v: 1, salt: b64(salt), iv: b64(iv), ct: b64(ct), at: new Date().toISOString() }));
 }
 
 export async function openLocal<T>(name: string, pin: string): Promise<{ data: T; at: string } | null> {
-  const raw = localStorage.getItem(`alafia-sealed-${name}`);
+  const raw = localStorage.getItem(`ganji-sealed-${name}`);
   if (!raw) return null;
   const box = JSON.parse(raw);
   const key = await keyFrom(pin, unb64(box.salt));
@@ -31,8 +31,8 @@ export async function openLocal<T>(name: string, pin: string): Promise<{ data: T
 }
 
 export function hasSealed(name: string) {
-  try { return !!localStorage.getItem(`alafia-sealed-${name}`); } catch { return false; }
+  try { return !!localStorage.getItem(`ganji-sealed-${name}`); } catch { return false; }
 }
 export function wipeLocal() {
-  Object.keys(localStorage).filter((k) => k.startsWith('alafia-sealed-')).forEach((k) => localStorage.removeItem(k));
+  Object.keys(localStorage).filter((k) => k.startsWith('ganji-sealed-')).forEach((k) => localStorage.removeItem(k));
 }

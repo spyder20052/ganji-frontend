@@ -5,7 +5,7 @@ import { TopBar } from '@/components/TopBar';
 import { serverApi } from '@/lib/server-api';
 import { ROLE_HOME, type Me } from '@/lib/types';
 
-export const metadata: Metadata = { title: { default: 'Relais communautaire', template: '%s · Relais · Alafia' }, robots: { index: false } };
+export const metadata: Metadata = { title: { default: 'Relais communautaire', template: '%s · Relais · Ganji' }, robots: { index: false } };
 
 /** Espace du relais communautaire (le contrôle réel est fait par l'API). */
 export default async function RelaisLayout({ children }: { children: ReactNode }) {

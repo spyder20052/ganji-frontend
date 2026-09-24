@@ -21,7 +21,7 @@ export default function MedicamentsPage() {
             <p className="mt-1 text-[var(--fg-muted)]">Quelle pharmacie l’a, à quel prix, laquelle est de garde.</p>
           </div>
           <ListenButton
-            text="Trouver un médicament. Écrivez le nom du médicament, par exemple paracétamol. Alafia vous montre les pharmacies qui l'ont, le prix indicatif, et les pharmacies de garde. Achetez toujours en pharmacie agréée."
+            text="Trouver un médicament. Écrivez le nom du médicament, par exemple paracétamol. Ganji vous montre les pharmacies qui l'ont, le prix indicatif, et les pharmacies de garde. Achetez toujours en pharmacie agréée."
             audioKey="meds.intro"
           />
         </div>

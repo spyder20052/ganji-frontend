@@ -76,7 +76,7 @@ export default async function EmergencyCardPage({ params }: { params: Promise<{ 
 
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <p className="label">Carte d’urgence Alafia</p>
+            <p className="label">Carte d’urgence Ganji</p>
             <h1 className="text-3xl font-bold">{card.name}</h1>
             <p className="text-lg text-[var(--fg-muted)]">
               <span className="num">{card.age} ans</span> · {SEX[card.sex] ?? card.sex}

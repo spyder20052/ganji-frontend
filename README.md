@@ -1,11 +1,11 @@
-# Alafia · frontend
+# Ganji · frontend
 
-**La santé de chaque Béninois, à chaque moment de la vie.** Alafia (« bien-être » en fon, yoruba et dendi) est une plateforme nationale de suivi des patients, conçue pour le challenge e-Santé du Ministère de la Transformation Digitale et de l'Innovation (MTDI).
+**La santé de chaque Béninois, à chaque moment de la vie.** Ganji est une plateforme nationale de suivi des patients, conçue pour le challenge e-Santé du Ministère de la Transformation Digitale et de l'Innovation (MTDI).
 
 | | |
 |---|---|
 | Application | [Lien] |
-| API et documentation Swagger | [Lien] · dépôt [`alafia-backend`](../../../alafia-backend) |
+| API et documentation Swagger | [Lien] · dépôt [`ganji-backend`](../../../ganji-backend) |
 | Suivi du chantier | `/chantier` dans l'application |
 | Cahier des charges | [`docs/CAHIER_DES_CHARGES.pdf`](docs/CAHIER_DES_CHARGES.pdf) · plan de conception [`docs/PLAN.md`](docs/PLAN.md) |
 
@@ -17,7 +17,7 @@ Le patient au long cours (leucémie, drépanocytose, diabète, VIH) vit chaque m
 
 ## La réponse : un seul point d'entrée, la règle des « 5 sans »
 
-Alafia reste utile **sans réseau** (PWA hors ligne, carte d'urgence), **sans smartphone** (SMS, USSD, appel vocal, relais communautaire), **sans savoir lire** (pictogrammes, bouton « écouter », voix en langue nationale), **sans argent immédiat** (urgence vitale, droits ARCH) et **sans compte** (orientation anonyme, carte QR).
+Ganji reste utile **sans réseau** (PWA hors ligne, carte d'urgence), **sans smartphone** (SMS, USSD, appel vocal, relais communautaire), **sans savoir lire** (pictogrammes, bouton « écouter », voix en langue nationale), **sans argent immédiat** (urgence vitale, droits ARCH) et **sans compte** (orientation anonyme, carte QR).
 
 ## Parcours à essayer (comptes de démo en un clic sur `/demo`)
 
@@ -40,7 +40,7 @@ Alafia reste utile **sans réseau** (PWA hors ligne, carte d'urgence), **sans sm
 ## Lancer en local
 
 ```bash
-# 1. API (dans alafia-backend) : PostgreSQL + API + seed en une commande
+# 1. API (dans ganji-backend) : PostgreSQL + API + seed en une commande
 docker compose up
 # 2. Frontend
 cp .env.example .env.local   # BACKEND_URL=http://localhost:4000
@@ -55,4 +55,4 @@ Next.js 15 (App Router, Server Components) + Tailwind CSS 4, PWA avec service wo
 
 ## Déploiement
 
-Projet Vercel séparé ; variable `BACKEND_URL` = URL du projet Vercel `alafia-backend`.
+Projet Vercel séparé ; variable `BACKEND_URL` = URL du projet Vercel `ganji-backend`.

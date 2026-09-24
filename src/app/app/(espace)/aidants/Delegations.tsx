@@ -108,7 +108,7 @@ export function DiscreetToggle({ initial }: { initial: boolean }) {
       <label className="flex min-h-14 cursor-pointer items-center justify-between gap-4">
         <span>
           <span className="block text-lg font-bold">Mode discret</span>
-          <span className="block text-base text-[var(--fg-muted)]">SMS et notifications neutres (« Vous avez un message Alafia »), sans nom de maladie ni de service.</span>
+          <span className="block text-base text-[var(--fg-muted)]">SMS et notifications neutres (« Vous avez un message Ganji »), sans nom de maladie ni de service.</span>
         </span>
         <input type="checkbox" role="switch" className="h-7 w-7 shrink-0 accent-[var(--color-brand-900)]" checked={on} disabled={busy} onChange={(e) => void flip(e.target.checked)} />
       </label>

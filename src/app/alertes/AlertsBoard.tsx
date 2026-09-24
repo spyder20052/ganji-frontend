@@ -8,7 +8,7 @@ import { Pictogram } from '@/components/Pictogram';
 import { api } from '@/lib/api';
 import type { HealthAlert } from '@/lib/alerts';
 
-const KEY = 'alafia-commune';
+const KEY = 'ganji-commune';
 
 export function AlertsBoard() {
   const [commune, setCommune] = useState('');

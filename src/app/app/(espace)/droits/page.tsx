@@ -22,7 +22,7 @@ export default async function DroitsPage() {
       </PageHead>
 
       <PreviewNotice>
-        Maquette cliquable (module M14). Le statut ARCH et les tarifs des actes sont fictifs ; les prix des médicaments viennent de la recherche Alafia. Le paiement est un bac à sable : rien n’est débité.
+        Maquette cliquable (module M14). Le statut ARCH et les tarifs des actes sont fictifs ; les prix des médicaments viennent de la recherche Ganji. Le paiement est un bac à sable : rien n’est débité.
       </PreviewNotice>
 
       <Section id="h-arch" title="Ma couverture santé" icon="shield">
@@ -37,7 +37,7 @@ export default async function DroitsPage() {
           <span className="pill bg-white text-[var(--color-brand-900)]">Vérifié via X-Road (simulé)</span>
         </div>
         <p className="mt-3 text-base text-[var(--fg-muted)]">
-          Dans la version réelle, Alafia interroge le registre ARCH avec votre NPI, sans que vous ayez à montrer de papier.
+          Dans la version réelle, Ganji interroge le registre ARCH avec votre NPI, sans que vous ayez à montrer de papier.
         </p>
       </Section>
 
@@ -48,7 +48,7 @@ export default async function DroitsPage() {
       <Section id="h-bon" title="Bon d’urgence vitale" icon="emergency">
         <Notice tone="danger" title="En urgence vitale : soigné d’abord, payé après">
           <p>
-            Quand votre vie est en danger (hémorragie, accouchement difficile, accident grave), l’hôpital émet un bon d’urgence vitale dans Alafia. Les soins commencent tout de suite, sans avance d’argent.
+            Quand votre vie est en danger (hémorragie, accouchement difficile, accident grave), l’hôpital émet un bon d’urgence vitale dans Ganji. Les soins commencent tout de suite, sans avance d’argent.
           </p>
         </Notice>
         <ol className="mt-4 grid gap-3 sm:grid-cols-3">

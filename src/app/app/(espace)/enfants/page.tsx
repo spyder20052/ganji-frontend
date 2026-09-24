@@ -115,7 +115,7 @@ export default async function EnfantsPage() {
                     <p className="text-lg font-bold">Preuve de vaccination</p>
                     <Qr value={book.proof.qrPayload} size={200} label={`QR de preuve de vaccination de ${k.firstName}`} />
                     <p className="max-w-56 text-sm">
-                      Signée par Alafia : l’école ou le centre de santé la vérifie en scannant. <span className="num">{book.proof.given.length}</span> vaccin{book.proof.given.length > 1 ? 's' : ''} couvert{book.proof.given.length > 1 ? 's' : ''}.
+                      Signée par Ganji : l’école ou le centre de santé la vérifie en scannant. <span className="num">{book.proof.given.length}</span> vaccin{book.proof.given.length > 1 ? 's' : ''} couvert{book.proof.given.length > 1 ? 's' : ''}.
                     </p>
                   </aside>
                 </div>

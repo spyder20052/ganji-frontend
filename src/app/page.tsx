@@ -45,14 +45,14 @@ export default function Home() {
       <main id="contenu" className="mx-auto max-w-6xl space-y-6 px-4 pb-16">
         <section className="grid gap-5 lg:grid-cols-[1fr_1.1fr] lg:items-end">
           <div className="space-y-5 pt-2">
-            <p className="text-base text-[var(--fg-muted)]">Alafia · « bien-être » en fon, yoruba et dendi</p>
+            <p className="text-base text-[var(--fg-muted)]">Ganji · plateforme nationale de santé</p>
             <div className="flex items-start justify-between gap-3">
               <h1 className="min-w-0 text-[2.6rem] leading-[1.05] font-light tracking-tight sm:text-[3.4rem]">
                 La santé de chaque Béninois, <span className="font-medium">près de chez vous.</span>
               </h1>
               <ListenButton
                 compact
-                text="Bienvenue sur Alafia. Votre santé, près de chez vous. Sans compte, vous pouvez trouver où vous soigner, un médicament ou de l'aide en urgence."
+                text="Bienvenue sur Ganji. Votre santé, près de chez vous. Sans compte, vous pouvez trouver où vous soigner, un médicament ou de l'aide en urgence."
                 audioKey="welcome"
               />
             </div>
@@ -124,7 +124,7 @@ export default function Home() {
         </nav>
 
         <footer className="space-y-1 pt-4 text-sm text-[var(--fg-muted)]">
-          <p>Alafia ne remplace pas un avis médical. Urgence : sapeurs-pompiers 118.</p>
+          <p>Ganji ne remplace pas un avis médical. Urgence : sapeurs-pompiers 118.</p>
           <p>Prototype pour le challenge e-Santé du MTDI · données personnelles fictives.</p>
         </footer>
       </main>

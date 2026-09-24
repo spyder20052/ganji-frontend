@@ -88,7 +88,7 @@ export default async function GrossessePage() {
       </section>
 
       <Section id="h-danger" title="Signes de danger" icon="warning">
-        <p className="mb-4 text-base text-[var(--fg-muted)]">Touchez ce que vous ressentez. Alafia vous dit quoi faire et prévient votre relais si c’est urgent.</p>
+        <p className="mb-4 text-base text-[var(--fg-muted)]">Touchez ce que vous ressentez. Ganji vous dit quoi faire et prévient votre relais si c’est urgent.</p>
         <DangerSigns pregnancyId={p.id} catalogue={p.dangerSignsCatalogue} />
         {p.recordedDangerSigns.length > 0 && (
           <details className="simple-hide mt-4">

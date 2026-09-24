@@ -26,7 +26,7 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
   if (!patientId) {
     return (
       <>
-        <PageHead icon="carnet" title="Carnet de santé" intro="Vous n’avez pas encore de carnet personnel sur Alafia." />
+        <PageHead icon="carnet" title="Carnet de santé" intro="Vous n’avez pas encore de carnet personnel sur Ganji." />
         {me.delegations.length > 0 ? (
           <Section id="h-choisir" title="Carnets que vous pouvez ouvrir" icon="people">
             <ul className="grid gap-3 sm:grid-cols-2">

@@ -1,4 +1,4 @@
-# Alafia : plan de conception détaillé
+# Ganji : plan de conception détaillé
 
 > Document de référence du chantier. Il traduit le cahier des charges (`docs/CAHIER_DES_CHARGES.pdf`) en décisions d'architecture, en contrats d'API et en chantiers livrables, chacun avec ses critères d'acceptation.
 > Suivi en direct : page `/chantier` de l'application (générée depuis `docs/progress.json`).
@@ -26,11 +26,11 @@ flowchart LR
     U[PWA Next.js<br/>patients, soignants,<br/>pharmacies, ANTS, ministère]
     SW[Service worker<br/>+ IndexedDB chiffré]
   end
-  subgraph Vercel_Front[Vercel : alafia-frontend]
+  subgraph Vercel_Front[Vercel : ganji-frontend]
     N[Next.js 15<br/>App Router]
     RW[/api/* rewrite<br/>même origine/]
   end
-  subgraph Vercel_Back[Vercel : alafia-backend]
+  subgraph Vercel_Back[Vercel : ganji-backend]
     A[NestJS 10<br/>fonction serverless]
     CR[Vercel Cron<br/>rappels, outbox, simulateur stocks]
   end
@@ -148,7 +148,7 @@ flowchart LR
 
 ## 7. Design system (inspiré des références fournies)
 
-Les deux planches de référence (CliniQ, Beefit) donnent le ton : cartes très arrondies (24 px), fond clair légèrement teinté, grands chiffres, un bouton principal sombre pleine largeur, puces d'action rondes. Adaptation Alafia :
+Les deux planches de référence (CliniQ, Beefit) donnent le ton : cartes très arrondies (24 px), fond clair légèrement teinté, grands chiffres, un bouton principal sombre pleine largeur, puces d'action rondes. Adaptation Ganji :
 
 | Jeton | Valeur | Usage |
 |-------|--------|-------|

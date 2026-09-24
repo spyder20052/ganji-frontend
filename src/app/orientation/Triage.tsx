@@ -407,7 +407,7 @@ function Disclaimer({ tree }: { tree?: TriageTree }) {
     <aside className="rounded-2xl border border-dashed border-[var(--border)] p-4 text-base text-[var(--fg-muted)]">
       <p className="font-bold text-[var(--fg)]">Orientation, pas diagnostic.</p>
       <p>
-        Alafia vous dit où aller et avec quelle urgence ; seul un soignant peut poser un diagnostic. Arbre de décision inspiré de la PCIME (OMS/UNICEF),{' '}
+        Ganji vous dit où aller et avec quelle urgence ; seul un soignant peut poser un diagnostic. Arbre de décision inspiré de la PCIME (OMS/UNICEF),{' '}
         {tree?.validatedBy ? `validé par ${tree.validatedBy}.` : 'version de démonstration à valider par des médecins référents.'}
       </p>
     </aside>

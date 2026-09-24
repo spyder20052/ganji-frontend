@@ -18,7 +18,7 @@ Le cahier des charges demande des messages vocaux dans au moins deux langues nat
 | `donor.found` | fon · Afiavi apprend qu’un donneur est trouvé pour Koffi | Bonne nouvelle : un donneur compatible a été trouvé. Présentez-vous à {lieu}. |
 | `donor.call` | fon · Rodrigue reçoit l’appel au don sur son téléphone simple | Appel au don de sang : un patient a besoin du groupe {groupe} à {lieu}. Pouvez-vous venir aujourd'hui ? |
 | `reminder.vaccine` | fon · rappel de vaccin pour les parents qui parlent fon | Votre enfant doit recevoir le vaccin {vaccin} le {date} à {lieu}. La vaccination est gratuite. |
-| `welcome` | fon et bariba · accueil | Bienvenue sur Alafia. Votre santé, près de chez vous. |
+| `welcome` | fon et bariba · accueil | Bienvenue sur Ganji. Votre santé, près de chez vous. |
 | `app.home` | fon et bariba · accueil patient | Texte lu par le bouton « Écouter » de l’accueil |
 | `triage.who` | fon et bariba · orientation | Qui est malade ? Un enfant de moins de 5 ans, un adulte, une femme enceinte, une personne âgée. |
 
@@ -28,7 +28,7 @@ Chemins attendus : `public/audio/bariba/reminder.cpn.mp3`, `public/audio/fon/don
 
 | Clé | Texte de référence (français) |
 |---|---|
-| `welcome` | Bienvenue sur Alafia. Votre santé, près de chez vous. |
+| `welcome` | Bienvenue sur Ganji. Votre santé, près de chez vous. |
 | `consent.request` | Acceptez-vous qu'un agent de santé consulte votre dossier ? Répondez oui ou non. |
 | `consent.granted` | Merci. Vous avez autorisé {lieu} à consulter votre dossier. Vous pouvez retirer cet accord à tout moment. |
 | `consent.revoked` | Votre accord a été retiré. Votre dossier n'est plus partagé avec {lieu}. |
@@ -53,7 +53,7 @@ Chemins attendus : `public/audio/bariba/reminder.cpn.mp3`, `public/audio/fon/don
 
 ## Orientation par symptômes
 
-Le texte de chaque question est dans `alafia-backend/src/data/triage.ts` (champ `text` et libellés des réponses) ; les conseils de fin dans `TRIAGE_ADVICE`.
+Le texte de chaque question est dans `ganji-backend/src/data/triage.ts` (champ `text` et libellés des réponses) ; les conseils de fin dans `TRIAGE_ADVICE`.
 
 `triage.who`, `triage.child_danger`, `triage.child_symptom`, `triage.child_fever`, `triage.child_diarrhea`, `triage.child_cough`, `triage.adult_danger`, `triage.adult_symptom`, `triage.adult_fever`, `triage.adult_diarrhea`, `triage.adult_cough`, `triage.preg_danger`, `triage.preg_other`, `triage.bleeding`, `triage.pain`, `triage.injury`, `triage.mental`, `triage.outcome.MAISON`, `triage.outcome.PHARMACIE`, `triage.outcome.CENTRE_SANTE`, `triage.outcome.URGENCE`
 

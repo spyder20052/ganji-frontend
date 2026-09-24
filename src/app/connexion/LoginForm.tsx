@@ -58,7 +58,7 @@ export function LoginForm() {
               <select className="input" value={reg.sex} onChange={(e) => setReg({ ...reg, sex: e.target.value })}><option value="F">Femme</option><option value="M">Homme</option></select>
             </label>
           </div>
-          <p className="text-sm text-[var(--fg-muted)]">Pas encore de NPI (nouveau-né, visiteur) ? Un relais ou un centre de santé peut créer un identifiant provisoire Alafia, rattaché au NPI plus tard sans perte de données.</p>
+          <p className="text-sm text-[var(--fg-muted)]">Pas encore de NPI (nouveau-né, visiteur) ? Un relais ou un centre de santé peut créer un identifiant provisoire Ganji, rattaché au NPI plus tard sans perte de données.</p>
           <button className="btn btn-primary w-full" disabled={busy}>Créer mon carnet</button>
           <button type="button" className="btn btn-ghost w-full" onClick={() => setStep('phone')}>J’ai déjà un carnet</button>
         </form>

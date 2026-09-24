@@ -16,7 +16,7 @@ export interface EmergencyCard {
   savedAt: string;
 }
 
-export const CARD_KEY = 'alafia-emergency-card';
+export const CARD_KEY = 'ganji-emergency-card';
 
 export function cardFromSummary(s: Summary): EmergencyCard {
   return {

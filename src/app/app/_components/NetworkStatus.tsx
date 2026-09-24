@@ -21,18 +21,18 @@ export function NetworkStatus() {
       void flushQueue().then(refresh);
     };
     const onSw = (e: MessageEvent) => {
-      if ((e.data as { type?: string } | null)?.type === 'alafia-sync') flush();
+      if ((e.data as { type?: string } | null)?.type === 'ganji-sync') flush();
     };
     refresh();
     if (navigator.onLine && readQueue().length) flush();
     window.addEventListener('online', flush);
     window.addEventListener('offline', refresh);
-    window.addEventListener('alafia-queue', refresh);
+    window.addEventListener('ganji-queue', refresh);
     navigator.serviceWorker?.addEventListener('message', onSw);
     return () => {
       window.removeEventListener('online', flush);
       window.removeEventListener('offline', refresh);
-      window.removeEventListener('alafia-queue', refresh);
+      window.removeEventListener('ganji-queue', refresh);
       navigator.serviceWorker?.removeEventListener('message', onSw);
     };
   }, []);

@@ -1,8 +1,8 @@
 {
-  "name": "alafia-frontend",
+  "name": "ganji-frontend",
   "version": "0.1.0",
   "private": true,
-  "description": "Alafia : la santé de chaque Béninois, à chaque moment de la vie (PWA Next.js)",
+  "description": "Ganji : la santé de chaque Béninois, à chaque moment de la vie (PWA Next.js)",
   "license": "MIT",
   "engines": {
     "node": ">=20"

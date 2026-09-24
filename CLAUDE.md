@@ -1,6 +1,6 @@
-# CLAUDE.md · alafia-frontend
+# CLAUDE.md · ganji-frontend
 
-PWA Next.js 15 (App Router, React 19, Tailwind 4) de la plateforme e-Santé **Alafia** (test technique MTDI Bénin). L'API est dans `../alafia-backend`. Contexte complet et reprise du chantier : `../CLAUDE.md`.
+PWA Next.js 15 (App Router, React 19, Tailwind 4) de la plateforme e-Santé **Ganji** (test technique MTDI Bénin). L'API est dans `../ganji-backend`. Contexte complet et reprise du chantier : `../CLAUDE.md`.
 
 ## Commandes
 

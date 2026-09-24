@@ -6,21 +6,21 @@
 import { api } from './api';
 
 export interface QueuedAction { id: string; path: string; method: 'POST' | 'PUT'; body: unknown; createdAt: string; label: string }
-const KEY = 'alafia-queue';
+const KEY = 'ganji-queue';
 
 export function readQueue(): QueuedAction[] {
   try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; }
 }
 function write(q: QueuedAction[]) {
   try { localStorage.setItem(KEY, JSON.stringify(q)); } catch {}
-  window.dispatchEvent(new Event('alafia-queue'));
+  window.dispatchEvent(new Event('ganji-queue'));
 }
 
 export function enqueue(a: Omit<QueuedAction, 'id' | 'createdAt'>) {
   const q = readQueue();
   q.push({ ...a, id: crypto.randomUUID(), createdAt: new Date().toISOString() });
   write(q);
-  navigator.serviceWorker?.ready.then((r) => (r as ServiceWorkerRegistration & { sync?: { register(t: string): Promise<void> } }).sync?.register('alafia-sync')).catch(() => undefined);
+  navigator.serviceWorker?.ready.then((r) => (r as ServiceWorkerRegistration & { sync?: { register(t: string): Promise<void> } }).sync?.register('ganji-sync')).catch(() => undefined);
 }
 
 let flushing = false;

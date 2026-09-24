@@ -169,7 +169,7 @@ function Payment({ amount }: { amount: number }) {
         <span className="mb-1 block font-bold">Numéro de téléphone (fictif pour la démonstration)</span>
         <input className="input num" inputMode="tel" placeholder="01 90 00 00 01" value={phone} onChange={(e) => setPhone(e.target.value)} required />
       </label>
-      <p className="text-sm text-[var(--fg-muted)]">Dans la vraie version, vous confirmez sur votre propre téléphone avec votre code secret : Alafia ne le demande jamais.</p>
+      <p className="text-sm text-[var(--fg-muted)]">Dans la vraie version, vous confirmez sur votre propre téléphone avec votre code secret : Ganji ne le demande jamais.</p>
       <button type="submit" className="btn btn-primary w-full" disabled={amount <= 0 || step === 'wait' || phone.replace(/\D/g, '').length < 8}>
         {step === 'wait' ? 'En attente de confirmation sur le téléphone…' : `Payer ${fcfa(amount)} (simulation)`}
       </button>

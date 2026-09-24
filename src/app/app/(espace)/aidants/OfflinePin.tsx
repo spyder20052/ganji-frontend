@@ -7,7 +7,7 @@ import { hasSealed, openLocal, sealLocal, wipeLocal } from '@/lib/secure-store';
 import type { Summary } from '@/lib/types';
 import { CARD_KEY } from '../../_lib/emergency-card';
 
-const FAILS_KEY = 'alafia-pin-fails';
+const FAILS_KEY = 'ganji-pin-fails';
 const MAX_FAILS = 5;
 const PIN_RE = /^\d{4,6}$/;
 
@@ -88,7 +88,7 @@ export function OfflinePin({ unlockOnly = false }: { unlockOnly?: boolean }) {
     setFails(0);
     setSealed(false);
     setOpened(null);
-    setMsg({ ok: true, text: 'Données effacées de ce téléphone. Votre carnet reste en sécurité sur Alafia.' });
+    setMsg({ ok: true, text: 'Données effacées de ce téléphone. Votre carnet reste en sécurité sur Ganji.' });
   }
 
   if (!supported) return <p className="text-base text-[var(--fg-muted)]">Ce navigateur ne permet pas le chiffrement local. Utilisez un navigateur récent.</p>;
@@ -148,7 +148,7 @@ export function OfflinePin({ unlockOnly = false }: { unlockOnly?: boolean }) {
               <input className="input num text-center text-2xl tracking-[.4em]" type="password" inputMode="numeric" autoComplete="new-password" maxLength={6} value={pin2} onChange={(e) => setPin2(e.target.value.replace(/\D/g, ''))} />
             </label>
           </div>
-          <p className="text-sm text-[var(--fg-muted)]">Le code n’est jamais envoyé ni gardé : sans lui, personne ne peut lire la copie, pas même Alafia. Après {MAX_FAILS} erreurs, la copie s’efface.</p>
+          <p className="text-sm text-[var(--fg-muted)]">Le code n’est jamais envoyé ni gardé : sans lui, personne ne peut lire la copie, pas même Ganji. Après {MAX_FAILS} erreurs, la copie s’efface.</p>
           <button type="submit" className="btn btn-primary" disabled={busy || pin.length < 4}><Lock size={20} aria-hidden /> {busy ? 'Chiffrement…' : 'Protéger et enregistrer'}</button>
         </form>
       </details>

@@ -113,7 +113,7 @@ export function BloodRequestForm({ patientId, firstName, bloodGroup }: { patient
       </fieldset>
 
       <p className="text-sm text-[var(--fg-muted)]">
-        Alafia vérifie d’abord les stocks compatibles à moins de 60 km. S’ils ne suffisent pas, les donneurs compatibles les plus proches sont alertés par application, SMS ou appel vocal.
+        Ganji vérifie d’abord les stocks compatibles à moins de 60 km. S’ils ne suffisent pas, les donneurs compatibles les plus proches sont alertés par application, SMS ou appel vocal.
       </p>
       <ErrorNote>{error}</ErrorNote>
       <button type="submit" className="btn btn-danger" disabled={busy}>

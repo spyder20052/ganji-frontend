@@ -6,7 +6,7 @@ const PROTECTED = ['/app', '/pro', '/pharmacie', '/ants', '/ministere', '/relais
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   if (pathname.startsWith('/app/carte-urgence')) return NextResponse.next(); // doit rester visible hors session (écran verrouillé)
-  if (PROTECTED.some((p) => pathname === p || pathname.startsWith(`${p}/`)) && !req.cookies.get('alafia_session')) {
+  if (PROTECTED.some((p) => pathname === p || pathname.startsWith(`${p}/`)) && !req.cookies.get('ganji_session')) {
     const url = req.nextUrl.clone();
     url.pathname = '/connexion';
     url.search = '';

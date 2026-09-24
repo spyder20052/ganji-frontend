@@ -6,7 +6,7 @@ import { TopBar } from '@/components/TopBar';
 export const dynamic = 'force-static';
 export const metadata: Metadata = {
   title: 'Suivi du chantier',
-  description: 'Avancement de chaque module d’Alafia, critères d’acceptation, commits et blocages.',
+  description: 'Avancement de chaque module de Ganji, critères d’acceptation, commits et blocages.',
 };
 
 type Status = 'done' | 'doing' | 'blocked' | 'todo';

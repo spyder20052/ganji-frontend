@@ -113,7 +113,7 @@ export function EmergencyCardView() {
       {status === 'missing' && !card && (
         <div className="card space-y-4 p-6" role="status">
           <h1 className="text-2xl font-bold">Carte d’urgence pas encore enregistrée sur ce téléphone</h1>
-          <p>Ouvrez une fois votre espace Alafia avec du réseau : la carte sera alors gardée sur le téléphone et marchera ensuite sans réseau.</p>
+          <p>Ouvrez une fois votre espace Ganji avec du réseau : la carte sera alors gardée sur le téléphone et marchera ensuite sans réseau.</p>
           <div className="flex flex-wrap gap-3">
             <Link href="/connexion" className="btn btn-primary">Ouvrir mon carnet</Link>
             <a href="tel:118" className="btn btn-danger"><Phone size={20} aria-hidden /> Appeler le 118</a>

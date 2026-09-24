@@ -1,11 +1,11 @@
-# Architecture d'Alafia
+# Architecture de Ganji
 
 ## Vue d'ensemble
 
 ```mermaid
 flowchart LR
-  U[PWA Next.js<br/>patients, soignants, pharmacies,<br/>ANTS, relais, ministère] -->|/api/* même origine| N[Next.js<br/>Vercel alafia-frontend]
-  N -->|rewrite| A[API NestJS<br/>Vercel alafia-backend]
+  U[PWA Next.js<br/>patients, soignants, pharmacies,<br/>ANTS, relais, ministère] -->|/api/* même origine| N[Next.js<br/>Vercel ganji-frontend]
+  N -->|rewrite| A[API NestJS<br/>Vercel ganji-backend]
   S[Téléphone simple<br/>SMS / USSD / voix] -->|webhook agrégateur| A
   A --> P[(PostgreSQL<br/>Neon)]
   A --> O[Outbox<br/>SMS · voix · push]
@@ -19,8 +19,8 @@ Les canaux (web, SMS, USSD, voix) passent **tous par la même API** : une seule 
 
 | Dépôt | Rôle | Stack |
 |-------|------|-------|
-| `alafia-frontend` | PWA, 7 espaces par profil, simulateur de téléphone, page de suivi du chantier | Next.js 15, React 19, Tailwind 4, Leaflet, qrcode |
-| `alafia-backend` | API REST documentée (OpenAPI sur `/docs`), 13 modules métier, seed réel + fictif | NestJS 11, Prisma 6, PostgreSQL 16 |
+| `ganji-frontend` | PWA, 7 espaces par profil, simulateur de téléphone, page de suivi du chantier | Next.js 15, React 19, Tailwind 4, Leaflet, qrcode |
+| `ganji-backend` | API REST documentée (OpenAPI sur `/docs`), 13 modules métier, seed réel + fictif | NestJS 11, Prisma 6, PostgreSQL 16 |
 
 ## Modules de l'API
 
@@ -40,7 +40,7 @@ Les canaux (web, SMS, USSD, voix) passent **tous par la même API** : une seule 
 
 ## Modèle de données (aligné sur FHIR R4)
 
-`Patient`, `RelatedPerson` (Delegation), `Practitioner`, `CareTeam`, `Organization`/`Location` (Facility, Commune, Department), `Encounter`, `Observation`, `Condition`, `DocumentReference`, `CarePlan`, `Appointment` (Reminder), `Consent`, `AuditEvent`, `ServiceRequest` (BloodRequest, TeleExpertise), `MedicationRequest` + `MedicationDispense` (Prescription), `EpisodeOfCare` (Pregnancy), `Immunization`, `Communication` (HealthAlert, Outbox). Voir `alafia-backend/prisma/schema.prisma`.
+`Patient`, `RelatedPerson` (Delegation), `Practitioner`, `CareTeam`, `Organization`/`Location` (Facility, Commune, Department), `Encounter`, `Observation`, `Condition`, `DocumentReference`, `CarePlan`, `Appointment` (Reminder), `Consent`, `AuditEvent`, `ServiceRequest` (BloodRequest, TeleExpertise), `MedicationRequest` + `MedicationDispense` (Prescription), `EpisodeOfCare` (Pregnancy), `Immunization`, `Communication` (HealthAlert, Outbox). Voir `ganji-backend/prisma/schema.prisma`.
 
 ## Écarts assumés pour la démo serverless
 

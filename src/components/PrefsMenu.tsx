@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 interface Prefs { scale?: string; theme?: string; voice?: string; simple?: boolean }
 
 function load(): Prefs {
-  try { return JSON.parse(localStorage.getItem('alafia-prefs') || '{}'); } catch { return {}; }
+  try { return JSON.parse(localStorage.getItem('ganji-prefs') || '{}'); } catch { return {}; }
 }
 function apply(p: Prefs) {
   const d = document.documentElement;
@@ -13,8 +13,8 @@ function apply(p: Prefs) {
   if (p.theme) d.dataset.theme = p.theme; else delete d.dataset.theme;
   if (p.voice) d.dataset.voice = p.voice; else delete d.dataset.voice;
   if (p.simple) d.dataset.simple = '1'; else delete d.dataset.simple;
-  try { localStorage.setItem('alafia-prefs', JSON.stringify(p)); } catch {}
-  window.dispatchEvent(new Event('alafia-prefs'));
+  try { localStorage.setItem('ganji-prefs', JSON.stringify(p)); } catch {}
+  window.dispatchEvent(new Event('ganji-prefs'));
 }
 
 /** Réglages d'accessibilité : taille du texte jusqu'à 200 %, thème, langue de la voix, mode simple. */

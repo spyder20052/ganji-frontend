@@ -1,5 +1,5 @@
-/* Alafia : service worker. Coque de l'application et pages vitales disponibles hors ligne. */
-const VERSION = 'alafia-v3';
+/* Ganji : service worker. Coque de l'application et pages vitales disponibles hors ligne. */
+const VERSION = 'ganji-v3';
 const SHELL = ['/', '/offline', '/orientation', '/urgence', '/app', '/app/carte-urgence', '/app/hors-ligne', '/relais', '/manifest.webmanifest', '/icon.svg'];
 // Seules ces pages sont gardées pour le hors ligne. Jamais un dossier consulté par un soignant
 // (/pro/…), ni le carnet complet : il a sa copie chiffrée par PIN (lib/secure-store.ts).
@@ -46,13 +46,13 @@ self.addEventListener('fetch', (e) => {
 
 // Déconnexion : on oublie toutes les pages gardées (téléphone partagé).
 self.addEventListener('message', (e) => {
-  if (e.data && e.data.type === 'alafia-logout') {
+  if (e.data && e.data.type === 'ganji-logout') {
     e.waitUntil(caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k)))));
   }
 });
 
 self.addEventListener('sync', (e) => {
-  if (e.tag === 'alafia-sync') {
-    e.waitUntil(self.clients.matchAll().then((cs) => cs.forEach((c) => c.postMessage({ type: 'alafia-sync' }))));
+  if (e.tag === 'ganji-sync') {
+    e.waitUntil(self.clients.matchAll().then((cs) => cs.forEach((c) => c.postMessage({ type: 'ganji-sync' }))));
   }
 });

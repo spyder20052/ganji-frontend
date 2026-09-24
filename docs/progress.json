@@ -1,5 +1,5 @@
 {
-  "project": "Alafia",
+  "project": "Ganji",
   "updatedAt": "2026-09-24T20:16:04+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
@@ -26,7 +26,7 @@
     {
       "id": "vercel",
       "title": "Projets Vercel à créer",
-      "detail": "Importer alafia-frontend et alafia-backend dans Vercel, ajouter Neon Postgres au backend, renseigner les variables d'environnement du fichier .env.example.",
+      "detail": "Importer ganji-frontend et ganji-backend dans Vercel, ajouter Neon Postgres au backend, renseigner les variables d'environnement du fichier .env.example.",
       "owner": "Hub",
       "open": true
     }
@@ -85,12 +85,12 @@
         {
           "sha": "d3fa0fb",
           "repo": "backend",
-          "message": "chore: socle initial du dépôt Alafia API (main)"
+          "message": "chore: socle initial du dépôt Ganji API (main)"
         },
         {
           "sha": "2f80b44",
           "repo": "frontend",
-          "message": "chore: socle initial du frontend Alafia (main)"
+          "message": "chore: socle initial du frontend Ganji (main)"
         },
         {
           "sha": "dcd4e43",
@@ -551,7 +551,7 @@
       "acceptance": "Parcours cliquables marqués « aperçu »",
       "items": [
         {
-          "label": "Assistant Alafia (garde-fous)",
+          "label": "Assistant Ganji (garde-fous)",
           "done": true
         },
         {

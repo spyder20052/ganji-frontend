@@ -240,7 +240,7 @@ export function Simulator({ initialTel }: { initialTel: string }) {
               <div className="flex items-center gap-3 border-b border-[#d5e0da] bg-white px-4 py-2.5">
                 <span className="grid h-9 w-9 place-items-center rounded-full bg-[#0b4f3c] text-sm font-bold text-white" aria-hidden>A</span>
                 <div className="min-w-0">
-                  <p className="text-base font-bold leading-tight">Alafia</p>
+                  <p className="text-base font-bold leading-tight">Ganji</p>
                   <p className="truncate text-xs text-[#52635b]">{phone ? `${label} · ${fmtPhone(phone)}` : 'Choisissez un numéro'}</p>
                 </div>
               </div>
@@ -409,7 +409,7 @@ function SmsPanel({ phone, inbox, sent, onReply }: { phone: string; inbox: Outbo
               <div key={m.id} className="flex items-start gap-2 rounded-2xl bg-white p-3 shadow-sm ring-1 ring-[#d5e0da]">
                 <Bell size={16} className="mt-0.5 shrink-0 text-[#8a5d06]" aria-hidden />
                 <div className="min-w-0 text-[14px]">
-                  <p className="text-xs font-bold text-[#52635b]">Notification Alafia · {fmtTime(m.createdAt)}</p>
+                  <p className="text-xs font-bold text-[#52635b]">Notification Ganji · {fmtTime(m.createdAt)}</p>
                   <p>{m.body}</p>
                 </div>
               </div>

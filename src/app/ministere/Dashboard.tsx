@@ -146,7 +146,7 @@ export function Dashboard({ initial }: { initial: National | null }) {
                 value={k!.teleExpertiseWithin48h != null ? String(k!.teleExpertiseWithin48h) : '—'}
                 unit={k!.teleExpertiseWithin48h != null ? '%' : undefined}
               />
-              <Kpi icon="people" label="Patients suivis" sub="carnet Alafia actif" value={fmtMasked(k!.patientsFollowed)} />
+              <Kpi icon="people" label="Patients suivis" sub="carnet Ganji actif" value={fmtMasked(k!.patientsFollowed)} />
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
               <SmallTile label="Alertes actives" value={k!.activeAlerts} href="#alertes" />

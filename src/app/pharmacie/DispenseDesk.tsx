@@ -30,7 +30,7 @@ function refusalFor(rx: PharmacistRx): { title: string; message: string } | null
   }
 }
 
-/** Vérification (signature HMAC) puis délivrance à usage unique d'une ordonnance Alafia. */
+/** Vérification (signature HMAC) puis délivrance à usage unique d'une ordonnance Ganji. */
 export function DispenseDesk() {
   const [state, setState] = useState<State>({ k: 'idle' });
   const [busy, setBusy] = useState(false);
@@ -88,7 +88,7 @@ export function DispenseDesk() {
         <h2 id="h-rx" className="text-xl font-bold">
           Délivrer une ordonnance
         </h2>
-        <p className="text-[var(--fg-muted)]">Scannez le QR de l’ordonnance (téléphone du patient ou papier). Alafia vérifie la signature du prescripteur et qu’elle n’a jamais servi.</p>
+        <p className="text-[var(--fg-muted)]">Scannez le QR de l’ordonnance (téléphone du patient ou papier). Ganji vérifie la signature du prescripteur et qu’elle n’a jamais servi.</p>
       </div>
 
       {state.k === 'idle' && (
@@ -97,8 +97,8 @@ export function DispenseDesk() {
           onValue={verify}
           busy={busy}
           inputLabel="Coller le contenu du QR"
-          placeholder="alafia:rx:…"
-          inputHint="Commence par « alafia:rx: ». Utile si la caméra n’est pas disponible."
+          placeholder="ganji:rx:…"
+          inputHint="Commence par « ganji:rx: ». Utile si la caméra n’est pas disponible."
           submitLabel="Vérifier"
           scanLabel="Scanner l’ordonnance"
           minLength={10}
@@ -177,7 +177,7 @@ export function DispenseDesk() {
                 <div>
                   <p className="label !text-[var(--color-ocre-500)]">Ne pas délivrer</p>
                   <p className="text-3xl font-bold">Ordonnance non authentique</p>
-                  <p className="mt-2 text-lg">La signature ne correspond à aucune ordonnance émise sur Alafia : QR modifié, recopié ou inconnu. La tentative est journalisée.</p>
+                  <p className="mt-2 text-lg">La signature ne correspond à aucune ordonnance émise sur Ganji : QR modifié, recopié ou inconnu. La tentative est journalisée.</p>
                 </div>
               </div>
             </div>

@@ -2,20 +2,20 @@
 import { Phone, PhoneCall, Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-interface Msg { from: 'moi' | 'alafia'; text: string }
+interface Msg { from: 'moi' | 'ganji'; text: string }
 
 /** Mots qui déclenchent tout de suite l'aide de crise (sans accents, en minuscules). */
 const CRISIS = ['suicide', 'suicider', 'me tuer', 'en finir', 'plus envie de vivre', 'mourir', 'me faire du mal', 'disparaitre', 'je veux partir pour toujours'];
 const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 const FIRST_REPLY: Msg = {
-  from: 'alafia',
+  from: 'ganji',
   text: 'Merci de nous écrire. Vous pouvez tout dire ici, sans donner votre nom. Une écoutante formée vous répondra sous 24 heures.',
 };
 
 /** Maquette : rien n'est envoyé ni enregistré. Tout disparaît en quittant la page. */
 export function ListenChat() {
-  const [msgs, setMsgs] = useState<Msg[]>([{ from: 'alafia', text: 'Bonjour. Ici, personne ne vous juge. Qu’est-ce qui vous pèse en ce moment ?' }]);
+  const [msgs, setMsgs] = useState<Msg[]>([{ from: 'ganji', text: 'Bonjour. Ici, personne ne vous juge. Qu’est-ce qui vous pèse en ce moment ?' }]);
   const [draft, setDraft] = useState('');
   const [crisis, setCrisis] = useState(false);
   const [callback, setCallback] = useState(false);
@@ -40,7 +40,7 @@ export function ListenChat() {
       ...m,
       { from: 'moi', text },
       ...(m.some((x) => x.from === 'moi') ? [] : [FIRST_REPLY]),
-      ...(isCrisis ? [{ from: 'alafia' as const, text: 'Ce que vous vivez compte. Vous n’êtes pas seul·e : quelqu’un peut vous parler maintenant, voir le bandeau en haut.' }] : []),
+      ...(isCrisis ? [{ from: 'ganji' as const, text: 'Ce que vous vivez compte. Vous n’êtes pas seul·e : quelqu’un peut vous parler maintenant, voir le bandeau en haut.' }] : []),
     ]);
     setDraft('');
   }
@@ -64,7 +64,7 @@ export function ListenChat() {
               className="space-y-2 rounded-2xl bg-white/10 p-3"
               onSubmit={(e) => {
                 e.preventDefault();
-                setMsgs((m) => [...m, { from: 'alafia', text: 'Demande de rappel notée (maquette : rien n’est envoyé). Dans la version réelle, une écoutante vous appelle dans l’heure.' }]);
+                setMsgs((m) => [...m, { from: 'ganji', text: 'Demande de rappel notée (maquette : rien n’est envoyé). Dans la version réelle, une écoutante vous appelle dans l’heure.' }]);
                 setCallback(false);
                 setPhone('');
               }}
@@ -87,7 +87,7 @@ export function ListenChat() {
               key={i}
               className={`max-w-[85%] rounded-3xl px-4 py-3 ${m.from === 'moi' ? 'ml-auto rounded-br-md bg-[var(--color-brand-900)] text-white' : 'rounded-bl-md bg-[var(--color-brand-100)] text-[var(--color-brand-950)]'}`}
             >
-              <span className="sr-only">{m.from === 'moi' ? 'Vous : ' : 'Écoute Alafia : '}</span>
+              <span className="sr-only">{m.from === 'moi' ? 'Vous : ' : 'Écoute Ganji : '}</span>
               {m.text}
             </p>
           ))}

@@ -12,7 +12,7 @@ import { flushQueue, readQueue, sendOrQueue, type QueuedAction } from '@/lib/off
 
 const PATH = '/community-reports';
 const DEFAULT_COMMUNE = 'Djougou';
-const COMMUNE_KEY = 'alafia-relay-commune';
+const COMMUNE_KEY = 'ganji-relay-commune';
 /** Syndromes à notification immédiate (un seul signalement suffit). */
 const IMMEDIATE = new Set(['PARALYSIE', 'FIEVRE_HEMORRAGIQUE']);
 
@@ -92,13 +92,13 @@ export function RelayHome() {
     void flush();
     const onOnline = () => void flush();
     const onSw = (e: MessageEvent) => {
-      if ((e.data as { type?: string } | null)?.type === 'alafia-sync') void flush();
+      if ((e.data as { type?: string } | null)?.type === 'ganji-sync') void flush();
     };
-    window.addEventListener('alafia-queue', sync);
+    window.addEventListener('ganji-queue', sync);
     window.addEventListener('online', onOnline);
     navigator.serviceWorker?.addEventListener('message', onSw);
     return () => {
-      window.removeEventListener('alafia-queue', sync);
+      window.removeEventListener('ganji-queue', sync);
       window.removeEventListener('online', onOnline);
       navigator.serviceWorker?.removeEventListener('message', onSw);
     };
