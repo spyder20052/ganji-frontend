@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T18:32:58+01:00",
+  "updatedAt": "2026-09-24T18:38:41+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -406,6 +406,11 @@
           "sha": "e966786",
           "repo": "backend",
           "message": "feat(m13-m9-alertes): signalement communautaire, détection de regroupements et pilotage national"
+        },
+        {
+          "sha": "f8e54f3",
+          "repo": "frontend",
+          "message": "feat(m13-m9-alertes): signalement du relais en 3 gestes, alertes par commune et tableau de bord national"
         }
       ]
     },
@@ -417,7 +422,7 @@
         "M6"
       ],
       "window": "21:30 – 22:00",
-      "status": "doing",
+      "status": "done",
       "repos": [
         "backend",
         "frontend"
@@ -426,23 +431,28 @@
       "items": [
         {
           "label": "Plan de soins et équipe",
-          "done": false
+          "done": true
         },
         {
           "label": "Rappels multicanal (app, SMS, voix)",
-          "done": false
+          "done": true
         },
         {
           "label": "Journal de symptômes par pictogrammes",
-          "done": false
+          "done": true
         },
         {
           "label": "Demande d'avis asynchrone + réponse",
-          "done": false
+          "done": true
         }
       ],
-      "commits": [],
-      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
+      "commits": [
+        {
+          "sha": "748942d",
+          "repo": "backend",
+          "message": "feat(m3-m6-soins): journal de symptômes, rappels et télé-expertise avec photos"
+        }
+      ]
     },
     {
       "id": "C9",
@@ -672,6 +682,10 @@
     {
       "at": "2026-09-24T18:32:58+01:00",
       "text": "C7 validé : Mathieu signale en 3 gestes, le 3e signalement à Djougou déclenche l'alerte au médecin chef de zone (SMS + tableau de bord) ; tableau de bord national avec 4 indicateurs, carte, ruptures et masquage < 10. Corrigé : le signal automatique non vérifié était publié au grand public."
+    },
+    {
+      "at": "2026-09-24T18:38:41+01:00",
+      "text": "C8 validé : demande d'avis depuis Djougou avec deux photos, réponse de Dr Houngbédji visible par l'infirmière et inscrite au carnet ; saignement fort de Koffi → équipe prévenue. Ajouté : photos jointes à la demande d'avis (exigence MVP du cahier). Corrigé : « Avis de hematologie »."
     }
   ]
 }

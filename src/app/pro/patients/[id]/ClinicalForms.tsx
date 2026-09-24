@@ -1,8 +1,10 @@
 'use client';
+import { Camera, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useId, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { api, ApiError } from '@/lib/api';
+import { blobToB64, compress } from '@/lib/image';
 import { ENCOUNTER_TYPES, OBSERVATION_CODES, SPECIALTY_LABEL, TELE_SPECIALTIES } from '../../_lib/labels';
 import { ErrorNote, OkNote } from '../../_lib/ui';
 
@@ -130,13 +132,40 @@ export function ObservationForm({ patientId }: { patientId: string }) {
   );
 }
 
+const MAX_PHOTOS = 3;
+
 export function TeleForm({ patientId, firstName }: { patientId: string; firstName: string }) {
   const uid = useId();
   const [specialty, setSpecialty] = useState<string>('HEMATOLOGIE');
   const [urgency, setUrgency] = useState('NORMALE');
   const [question, setQuestion] = useState('');
+  const [photos, setPhotos] = useState<{ b64: string; preview: string; kb: number }[]>([]);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [compressing, setCompressing] = useState(false);
   const { busy, error, ok, run } = useSubmit();
   const len = question.trim().length;
+
+  useEffect(() => () => photos.forEach((p) => URL.revokeObjectURL(p.preview)), [photos]);
+
+  async function addPhotos(files: FileList | null) {
+    if (!files?.length) return;
+    setPhotoError(null);
+    setCompressing(true);
+    try {
+      const room = MAX_PHOTOS - photos.length;
+      const added: typeof photos = [];
+      for (const file of Array.from(files).slice(0, room)) {
+        const { blob } = await compress(file);
+        added.push({ b64: await blobToB64(blob), preview: URL.createObjectURL(blob), kb: Math.round(blob.size / 1024) });
+      }
+      setPhotos((cur) => [...cur, ...added]);
+      if (files.length > room) setPhotoError(`${MAX_PHOTOS} photos au plus par demande.`);
+    } catch (e) {
+      setPhotoError(e instanceof Error ? e.message : 'Photo illisible.');
+    } finally {
+      setCompressing(false);
+    }
+  }
   return (
     <form
       className="space-y-3"
@@ -144,7 +173,8 @@ export function TeleForm({ patientId, firstName }: { patientId: string; firstNam
         e.preventDefault();
         if (len < 20) return;
         const done = await run(async () => {
-          const r = await api<{ id: string; specialistsNotified: number }>('/tele-expertise', { method: 'POST', json: { patientId, specialty, urgency, question: question.trim() } });
+          const attachments = photos.map((p) => p.b64);
+          const r = await api<{ id: string; specialistsNotified: number }>('/tele-expertise', { method: 'POST', json: { patientId, specialty, urgency, question: question.trim(), attachments } });
           return (
             <>
               Demande envoyée à {r.specialistsNotified} spécialiste{r.specialistsNotified > 1 ? 's' : ''} en {SPECIALTY_LABEL[specialty]?.toLowerCase()}. Ils lisent le carnet de {firstName} pendant 7 jours.{' '}
@@ -154,7 +184,10 @@ export function TeleForm({ patientId, firstName }: { patientId: string; firstNam
             </>
           );
         });
-        if (done) setQuestion('');
+        if (done) {
+          setQuestion('');
+          setPhotos([]);
+        }
       }}
     >
       <div className="grid gap-3 sm:grid-cols-2">
@@ -199,9 +232,38 @@ export function TeleForm({ patientId, firstName }: { patientId: string; firstNam
       <p id={`${uid}-n`} className="num text-sm text-[var(--fg-muted)]">
         {len < 20 ? `${20 - len} caractère(s) minimum restant(s)` : `${len} / 3000`} · le spécialiste voit le carnet, inutile de tout recopier.
       </p>
+      <fieldset className="space-y-2">
+        <legend className="label">Photos (lésion, résultat papier, radio) · facultatif</legend>
+        {photos.length > 0 && (
+          <ul className="flex flex-wrap gap-2">
+            {photos.map((p, i) => (
+              <li key={p.preview} className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element -- aperçu local (blob:) */}
+                <img src={p.preview} alt={`Photo ${i + 1}, ${p.kb} Ko`} className="h-24 w-24 rounded-2xl border border-[var(--border)] object-cover" />
+                <button
+                  type="button"
+                  className="absolute -right-2 -top-2 grid h-8 w-8 place-items-center rounded-full border border-[var(--border)] bg-[var(--card)]"
+                  aria-label={`Retirer la photo ${i + 1}`}
+                  onClick={() => setPhotos((cur) => cur.filter((x) => x !== p))}
+                >
+                  <X size={16} aria-hidden />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {photos.length < MAX_PHOTOS && (
+          <label className="btn btn-ghost cursor-pointer">
+            <Camera size={20} aria-hidden /> {compressing ? 'Compression…' : photos.length ? 'Ajouter une photo' : 'Joindre des photos'}
+            <input type="file" accept="image/*" capture="environment" multiple className="sr-only" disabled={compressing} onChange={(e) => { void addPhotos(e.target.files); e.target.value = ''; }} />
+          </label>
+        )}
+        <p className="text-sm text-[var(--fg-muted)]">Compressées sur l’appareil (300 Ko au plus chacune) : l’envoi passe en 2G.</p>
+        <ErrorNote>{photoError}</ErrorNote>
+      </fieldset>
       <ErrorNote>{error}</ErrorNote>
       <OkNote>{ok}</OkNote>
-      <button type="submit" className="btn btn-primary" disabled={busy || len < 20}>
+      <button type="submit" className="btn btn-primary" disabled={busy || compressing || len < 20}>
         {busy ? 'Envoi…' : 'Envoyer la demande d’avis'}
       </button>
     </form>
