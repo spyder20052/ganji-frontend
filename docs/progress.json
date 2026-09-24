@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T16:55:00+01:00",
+  "updatedAt": "2026-09-24T18:02:18+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -14,7 +14,7 @@
       "title": "Registre npm bloqué par les réglages réseau",
       "detail": "Ajouter registry.npmjs.org aux domaines autorisés (Admin settings → Capabilities). Sans lui, pas d'installation de Next.js ni de NestJS.",
       "owner": "Hub",
-      "open": true
+      "open": false
     },
     {
       "id": "github",
@@ -33,182 +33,547 @@
   ],
   "chantiers": [
     {
-      "id": "C0", "title": "Socle", "modules": [], "window": "17:00 – 18:00", "status": "blocked",
-      "repos": ["backend", "frontend"],
+      "id": "C0",
+      "title": "Socle",
+      "modules": [],
+      "window": "17:00 – 18:00",
+      "status": "done",
+      "repos": [
+        "backend",
+        "frontend"
+      ],
       "acceptance": "Tests verts, /health répond, connexion par persona en un clic",
       "items": [
-        { "label": "Plan de conception détaillé (docs/PLAN.md)", "done": true },
-        { "label": "Page de suivi du chantier", "done": true },
-        { "label": "Dépôts git initialisés (main + develop)", "done": false },
-        { "label": "NestJS + Prisma + Helmet + throttling + Swagger", "done": false },
-        { "label": "Next.js + Tailwind + design system + PWA", "done": false },
-        { "label": "Seed : 12 départements, 77 communes, établissements, médicaments, PEV", "done": false },
-        { "label": "Seed fictif : Koffi + 200 patients, 30 soignants, 500 donneurs", "done": false },
-        { "label": "Auth OTP simulée + comptes de démo", "done": false },
-        { "label": "CI GitHub Actions (lint, tests, audit, gitleaks, CodeQL)", "done": false }
+        {
+          "label": "Plan de conception détaillé (docs/PLAN.md)",
+          "done": true
+        },
+        {
+          "label": "Page de suivi du chantier",
+          "done": true
+        },
+        {
+          "label": "Dépôts git initialisés (main + develop)",
+          "done": true
+        },
+        {
+          "label": "NestJS + Prisma + Helmet + throttling + Swagger",
+          "done": true
+        },
+        {
+          "label": "Next.js + Tailwind + design system + PWA",
+          "done": true
+        },
+        {
+          "label": "Seed : 12 départements, 77 communes, établissements, médicaments, PEV",
+          "done": true
+        },
+        {
+          "label": "Seed fictif : Koffi + 200 patients, 30 soignants, 500 donneurs",
+          "done": true
+        },
+        {
+          "label": "Auth OTP simulée + comptes de démo",
+          "done": true
+        },
+        {
+          "label": "CI GitHub Actions (lint, tests, audit, gitleaks, CodeQL)",
+          "done": true
+        }
       ],
-      "commits": []
+      "commits": [
+        {
+          "sha": "d3fa0fb",
+          "repo": "backend",
+          "message": "chore: socle initial du dépôt Alafia API (main)"
+        },
+        {
+          "sha": "2f80b44",
+          "repo": "frontend",
+          "message": "chore: socle initial du frontend Alafia (main)"
+        },
+        {
+          "sha": "dcd4e43",
+          "repo": "backend",
+          "message": "feat(c0-socle): API NestJS qui compile, auth OTP et comptes de démo, journal d'audit"
+        }
+      ]
     },
     {
-      "id": "C1", "title": "Identité, consentement et carnet", "modules": ["M1", "M2"], "window": "18:00 – 18:30", "status": "todo",
-      "repos": ["backend", "frontend"],
+      "id": "C1",
+      "title": "Identité, consentement et carnet",
+      "modules": [
+        "M1",
+        "M2"
+      ],
+      "window": "18:00 – 18:30",
+      "status": "doing",
+      "repos": [
+        "backend",
+        "frontend"
+      ],
       "acceptance": "Un soignant sans consentement reçoit un refus, et la tentative apparaît au journal du patient",
       "items": [
-        { "label": "Gestionnaire de consentements (donner, voir, retirer)", "done": false },
-        { "label": "QR / code de partage 24 h", "done": false },
-        { "label": "Journal d'accès visible par le patient", "done": false },
-        { "label": "Fiche vitale, chronologie de soins", "done": false },
-        { "label": "Courbes d'analyses (hémoglobine, plaquettes, glycémie)", "done": false },
-        { "label": "Comptes délégués (aidant)", "done": false },
-        { "label": "Documents (photo compressée)", "done": false }
+        {
+          "label": "Gestionnaire de consentements (donner, voir, retirer)",
+          "done": false
+        },
+        {
+          "label": "QR / code de partage 24 h",
+          "done": false
+        },
+        {
+          "label": "Journal d'accès visible par le patient",
+          "done": false
+        },
+        {
+          "label": "Fiche vitale, chronologie de soins",
+          "done": false
+        },
+        {
+          "label": "Courbes d'analyses (hémoglobine, plaquettes, glycémie)",
+          "done": false
+        },
+        {
+          "label": "Comptes délégués (aidant)",
+          "done": false
+        },
+        {
+          "label": "Documents (photo compressée)",
+          "done": false
+        }
       ],
-      "commits": []
+      "commits": [],
+      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
     },
     {
-      "id": "C2", "title": "Orientation et carte des soins", "modules": ["M11"], "window": "18:30 – 19:00", "status": "todo",
-      "repos": ["backend", "frontend"],
+      "id": "C2",
+      "title": "Orientation et carte des soins",
+      "modules": [
+        "M11"
+      ],
+      "window": "18:30 – 19:00",
+      "status": "doing",
+      "repos": [
+        "backend",
+        "frontend"
+      ],
       "acceptance": "Sans compte, une personne obtient une orientation et le lieu de soin ouvert le plus proche",
       "items": [
-        { "label": "Arbre de décision par pictogrammes (fièvre, enfant, grossesse…)", "done": false },
-        { "label": "Carte des lieux de soin et pharmacies de garde", "done": false },
-        { "label": "Lieu ouvert le plus proche + itinéraire", "done": false }
+        {
+          "label": "Arbre de décision par pictogrammes (fièvre, enfant, grossesse…)",
+          "done": false
+        },
+        {
+          "label": "Carte des lieux de soin et pharmacies de garde",
+          "done": false
+        },
+        {
+          "label": "Lieu ouvert le plus proche + itinéraire",
+          "done": false
+        }
       ],
-      "commits": []
+      "commits": [],
+      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
     },
     {
-      "id": "C3", "title": "Sang : besoins, stocks et donneurs", "modules": ["M4"], "window": "19:00 – 19:45", "status": "todo",
-      "repos": ["backend", "frontend"],
+      "id": "C3",
+      "title": "Sang : besoins, stocks et donneurs",
+      "modules": [
+        "M4"
+      ],
+      "window": "19:00 – 19:45",
+      "status": "doing",
+      "repos": [
+        "backend",
+        "frontend"
+      ],
       "acceptance": "Un donneur répond « 1 » dans le simulateur SMS et la demande passe à « donneur trouvé » en direct",
       "items": [
-        { "label": "Demande de produit sanguin", "done": false },
-        { "label": "Stocks des sites ANTS (carte + liste)", "done": false },
-        { "label": "Appel ciblé aux donneurs compatibles et proches", "done": false },
-        { "label": "Réponse du donneur (app + SMS), RDV proposé", "done": false },
-        { "label": "Simulateur SMS / USSD", "done": false }
+        {
+          "label": "Demande de produit sanguin",
+          "done": false
+        },
+        {
+          "label": "Stocks des sites ANTS (carte + liste)",
+          "done": false
+        },
+        {
+          "label": "Appel ciblé aux donneurs compatibles et proches",
+          "done": false
+        },
+        {
+          "label": "Réponse du donneur (app + SMS), RDV proposé",
+          "done": false
+        },
+        {
+          "label": "Simulateur SMS / USSD",
+          "done": false
+        }
       ],
-      "commits": []
+      "commits": [],
+      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
     },
     {
-      "id": "C4", "title": "Médicaments et ordonnances", "modules": ["M5"], "window": "19:45 – 20:15", "status": "todo",
-      "repos": ["backend", "frontend"],
+      "id": "C4",
+      "title": "Médicaments et ordonnances",
+      "modules": [
+        "M5"
+      ],
+      "window": "19:45 – 20:15",
+      "status": "doing",
+      "repos": [
+        "backend",
+        "frontend"
+      ],
       "acceptance": "Une ordonnance déjà délivrée est refusée à la deuxième pharmacie",
       "items": [
-        { "label": "Ordonnance numérique signée (QR)", "done": false },
-        { "label": "« Qui a mon médicament ? »", "done": false },
-        { "label": "Délivrance tracée à usage unique", "done": false }
+        {
+          "label": "Ordonnance numérique signée (QR)",
+          "done": false
+        },
+        {
+          "label": "« Qui a mon médicament ? »",
+          "done": false
+        },
+        {
+          "label": "Délivrance tracée à usage unique",
+          "done": false
+        }
       ],
-      "commits": []
+      "commits": [],
+      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
     },
     {
-      "id": "C5", "title": "Urgence", "modules": ["M7"], "window": "20:15 – 20:30", "status": "todo",
-      "repos": ["backend", "frontend"],
+      "id": "C5",
+      "title": "Urgence",
+      "modules": [
+        "M7"
+      ],
+      "window": "20:15 – 20:30",
+      "status": "doing",
+      "repos": [
+        "backend",
+        "frontend"
+      ],
       "acceptance": "La carte d'urgence s'affiche en mode avion",
       "items": [
-        { "label": "Carte d'urgence QR (hors ligne, imprimable)", "done": false },
-        { "label": "Accès « bris de glace » justifié et notifié", "done": false },
-        { "label": "Bouton SOS vers les proches et le relais", "done": false }
+        {
+          "label": "Carte d'urgence QR (hors ligne, imprimable)",
+          "done": false
+        },
+        {
+          "label": "Accès « bris de glace » justifié et notifié",
+          "done": false
+        },
+        {
+          "label": "Bouton SOS vers les proches et le relais",
+          "done": false
+        }
       ],
-      "commits": []
+      "commits": [],
+      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
     },
     {
-      "id": "C6", "title": "Mère et enfant", "modules": ["M10"], "window": "20:30 – 21:00", "status": "todo",
-      "repos": ["backend", "frontend"],
+      "id": "C6",
+      "title": "Mère et enfant",
+      "modules": [
+        "M10"
+      ],
+      "window": "20:30 – 21:00",
+      "status": "doing",
+      "repos": [
+        "backend",
+        "frontend"
+      ],
       "acceptance": "Un rappel de CPN et un rappel de vaccin partent par SMS et par message vocal",
       "items": [
-        { "label": "Suivi de grossesse (4 consultations prénatales)", "done": false },
-        { "label": "Signes de danger → alerte relais + orientation maternité", "done": false },
-        { "label": "Carnet de vaccination (calendrier PEV) + preuve QR", "done": false }
+        {
+          "label": "Suivi de grossesse (4 consultations prénatales)",
+          "done": false
+        },
+        {
+          "label": "Signes de danger → alerte relais + orientation maternité",
+          "done": false
+        },
+        {
+          "label": "Carnet de vaccination (calendrier PEV) + preuve QR",
+          "done": false
+        }
       ],
-      "commits": []
+      "commits": [],
+      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
     },
     {
-      "id": "C7", "title": "Alertes sanitaires et pilotage", "modules": ["M13", "M9"], "window": "21:00 – 21:30", "status": "todo",
-      "repos": ["backend", "frontend"],
+      "id": "C7",
+      "title": "Alertes sanitaires et pilotage",
+      "modules": [
+        "M13",
+        "M9"
+      ],
+      "window": "21:00 – 21:30",
+      "status": "doing",
+      "repos": [
+        "backend",
+        "frontend"
+      ],
       "acceptance": "Trois signalements dans une commune déclenchent une alerte au médecin chef de zone",
       "items": [
-        { "label": "Alertes officielles par commune", "done": false },
-        { "label": "Signalement communautaire en 3 gestes", "done": false },
-        { "label": "Tableau de bord national (carte + 4 indicateurs)", "done": false },
-        { "label": "Agrégats anonymisés, seuil de 10 cas", "done": false }
+        {
+          "label": "Alertes officielles par commune",
+          "done": false
+        },
+        {
+          "label": "Signalement communautaire en 3 gestes",
+          "done": false
+        },
+        {
+          "label": "Tableau de bord national (carte + 4 indicateurs)",
+          "done": false
+        },
+        {
+          "label": "Agrégats anonymisés, seuil de 10 cas",
+          "done": false
+        }
       ],
-      "commits": []
+      "commits": [],
+      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
     },
     {
-      "id": "C8", "title": "Suivi chronique et télé-expertise", "modules": ["M3", "M6"], "window": "21:30 – 22:00", "status": "todo",
-      "repos": ["backend", "frontend"],
+      "id": "C8",
+      "title": "Suivi chronique et télé-expertise",
+      "modules": [
+        "M3",
+        "M6"
+      ],
+      "window": "21:30 – 22:00",
+      "status": "doing",
+      "repos": [
+        "backend",
+        "frontend"
+      ],
       "acceptance": "Une question envoyée depuis Djougou reçoit une réponse visible dans le carnet",
       "items": [
-        { "label": "Plan de soins et équipe", "done": false },
-        { "label": "Rappels multicanal (app, SMS, voix)", "done": false },
-        { "label": "Journal de symptômes par pictogrammes", "done": false },
-        { "label": "Demande d'avis asynchrone + réponse", "done": false }
+        {
+          "label": "Plan de soins et équipe",
+          "done": false
+        },
+        {
+          "label": "Rappels multicanal (app, SMS, voix)",
+          "done": false
+        },
+        {
+          "label": "Journal de symptômes par pictogrammes",
+          "done": false
+        },
+        {
+          "label": "Demande d'avis asynchrone + réponse",
+          "done": false
+        }
       ],
-      "commits": []
+      "commits": [],
+      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
     },
     {
-      "id": "C9", "title": "Inclusion et accessibilité", "modules": [], "window": "22:00 – 22:15", "status": "todo",
-      "repos": ["frontend"],
+      "id": "C9",
+      "title": "Inclusion et accessibilité",
+      "modules": [],
+      "window": "22:00 – 22:15",
+      "status": "doing",
+      "repos": [
+        "frontend"
+      ],
       "acceptance": "Messages vocaux dans au moins 2 langues nationales, aucune violation axe-core critique",
       "items": [
-        { "label": "Bouton « écouter » sur chaque écran patient", "done": false },
-        { "label": "Mode simple (4 actions) et mode discret", "done": false },
-        { "label": "Interface FR / EN", "done": false }
+        {
+          "label": "Bouton « écouter » sur chaque écran patient",
+          "done": false
+        },
+        {
+          "label": "Mode simple (4 actions) et mode discret",
+          "done": false
+        },
+        {
+          "label": "Interface FR / EN",
+          "done": false
+        }
       ],
-      "commits": []
+      "commits": [],
+      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
     },
     {
-      "id": "C10", "title": "Hors ligne et performance", "modules": [], "window": "22:15 – 22:45", "status": "todo",
-      "repos": ["frontend"],
+      "id": "C10",
+      "title": "Hors ligne et performance",
+      "modules": [],
+      "window": "22:15 – 22:45",
+      "status": "doing",
+      "repos": [
+        "frontend"
+      ],
       "acceptance": "Première page < 200 Ko, Lighthouse accessibilité ≥ 95",
       "items": [
-        { "label": "Service worker + file de synchronisation", "done": false },
-        { "label": "Stockage local chiffré par PIN", "done": false },
-        { "label": "Budget de poids vérifié", "done": false }
+        {
+          "label": "Service worker + file de synchronisation",
+          "done": false
+        },
+        {
+          "label": "Stockage local chiffré par PIN",
+          "done": false
+        },
+        {
+          "label": "Budget de poids vérifié",
+          "done": false
+        }
       ],
-      "commits": []
+      "commits": [],
+      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
     },
     {
-      "id": "C11", "title": "Étendue de la vision", "modules": ["M8", "M12", "M14", "M15"], "window": "22:45 – 23:00", "status": "todo",
-      "repos": ["frontend"],
+      "id": "C11",
+      "title": "Étendue de la vision",
+      "modules": [
+        "M8",
+        "M12",
+        "M14",
+        "M15"
+      ],
+      "window": "22:45 – 23:00",
+      "status": "doing",
+      "repos": [
+        "frontend"
+      ],
       "acceptance": "Parcours cliquables marqués « aperçu »",
       "items": [
-        { "label": "Assistant Alafia (garde-fous)", "done": false },
-        { "label": "Écoute anonyme + numéro de crise", "done": false },
-        { "label": "Mes droits, estimation du coût, mobile money", "done": false },
-        { "label": "Cercle de soin (aidants)", "done": false }
+        {
+          "label": "Assistant Alafia (garde-fous)",
+          "done": false
+        },
+        {
+          "label": "Écoute anonyme + numéro de crise",
+          "done": false
+        },
+        {
+          "label": "Mes droits, estimation du coût, mobile money",
+          "done": false
+        },
+        {
+          "label": "Cercle de soin (aidants)",
+          "done": false
+        }
       ],
-      "commits": []
+      "commits": [],
+      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
     },
     {
-      "id": "C12", "title": "Qualité et livraison", "modules": [], "window": "23:00 – 23:45", "status": "todo",
-      "repos": ["backend", "frontend"],
+      "id": "C12",
+      "title": "Qualité et livraison",
+      "modules": [],
+      "window": "23:00 – 23:45",
+      "status": "todo",
+      "repos": [
+        "backend",
+        "frontend"
+      ],
       "acceptance": "CI verte, liens accessibles, mail envoyé",
       "items": [
-        { "label": "Tests d'autorisation (IDOR, consentement)", "done": false },
-        { "label": "Tests Playwright du parcours héros", "done": false },
-        { "label": "SECURITY.md, ARCHITECTURE.md, README", "done": false },
-        { "label": "Déploiement Vercel (2 projets)", "done": false },
-        { "label": "Mail envoyé à atchokpodo@gouv.bj (cc kdegila@gouv.bj)", "done": false }
+        {
+          "label": "Tests d'autorisation (IDOR, consentement)",
+          "done": false
+        },
+        {
+          "label": "Tests Playwright du parcours héros",
+          "done": false
+        },
+        {
+          "label": "SECURITY.md, ARCHITECTURE.md, README",
+          "done": false
+        },
+        {
+          "label": "Déploiement Vercel (2 projets)",
+          "done": false
+        },
+        {
+          "label": "Mail envoyé à atchokpodo@gouv.bj (cc kdegila@gouv.bj)",
+          "done": false
+        }
       ],
       "commits": []
     }
   ],
   "acceptance": [
-    { "label": "Parcours héros de bout en bout, sans intervention manuelle", "done": false },
-    { "label": "Soignant sans consentement bloqué, tentative au journal", "done": false },
-    { "label": "Carte d'urgence hors ligne", "done": false },
-    { "label": "Réponse « oui » d'un donneur par SMS, mise à jour en direct", "done": false },
-    { "label": "Ordonnance délivrée refusée à la 2e pharmacie", "done": false },
-    { "label": "Lighthouse accessibilité ≥ 95 sur les écrans patients", "done": false },
-    { "label": "Première page < 200 Ko", "done": false },
-    { "label": "CI verte : lint, tests, dépendances, secrets", "done": false },
-    { "label": "Messages vocaux en 2 langues nationales", "done": false },
-    { "label": "Orientation sans compte + lieu ouvert le plus proche", "done": false },
-    { "label": "Rappel vaccin et CPN par SMS et voix", "done": false }
+    {
+      "label": "Parcours héros de bout en bout, sans intervention manuelle",
+      "done": false
+    },
+    {
+      "label": "Soignant sans consentement bloqué, tentative au journal",
+      "done": false
+    },
+    {
+      "label": "Carte d'urgence hors ligne",
+      "done": false
+    },
+    {
+      "label": "Réponse « oui » d'un donneur par SMS, mise à jour en direct",
+      "done": false
+    },
+    {
+      "label": "Ordonnance délivrée refusée à la 2e pharmacie",
+      "done": false
+    },
+    {
+      "label": "Lighthouse accessibilité ≥ 95 sur les écrans patients",
+      "done": false
+    },
+    {
+      "label": "Première page < 200 Ko",
+      "done": false
+    },
+    {
+      "label": "CI verte : lint, tests, dépendances, secrets",
+      "done": false
+    },
+    {
+      "label": "Messages vocaux en 2 langues nationales",
+      "done": false
+    },
+    {
+      "label": "Orientation sans compte + lieu ouvert le plus proche",
+      "done": false
+    },
+    {
+      "label": "Rappel vaccin et CPN par SMS et voix",
+      "done": false
+    }
   ],
   "log": [
-    { "at": "2026-09-24T16:40:00+01:00", "text": "Cahier des charges analysé ; brouillon du mail de transmission rédigé." },
-    { "at": "2026-09-24T16:50:00+01:00", "text": "Plan de conception détaillé rédigé (architecture 2 dépôts sur Vercel, modèle FHIR, 13 chantiers)." },
-    { "at": "2026-09-24T16:55:00+01:00", "text": "Blocage : registre npm et GitHub inaccessibles depuis les environnements de travail." }
+    {
+      "at": "2026-09-24T16:40:00+01:00",
+      "text": "Cahier des charges analysé ; brouillon du mail de transmission rédigé."
+    },
+    {
+      "at": "2026-09-24T16:50:00+01:00",
+      "text": "Plan de conception détaillé rédigé (architecture 2 dépôts sur Vercel, modèle FHIR, 13 chantiers)."
+    },
+    {
+      "at": "2026-09-24T16:55:00+01:00",
+      "text": "Blocage : registre npm et GitHub inaccessibles depuis les environnements de travail."
+    },
+    {
+      "at": "2026-09-24T17:20:00+01:00",
+      "text": "Backend : 13 modules NestJS écrits (auth, consentement, carnet, sang, médicaments, urgence, mère-enfant, orientation, alertes, pilotage, soins, télé-expertise, canaux SMS/USSD) + seed réel et fictif."
+    },
+    {
+      "at": "2026-09-24T17:40:00+01:00",
+      "text": "Frontend : ~125 fichiers (espaces patient, soignant, pharmacie, ANTS, ministère, relais, simulateur SMS, orientation, carte, médicaments). Non compilé : registre npm bloqué."
+    },
+    {
+      "at": "2026-09-24T17:45:00+01:00",
+      "text": "Dépôts git initialisés (main + develop), commits initiaux locaux. Push en attente du compte GitHub."
+    },
+    {
+      "at": "2026-09-24T18:02:18+01:00",
+      "text": "C0 validé : API et PWA compilent (typecheck, lint, tests verts), /health OK, base seedée, connexion OTP simulée et par persona vérifiées dans le navigateur."
+    }
   ]
 }
