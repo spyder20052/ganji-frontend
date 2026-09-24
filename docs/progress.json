@@ -1,6 +1,6 @@
 {
   "project": "Alafia",
-  "updatedAt": "2026-09-24T19:01:27+01:00",
+  "updatedAt": "2026-09-24T19:17:47+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": null,
@@ -488,6 +488,11 @@
           "sha": "11f4e9a",
           "repo": "backend",
           "message": "docs(c9-inclusion): les langues des messages vocaux sont visées, pas livrées"
+        },
+        {
+          "sha": "3f16cc5",
+          "repo": "frontend",
+          "message": "feat(c9-inclusion): mode simple conforme, texte à 200 % sans débordement, carte d'urgence bilingue"
         }
       ],
       "note": "Livré : bouton Écouter sur chaque écran patient, mode simple à 4 actions, mode discret, 0 violation axe-core sur 30 écrans, texte à 200 % sans débordement, carte d'urgence bilingue. Manque : enregistrements fon et bariba par un locuteur natif (docs/ENREGISTREMENTS.md) et interface anglaise complète."
@@ -497,7 +502,7 @@
       "title": "Hors ligne et performance",
       "modules": [],
       "window": "22:15 – 22:45",
-      "status": "doing",
+      "status": "done",
       "repos": [
         "frontend"
       ],
@@ -505,19 +510,24 @@
       "items": [
         {
           "label": "Service worker + file de synchronisation",
-          "done": false
+          "done": true
         },
         {
           "label": "Stockage local chiffré par PIN",
-          "done": false
+          "done": true
         },
         {
           "label": "Budget de poids vérifié",
-          "done": false
+          "done": true
         }
       ],
-      "commits": [],
-      "note": "Code écrit, en attente de compilation et de tests (npm bloqué)"
+      "commits": [
+        {
+          "sha": "6c7fd65",
+          "repo": "backend",
+          "message": "fix(securite): deepmerge-ts corrigé sous @prisma/config (npm audit sans faille haute)"
+        }
+      ]
     },
     {
       "id": "C11",
@@ -701,6 +711,10 @@
     {
       "at": "2026-09-24T19:01:27+01:00",
       "text": "C9 partiel : 0 violation axe-core (WCAG 2.2 AA) sur 30 écrans après 4 corrections, clavier seul OK, texte à 200 % sans débordement, mode simple conforme au cahier (carnet, médicaments, appeler, urgence), thème sombre manuel réparé, carte d'urgence bilingue FR/EN. Voix en langues nationales : script d'enregistrement prêt, fichiers à produire par un locuteur natif."
+    },
+    {
+      "at": "2026-09-24T19:17:47+01:00",
+      "text": "C10 validé en build de production : première page 148,6 Ko (mesurée 159,8 Ko dans le navigateur, budget 200 Ko), Lighthouse mobile 3G lente : accessibilité 96-100, performance 98-99, LCP 2,0-2,4 s ; file hors ligne du relais synchronisée au retour du réseau ; carnet chiffré par PIN lisible en mode avion. JS initial 106,7 Ko (cible 100 Ko, plancher React + Next ≈ 100 Ko). Corrigés : copie PIN inaccessible hors ligne, préchargement des liens qui dépassait le budget, thème sombre illisible (0 violation axe-core en clair et en sombre), failles hautes npm audit (postcss, deepmerge-ts)."
     }
   ]
 }

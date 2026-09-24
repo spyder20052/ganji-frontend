@@ -11,7 +11,7 @@ export default function Offline() {
       <p>Vos saisies sont gardées sur le téléphone et partiront au retour du réseau. Ce qui reste disponible :</p>
       <div className="grid gap-3">
         <Link href="/app/carte-urgence" className="btn btn-danger">Ma carte d’urgence</Link>
-        <Link href="/app" className="btn btn-primary">Mon carnet (copie locale)</Link>
+        <Link href="/app/hors-ligne" className="btn btn-primary">Mon carnet (copie protégée par PIN)</Link>
         <Link href="/orientation" className="btn btn-ghost">J’ai un symptôme</Link>
       </div>
       <p className="text-base text-[var(--fg-muted)]">Urgence : sapeurs-pompiers 118. Sans téléphone qui fonctionne, montrez votre carte QR imprimée.</p>

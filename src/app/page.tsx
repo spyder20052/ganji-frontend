@@ -17,6 +17,7 @@ const SITUATIONS = [
   ['mind', 'Je vais mal dans ma tête'], ['elderly', 'Je suis âgé ou dépendant'], ['shield', 'Une épidémie menace'], ['care', 'Je ne peux pas payer'],
 ];
 
+// Pas de préchargement des pages liées : en 2G, chaque Ko compte (budget de la première page < 200 Ko).
 export default function Home() {
   return (
     <>
@@ -24,7 +25,7 @@ export default function Home() {
         <Logo />
         <div className="flex flex-wrap items-center gap-2">
           <PrefsMenu />
-          <Link href="/connexion" className="btn btn-primary"><LogIn size={20} aria-hidden /> Se connecter</Link>
+          <Link prefetch={false} href="/connexion" className="btn btn-primary"><LogIn size={20} aria-hidden /> Se connecter</Link>
         </div>
       </header>
 
@@ -37,7 +38,7 @@ export default function Home() {
               Un carnet qui voyage avec vous, relié à votre NPI et partagé seulement avec votre accord. Le bon soin au bon endroit. Du sang, des médicaments et un spécialiste mobilisés en temps réel.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/connexion" className="btn bg-white text-[var(--color-brand-900)]">Ouvrir mon carnet</Link>
+              <Link prefetch={false} href="/connexion" className="btn bg-white text-[var(--color-brand-900)]">Ouvrir mon carnet</Link>
               <ListenButton text="Bienvenue sur Alafia. Votre santé, près de chez vous. Sans compte, vous pouvez trouver où vous soigner, un médicament ou de l'aide en urgence." audioKey="welcome" />
             </div>
             <svg aria-hidden className="pointer-events-none absolute -right-10 -bottom-10 opacity-10" width="260" height="260" viewBox="0 0 32 32">
@@ -49,7 +50,7 @@ export default function Home() {
             <ul className="mt-4 grid gap-3">
               {NO_ACCOUNT.map((a) => (
                 <li key={a.href}>
-                  <Link href={a.href} className={`group flex items-center gap-4 rounded-2xl border p-3 hover:shadow-sm ${a.danger ? 'border-[var(--color-danger-600)]/30 bg-[var(--color-danger-50)]' : 'border-[var(--border)] bg-[var(--bg)]'}`}>
+                  <Link prefetch={false} href={a.href} className={`group flex items-center gap-4 rounded-2xl border p-3 hover:shadow-sm ${a.danger ? 'border-[var(--color-danger-600)]/30 bg-[var(--color-danger-50)]' : 'border-[var(--border)] bg-[var(--bg)]'}`}>
                     <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${a.danger ? 'bg-[var(--color-danger-600)] text-white' : 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]'}`}>
                       <Pictogram name={a.icon} />
                     </span>
@@ -97,17 +98,17 @@ export default function Home() {
         </section>
 
         <section className="grid gap-4 md:grid-cols-3">
-          <Link href="/demo" className="card p-5 hover:shadow-sm">
+          <Link prefetch={false} href="/demo" className="card p-5 hover:shadow-sm">
             <p className="label">Jury</p>
             <p className="mt-1 text-lg font-bold">Comptes de démonstration</p>
             <p className="text-base text-[var(--fg-muted)]">Patient, aidante, hématologue, pharmacie, ANTS, ministère, relais : connexion en un clic.</p>
           </Link>
-          <Link href="/simulateur" className="card p-5 hover:shadow-sm">
+          <Link prefetch={false} href="/simulateur" className="card p-5 hover:shadow-sm">
             <p className="label">Sans smartphone</p>
             <p className="mt-1 text-lg font-bold">Simulateur SMS et USSD</p>
             <p className="text-base text-[var(--fg-muted)]">Voir les messages reçus par un téléphone simple et y répondre.</p>
           </Link>
-          <Link href="/chantier" className="card p-5 hover:shadow-sm">
+          <Link prefetch={false} href="/chantier" className="card p-5 hover:shadow-sm">
             <p className="label">Transparence</p>
             <p className="mt-1 text-lg font-bold">Suivi du chantier</p>
             <p className="text-base text-[var(--fg-muted)]">Avancement de chaque module, critères d’acceptation, commits.</p>

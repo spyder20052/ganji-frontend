@@ -6,8 +6,8 @@ export function DemoBanner() {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-1.5">
         <span>Données fictives · démonstration</span>
         <span className="flex gap-4">
-          <Link href="/demo" className="underline underline-offset-2">Comptes de démo</Link>
-          <Link href="/simulateur" className="underline underline-offset-2">Simulateur SMS</Link>
+          <Link prefetch={false} href="/demo" className="underline underline-offset-2">Comptes de démo</Link>
+          <Link prefetch={false} href="/simulateur" className="underline underline-offset-2">Simulateur SMS</Link>
         </span>
       </div>
     </div>

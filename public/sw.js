@@ -1,9 +1,9 @@
 /* Alafia : service worker. Coque de l'application et pages vitales disponibles hors ligne. */
-const VERSION = 'alafia-v2';
-const SHELL = ['/', '/offline', '/orientation', '/urgence', '/app', '/app/carte-urgence', '/relais', '/manifest.webmanifest', '/icon.svg'];
+const VERSION = 'alafia-v3';
+const SHELL = ['/', '/offline', '/orientation', '/urgence', '/app', '/app/carte-urgence', '/app/hors-ligne', '/relais', '/manifest.webmanifest', '/icon.svg'];
 // Seules ces pages sont gardées pour le hors ligne. Jamais un dossier consulté par un soignant
 // (/pro/…), ni le carnet complet : il a sa copie chiffrée par PIN (lib/secure-store.ts).
-const OFFLINE_PAGES = new Set(['/', '/offline', '/orientation', '/urgence', '/carte', '/medicaments', '/alertes', '/app', '/app/carte-urgence', '/relais']);
+const OFFLINE_PAGES = new Set(['/', '/offline', '/orientation', '/urgence', '/carte', '/medicaments', '/alertes', '/app', '/app/carte-urgence', '/app/hors-ligne', '/relais']);
 // Lectures d'API sans donnée de santé nominative, utiles hors ligne.
 const API_CACHE = ['/api/triage/tree', '/api/geo/departments'];
 

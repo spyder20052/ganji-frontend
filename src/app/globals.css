@@ -46,12 +46,18 @@
   --border: var(--color-line);
   color-scheme: light;
 }
+/* Thème sombre : surfaces sombres, et les fonds teintés (alerte, rappel, urgence) deviennent des
+   teintes sombres avec un texte clair de la même famille. Contrastes ≥ 4,5:1 vérifiés (axe-core). */
 :root[data-theme='dark'] {
   --bg: #0c1512;
   --card: #14201c;
   --fg: #e6efeb;
   --fg-muted: #9db0a7;
   --border: #25352f;
+  --color-danger-50: #3b1717;
+  --color-danger-800: #ffb4ab;
+  --color-ocre-100: #3a2d0f;
+  --color-ocre-700: #f0c56a;
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -61,6 +67,10 @@
     --fg: #e6efeb;
     --fg-muted: #9db0a7;
     --border: #25352f;
+    --color-danger-50: #3b1717;
+    --color-danger-800: #ffb4ab;
+    --color-ocre-100: #3a2d0f;
+    --color-ocre-700: #f0c56a;
     color-scheme: dark;
   }
 }
@@ -110,6 +120,17 @@ h1, h2, h3 { text-wrap: balance; line-height: 1.2; }
 }
 
 :focus-visible { outline: 3px solid var(--color-ocre-500); outline-offset: 2px; border-radius: 6px; }
+
+/* Rouge d'urgence employé comme texte sur fond sombre : éclairci pour rester lisible (≥ 4,5:1),
+   sauf sur les pastilles blanches où il garde sa valeur. */
+:root[data-theme='dark'] .text-\[var\(--color-danger-600\)\]:not(.bg-white) {
+  color: #ff8f85;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .text-\[var\(--color-danger-600\)\]:not(.bg-white) {
+    color: #ff8f85;
+  }
+}
 
 /* Mode économie (batterie faible) : pas d'animation. */
 @media (prefers-reduced-motion: reduce) {

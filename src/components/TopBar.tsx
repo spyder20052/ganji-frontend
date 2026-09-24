@@ -10,7 +10,7 @@ export function TopBar({ home = '/', who, links = [] }: { home?: string; who?: s
         <Logo href={home} />
         <nav aria-label="Navigation principale" className="ml-4 hidden gap-1 md:flex">
           {links.map((l) => (
-            <Link key={l.href} href={l.href} className="rounded-full px-3 py-2 text-base font-bold text-[var(--fg-muted)] hover:bg-[var(--card)] hover:text-[var(--fg)]">
+            <Link prefetch={false} key={l.href} href={l.href} className="rounded-full px-3 py-2 text-base font-bold text-[var(--fg-muted)] hover:bg-[var(--card)] hover:text-[var(--fg)]">
               {l.label}
             </Link>
           ))}
@@ -24,7 +24,7 @@ export function TopBar({ home = '/', who, links = [] }: { home?: string; who?: s
       {links.length > 0 && (
         <nav aria-label="Navigation principale (mobile)" className="flex gap-1 overflow-x-auto px-4 pb-2 md:hidden">
           {links.map((l) => (
-            <Link key={l.href} href={l.href} className="whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-sm font-bold">
+            <Link prefetch={false} key={l.href} href={l.href} className="whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-sm font-bold">
               {l.label}
             </Link>
           ))}

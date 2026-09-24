@@ -19,7 +19,10 @@ function setFails(n: number) {
 }
 
 /** Carnet hors ligne chiffré sur le téléphone (AES-GCM, clé dérivée du PIN, jamais stockée). */
-export function OfflinePin() {
+/**
+ * `unlockOnly` : page hors ligne, où l'on ne peut qu'ouvrir la copie (la créer demande le réseau).
+ */
+export function OfflinePin({ unlockOnly = false }: { unlockOnly?: boolean }) {
   const [sealed, setSealed] = useState(false);
   const [pin, setPin] = useState('');
   const [pin2, setPin2] = useState('');
@@ -125,9 +128,13 @@ export function OfflinePin() {
           </div>
         </form>
       ) : (
-        <p className="text-base text-[var(--fg-muted)]">Aucune copie protégée sur ce téléphone pour le moment.</p>
+        <p className="text-base text-[var(--fg-muted)]">
+          Aucune copie protégée sur ce téléphone pour le moment.
+          {unlockOnly && ' Quand vous avez du réseau, créez-la dans « Aidants et réglages ».'}
+        </p>
       )}
 
+      {!unlockOnly && (
       <details className="rounded-2xl bg-[var(--bg)] p-4" open={!sealed}>
         <summary className="cursor-pointer font-bold">{sealed ? 'Mettre à jour la copie ou changer de code' : 'Créer une copie protégée par code PIN'}</summary>
         <form className="mt-3 space-y-3" onSubmit={(e) => { e.preventDefault(); void seal(); }}>
@@ -145,6 +152,7 @@ export function OfflinePin() {
           <button type="submit" className="btn btn-primary" disabled={busy || pin.length < 4}><Lock size={20} aria-hidden /> {busy ? 'Chiffrement…' : 'Protéger et enregistrer'}</button>
         </form>
       </details>
+      )}
 
       {msg && (
         <p role={msg.ok ? 'status' : 'alert'} className={`rounded-2xl p-3 font-bold ${msg.ok ? 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]' : 'bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]'}`}>

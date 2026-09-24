@@ -20,7 +20,7 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
-      - name: Budget de poids (JS initial de l'accueil < 100 Ko compressé)
+      - name: Budget de poids (première page < 200 Ko, JS initial suivi)
         run: node scripts/check-budget.mjs
       - run: npm audit --audit-level=high --omit=dev
 
