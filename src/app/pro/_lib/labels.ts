@@ -1,4 +1,11 @@
-/** Libellés et tons partagés par les espaces soignant, pharmacie et banque de sang. */
+/**
+ * Libellés et tons partagés par les espaces soignant, pharmacie et banque de sang.
+ * Ils restent en français ici : les écrans les traduisent à l'affichage avec t(libellé).
+ */
+import { INTL, translate, type Locale, type T } from '@/i18n/translate';
+
+/** Traducteur neutre (français) : valeur par défaut des aides ci-dessous. */
+const FR: T = (fr, vars) => translate({}, fr, vars);
 
 export type Tone = 'brand' | 'ocre' | 'danger' | 'muted';
 
@@ -89,13 +96,14 @@ export const OBSERVATION_CODES = [
 
 const TZ = 'Africa/Porto-Novo';
 
-/** « 1,2 km » */
-export function km(n: number) {
-  return `${n.toLocaleString('fr-FR', { maximumFractionDigits: n < 10 ? 1 : 0 })} km`;
+/** « 1,2 km » (« 1.2 km » en anglais). */
+export function km(n: number, locale: Locale = 'fr') {
+  return `${n.toLocaleString(INTL[locale], { maximumFractionDigits: n < 10 ? 1 : 0 })} km`;
 }
 
-/** « 8 h » ou « 8 h 30 », à l'heure de Cotonou. */
-export function hourFr(d: string | Date) {
+/** « 8 h » ou « 8 h 30 », à l'heure de Cotonou (« 08:30 » en anglais). */
+export function hourFr(d: string | Date, locale: Locale = 'fr') {
+  if (locale !== 'fr') return new Date(d).toLocaleTimeString(INTL[locale], { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
   const parts = new Intl.DateTimeFormat('fr-FR', { timeZone: TZ, hour: 'numeric', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(d));
   const h = Number(parts.find((p) => p.type === 'hour')?.value ?? 0);
   const m = parts.find((p) => p.type === 'minute')?.value ?? '00';
@@ -106,23 +114,26 @@ function dayKey(d: Date) {
   return d.toLocaleDateString('en-CA', { timeZone: TZ });
 }
 
-/** « aujourd'hui à 8 h », « demain à 8 h », « jeudi 25 septembre à 8 h ». */
-export function whenFr(d: string | Date) {
+/**
+ * « aujourd'hui à 8 h », « demain à 8 h », « jeudi 25 septembre à 8 h ».
+ * Traduit si l'appelant fournit son traducteur `t` et sa langue (français sinon).
+ */
+export function whenFr(d: string | Date, t: T = FR, locale: Locale = 'fr') {
   const date = new Date(d);
   const today = new Date();
   const tomorrow = new Date(today.getTime() + 86_400_000);
   const day =
     dayKey(date) === dayKey(today)
-      ? "aujourd'hui"
+      ? t("aujourd'hui")
       : dayKey(date) === dayKey(tomorrow)
-        ? 'demain'
-        : date.toLocaleDateString('fr-FR', { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long' });
-  return `${day} à ${hourFr(date)}`;
+        ? t('demain')
+        : date.toLocaleDateString(INTL[locale], { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long' });
+  return t('{day} à {hour}', { day, hour: hourFr(date, locale) });
 }
 
-/** Durée écoulée lisible : « 3 h », « 2 j ». */
-export function waited(hours: number) {
-  if (hours < 1) return 'moins d’1 h';
-  if (hours < 48) return `${hours} h`;
-  return `${Math.round(hours / 24)} j`;
+/** Durée écoulée lisible : « 3 h », « 2 j » (traduite si l'appelant fournit `t`). */
+export function waited(hours: number, t: T = FR) {
+  if (hours < 1) return t('moins d’1 h');
+  if (hours < 48) return t('{n} h', { n: hours });
+  return t('{n} j', { n: Math.round(hours / 24) });
 }

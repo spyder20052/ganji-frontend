@@ -1,4 +1,5 @@
 'use client';
+import { useT } from '@/i18n/client';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import type { GeoCommune, GeoDepartment } from '@/lib/places';
@@ -44,8 +45,8 @@ export function CommuneSelect({
   value,
   onChange,
   id,
-  label = 'Ma commune',
-  placeholder = 'Choisir une commune',
+  label,
+  placeholder,
   allowEmpty = true,
 }: {
   value: string;
@@ -55,10 +56,11 @@ export function CommuneSelect({
   placeholder?: string;
   allowEmpty?: boolean;
 }) {
+  const t = useT();
   const { departments, error } = useDepartments();
   return (
     <label htmlFor={id} className="block">
-      <span className="label mb-1.5 block">{label}</span>
+      <span className="label mb-1.5 block">{label ?? t('Ma commune')}</span>
       <select
         id={id}
         className="input"
@@ -66,8 +68,8 @@ export function CommuneSelect({
         disabled={!departments}
         onChange={(e) => onChange(e.target.value, findCommune(departments, e.target.value))}
       >
-        {allowEmpty && <option value="">{departments ? placeholder : error ? 'Liste indisponible (réseau)' : 'Chargement…'}</option>}
-        {!allowEmpty && !departments && <option value={value}>{value || 'Chargement…'}</option>}
+        {allowEmpty && <option value="">{departments ? (placeholder ?? t('Choisir une commune')) : t(error ? 'Liste indisponible (réseau)' : 'Chargement…')}</option>}
+        {!allowEmpty && !departments && <option value={value}>{value || t('Chargement…')}</option>}
         {departments?.map((d) => (
           <optgroup key={d.code} label={d.name}>
             {d.communes.map((c) => (

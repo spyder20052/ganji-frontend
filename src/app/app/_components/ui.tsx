@@ -2,6 +2,7 @@ import { AlertTriangle, Info, ShieldAlert, Sparkles } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { ListenButton } from '@/components/ListenButton';
 import { Pictogram } from '@/components/Pictogram';
+import { getT } from '@/i18n/server';
 
 /**
  * En-tête d'écran patient : pictogramme, titre, bouton « écouter ». L'introduction n'est plus
@@ -81,27 +82,33 @@ export function Notice({ tone = 'info', title, children, role }: { tone?: keyof 
   );
 }
 
-/** Erreur d'un bloc : message clair en français, sans casser le reste de l'écran. */
-export function ErrorNote({ error, what }: { error: string; what?: string }) {
+/**
+ * Erreur d'un bloc : message clair, sans casser le reste de l'écran. Les messages connus
+ * (ceux de load()) sont traduits ; ceux du serveur restent tels quels s'ils n'ont pas de traduction.
+ */
+export async function ErrorNote({ error, what }: { error: string; what?: string }) {
+  const t = await getT();
   return (
-    <Notice tone="warn" role="status" title={what ? `${what} : indisponible` : undefined}>
-      {error}
+    <Notice tone="warn" role="status" title={what ? t('{what} : indisponible', { what }) : undefined}>
+      {t(error)}
     </Notice>
   );
 }
 
-export function PreviewBadge() {
+export async function PreviewBadge() {
+  const t = await getT();
   return (
     <span className="pill bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">
-      <Sparkles size={16} aria-hidden /> Aperçu · maquette cliquable
+      <Sparkles size={16} aria-hidden /> {t('Aperçu · maquette cliquable')}
     </span>
   );
 }
 
 /** Bandeau honnête pour les écrans M8, M12, M14, M15. */
-export function PreviewNotice({ children }: { children: ReactNode }) {
+export async function PreviewNotice({ children }: { children: ReactNode }) {
+  const t = await getT();
   return (
-    <Notice tone="warn" title="Aperçu : ce parcours n’est pas encore branché">
+    <Notice tone="warn" title={t('Aperçu : ce parcours n’est pas encore branché')}>
       {children}
     </Notice>
   );

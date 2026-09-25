@@ -1,6 +1,7 @@
 'use client';
 import { Droplet, FilePlus2, FlaskConical, MessagesSquare, Pill, X, type LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useT } from '@/i18n/client';
 import { BloodRequestForm } from './BloodRequestForm';
 import { EncounterForm, ObservationForm, TeleForm } from './ClinicalForms';
 import { PrescriptionForm } from './PrescriptionForm';
@@ -16,15 +17,16 @@ interface Props {
 
 /** Barre d'actions de la fiche patient : une seule action ouverte à la fois, dans un panneau en ligne. */
 export function ActionBar({ patientId, firstName, bloodGroup, canPrescribe }: Props) {
+  const t = useT();
   const [open, setOpen] = useState<Action | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
 
   const actions: { key: Action; label: string; title: string; icon: LucideIcon; danger?: boolean; hidden?: boolean }[] = [
-    { key: 'blood', label: 'Demander du sang', title: `Demande de produit sanguin pour ${firstName}`, icon: Droplet, danger: true },
-    { key: 'rx', label: 'Ordonnance', title: 'Ordonnance signée', icon: Pill, hidden: !canPrescribe },
-    { key: 'note', label: 'Compte rendu', title: 'Compte rendu de consultation', icon: FilePlus2 },
-    { key: 'obs', label: 'Ajouter un résultat', title: 'Résultat d’analyse', icon: FlaskConical },
-    { key: 'tele', label: 'Demander un avis', title: 'Demande d’avis à un spécialiste (télé-expertise)', icon: MessagesSquare },
+    { key: 'blood', label: t('Demander du sang'), title: t('Demande de produit sanguin pour {name}', { name: firstName }), icon: Droplet, danger: true },
+    { key: 'rx', label: t('Ordonnance'), title: t('Ordonnance signée'), icon: Pill, hidden: !canPrescribe },
+    { key: 'note', label: t('Compte rendu'), title: t('Compte rendu de consultation'), icon: FilePlus2 },
+    { key: 'obs', label: t('Ajouter un résultat'), title: t('Résultat d’analyse'), icon: FlaskConical },
+    { key: 'tele', label: t('Demander un avis'), title: t('Demande d’avis à un spécialiste (télé-expertise)'), icon: MessagesSquare },
   ];
   const current = actions.find((a) => a.key === open);
 
@@ -33,7 +35,7 @@ export function ActionBar({ patientId, firstName, bloodGroup, canPrescribe }: Pr
   }, [open]);
 
   return (
-    <section aria-label="Actions sur le dossier" className="space-y-3">
+    <section aria-label={t('Actions sur le dossier')} className="space-y-3">
       <div className="flex flex-wrap gap-2">
         {actions
           .filter((a) => !a.hidden)
@@ -71,7 +73,7 @@ export function ActionBar({ patientId, firstName, bloodGroup, canPrescribe }: Pr
             <h2 id="titre-action" className="flex-1 text-xl font-bold">
               {current.title}
             </h2>
-            <button type="button" className="chip-round !h-11 !w-11" onClick={() => setOpen(null)} aria-label="Fermer le panneau">
+            <button type="button" className="chip-round !h-11 !w-11" onClick={() => setOpen(null)} aria-label={t('Fermer le panneau')}>
               <X size={20} aria-hidden />
             </button>
           </div>

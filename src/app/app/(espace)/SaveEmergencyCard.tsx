@@ -2,10 +2,12 @@
 import { CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useT } from '@/i18n/client';
 import { saveCard, type EmergencyCard } from '../_lib/emergency-card';
 
 /** Enregistre la carte d'urgence sur le téléphone à chaque visite en ligne. */
 export function SaveEmergencyCard({ card }: { card: EmergencyCard }) {
+  const t = useT();
   const [saved, setSaved] = useState(false);
   const json = JSON.stringify(card);
   useEffect(() => {
@@ -20,7 +22,7 @@ export function SaveEmergencyCard({ card }: { card: EmergencyCard }) {
       <span className="grid h-6 w-6 place-items-center rounded-full bg-[var(--color-leaf)] text-[var(--color-brand-900)]">
         <CheckCircle2 size={14} aria-hidden />
       </span>
-      Carte d’urgence prête sans réseau
+      {t('Carte d’urgence prête sans réseau')}
     </Link>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 import { Check, Droplet, FileText, PhoneCall, Send } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useT } from '@/i18n/client';
 
 /**
  * L'histoire de Koffi (parcours héros du cahier des charges), racontée au scroll.
@@ -18,6 +19,7 @@ const STEPS = [
 type StepId = (typeof STEPS)[number]['id'];
 
 export function KoffiStory() {
+  const t = useT();
   const [active, setActive] = useState<StepId>('demande');
   const [replied, setReplied] = useState(false);
   const refs = useRef<(HTMLLIElement | null)[]>([]);
@@ -59,8 +61,8 @@ export function KoffiStory() {
               {i + 1}
             </span>
             <div className="min-w-0 flex-1 space-y-2">
-              <h3 className="text-2xl font-medium">{s.title}</h3>
-              <p className="max-w-[46ch] text-lg text-fg-muted">{s.text}</p>
+              <h3 className="text-2xl font-medium">{t(s.title)}</h3>
+              <p className="max-w-[46ch] text-lg text-fg-muted">{t(s.text)}</p>
               {/* Téléphone : l'écran de l'étape, sous son texte. */}
               <div className="pt-3 md:hidden">
                 <Phone compact>
@@ -90,29 +92,30 @@ function Phone({ children, compact = false }: { children: React.ReactNode; compa
 }
 
 function Screen({ step, replied, onReply }: { step: StepId; replied: boolean; onReply: () => void }) {
+  const t = useT();
   // L'écran des deux dernières étapes suppose la réponse de Rodrigue.
   const found = replied || step === 'trouve' || step === 'carnet';
   switch (step) {
     case 'demande':
       return (
-        <ScreenCard title="Demande de sang · Koffi A.">
-          <p className="font-display text-3xl font-medium">2 poches</p>
-          <p className="text-base">Plaquettes · groupe O+</p>
-          <p className="mt-3 rounded-2xl bg-danger-50 px-3 py-2 text-sm font-semibold text-danger-800">Stock insuffisant à moins de 60 km : 1 poche</p>
+        <ScreenCard title={t('Demande de sang · Koffi A.')}>
+          <p className="font-display text-3xl font-medium">{t('2 poches')}</p>
+          <p className="text-base">{t('Plaquettes · groupe O+')}</p>
+          <p className="mt-3 rounded-2xl bg-danger-50 px-3 py-2 text-sm font-semibold text-danger-800">{t('Stock insuffisant à moins de 60 km : 1 poche')}</p>
         </ScreenCard>
       );
     case 'alerte':
       return (
-        <ScreenCard title="Appel aux donneurs">
+        <ScreenCard title={t('Appel aux donneurs')}>
           <p className="flex flex-wrap items-end gap-x-2">
             <span className="font-display text-5xl font-medium">14</span>
-            <span className="pb-1 text-base">donneurs alertés</span>
+            <span className="pb-1 text-base">{t('donneurs alertés')}</span>
           </p>
           <ul className="mt-3 space-y-2 text-sm">
             {['Rodrigue · 0,9 km', 'Chimène · 1,5 km', 'Landry · 1,6 km'].map((d) => (
               <li key={d} className="flex flex-wrap items-center justify-between gap-x-2 rounded-2xl bg-white px-3 py-2">
                 <span>{d}</span>
-                <span className="text-muted">en attente</span>
+                <span className="text-muted">{t('en attente')}</span>
               </li>
             ))}
           </ul>
@@ -121,22 +124,22 @@ function Screen({ step, replied, onReply }: { step: StepId; replied: boolean; on
     case 'reponse':
       return (
         <div className="flex flex-1 flex-col gap-3">
-          <p className="text-sm font-semibold text-muted">SMS · Ganji</p>
-          <p className="max-w-[92%] rounded-2xl rounded-tl-md bg-white px-3 py-2 text-base">Rodrigue, votre don de sang peut sauver une vie à CNHU-HKM, à 1 km. Répondez 1 pour OUI ou 2 pour NON.</p>
+          <p className="text-sm font-semibold text-muted">{t('SMS · Ganji')}</p>
+          <p className="max-w-[92%] rounded-2xl rounded-tl-md bg-white px-3 py-2 text-base">{t('Rodrigue, votre don de sang peut sauver une vie à CNHU-HKM, à 1 km. Répondez 1 pour OUI ou 2 pour NON.')}</p>
           {replied && (
             <>
               <p className="ml-auto rounded-2xl rounded-tr-md bg-brand-900 px-4 py-2 text-base text-white">1</p>
-              <p className="max-w-[92%] rounded-2xl rounded-tl-md bg-white px-3 py-2 text-base">Merci Rodrigue ! Rendez-vous demain à 8 h à CNHU-HKM.</p>
+              <p className="max-w-[92%] rounded-2xl rounded-tl-md bg-white px-3 py-2 text-base">{t('Merci Rodrigue ! Rendez-vous demain à 8 h à CNHU-HKM.')}</p>
             </>
           )}
-          <div className="mt-auto grid grid-cols-3 gap-2 pt-2" role="group" aria-label="Clavier du téléphone">
+          <div className="mt-auto grid grid-cols-3 gap-2 pt-2" role="group" aria-label={t('Clavier du téléphone')}>
             {['1', '2', '3'].map((k) => (
               <button
                 key={k}
                 type="button"
                 onClick={k === '1' ? onReply : undefined}
                 disabled={k !== '1' || replied}
-                aria-label={k === '1' ? 'Répondre 1 : oui, je donne mon sang' : `Touche ${k}`}
+                aria-label={k === '1' ? t('Répondre 1 : oui, je donne mon sang') : t('Touche {k}', { k })}
                 className={`font-display grid h-12 place-items-center rounded-2xl text-xl font-medium ${k === '1' && !replied ? 'bg-leaf text-brand-900 ring-4 ring-leaf/40' : 'bg-white text-muted'}`}
               >
                 {k === '1' && replied ? <Check size={20} aria-hidden /> : k}
@@ -144,44 +147,44 @@ function Screen({ step, replied, onReply }: { step: StepId; replied: boolean; on
             ))}
           </div>
           <p aria-live="polite" className="sr-only">
-            {replied ? 'Réponse envoyée. Le médecin voit : donneur trouvé.' : ''}
+            {replied ? t('Réponse envoyée. Le médecin voit : donneur trouvé.') : ''}
           </p>
         </div>
       );
     case 'trouve':
       return (
-        <ScreenCard title="Demande de sang · Koffi A.">
+        <ScreenCard title={t('Demande de sang · Koffi A.')}>
           <p className={`flex items-center gap-2 rounded-2xl px-3 py-3 text-lg font-semibold ${found ? 'bg-brand-900 text-white' : 'bg-white'}`}>
-            <Droplet size={20} aria-hidden /> Donneur trouvé
+            <Droplet size={20} aria-hidden /> {t('Donneur trouvé')}
           </p>
-          <p className="mt-2 text-base">Rodrigue viendra demain à 8 h.</p>
+          <p className="mt-2 text-base">{t('Rodrigue viendra demain à 8 h.')}</p>
           <div className="mt-3 flex items-center gap-3 rounded-2xl bg-white px-3 py-2 text-sm">
             <PhoneCall size={18} aria-hidden className="shrink-0 text-brand-500" />
             <span className="min-w-0">
-              Message vocal en fon envoyé à <strong>Afiavi</strong>
+              {t('Message vocal en fon envoyé à')} <strong>Afiavi</strong>
             </span>
           </div>
         </ScreenCard>
       );
     default:
       return (
-        <ScreenCard title="Carnet de Koffi · mes soins">
+        <ScreenCard title={t('Carnet de Koffi · mes soins')}>
           <div className="flex gap-3 rounded-2xl bg-white p-3">
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-danger-600 text-white">
               <Droplet size={18} aria-hidden />
             </span>
             <div className="min-w-0 text-sm">
-              <p className="text-muted">Aujourd’hui · CNHU-HKM</p>
-              <p className="text-base font-semibold">Transfusion</p>
-              <p>2 poches de plaquettes (O+)</p>
+              <p className="text-muted">{t('Aujourd’hui · CNHU-HKM')}</p>
+              <p className="text-base font-semibold">{t('Transfusion')}</p>
+              <p>{t('2 poches de plaquettes (O+)')}</p>
             </div>
           </div>
           <div className="mt-2 flex gap-3 rounded-2xl bg-white/60 p-3 text-sm text-muted">
             <FileText size={18} aria-hidden className="mt-0.5 shrink-0" />
-            <span>Ordonnance · il y a 2 jours</span>
+            <span>{t('Ordonnance · il y a 2 jours')}</span>
           </div>
           <p className="mt-3 flex items-center gap-2 text-sm text-muted">
-            <Send size={14} aria-hidden /> Visible aussi par son équipe de soins
+            <Send size={14} aria-hidden /> {t('Visible aussi par son équipe de soins')}
           </p>
         </ScreenCard>
       );

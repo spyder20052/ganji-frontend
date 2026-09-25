@@ -1,6 +1,8 @@
+'use client';
 import { Navigation, Phone } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { communeName, directionsUrl, fmtKm, TYPE_LABEL, type LatLng, type Place } from '@/lib/places';
+import { useT } from '@/i18n/client';
 import { Pictogram } from './Pictogram';
 
 function iconFor(p: Place) {
@@ -16,7 +18,7 @@ export function PlaceList({
   extra,
   onSelect,
   selectedId,
-  empty = 'Aucun lieu trouvé.',
+  empty,
 }: {
   places: Place[];
   from?: LatLng | null;
@@ -25,7 +27,8 @@ export function PlaceList({
   selectedId?: string | null;
   empty?: string;
 }) {
-  if (!places.length) return <p className="text-[var(--fg-muted)]">{empty}</p>;
+  const t = useT();
+  if (!places.length) return <p className="text-[var(--fg-muted)]">{empty ?? t('Aucun lieu trouvé.')}</p>;
   return (
     <ul className="grid gap-3">
       {places.map((p) => {
@@ -48,13 +51,13 @@ export function PlaceList({
                 <p className="font-bold">{p.name}</p>
               )}
               <p className="text-base text-[var(--fg-muted)]">
-                {p.type ? `${TYPE_LABEL[p.type] ?? p.type} · ` : ''}
+                {p.type ? `${t(TYPE_LABEL[p.type] ?? p.type)} · ` : ''}
                 {communeName(p.commune)}
               </p>
               <p className="mt-1 flex flex-wrap items-center gap-1.5">
-                {p.open24h && <span className="pill bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">Ouvert 24 h/24</span>}
-                {p.onDuty && <span className="pill bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">De garde</span>}
-                {p.distanceKm != null && <span className="pill num border border-[var(--border)]">à {fmtKm(p.distanceKm)}</span>}
+                {p.open24h && <span className="pill bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">{t('Ouvert 24 h/24')}</span>}
+                {p.onDuty && <span className="pill bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">{t('De garde')}</span>}
+                {p.distanceKm != null && <span className="pill num border border-[var(--border)]">{t('à {distance}', { distance: fmtKm(p.distanceKm) })}</span>}
                 {extra?.(p)}
               </p>
             </div>
@@ -69,9 +72,9 @@ export function PlaceList({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn btn-soft flex-1 sm:flex-none"
-                aria-label={`Itinéraire vers ${p.name} (OpenStreetMap, nouvel onglet)`}
+                aria-label={t('Itinéraire vers {lieu} (OpenStreetMap, nouvel onglet)', { lieu: p.name })}
               >
-                <Navigation size={18} aria-hidden /> Itinéraire
+                <Navigation size={18} aria-hidden /> {t('Itinéraire')}
               </a>
             </div>
           </li>

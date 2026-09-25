@@ -1,6 +1,7 @@
 'use client';
 import { Check } from 'lucide-react';
 import { useState } from 'react';
+import { useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { BLOOD_GROUPS, BLOOD_PRODUCTS } from '../pro/_lib/labels';
 import { LEVEL_CLASS, LEVEL_LABEL, level, unitsOf, type StockSite } from './stock';
@@ -10,6 +11,7 @@ const key = (p: string, g: string) => `${p}:${g}`;
 
 /** Stock du site connecté, modifiable case par case (enregistré en quittant la case ou avec Entrée). */
 export function OwnStockGrid({ site }: { site: StockSite }) {
+  const t = useT();
   const [cells, setCells] = useState<Record<string, CellState>>(() => {
     const init: Record<string, CellState> = {};
     for (const p of BLOOD_PRODUCTS) for (const g of BLOOD_GROUPS) {
@@ -27,7 +29,7 @@ export function OwnStockGrid({ site }: { site: StockSite }) {
     const c = cells[k];
     const units = Number(c.draft);
     if (c.draft.trim() === '' || !Number.isInteger(units) || units < 0 || units > 5000) {
-      patch(k, { draft: String(c.saved), error: 'Valeur invalide' });
+      patch(k, { draft: String(c.saved), error: t('Valeur invalide') });
       return;
     }
     if (units === c.saved) return;
@@ -37,9 +39,9 @@ export function OwnStockGrid({ site }: { site: StockSite }) {
       patch(k, { saved: units, saving: false, ok: true });
       setLastError(null);
     } catch (e) {
-      const msg = e instanceof ApiError ? e.message : 'Non enregistré';
+      const msg = e instanceof ApiError ? e.message : t('Non enregistré');
       patch(k, { saving: false, error: msg, draft: String(c.saved) });
-      setLastError(`${product} ${group} : ${msg}`);
+      setLastError(t('{product} {group} : {message}', { product, group, message: msg }));
     }
   }
 
@@ -49,15 +51,15 @@ export function OwnStockGrid({ site }: { site: StockSite }) {
     <div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[30rem] border-separate border-spacing-1.5">
-          <caption className="sr-only">Stock de {site.shortName ?? site.name}, en poches, modifiable</caption>
+          <caption className="sr-only">{t('Stock de {name}, en poches, modifiable', { name: site.shortName ?? site.name })}</caption>
           <thead>
             <tr className="text-left text-sm text-[var(--fg-muted)]">
               <th scope="col" className="w-16 font-bold">
-                Groupe
+                {t('Groupe')}
               </th>
               {BLOOD_PRODUCTS.map((p, i) => (
                 <th key={p.value} scope="col" className="font-bold">
-                  {p.label} <span className="num font-normal">· {totals[i]} poches</span>
+                  {t(p.label)} <span className="num font-normal">· {t('{n} poches', { n: totals[i] })}</span>
                 </th>
               ))}
             </tr>
@@ -87,12 +89,12 @@ export function OwnStockGrid({ site }: { site: StockSite }) {
                             if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
                             if (e.key === 'Escape') patch(k, { draft: String(c.saved) });
                           }}
-                          aria-label={`${p.label} ${g} : poches en stock (niveau ${LEVEL_LABEL[lv]})`}
+                          aria-label={t('{product} {group} : poches en stock (niveau {level})', { product: t(p.label), group: g, level: t(LEVEL_LABEL[lv]) })}
                           aria-invalid={c.error ? true : undefined}
                           className="num min-h-11 w-20 rounded-lg border border-current/20 bg-[var(--card)] px-2 text-right text-lg font-bold text-[var(--fg)]"
                         />
                         <span className="text-sm font-bold" aria-hidden>
-                          {c.saving ? '…' : c.ok ? <Check size={16} /> : LEVEL_LABEL[lv]}
+                          {c.saving ? '…' : c.ok ? <Check size={16} /> : t(LEVEL_LABEL[lv])}
                         </span>
                       </div>
                     </td>
@@ -108,7 +110,7 @@ export function OwnStockGrid({ site }: { site: StockSite }) {
           {lastError}
         </p>
       )}
-      <p className="mt-2 text-sm text-[var(--fg-muted)]">Modifiez une case puis quittez-la (ou Entrée) : l’enregistrement est immédiat et visible des hôpitaux. Échap annule.</p>
+      <p className="mt-2 text-sm text-[var(--fg-muted)]">{t('Modifiez une case puis quittez-la (ou Entrée) : l’enregistrement est immédiat et visible des hôpitaux. Échap annule.')}</p>
     </div>
   );
 }

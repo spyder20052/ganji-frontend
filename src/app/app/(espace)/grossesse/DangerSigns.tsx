@@ -2,6 +2,7 @@
 import { Navigation, Phone, Siren } from 'lucide-react';
 import { useState } from 'react';
 import { Pictogram } from '@/components/Pictogram';
+import { useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 
 export interface DangerSign { code: string; label: string; pictogram: string; urgency: 'urgence' | 'consulter' | string }
@@ -12,6 +13,7 @@ interface Result { urgent: boolean; advice: string[]; places: Place[]; notified:
 const ALIAS: Record<string, string> = { breathing: 'breath', urine: 'water-loss' };
 
 export function DangerSigns({ pregnancyId, catalogue }: { pregnancyId: string; catalogue: DangerSign[] }) {
+  const t = useT();
   const [picked, setPicked] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<Result | null>(null);
@@ -25,7 +27,7 @@ export function DangerSigns({ pregnancyId, catalogue }: { pregnancyId: string; c
     try {
       setResult(await api<Result>(`/maternal/pregnancy/${pregnancyId}/danger-signs`, { method: 'POST', json: { codes: picked } }));
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Pas de réseau. Si vous avez un de ces signes, allez tout de suite à la maternité ou appelez le 118.');
+      setError(e instanceof ApiError ? e.message : t('Pas de réseau. Si vous avez un de ces signes, allez tout de suite à la maternité ou appelez le 118.'));
     } finally {
       setBusy(false);
     }
@@ -36,20 +38,20 @@ export function DangerSigns({ pregnancyId, catalogue }: { pregnancyId: string; c
       <div className="space-y-4" role="alert">
         {result.urgent ? (
           <div className="rounded-3xl bg-[var(--color-danger-600)] p-5 text-white">
-            <p className="flex items-center gap-3 text-2xl font-bold"><Siren size={30} aria-hidden /> Allez à la maternité maintenant</p>
-            {result.notified > 0 && <p className="mt-2 text-lg">Votre relais et vos proches sont prévenus ({result.notified} message{result.notified > 1 ? 's' : ''}).</p>}
+            <p className="flex items-center gap-3 text-2xl font-bold"><Siren size={30} aria-hidden /> {t('Allez à la maternité maintenant')}</p>
+            {result.notified > 0 && <p className="mt-2 text-lg">{result.notified > 1 ? t('Votre relais et vos proches sont prévenus ({n} messages).', { n: result.notified }) : t('Votre relais et vos proches sont prévenus ({n} message).', { n: result.notified })}</p>}
           </div>
         ) : (
           <div className="rounded-3xl bg-[var(--color-ocre-100)] p-5 text-[var(--color-ocre-700)]">
-            <p className="text-2xl font-bold">Consultez dans les 24 heures</p>
+            <p className="text-2xl font-bold">{t('Consultez dans les 24 heures')}</p>
           </div>
         )}
         <ul className="list-disc space-y-1 pl-6 text-lg">
-          {result.advice.map((a) => <li key={a}>{a}</li>)}
+          {result.advice.map((a) => <li key={a}>{t(a)}</li>)}
         </ul>
         {result.places.length > 0 && (
           <div>
-            <h3 className="mb-2 text-lg font-bold">Maternités ouvertes jour et nuit</h3>
+            <h3 className="mb-2 text-lg font-bold">{t('Maternités ouvertes jour et nuit')}</h3>
             <ul className="space-y-2">
               {result.places.map((p) => (
                 <li key={p.id} className="flex flex-wrap items-center gap-3 rounded-2xl border border-[var(--border)] p-3">
@@ -61,12 +63,12 @@ export function DangerSigns({ pregnancyId, catalogue }: { pregnancyId: string; c
                     </span>
                   </span>
                   {p.phone && (
-                    <a href={`tel:${p.phone}`} className="btn btn-ghost" aria-label={`Appeler ${p.shortName ?? p.name}`}>
-                      <Phone size={18} aria-hidden /> Appeler
+                    <a href={`tel:${p.phone}`} className="btn btn-ghost" aria-label={t('Appeler {name}', { name: p.shortName ?? p.name })}>
+                      <Phone size={18} aria-hidden /> {t('Appeler')}
                     </a>
                   )}
                   <a href={`https://www.openstreetmap.org/directions?to=${p.lat},${p.lng}`} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-                    <Navigation size={18} aria-hidden /> Itinéraire
+                    <Navigation size={18} aria-hidden /> {t('Itinéraire')}
                   </a>
                 </li>
               ))}
@@ -74,8 +76,8 @@ export function DangerSigns({ pregnancyId, catalogue }: { pregnancyId: string; c
           </div>
         )}
         <div className="flex flex-wrap gap-3">
-          <a href="tel:118" className="btn btn-danger"><Phone size={20} aria-hidden /> Appeler le 118</a>
-          <button type="button" className="btn btn-ghost" onClick={() => { setResult(null); setPicked([]); }}>Signaler autre chose</button>
+          <a href="tel:118" className="btn btn-danger"><Phone size={20} aria-hidden /> {t('Appeler le 118')}</a>
+          <button type="button" className="btn btn-ghost" onClick={() => { setResult(null); setPicked([]); }}>{t('Signaler autre chose')}</button>
         </div>
       </div>
     );
@@ -97,8 +99,8 @@ export function DangerSigns({ pregnancyId, catalogue }: { pregnancyId: string; c
                 <span className={`grid h-14 w-14 place-items-center rounded-full ${on ? 'bg-[var(--color-danger-600)] text-white' : 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]'}`}>
                   <Pictogram name={ALIAS[s.pictogram] ?? s.pictogram} size={28} />
                 </span>
-                <span className="text-base leading-snug">{s.label}</span>
-                {on && <span className="text-sm">Choisi</span>}
+                <span className="text-base leading-snug">{t(s.label)}</span>
+                {on && <span className="text-sm">{t('Choisi')}</span>}
               </button>
             </li>
           );
@@ -106,7 +108,7 @@ export function DangerSigns({ pregnancyId, catalogue }: { pregnancyId: string; c
       </ul>
       {error && <p role="alert" className="rounded-2xl bg-[var(--color-ocre-100)] p-3 font-bold text-[var(--color-ocre-700)]">{error}</p>}
       <button type="button" className="btn btn-danger w-full !min-h-14 text-lg" disabled={busy || picked.length === 0} onClick={() => void send()}>
-        {busy ? 'Envoi…' : picked.length ? `J’ai ce${picked.length > 1 ? 's' : ''} signe${picked.length > 1 ? 's' : ''} : que faire ?` : 'Touchez le ou les signes que vous avez'}
+        {busy ? t('Envoi…') : picked.length ? (picked.length > 1 ? t('J’ai ces signes : que faire ?') : t('J’ai ce signe : que faire ?')) : t('Touchez le ou les signes que vous avez')}
       </button>
     </div>
   );

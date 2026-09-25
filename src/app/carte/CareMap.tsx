@@ -5,6 +5,7 @@ import { LocateControl } from '@/components/LocateControl';
 import { MapView, type MapMarker } from '@/components/MapView';
 import { Pictogram } from '@/components/Pictogram';
 import { PlaceList } from '@/components/PlaceList';
+import { useT } from '@/i18n/client';
 import { api } from '@/lib/api';
 import type { Facility } from '@/lib/types';
 import { communeName, directionsUrl, distanceKm, escapeHtml, MAP_COLORS, TYPE_LABEL, type Place } from '@/lib/places';
@@ -39,6 +40,7 @@ function colorFor(f: Facility) {
 const PAGE = 25;
 
 export function CareMap() {
+  const t = useT();
   const [facilities, setFacilities] = useState<Facility[] | null>(null);
   const [error, setError] = useState(false);
   const [filter, setFilter] = useState<FilterKey>('all');
@@ -97,11 +99,11 @@ export function CareMap() {
         color: colorFor(f),
         radius: f.type === 'PHARMACIE' ? 6 : f.type === 'CS' ? 7 : 9,
         popupHtml:
-          `<strong>${escapeHtml(f.name)}</strong><br>${escapeHtml(TYPE_LABEL[f.type] ?? f.type)} · ${escapeHtml(communeName(f.commune))}` +
-          `${f.open24h ? '<br>Ouvert 24 h/24' : ''}${f.onDuty ? '<br>De garde' : ''}` +
-          `<br><a href="${escapeHtml(directionsUrl(f))}" target="_blank" rel="noopener noreferrer">Voir sur OpenStreetMap</a>`,
+          `<strong>${escapeHtml(f.name)}</strong><br>${escapeHtml(TYPE_LABEL[f.type] ? t(TYPE_LABEL[f.type]) : f.type)} · ${escapeHtml(communeName(f.commune))}` +
+          `${f.open24h ? `<br>${escapeHtml(t('Ouvert 24 h/24'))}` : ''}${f.onDuty ? `<br>${escapeHtml(t('De garde'))}` : ''}` +
+          `<br><a href="${escapeHtml(directionsUrl(f))}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('Voir sur OpenStreetMap'))}</a>`,
       })),
-    [filtered],
+    [filtered, t],
   );
 
   const list: Place[] = useMemo(() => {
@@ -123,7 +125,7 @@ export function CareMap() {
 
   return (
     <div className="space-y-5">
-      <div role="group" aria-label="Type de lieu" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
+      <div role="group" aria-label={t('Type de lieu')} className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
         {FILTERS.map((f) => {
           const on = f.key === filter;
           const n = (facilities ?? []).filter(f.test).length;
@@ -138,7 +140,7 @@ export function CareMap() {
               }}
               className={`btn shrink-0 !px-4 text-base ${on ? 'btn-primary' : 'btn-ghost'}`}
             >
-              <Pictogram name={f.icon} size={20} /> {f.label}
+              <Pictogram name={f.icon} size={20} /> {t(f.label)}
               {facilities && <span className={`num text-sm ${on ? 'text-white' : 'text-[var(--fg-muted)]'}`}>{n}</span>}
             </button>
           );
@@ -148,8 +150,8 @@ export function CareMap() {
       <div className="card space-y-3 p-4">
         <div className="flex flex-wrap items-center gap-3">
           <Crosshair size={22} aria-hidden className="text-[var(--color-brand-900)]" />
-          <h2 className="font-bold">Autour de moi</h2>
-          {nearbyLoading && <Loader2 size={18} className="animate-spin text-[var(--fg-muted)]" aria-label="Recherche en cours" />}
+          <h2 className="font-bold">{t('Autour de moi')}</h2>
+          {nearbyLoading && <Loader2 size={18} className="animate-spin text-[var(--fg-muted)]" aria-label={t('Recherche en cours')} />}
         </div>
         <LocateControl idPrefix="carte" status={geo.status} source={geo.source} onLocate={geo.request} onCommune={(p) => geo.setManual(p)} compact />
       </div>
@@ -162,9 +164,9 @@ export function CareMap() {
           focus={focus}
           user={geo.pos}
           height="min(62vh, 520px)"
-          label={`Carte : ${filtered.length} lieux (${active.label.toLowerCase()})`}
+          label={t('Carte : {n} lieux ({type})', { n: filtered.length, type: t(active.label).toLowerCase() })}
         />
-        <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--fg-muted)]" aria-label="Légende">
+        <ul className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--fg-muted)]" aria-label={t('Légende')}>
           {[
             [MAP_COLORS.brand, 'Hôpital'],
             [MAP_COLORS.brandLight, 'Centre de santé'],
@@ -173,13 +175,13 @@ export function CareMap() {
             [MAP_COLORS.danger, 'Transfusion'],
             [MAP_COLORS.user, 'Vous'],
           ].map(([c, l]) => (
-            <li key={l} className="flex items-center gap-1.5"><span aria-hidden className="inline-block h-3 w-3 rounded-full" style={{ background: c }} /> {l}</li>
+            <li key={l} className="flex items-center gap-1.5"><span aria-hidden className="inline-block h-3 w-3 rounded-full" style={{ background: c }} /> {t(l)}</li>
           ))}
         </ul>
         {selected && (
           <div className="relative">
             <PlaceList places={[selected]} from={geo.source === 'gps' ? geo.pos : null} selectedId={selected.id} />
-            <button type="button" onClick={() => setSelectedId(null)} className="chip-round absolute right-3 top-3" aria-label="Fermer la fiche">
+            <button type="button" onClick={() => setSelectedId(null)} className="chip-round absolute right-3 top-3" aria-label={t('Fermer la fiche')}>
               <X size={18} aria-hidden />
             </button>
           </div>
@@ -187,28 +189,28 @@ export function CareMap() {
       </div>
 
       <p className="rounded-2xl bg-[var(--color-ocre-100)] px-4 py-3 text-base text-[var(--color-ocre-700)]">
-        Positions approximatives : import Healthsites/OSM prévu. Appelez avant de vous déplacer si possible.
+        {t('Positions approximatives : import Healthsites/OSM prévu. Appelez avant de vous déplacer si possible.')}
       </p>
 
       <section aria-labelledby="h-list" className="space-y-3">
         <h2 id="h-list" className="text-xl font-bold">
-          {geo.pos ? 'Les plus proches' : 'Liste'} · {active.label}{' '}
+          {geo.pos ? t('Les plus proches') : t('Liste')} · {t(active.label)}{' '}
           <span className="num text-base font-normal text-[var(--fg-muted)]">({list.length})</span>
         </h2>
-        {error && <p role="alert">Liste indisponible pour le moment (réseau). Réessayez plus tard.</p>}
-        {!facilities && !error && <p className="text-[var(--fg-muted)]" role="status">Chargement des lieux de soin…</p>}
+        {error && <p role="alert">{t('Liste indisponible pour le moment (réseau). Réessayez plus tard.')}</p>}
+        {!facilities && !error && <p className="text-[var(--fg-muted)]" role="status">{t('Chargement des lieux de soin…')}</p>}
         {facilities && (
           <PlaceList
             places={list.slice(0, shown)}
             from={geo.source === 'gps' ? geo.pos : null}
             onSelect={pick}
             selectedId={selectedId}
-            empty="Aucun lieu de ce type pour le moment."
+            empty={t('Aucun lieu de ce type pour le moment.')}
           />
         )}
         {list.length > shown && (
           <button type="button" className="btn btn-ghost w-full" onClick={() => setShown((n) => n + PAGE)}>
-            Afficher plus ({list.length - shown} autres)
+            {t('Afficher plus ({n} autres)', { n: list.length - shown })}
           </button>
         )}
       </section>

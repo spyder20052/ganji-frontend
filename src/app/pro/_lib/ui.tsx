@@ -1,5 +1,16 @@
-import type { ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import { TONE_CLASS, type Tone } from './labels';
+
+/**
+ * Phrase traduite contenant des éléments (chiffres mis en forme…) : « {oui} oui sur {total} » + { oui: <span/> }.
+ * Le gabarit est traduit entier (jamais par morceaux), puis chaque {nom} est remplacé par son élément.
+ */
+export function fill(template: string, nodes: Record<string, ReactNode>): ReactNode {
+  return template.split(/(\{\w+\})/).map((part, i) => {
+    const k = /^\{(\w+)\}$/.exec(part)?.[1];
+    return <Fragment key={i}>{k && k in nodes ? nodes[k] : part}</Fragment>;
+  });
+}
 
 /** Étiquette de statut compacte (couleur + texte : jamais la couleur seule). */
 export function Pill({ tone = 'muted', children, className = '' }: { tone?: Tone; children: ReactNode; className?: string }) {

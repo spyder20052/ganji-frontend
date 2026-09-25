@@ -6,6 +6,7 @@ import { ListenButton } from '@/components/ListenButton';
 import { LocateControl } from '@/components/LocateControl';
 import { Pictogram } from '@/components/Pictogram';
 import { PlaceList } from '@/components/PlaceList';
+import { useT } from '@/i18n/client';
 import { api } from '@/lib/api';
 import type { LatLng, Place } from '@/lib/places';
 import { useGeolocation } from '@/lib/use-geolocation';
@@ -175,6 +176,7 @@ function computeLocal(tree: TriageTree, answers: number[]): TriageResult {
 }
 
 export function Triage() {
+  const t = useT();
   const [tree, setTree] = useState<TriageTree | null>(null);
   const [treeError, setTreeError] = useState(false);
   const [stack, setStack] = useState<string[]>([]);
@@ -189,9 +191,9 @@ export function Triage() {
   const loadTree = useCallback(() => {
     setTreeError(false);
     api<TriageTree>('/triage/tree')
-      .then((t) => {
-        setTree(t);
-        setStack([t.start]);
+      .then((data) => {
+        setTree(data);
+        setStack([data.start]);
       })
       .catch(() => setTreeError(true));
   }, []);
@@ -199,9 +201,9 @@ export function Triage() {
   useEffect(loadTree, [loadTree]);
 
   const submit = useCallback(
-    async (t: TriageTree, ans: number[], p: LatLng | null) => {
+    async (tr: TriageTree, ans: number[], p: LatLng | null) => {
       const id = ++requestId.current;
-      const local = computeLocal(t, ans);
+      const local = computeLocal(tr, ans);
       setSubmitting(true);
       let next: TriageResult;
       if (typeof navigator !== 'undefined' && !navigator.onLine) {
@@ -274,10 +276,10 @@ export function Triage() {
       <div className="space-y-5">
         <Intro />
         <div className="card space-y-4 p-6">
-          <p className="flex items-center gap-2 font-bold"><WifiOff aria-hidden /> Les questions n’ont pas pu être chargées (pas de réseau).</p>
-          <p>En cas de signe grave, n’attendez pas : allez à l’hôpital ou appelez les secours.</p>
+          <p className="flex items-center gap-2 font-bold"><WifiOff aria-hidden /> {t('Les questions n’ont pas pu être chargées (pas de réseau).')}</p>
+          <p>{t('En cas de signe grave, n’attendez pas : allez à l’hôpital ou appelez les secours.')}</p>
           <EmergencyNumbers />
-          <button type="button" className="btn btn-primary" onClick={loadTree}><RotateCcw size={20} aria-hidden /> Réessayer</button>
+          <button type="button" className="btn btn-primary" onClick={loadTree}><RotateCcw size={20} aria-hidden /> {t('Réessayer')}</button>
         </div>
         <Disclaimer />
       </div>
@@ -288,7 +290,7 @@ export function Triage() {
     return (
       <div className="space-y-5">
         <Intro />
-        <p className="flex items-center gap-2 text-[var(--fg-muted)]" role="status"><Loader2 className="animate-spin" aria-hidden /> Chargement des questions…</p>
+        <p className="flex items-center gap-2 text-[var(--fg-muted)]" role="status"><Loader2 className="animate-spin" aria-hidden /> {t('Chargement des questions…')}</p>
       </div>
     );
   }
@@ -311,7 +313,7 @@ export function Triage() {
   const node = tree.nodes[stack[stack.length - 1]];
   if (!node) return null;
   const step = stack.length;
-  const spoken = `${node.text} ${node.answers.map((a, i) => `Réponse ${i + 1} : ${a.label}.`).join(' ')}`;
+  const spoken = `${t(node.text)} ${node.answers.map((a, i) => t('Réponse {n} : {label}.', { n: i + 1, label: t(a.label) })).join(' ')}`;
 
   return (
     <div className="space-y-6">
@@ -320,24 +322,27 @@ export function Triage() {
       {askWhere && !geo.pos && step === 1 && (
         <section aria-labelledby="h-where" className="card space-y-3 p-4">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h2 id="h-where" className="font-bold">Où êtes-vous ? <span className="font-normal text-[var(--fg-muted)]">(facultatif)</span></h2>
-            <button type="button" className="text-base font-bold underline underline-offset-2" onClick={() => setAskWhere(false)}>Plus tard</button>
+            <h2 id="h-where" className="font-bold">{t('Où êtes-vous ?')} <span className="font-normal text-[var(--fg-muted)]">{t('(facultatif)')}</span></h2>
+            <button type="button" className="text-base font-bold underline underline-offset-2" onClick={() => setAskWhere(false)}>{t('Plus tard')}</button>
           </div>
-          <p className="text-base text-[var(--fg-muted)]">Pour vous montrer le lieu de soin ouvert le plus proche. Votre position n’est pas enregistrée.</p>
+          <p className="text-base text-[var(--fg-muted)]">{t('Pour vous montrer le lieu de soin ouvert le plus proche. Votre position n’est pas enregistrée.')}</p>
           <LocateControl idPrefix="where" status={geo.status} source={geo.source} onLocate={geo.request} onCommune={(p) => geo.setManual(p)} compact />
         </section>
       )}
       {geo.pos && step === 1 && (
         <p className="flex items-center gap-2 text-base text-[var(--fg-muted)]" role="status">
-          <Pictogram name="map" size={18} /> {geo.source === 'gps' ? 'Position trouvée' : 'Commune choisie'} : les lieux les plus proches seront proposés.
+          <Pictogram name="map" size={18} />{' '}
+          {geo.source === 'gps'
+            ? t('Position trouvée : les lieux les plus proches seront proposés.')
+            : t('Commune choisie : les lieux les plus proches seront proposés.')}
         </p>
       )}
 
       <section aria-labelledby="q-title" className="space-y-5">
         <div className="flex items-center justify-between gap-3">
-          <p className="label">Étape {step} sur {MAX_STEPS} max</p>
+          <p className="label">{t('Étape {n} sur {max} max', { n: step, max: MAX_STEPS })}</p>
           {step > 1 && (
-            <button type="button" onClick={back} className="btn btn-ghost !min-h-11 text-base"><ArrowLeft size={18} aria-hidden /> Retour</button>
+            <button type="button" onClick={back} className="btn btn-ghost !min-h-11 text-base"><ArrowLeft size={18} aria-hidden /> {t('Retour')}</button>
           )}
         </div>
         <div aria-hidden className="grid grid-cols-4 gap-1.5">
@@ -350,7 +355,7 @@ export function Triage() {
           <span className="grid h-16 w-16 shrink-0 place-items-center rounded-3xl bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">
             <Pictogram name={picto(node.pictogram)} size={34} />
           </span>
-          <h2 id="q-title" ref={headingRef} tabIndex={-1} className="pt-2 text-3xl font-bold outline-none">{node.text}</h2>
+          <h2 id="q-title" ref={headingRef} tabIndex={-1} className="pt-2 text-3xl font-bold outline-none">{t(node.text)}</h2>
         </div>
         <ListenButton key={node.id} text={spoken} audioKey={node.audioKey} />
 
@@ -365,7 +370,7 @@ export function Triage() {
                 <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[var(--bg)] text-[var(--color-brand-900)] dark:text-[var(--color-brand-200)]">
                   <Pictogram name={picto(a.pictogram)} size={30} />
                 </span>
-                <span className="text-lg font-bold leading-snug">{a.label}</span>
+                <span className="text-lg font-bold leading-snug">{t(a.label)}</span>
               </button>
             </li>
           ))}
@@ -378,37 +383,41 @@ export function Triage() {
 }
 
 function Intro() {
+  const t = useT();
   return (
     <div>
-      <p className="label">Orientation anonyme · sans compte</p>
-      <h1 className="mt-1 text-2xl font-bold">J’ai un symptôme : où aller ?</h1>
+      <p className="label">{t('Orientation anonyme · sans compte')}</p>
+      <h1 className="mt-1 text-2xl font-bold">{t('J’ai un symptôme : où aller ?')}</h1>
     </div>
   );
 }
 
 function EmergencyNumbers({ onDark = false }: { onDark?: boolean }) {
+  const t = useT();
   const cls = onDark ? 'bg-white text-[var(--color-danger-800)]' : 'btn-danger';
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       <a href="tel:118" className={`btn ${cls} !min-h-16 justify-start !rounded-2xl text-left`}>
         <Phone size={26} aria-hidden />
-        <span><span className="num block text-3xl leading-none">118</span><span className="block text-base font-bold">Sapeurs-pompiers</span></span>
+        <span><span className="num block text-3xl leading-none">118</span><span className="block text-base font-bold">{t('Sapeurs-pompiers')}</span></span>
       </a>
       <a href="tel:117" className={`btn ${cls} !min-h-16 justify-start !rounded-2xl text-left`}>
         <Phone size={26} aria-hidden />
-        <span><span className="num block text-3xl leading-none">117</span><span className="block text-base font-bold">Police secours</span></span>
+        <span><span className="num block text-3xl leading-none">117</span><span className="block text-base font-bold">{t('Police secours')}</span></span>
       </a>
     </div>
   );
 }
 
 function Disclaimer({ tree }: { tree?: TriageTree }) {
+  const t = useT();
   return (
     <aside className="rounded-2xl border border-dashed border-[var(--border)] p-4 text-base text-[var(--fg-muted)]">
-      <p className="font-bold text-[var(--fg)]">Orientation, pas diagnostic.</p>
+      <p className="font-bold text-[var(--fg)]">{t('Orientation, pas diagnostic.')}</p>
       <p>
-        Ganji vous dit où aller et avec quelle urgence ; seul un soignant peut poser un diagnostic. Arbre de décision inspiré de la PCIME (OMS/UNICEF),{' '}
-        {tree?.validatedBy ? `validé par ${tree.validatedBy}.` : 'version de démonstration à valider par des médecins référents.'}
+        {tree?.validatedBy
+          ? t('Ganji vous dit où aller et avec quelle urgence ; seul un soignant peut poser un diagnostic. Arbre de décision inspiré de la PCIME (OMS/UNICEF), validé par {name}.', { name: tree.validatedBy })
+          : t('Ganji vous dit où aller et avec quelle urgence ; seul un soignant peut poser un diagnostic. Arbre de décision inspiré de la PCIME (OMS/UNICEF), version de démonstration à valider par des médecins référents.')}
       </p>
     </aside>
   );
@@ -433,6 +442,7 @@ function ResultView({
   onBack: () => void;
   onRestart: () => void;
 }) {
+  const t = useT();
   const outcome = result.outcome as Outcome;
   const ui = OUTCOME_UI[outcome];
   const flags = result.flags ?? [];
@@ -441,32 +451,32 @@ function ResultView({
   const notes = flags.map((f) => FLAG_NOTES[f]).filter((n): n is { icon: string; text: string } => Boolean(n));
   const tdr = flags.includes('TDR_PALU');
   const places = result.places ?? [];
-  const spoken = [ui.heading, ...notes.map((n) => n.text), ...(result.advice ?? [])].join(' ');
+  const spoken = [ui.heading, ...notes.map((n) => n.text), ...(result.advice ?? [])].map((s) => t(s)).join(' ');
+  const [listenBefore, listenAfter] = t('Parler aide. {link} : un écoutant formé vous répond.').split('{link}');
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-3">
-        <p className="label">Résultat de l’orientation</p>
-        <button type="button" onClick={onBack} className="btn btn-ghost !min-h-11 text-base"><ArrowLeft size={18} aria-hidden /> Modifier ma réponse</button>
+        <p className="label">{t('Résultat de l’orientation')}</p>
+        <button type="button" onClick={onBack} className="btn btn-ghost !min-h-11 text-base"><ArrowLeft size={18} aria-hidden /> {t('Modifier ma réponse')}</button>
       </div>
 
       {result.offline && (
         <p className="flex items-start gap-2 rounded-2xl bg-[var(--color-ocre-100)] p-4 text-base font-bold text-[var(--color-ocre-700)]" role="status">
           <WifiOff size={20} className="mt-0.5 shrink-0" aria-hidden />
-          Hors ligne : conseil calculé sur votre téléphone. Les lieux de soin s’afficheront au retour du réseau.
+          {t('Hors ligne : conseil calculé sur votre téléphone. Les lieux de soin s’afficheront au retour du réseau.')}
         </p>
       )}
 
       {crisis && (
         <section aria-labelledby="h-crisis" className="card space-y-3 !border-0 bg-[var(--color-brand-950)] p-6 text-white">
-          <h2 id="h-crisis" className="flex items-center gap-3 text-2xl font-bold"><HeartHandshake size={30} aria-hidden /> Vous n’êtes pas seul·e.</h2>
+          <h2 id="h-crisis" className="flex items-center gap-3 text-2xl font-bold"><HeartHandshake size={30} aria-hidden /> {t('Vous n’êtes pas seul·e.')}</h2>
           <p className="text-[var(--color-brand-100)]">
-            Ce que vous ressentez peut se soigner. Parlez-en maintenant à quelqu’un de confiance, ou à un écoutant formé, de façon anonyme.
-            Si vous êtes en danger immédiat, appelez le 118.
+            {t('Ce que vous ressentez peut se soigner. Parlez-en maintenant à quelqu’un de confiance, ou à un écoutant formé, de façon anonyme. Si vous êtes en danger immédiat, appelez le 118.')}
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/app/ecoute" className="btn bg-white text-[var(--color-brand-900)]">Parler à quelqu’un maintenant</Link>
-            <a href="tel:118" className="btn border border-white/60 text-white"><Phone size={20} aria-hidden /> Appeler le 118</a>
+            <Link href="/app/ecoute" className="btn bg-white text-[var(--color-brand-900)]">{t('Parler à quelqu’un maintenant')}</Link>
+            <a href="tel:118" className="btn border border-white/60 text-white"><Phone size={20} aria-hidden /> {t('Appeler le 118')}</a>
           </div>
         </section>
       )}
@@ -477,15 +487,15 @@ function ResultView({
             <Pictogram name={ui.icon} size={34} />
           </span>
           <div>
-            <h2 id="h-result" ref={headingRef} tabIndex={-1} className="text-3xl font-bold outline-none">{ui.heading}</h2>
-            {result.title && result.title !== ui.heading && <p className="mt-1 text-lg opacity-90">{result.title}</p>}
+            <h2 id="h-result" ref={headingRef} tabIndex={-1} className="text-3xl font-bold outline-none">{t(ui.heading)}</h2>
+            {result.title && result.title !== ui.heading && <p className="mt-1 text-lg opacity-90">{t(result.title)}</p>}
           </div>
         </div>
         {outcome === 'URGENCE' && <EmergencyNumbers onDark />}
         {tdr && (
           <p className="flex items-start gap-3 rounded-2xl bg-[var(--color-ocre-100)] p-4 text-lg font-bold text-[var(--color-ocre-700)]">
             <Pictogram name="fever" size={26} className="shrink-0" />
-            Demandez un test rapide du paludisme (TDR).
+            {t('Demandez un test rapide du paludisme (TDR).')}
           </p>
         )}
         <ListenButton text={spoken} audioKey={`triage.outcome.${outcome.toLowerCase()}`} />
@@ -493,24 +503,26 @@ function ResultView({
 
       {(notes.filter((n) => n !== FLAG_NOTES.TDR_PALU).length > 0 || (result.advice?.length ?? 0) > 0) && (
         <section aria-labelledby="h-advice" className="card space-y-3 p-6">
-          <h2 id="h-advice" className="text-xl font-bold">Ce qu’il faut faire</h2>
+          <h2 id="h-advice" className="text-xl font-bold">{t('Ce qu’il faut faire')}</h2>
           <ul className="space-y-3">
             {notes.filter((n) => n !== FLAG_NOTES.TDR_PALU).map((n) => (
               <li key={n.text} className="flex items-start gap-3 font-bold">
                 <span className="chip-round shrink-0 text-[var(--color-brand-900)]"><Pictogram name={n.icon} size={22} /></span>
-                <span className="pt-2.5">{n.text}</span>
+                <span className="pt-2.5">{t(n.text)}</span>
               </li>
             ))}
             {result.advice?.map((a) => (
               <li key={a} className="flex items-start gap-3">
                 <span aria-hidden className="mt-3 h-2 w-2 shrink-0 rounded-full bg-[var(--color-brand-500)]" />
-                <span>{a}</span>
+                <span>{t(a)}</span>
               </li>
             ))}
           </ul>
           {listen && !crisis && (
             <p className="rounded-2xl bg-[var(--color-brand-50)] p-4 text-base dark:bg-[var(--bg)]">
-              Parler aide. <Link href="/app/ecoute" className="font-bold underline">Espace d’écoute anonyme</Link> : un écoutant formé vous répond.
+              {listenBefore}
+              <Link href="/app/ecoute" className="font-bold underline">{t('Espace d’écoute anonyme')}</Link>
+              {listenAfter}
             </p>
           )}
         </section>
@@ -518,53 +530,54 @@ function ResultView({
 
       {(outcome === 'MAISON' || outcome === 'PHARMACIE') && (
         <section aria-labelledby="h-back" className="card space-y-3 p-6">
-          <h2 id="h-back" className="text-xl font-bold">Allez au centre de santé si…</h2>
+          <h2 id="h-back" className="text-xl font-bold">{t('Allez au centre de santé si…')}</h2>
           <ul className="grid gap-2 sm:grid-cols-2">
             {COME_BACK_IF.map(([icon, text]) => (
               <li key={text} className="flex items-center gap-3 rounded-2xl bg-[var(--bg)] p-3">
                 <span className="chip-round shrink-0 text-[var(--color-ocre-700)]"><Pictogram name={icon} size={22} /></span>
-                <span className="font-bold">{text}</span>
+                <span className="font-bold">{t(text)}</span>
               </li>
             ))}
           </ul>
-          <ListenButton text={`Allez au centre de santé si : ${COME_BACK_IF.map(([, t]) => t).join('. ')}.`} audioKey="triage.come_back_if" />
+          <ListenButton text={t('Allez au centre de santé si : {list}.', { list: COME_BACK_IF.map(([, s]) => t(s)).join('. ') })} audioKey="triage.come_back_if" />
         </section>
       )}
 
       {!result.offline && (
         <section aria-labelledby="h-places" className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 id="h-places" className="text-xl font-bold">{ui.placesTitle}</h2>
-            {submitting && <span className="flex items-center gap-2 text-base text-[var(--fg-muted)]" role="status"><Loader2 size={18} className="animate-spin" aria-hidden /> Recherche…</span>}
+            <h2 id="h-places" className="text-xl font-bold">{t(ui.placesTitle)}</h2>
+            {submitting && <span className="flex items-center gap-2 text-base text-[var(--fg-muted)]" role="status"><Loader2 size={18} className="animate-spin" aria-hidden /> {t('Recherche…')}</span>}
           </div>
           {pos ? (
-            <PlaceList places={places} from={geo.source === 'gps' ? pos : null} empty={submitting ? 'Recherche des lieux…' : 'Aucun lieu trouvé près de vous. Allez à l’hôpital de zone le plus proche.'} />
+            <PlaceList places={places} from={geo.source === 'gps' ? pos : null} empty={submitting ? t('Recherche des lieux…') : t('Aucun lieu trouvé près de vous. Allez à l’hôpital de zone le plus proche.')} />
           ) : (
             <div className="card space-y-3 p-4">
-              <p>Indiquez où vous êtes pour voir le lieu le plus proche.</p>
+              <p>{t('Indiquez où vous êtes pour voir le lieu le plus proche.')}</p>
               <LocateControl idPrefix="result" status={geo.status} source={geo.source} onLocate={geo.request} onCommune={(p) => geo.setManual(p)} />
             </div>
           )}
           <p className="text-sm text-[var(--fg-muted)]">
-            Distances à vol d’oiseau ; positions des établissements approximatives. <Link href="/carte" className="underline">Voir tous les lieux de soin</Link>
+            {t('Distances à vol d’oiseau ; positions des établissements approximatives.')}{' '}
+            <Link href="/carte" className="underline">{t('Voir tous les lieux de soin')}</Link>
           </p>
         </section>
       )}
 
       {result.path && result.path.length > 0 && (
         <details className="card p-4">
-          <summary className="cursor-pointer font-bold">Mes réponses ({result.path.length})</summary>
+          <summary className="cursor-pointer font-bold">{t('Mes réponses ({n})', { n: result.path.length })}</summary>
           <ol className="mt-3 space-y-2 text-base">
             {result.path.map((p, i) => (
-              <li key={i}><span className="text-[var(--fg-muted)]">{p.question}</span> <strong>{p.answer}</strong></li>
+              <li key={i}><span className="text-[var(--fg-muted)]">{t(p.question)}</span> <strong>{t(p.answer)}</strong></li>
             ))}
           </ol>
         </details>
       )}
 
       <div className="flex flex-wrap gap-3">
-        <button type="button" onClick={onRestart} className="btn btn-primary"><RotateCcw size={20} aria-hidden /> Recommencer</button>
-        <Link href="/" className="btn btn-ghost">Accueil</Link>
+        <button type="button" onClick={onRestart} className="btn btn-primary"><RotateCcw size={20} aria-hidden /> {t('Recommencer')}</button>
+        <Link href="/" className="btn btn-ghost">{t('Accueil')}</Link>
       </div>
 
       <Disclaimer tree={tree} />

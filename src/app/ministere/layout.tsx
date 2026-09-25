@@ -2,13 +2,19 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
 import { TopBar } from '@/components/TopBar';
+import { I18nScope } from '@/i18n/I18nScope';
+import { getT } from '@/i18n/server';
 import { serverApi } from '@/lib/server-api';
 import { ROLE_HOME, type Me } from '@/lib/types';
 
-export const metadata: Metadata = { title: { default: 'Pilotage national', template: '%s · Ministère · Ganji' }, robots: { index: false } };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT();
+  return { title: { default: t('Pilotage national'), template: t('%s · Ministère · Ganji') }, robots: { index: false } };
+}
 
 /** Espace ministère : réservé aux rôles MINISTRY et ADMIN (le contrôle réel est fait par l'API). */
 export default async function MinistereLayout({ children }: { children: ReactNode }) {
+  const t = await getT();
   const me = await serverApi<Me>('/auth/me');
   if (me.role !== 'MINISTRY' && me.role !== 'ADMIN') redirect(ROLE_HOME[me.role] ?? '/');
   return (
@@ -17,14 +23,14 @@ export default async function MinistereLayout({ children }: { children: ReactNod
         home="/ministere"
         who={me.displayName}
         links={[
-          { href: '/ministere', label: 'Tableau de bord', icon: 'heart' },
-          { href: '/ministere#alertes', label: 'Alertes', icon: 'warning' },
-          { href: '/ministere#signalements', label: 'Signalements', icon: 'people' },
-          { href: '/carte', label: 'Lieux de soin', icon: 'map' },
-          { href: '/simulateur', label: 'Simulateur SMS', icon: 'phone' },
+          { href: '/ministere', label: t('Tableau de bord'), icon: 'heart' },
+          { href: '/ministere#alertes', label: t('Alertes'), icon: 'warning' },
+          { href: '/ministere#signalements', label: t('Signalements'), icon: 'people' },
+          { href: '/carte', label: t('Lieux de soin'), icon: 'map' },
+          { href: '/simulateur', label: t('Simulateur SMS'), icon: 'phone' },
         ]}
       />
-      {children}
+      <I18nScope area="structures">{children}</I18nScope>
     </>
   );
 }

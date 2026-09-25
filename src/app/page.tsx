@@ -5,6 +5,8 @@ import { GanjiSymbol } from '@/components/GanjiSymbol';
 import { Logo } from '@/components/Logo';
 import { Pictogram } from '@/components/Pictogram';
 import { PrefsMenu } from '@/components/PrefsMenu';
+import { I18nScope } from '@/i18n/I18nScope';
+import { getT } from '@/i18n/server';
 import { hasIllustration, Illustration } from './_landing/Illustration';
 import { DeferredImages } from './_landing/DeferredImages';
 import { KoffiStory } from './_landing/KoffiStory';
@@ -180,47 +182,49 @@ const PROJECT_LINKS = [
 const PROOFS = ['WCAG 2.2 AA', 'Première page < 200 Ko', 'Utilisable hors ligne'];
 
 // Pas de préchargement des pages liées : en 2G, chaque Ko compte (budget de la première page < 200 Ko).
-export default function Home() {
+export default async function Home() {
+  const t = await getT();
   return (
     <>
       <header className="sticky top-0 z-30 bg-bg/90 backdrop-blur">
         <div className={`${WRAP} flex flex-wrap items-center gap-3 py-3`}>
           <Logo />
-          <nav aria-label="Sections de la page" className="ml-6 hidden items-center gap-1 lg:flex">
+          <nav aria-label={t('Sections de la page')} className="ml-6 hidden items-center gap-1 lg:flex">
             {NAV.map((n) => (
               <a key={n.href} href={n.href} className="rounded-full px-4 py-2 text-base font-medium text-fg-muted hover:bg-card hover:text-fg">
-                {n.label}
+                {t(n.label)}
               </a>
             ))}
           </nav>
           <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-2">
             <PrefsMenu />
             <Link prefetch={false} href="/connexion" className="btn btn-primary">
-              <LogIn size={20} aria-hidden /> Se connecter
+              <LogIn size={20} aria-hidden /> {t('Se connecter')}
             </Link>
           </div>
         </div>
       </header>
 
+      <I18nScope area="landing">
       <main id="contenu">
         {/* ── Hero : le slogan de la charte et l'onde Ganji ── */}
         <section className={`${WRAP} grid items-center gap-8 pt-6 pb-12 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] md:gap-12 md:pt-12 md:pb-20`}>
           <div className="space-y-6">
             <div className="flex items-start justify-between gap-4">
               <h1 className="rise-in min-w-0 text-[min(2.9rem,12.5vw)] leading-[1.02] font-medium tracking-tight [hyphens:manual] sm:text-[min(4rem,9vw)]" style={{ '--i': 0 } as React.CSSProperties}>
-                Votre santé, suivie partout.
+                {t('Votre santé, suivie partout.')}
               </h1>
-              <ListenButton compact text="Ganji. Votre santé, suivie partout. Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies, même sans réseau ni smartphone." audioKey="welcome" />
+              <ListenButton compact text={t('Ganji. Votre santé, suivie partout. Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies, même sans réseau ni smartphone.')} audioKey="welcome" />
             </div>
             <p className="rise-in max-w-[34ch] text-xl text-fg-muted" style={{ '--i': 1 } as React.CSSProperties}>
-              Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies, même sans réseau ni smartphone.
+              {t('Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies, même sans réseau ni smartphone.')}
             </p>
             <div className="rise-in flex flex-wrap gap-3" style={{ '--i': 2 } as React.CSSProperties}>
               <Link prefetch={false} href="/connexion" className="btn btn-primary !min-h-14 !px-6 text-lg">
-                Ouvrir mon carnet
+                {t('Ouvrir mon carnet')}
               </Link>
               <Link prefetch={false} href="/orientation" className="btn btn-ghost !min-h-14 !px-6 text-lg">
-                J’ai un symptôme
+                {t('J’ai un symptôme')}
               </Link>
             </div>
           </div>
@@ -237,7 +241,7 @@ export default function Home() {
                 <span className={`grid h-8 w-8 place-items-center rounded-full ${c.chip}`}>
                   <Pictogram name={c.icon} size={16} />
                 </span>
-                {c.label}
+                {t(c.label)}
               </span>
             ))}
           </div>
@@ -246,7 +250,7 @@ export default function Home() {
         {/* ── Sans compte, tout de suite ── */}
         <section aria-labelledby="h-sans-compte" className={`${WRAP} reveal pb-16 md:pb-24`}>
           <h2 id="h-sans-compte" className="mb-4 text-2xl font-medium">
-            Sans compte, tout de suite
+            {t('Sans compte, tout de suite')}
           </h2>
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {NO_ACCOUNT.map((a) => (
@@ -258,7 +262,7 @@ export default function Home() {
                     </span>
                     <ArrowUpRight size={22} aria-hidden className="opacity-60" />
                   </span>
-                  <span className="font-display text-[1.3rem] leading-tight font-medium">{a.title}</span>
+                  <span className="font-display text-[1.3rem] leading-tight font-medium">{t(a.title)}</span>
                 </Link>
               </li>
             ))}
@@ -270,35 +274,35 @@ export default function Home() {
           <div className={`${WRAP} grid gap-10 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-14`}>
             <div className="reveal space-y-5 md:sticky md:top-28 md:self-start">
               <h2 id="h-probleme" className="text-[2.2rem] leading-tight font-medium sm:text-5xl">
-                Les mêmes ruptures, chaque mois.
+                {t('Les mêmes ruptures, chaque mois.')}
               </h2>
-              <p className="max-w-[40ch] text-lg text-fg-muted">Avec une maladie chronique, ces cinq problèmes reviennent sans cesse. Voici ce que Ganji change pour chacun.</p>
+              <p className="max-w-[40ch] text-lg text-fg-muted">{t('Avec une maladie chronique, ces cinq problèmes reviennent sans cesse. Voici ce que Ganji change pour chacun.')}</p>
               <div className="overflow-hidden rounded-card">
-                <Illustration name="probleme-course" icon="warning" alt="Une famille court à moto-taxi avec une poche de sang vide pendant qu’un homme trouve une pharmacie fermée" />
+                <Illustration name="probleme-course" icon="warning" alt={t('Une famille court à moto-taxi avec une poche de sang vide pendant qu’un homme trouve une pharmacie fermée')} />
               </div>
             </div>
             <ol className="space-y-4">
               {PROBLEMS.map((p) => (
-                <li key={p.title} className="reveal rounded-card bg-bg p-5">
+                <li key={t(p.title)} className="reveal rounded-card bg-bg p-5">
                   <h3 className="flex items-center gap-3 text-xl font-medium">
                     <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${p.icon === 'blood' || p.icon === 'emergency' ? 'bg-danger-50 text-[var(--color-danger-600)]' : 'bg-brand-100 text-brand-900'}`}>
                       <Pictogram name={p.icon} size={22} />
                     </span>
-                    {p.title}
+                    {t(p.title)}
                   </h3>
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     <p className="flex gap-2 text-base text-fg-muted">
                       <X size={18} aria-hidden className="mt-1 shrink-0" />
                       <span>
-                        <span className="sr-only">Aujourd’hui : </span>
-                        {p.before}
+                        <span className="sr-only">{t('Aujourd’hui :')} </span>
+                        {t(p.before)}
                       </span>
                     </p>
                     <p className="flex gap-2 rounded-2xl bg-brand-100 p-3 text-base font-medium text-brand-900">
                       <Check size={18} aria-hidden className="mt-1 shrink-0" />
                       <span>
-                        <span className="sr-only">Avec Ganji : </span>
-                        {p.after}
+                        <span className="sr-only">{t('Avec Ganji :')} </span>
+                        {t(p.after)}
                       </span>
                     </p>
                   </div>
@@ -312,9 +316,9 @@ export default function Home() {
         <section aria-labelledby="h-koffi" className={`${WRAP} py-16 md:py-24`}>
           <div className="reveal mb-10 max-w-[40rem] space-y-3">
             <h2 id="h-koffi" className="text-[2.2rem] leading-tight font-medium sm:text-5xl">
-              Koffi a besoin de plaquettes demain.
+              {t('Koffi a besoin de plaquettes demain.')}
             </h2>
-            <p className="text-lg text-fg-muted">Suivez sa demande, de l’hématologue au donneur. À une étape, c’est vous qui répondez.</p>
+            <p className="text-lg text-fg-muted">{t('Suivez sa demande, de l’hématologue au donneur. À une étape, c’est vous qui répondez.')}</p>
           </div>
           <KoffiStory />
         </section>
@@ -323,7 +327,7 @@ export default function Home() {
         <section id="services" aria-labelledby="h-services" className="below-fold scroll-mt-20 bg-card py-16 md:py-24">
           <div className={WRAP}>
             <h2 id="h-services" className="reveal mb-8 max-w-[18ch] text-[2.2rem] leading-tight font-medium sm:text-5xl">
-              Tout ce qui touche à la santé, au même endroit.
+              {t('Tout ce qui touche à la santé, au même endroit.')}
             </h2>
             <ul className="grid gap-3 md:grid-cols-6">
               {SERVICES.map((s) => (
@@ -332,10 +336,10 @@ export default function Home() {
                     <Illustration name={`service-${s.key}`} icon={s.icon} alt="" frame={s.frame} sizes="(min-width: 768px) 33vw, 100vw" />
                     <span className="flex flex-1 flex-col gap-1 p-5">
                       <span className="font-display flex items-center justify-between gap-2 text-xl font-medium">
-                        {s.title}
+                        {t(s.title)}
                         <ArrowUpRight size={20} aria-hidden className="opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                       </span>
-                      <span className="text-base">{s.text}</span>
+                      <span className="text-base">{t(s.text)}</span>
                     </span>
                   </Link>
                 </li>
@@ -349,20 +353,20 @@ export default function Home() {
           <div className="reveal mb-8 grid items-center gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,0.75fr)] md:gap-12">
             <div className="space-y-3">
               <h2 id="h-pour-qui" className="text-[2.2rem] leading-tight font-medium sm:text-5xl">
-                Pensé pour chacun.
+                {t('Pensé pour chacun.')}
               </h2>
-              <p className="max-w-[40ch] text-lg text-fg-muted">Choisissez un profil, puis essayez-le avec son compte de démonstration.</p>
+              <p className="max-w-[40ch] text-lg text-fg-muted">{t('Choisissez un profil, puis essayez-le avec son compte de démonstration.')}</p>
             </div>
             <Illustration name="hero-communaute" icon="people" alt="" sizes="(min-width: 768px) 36vw, 90vw" className="mx-auto max-w-[440px]" />
           </div>
-          <PersonaTabs personas={PERSONAS} available={Object.fromEntries(PERSONAS.map((p) => [p.key, hasIllustration(`persona-${p.key}`)]))} />
+          <PersonaTabs personas={PERSONAS.map((x) => ({ ...x, name: t(x.name), role: t(x.role), need: t(x.need), benefits: x.benefits.map((b) => t(b)) }))} available={Object.fromEntries(PERSONAS.map((p) => [p.key, hasIllustration(`persona-${p.key}`)]))} />
         </section>
 
         {/* ── Comment ça marche : trois gestes, dans l'ordre ── */}
         <section id="comment" aria-labelledby="h-comment" className="below-fold scroll-mt-20 bg-card py-16 md:py-24">
           <div className={WRAP}>
             <h2 id="h-comment" className="reveal mb-10 text-[2.2rem] leading-tight font-medium sm:text-5xl">
-              Trois gestes pour commencer.
+              {t('Trois gestes pour commencer.')}
             </h2>
             <ol className="grid gap-8 md:grid-cols-3 md:gap-6">
               {STEPS.map((s, i) => (
@@ -374,9 +378,9 @@ export default function Home() {
                     <span aria-hidden className="font-display grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-900 text-lg text-white">
                       {i + 1}
                     </span>
-                    {s.title}
+                    {t(s.title)}
                   </h3>
-                  <p className="text-lg text-fg-muted">{s.text}</p>
+                  <p className="text-lg text-fg-muted">{t(s.text)}</p>
                 </li>
               ))}
             </ol>
@@ -388,21 +392,21 @@ export default function Home() {
           <div className="motif-foret py-16 md:py-24 [&_:focus-visible]:!outline-leaf">
             <div className={WRAP}>
               <h2 id="h-5sans" className="reveal mb-3 text-[2.2rem] leading-tight font-medium sm:text-5xl">
-                Utile même sans…
+                {t('Utile même sans…')}
               </h2>
-              <p className="reveal mb-10 max-w-[44ch] text-lg text-white">Ganji est conçu pour la personne la plus éloignée du numérique, pas pour l’usager connecté des villes.</p>
-              <ul tabIndex={0} aria-label="Les cinq situations, à faire défiler" className="-mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 xl:grid-cols-5">
+              <p className="reveal mb-10 max-w-[44ch] text-lg text-white">{t('Ganji est conçu pour la personne la plus éloignée du numérique, pas pour l’usager connecté des villes.')}</p>
+              <ul tabIndex={0} aria-label={t('Les cinq situations, à faire défiler')} className="-mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 xl:grid-cols-5">
                 {FIVE_WITHOUT.map((f) => (
-                  <li key={f.title} className="reveal w-[78%] shrink-0 snap-start rounded-card bg-brand-700 p-5 md:w-auto">
+                  <li key={t(f.title)} className="reveal w-[78%] shrink-0 snap-start rounded-card bg-brand-700 p-5 md:w-auto">
                     <span className="grid h-12 w-12 place-items-center rounded-full bg-leaf text-brand-900">
                       <Pictogram name={f.icon} size={22} />
                     </span>
-                    <h3 className="mt-4 text-xl font-medium">{f.title}</h3>
-                    <p className="mt-2 text-base leading-relaxed text-white">{f.text}</p>
+                    <h3 className="mt-4 text-xl font-medium">{t(f.title)}</h3>
+                    <p className="mt-2 text-base leading-relaxed text-white">{t(f.text)}</p>
                   </li>
                 ))}
               </ul>
-              <p className="reveal mt-8 max-w-[60ch] text-lg text-white">Et plus de 12 000 relais communautaires servent de point d’accès à ceux qui n’ont pas de téléphone.</p>
+              <p className="reveal mt-8 max-w-[60ch] text-lg text-white">{t('Et plus de 12 000 relais communautaires servent de point d’accès à ceux qui n’ont pas de téléphone.')}</p>
             </div>
           </div>
         </section>
@@ -411,15 +415,15 @@ export default function Home() {
         <section id="confiance" aria-labelledby="h-confiance" className={`below-fold ${WRAP} scroll-mt-20 grid gap-10 py-16 md:grid-cols-2 md:items-center md:gap-14 md:py-24`}>
           <div className="reveal space-y-6">
             <h2 id="h-confiance" className="text-[2.2rem] leading-tight font-medium sm:text-5xl">
-              Personne ne lit votre carnet sans votre accord.
+              {t('Personne ne lit votre carnet sans votre accord.')}
             </h2>
             <ul className="space-y-3">
-              {['Un accès limité dans le temps, que vous retirez quand vous voulez', 'Chaque lecture écrite dans un journal que personne ne peut effacer', 'Des données chiffrées, hébergées au Bénin en production'].map((t) => (
-                <li key={t} className="flex gap-3 text-lg">
+              {['Un accès limité dans le temps, que vous retirez quand vous voulez', 'Chaque lecture écrite dans un journal que personne ne peut effacer', 'Des données chiffrées, hébergées au Bénin en production'].map((item) => (
+                <li key={item} className="flex gap-3 text-lg">
                   <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-leaf text-brand-900">
                     <Check size={16} aria-hidden />
                   </span>
-                  {t}
+                  {t(item)}
                 </li>
               ))}
             </ul>
@@ -429,14 +433,14 @@ export default function Home() {
               <Illustration name="confiance-journal" icon="shield" alt="" sizes="(min-width: 768px) 30vw, 60vw" />
             </div>
             <figure className="relative -mt-16 ml-auto w-[92%] rounded-card bg-card p-4 shadow-[var(--shadow-soft)] md:-mt-24 md:w-4/5">
-              <figcaption className="mb-3 text-sm font-semibold text-fg-muted">Journal d’accès de Koffi</figcaption>
+              <figcaption className="mb-3 text-sm font-semibold text-fg-muted">{t('Journal d’accès de Koffi')}</figcaption>
               <ul className="space-y-2">
                 {JOURNAL.map((j) => (
-                  <li key={j.text} className={`flex gap-3 rounded-2xl px-3 py-2 text-base ${j.tone === 'denied' ? 'bg-ocre-100 text-ocre-700' : 'bg-bg'}`}>
+                  <li key={t(j.text)} className={`flex gap-3 rounded-2xl px-3 py-2 text-base ${j.tone === 'denied' ? 'bg-ocre-100 text-ocre-700' : 'bg-bg'}`}>
                     {j.tone === 'denied' ? <ShieldX size={18} aria-hidden className="mt-1 shrink-0" /> : <Check size={18} aria-hidden className="mt-1 shrink-0 text-brand-500" />}
                     <span className="min-w-0">
-                      <span className="block font-medium">{j.text}</span>
-                      <span className="block text-sm">{j.when}</span>
+                      <span className="block font-medium">{t(j.text)}</span>
+                      <span className="block text-sm">{t(j.when)}</span>
                     </span>
                   </li>
                 ))}
@@ -452,16 +456,16 @@ export default function Home() {
             <div className="flex flex-wrap items-end justify-between gap-6 p-6 pb-2 md:p-10 md:pb-0">
               <div className="max-w-[34rem] space-y-3">
                 <h2 id="h-cta" className="text-[2.2rem] leading-tight font-medium text-brand-900 sm:text-5xl">
-                  Essayez Ganji maintenant.
+                  {t('Essayez Ganji maintenant.')}
                 </h2>
-                <p className="text-lg text-brand-900">Sans compte pour vous orienter, ou en un clic avec un compte de démonstration.</p>
+                <p className="text-lg text-brand-900">{t('Sans compte pour vous orienter, ou en un clic avec un compte de démonstration.')}</p>
               </div>
               <div className="flex flex-wrap gap-3">
                 <Link prefetch={false} href="/connexion" className="btn btn-primary !min-h-14 !px-6 text-lg">
-                  Ouvrir mon carnet
+                  {t('Ouvrir mon carnet')}
                 </Link>
                 <Link prefetch={false} href="/demo" className="btn !min-h-14 bg-white !px-6 text-lg text-brand-900">
-                  Comptes de démo <ArrowRight size={18} aria-hidden />
+                  {t('Comptes de démo')} <ArrowRight size={18} aria-hidden />
                 </Link>
               </div>
             </div>
@@ -470,6 +474,7 @@ export default function Home() {
         </section>
       </main>
       <DeferredImages />
+      </I18nScope>
 
       {/* Pied de page : carte Forêt tramée, symbole Ganji à cheval sur son bord (il respire), la
           marque au centre, l'aide sans compte, les liens de part et d'autre. */}
@@ -480,16 +485,16 @@ export default function Home() {
             <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-end md:gap-8">
               <div className="text-center md:order-2">
                 <p className="font-display text-[3.4rem] leading-none font-medium md:text-7xl">Ganji</p>
-                <p className="mt-3 text-lg text-sage">Votre santé, suivie partout.</p>
+                <p className="mt-3 text-lg text-sage">{t('Votre santé, suivie partout.')}</p>
                 <div className="mt-6 flex flex-wrap justify-center gap-3">
                   <Link prefetch={false} href="/orientation" className="btn bg-leaf !pr-2 text-brand-900 hover:bg-leaf-strong">
-                    J’ai un symptôme
+                    {t('J’ai un symptôme')}
                     <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-900 text-leaf">
                       <ArrowRight size={18} aria-hidden />
                     </span>
                   </Link>
                   <Link prefetch={false} href="/urgence" className="btn bg-brand-700 !pr-2 text-white ring-1 ring-white/20">
-                    Urgence
+                    {t('Urgence')}
                     <span className="grid h-9 w-9 place-items-center rounded-full bg-danger-600 text-white">
                       <ArrowRight size={18} aria-hidden />
                     </span>
@@ -498,16 +503,16 @@ export default function Home() {
               </div>
               <div className="grid grid-cols-2 gap-6 md:order-1">
                 <div className="space-y-1.5">
-                  <h2 className="font-display text-xl font-medium">Sans internet</h2>
+                  <h2 className="font-display text-xl font-medium">{t('Sans internet')}</h2>
                   <p className="text-base text-sage">
-                    Menu <span className="font-semibold whitespace-nowrap text-white">*229*25#</span>
+                    {t('Menu')} <span className="font-semibold whitespace-nowrap text-white">*229*25#</span>
                   </p>
-                  <p className="text-base text-sage">SMS et appel vocal</p>
+                  <p className="text-base text-sage">{t('SMS et appel vocal')}</p>
                   <p className="text-base text-sage">
-                    Urgence : <span className="font-semibold text-white">118</span>
+                    {t('Urgence :')} <span className="font-semibold text-white">118</span>
                   </p>
                 </div>
-                <nav aria-label="Le projet" className="self-end">
+                <nav aria-label={t('Le projet')} className="self-end">
                   <ul className="space-y-1.5">
                     {PROJECT_LINKS.map(([href, label]) => (
                       <li key={href}>
@@ -521,13 +526,13 @@ export default function Home() {
               </div>
               <nav aria-labelledby="h-aller-vite" className="md:order-3 md:justify-self-end">
                 <h2 id="h-aller-vite" className="font-display mb-1.5 text-xl font-medium">
-                  Aller vite à
+                  {t('Aller vite à')}
                 </h2>
                 <ul className="grid grid-cols-2 gap-x-6 gap-y-1.5">
                   {QUICK_LINKS.map(([href, label]) => (
                     <li key={href}>
                       <Link prefetch={false} href={href} className="text-base text-sage underline-offset-4 hover:text-white hover:underline">
-                        {label}
+                        {t(label)}
                       </Link>
                     </li>
                   ))}
@@ -535,20 +540,20 @@ export default function Home() {
               </nav>
             </div>
             <div className="mt-10 flex flex-wrap items-center justify-between gap-4">
-              <ul aria-label="Garanties vérifiées" className="flex flex-wrap gap-2">
-                {PROOFS.map((t) => (
-                  <li key={t} className="flex items-center gap-1.5 rounded-full bg-brand-700 py-1 pr-3 pl-1.5 text-sm font-semibold">
+              <ul aria-label={t('Garanties vérifiées')} className="flex flex-wrap gap-2">
+                {PROOFS.map((proof) => (
+                  <li key={proof} className="flex items-center gap-1.5 rounded-full bg-brand-700 py-1 pr-3 pl-1.5 text-sm font-semibold">
                     <span className="grid h-5 w-5 place-items-center rounded-full bg-leaf text-brand-900">
                       <Check size={13} aria-hidden />
                     </span>
-                    {t}
+                    {t(proof)}
                   </li>
                 ))}
               </ul>
               <p className="flex flex-wrap gap-x-4 gap-y-1 rounded-2xl bg-surface px-4 py-2 text-sm text-brand-900">
-                <span>Données fictives</span>
-                <span>Ne remplace pas un avis médical</span>
-                <span>© 2026 Ganji</span>
+                <span>{t('Données fictives')}</span>
+                <span>{t('Ne remplace pas un avis médical')}</span>
+                <span>{t('© 2026 Ganji')}</span>
               </p>
             </div>
           </div>

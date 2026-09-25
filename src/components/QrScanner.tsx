@@ -1,4 +1,5 @@
 'use client';
+import { useT } from '@/i18n/client';
 import { Camera, CameraOff, Keyboard } from 'lucide-react';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 
@@ -33,7 +34,8 @@ export interface QrScannerProps {
  * (une analyse toutes les 300 ms, flux coupé dès la lecture), sinon saisie manuelle.
  * La saisie manuelle reste toujours proposée : réseau lent, caméra refusée, QR imprimé abîmé.
  */
-export function QrScanner({ onValue, busy = false, inputLabel, inputHint, placeholder, submitLabel, scanLabel = 'Scanner le QR code', minLength = 6 }: QrScannerProps) {
+export function QrScanner({ onValue, busy = false, inputLabel, inputHint, placeholder, submitLabel, scanLabel, minLength = 6 }: QrScannerProps) {
+  const t = useT();
   const [supported, setSupported] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [camError, setCamError] = useState<string | null>(null);
@@ -100,7 +102,7 @@ export function QrScanner({ onValue, busy = false, inputLabel, inputHint, placeh
       }, 300);
     } catch {
       stop();
-      setCamError('Caméra indisponible ou refusée. Saisissez le code à la main.');
+      setCamError(t('Caméra indisponible ou refusée. Saisissez le code à la main.'));
     }
   }
 
@@ -109,7 +111,7 @@ export function QrScanner({ onValue, busy = false, inputLabel, inputHint, placeh
       {supported && (
         <div className="space-y-2">
           <div className={scanning ? 'relative overflow-hidden rounded-2xl bg-black' : 'hidden'}>
-            <video ref={videoRef} muted playsInline className="aspect-[4/3] w-full object-cover" aria-label="Aperçu de la caméra" />
+            <video ref={videoRef} muted playsInline className="aspect-[4/3] w-full object-cover" aria-label={t('Aperçu de la caméra')} />
             <div aria-hidden className="pointer-events-none absolute inset-[18%] rounded-2xl border-4 border-white/80" />
           </div>
           {scanning ? (
@@ -118,7 +120,7 @@ export function QrScanner({ onValue, busy = false, inputLabel, inputHint, placeh
             </button>
           ) : (
             <button type="button" onClick={start} disabled={busy} className="btn btn-primary w-full">
-              <Camera size={20} aria-hidden /> {scanLabel}
+              <Camera size={20} aria-hidden /> {scanLabel ?? t('Scanner le QR code')}
             </button>
           )}
           {scanning && <p role="status" className="text-sm text-[var(--fg-muted)]">Placez le QR code dans le cadre. Lecture automatique.</p>}
@@ -135,7 +137,7 @@ export function QrScanner({ onValue, busy = false, inputLabel, inputHint, placeh
         }}
       >
         <label htmlFor={inputId} className="flex items-center gap-2 text-base font-bold">
-          <Keyboard size={18} aria-hidden /> {supported ? `Ou ${inputLabel.charAt(0).toLowerCase()}${inputLabel.slice(1)}` : inputLabel}
+          <Keyboard size={18} aria-hidden /> {supported ? t('Ou {action}', { action: `${inputLabel.charAt(0).toLowerCase()}${inputLabel.slice(1)}` }) : inputLabel}
         </label>
         <div className="flex gap-2">
           <input
@@ -149,7 +151,7 @@ export function QrScanner({ onValue, busy = false, inputLabel, inputHint, placeh
             aria-describedby={inputHint ? hintId : undefined}
           />
           <button type="submit" className="btn btn-soft shrink-0" disabled={busy || value.trim().length < minLength}>
-            {busy ? 'Vérification…' : submitLabel}
+            {busy ? t('Vérification…') : submitLabel}
           </button>
         </div>
         {inputHint && (

@@ -1,6 +1,7 @@
 'use client';
 import { CloudOff, RefreshCw } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useT } from '@/i18n/client';
 import { flushQueue, readQueue } from '@/lib/offline-queue';
 
 /**
@@ -8,6 +9,7 @@ import { flushQueue, readQueue } from '@/lib/offline-queue';
  * Au retour du réseau (ou sur message du service worker), la file est envoyée.
  */
 export function NetworkStatus() {
+  const t = useT();
   const [online, setOnline] = useState(true);
   const [pending, setPending] = useState(0);
 
@@ -42,8 +44,8 @@ export function NetworkStatus() {
     <div role="status" className="bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">
       <p className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2 text-base font-bold">
         {online ? <RefreshCw size={18} aria-hidden /> : <CloudOff size={18} aria-hidden />}
-        {!online && 'Pas de réseau : vous voyez la dernière version enregistrée.'}
-        {pending > 0 && ` ${pending} saisie${pending > 1 ? 's' : ''} en attente, envoi${pending > 1 ? 's' : ''} au retour du réseau.`}
+        {!online && t('Pas de réseau : vous voyez la dernière version enregistrée.')}
+        {pending > 0 && ` ${pending > 1 ? t('{n} saisies en attente, envois au retour du réseau.', { n: pending }) : t('{n} saisie en attente, envoi au retour du réseau.', { n: pending })}`}
       </p>
     </div>
   );

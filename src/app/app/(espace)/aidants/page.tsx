@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Pictogram } from '@/components/Pictogram';
+import { getLocale, getT } from '@/i18n/server';
 import { fmtDate } from '@/lib/format';
 import type { Summary } from '@/lib/types';
 import { Empty, ErrorNote, PageHead, Section } from '../../_components/ui';
@@ -10,12 +11,16 @@ import { RevokeButton } from '../partage/RevokeButton';
 import { AddDelegation, DiscreetToggle } from './Delegations';
 import { OfflinePin } from './OfflinePin';
 
-export const metadata: Metadata = { title: 'Aidants et réglages' };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT();
+  return { title: t('Aidants et réglages') };
+}
 
 interface Delegation { id: string; relation: string; scopes: string[]; createdAt: string; caregiver: { displayName: string } }
 
 export default async function AidantsPage() {
-  const me = await getMe();
+  const [me, t, locale] = await Promise.all([getMe(), getT(), getLocale()]);
+  const scopeList = (scopes: string[]) => scopes.map((s) => (SCOPE_LABEL[s] ? t(SCOPE_LABEL[s]) : s).toLowerCase()).join(', ');
   const [delRes, sumRes] = me.patientId ? await Promise.all([load<Delegation[]>('/me/delegations'), load<Summary>('/me/summary')]) : [null, null];
   const dels = delRes?.data ?? [];
 
@@ -23,20 +28,20 @@ export default async function AidantsPage() {
     <>
       <PageHead
         icon="care"
-        title="Aidants et réglages"
-        intro="Choisissez les proches qui peuvent vous aider, et protégez votre carnet sur ce téléphone."
-        listen="Ici, vous pouvez ajouter un proche comme aidant avec son numéro de téléphone. Il pourra voir ce que vous choisissez, jamais vos données très sensibles. Vous pouvez aussi activer le mode discret et protéger votre carnet par un code PIN."
+        title={t('Aidants et réglages')}
+        intro={t('Choisissez les proches qui peuvent vous aider, et protégez votre carnet sur ce téléphone.')}
+        listen={t('Ici, vous pouvez ajouter un proche comme aidant avec son numéro de téléphone. Il pourra voir ce que vous choisissez, jamais vos données très sensibles. Vous pouvez aussi activer le mode discret et protéger votre carnet par un code PIN.')}
         audioKey="app.aidants"
       />
 
       {me.delegations.length > 0 && (
-        <Section id="h-jaide" title="Les personnes que j’aide" icon="people">
+        <Section id="h-jaide" title={t('Les personnes que j’aide')} icon="people">
           <ul className="grid gap-3 sm:grid-cols-2">
             {me.delegations.map((d) => (
               <li key={d.patient.id} className="rounded-2xl border border-[var(--border)] p-4">
                 <p className="text-lg font-bold">{d.patient.firstName} {d.patient.lastName} <span className="font-normal text-[var(--fg-muted)]">({d.relation})</span></p>
-                <p className="text-sm text-[var(--fg-muted)]">Vous pouvez voir : {d.scopes.map((s) => (SCOPE_LABEL[s] ?? s).toLowerCase()).join(', ')}</p>
-                <Link href={`/app/carnet?patient=${d.patient.id}`} className="btn btn-soft mt-3 w-full">Ouvrir son carnet</Link>
+                <p className="text-sm text-[var(--fg-muted)]">{t('Vous pouvez voir : {list}', { list: scopeList(d.scopes) })}</p>
+                <Link href={`/app/carnet?patient=${d.patient.id}`} className="btn btn-soft mt-3 w-full">{t('Ouvrir son carnet')}</Link>
               </li>
             ))}
           </ul>
@@ -44,9 +49,9 @@ export default async function AidantsPage() {
       )}
 
       {me.patientId && (
-        <Section id="h-aidants" title="Mes aidants" icon="care">
+        <Section id="h-aidants" title={t('Mes aidants')} icon="care">
           {delRes?.error && <ErrorNote error={delRes.error} />}
-          {delRes?.data && dels.length === 0 && <Empty>Aucun aidant pour le moment.</Empty>}
+          {delRes?.data && dels.length === 0 && <Empty>{t('Aucun aidant pour le moment.')}</Empty>}
           {dels.length > 0 && (
             <ul className="mb-5 space-y-3">
               {dels.map((d) => (
@@ -55,10 +60,10 @@ export default async function AidantsPage() {
                   <div className="min-w-0 flex-1">
                     <p className="text-lg font-bold">{d.caregiver.displayName} <span className="font-normal text-[var(--fg-muted)]">({d.relation})</span></p>
                     <p className="text-sm text-[var(--fg-muted)]">
-                      Depuis le {fmtDate(d.createdAt, { day: 'numeric', month: 'long' })} · peut voir : {d.scopes.map((s) => (SCOPE_LABEL[s] ?? s).toLowerCase()).join(', ')}
+                      {t('Depuis le {date} · peut voir : {list}', { date: fmtDate(d.createdAt, { day: 'numeric', month: 'long' }, locale), list: scopeList(d.scopes) })}
                     </p>
                   </div>
-                  <RevokeButton id={d.id} who={d.caregiver.displayName} path="/me/delegations" label="Retirer cet aidant" />
+                  <RevokeButton id={d.id} who={d.caregiver.displayName} path="/me/delegations" label={t('Retirer cet aidant')} />
                 </li>
               ))}
             </ul>
@@ -68,21 +73,21 @@ export default async function AidantsPage() {
       )}
 
       {me.patientId && (
-        <Section id="h-discret" title="Discrétion" icon="eye" className="simple-hide">
+        <Section id="h-discret" title={t('Discrétion')} icon="eye" className="simple-hide">
           {sumRes?.error && <ErrorNote error={sumRes.error} />}
           {sumRes?.data && <DiscreetToggle initial={sumRes.data.discreetMode} />}
         </Section>
       )}
 
       {me.patientId && (
-        <Section id="h-pin" title="Carnet hors ligne protégé par code PIN" icon="shield">
+        <Section id="h-pin" title={t('Carnet hors ligne protégé par code PIN')} icon="shield">
           <OfflinePin />
         </Section>
       )}
 
-      <Section id="h-affichage" title="Affichage et voix" icon="a11y" className="simple-hide">
+      <Section id="h-affichage" title={t('Affichage et voix')} icon="a11y" className="simple-hide">
         <p className="text-base">
-          Taille du texte (jusqu’à 200 %), thème sombre, langue de la voix (fon, yoruba, bariba, dendi) et mode simple : touchez la roue dentée en haut de l’écran.
+          {t('Taille du texte (jusqu’à 200 %), thème sombre, langue de la voix (fon, yoruba, bariba, dendi) et mode simple : touchez la roue dentée en haut de l’écran.')}
         </p>
       </Section>
     </>

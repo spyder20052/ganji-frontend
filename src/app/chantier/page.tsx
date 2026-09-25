@@ -2,12 +2,16 @@ import type { Metadata } from 'next';
 import { Check, ExternalLink } from 'lucide-react';
 import progress from '../../../docs/progress.json';
 import { TopBar } from '@/components/TopBar';
+import { getLocale, getT } from '@/i18n/server';
+import { INTL, type Locale, type T } from '@/i18n/translate';
 
-export const dynamic = 'force-static';
-export const metadata: Metadata = {
-  title: 'Suivi du chantier',
-  description: 'Avancement de chaque module de Ganji, critères d’acceptation, commits et blocages.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT();
+  return {
+    title: t('Suivi du chantier'),
+    description: t('Avancement de chaque module de Ganji, critères d’acceptation, commits et blocages.'),
+  };
+}
 
 type Status = 'done' | 'doing' | 'blocked' | 'todo';
 
@@ -35,8 +39,8 @@ interface Progress {
 const data = progress as unknown as Progress;
 
 const TZ = 'Africa/Porto-Novo';
-const fmt = (iso: string) => new Date(iso).toLocaleString('fr-FR', { timeZone: TZ, day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-const hm = (iso: string) => new Date(iso).toLocaleTimeString('fr-FR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
+const fmt = (iso: string, locale: Locale) => new Date(iso).toLocaleString(INTL[locale], { timeZone: TZ, day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+const hm = (iso: string, locale: Locale) => new Date(iso).toLocaleTimeString(INTL[locale], { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
 
 const STATUS: Record<Status, { label: string; cls: string }> = {
   done: { label: 'Terminé', cls: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]' },
@@ -52,7 +56,7 @@ const LINKS: [string, string][] = [
   ['apiDocs', 'Documentation de l’API'],
 ];
 
-function Checklist({ items }: { items: { label: string; done: boolean }[] }) {
+function Checklist({ items, t }: { items: { label: string; done: boolean }[]; t: T }) {
   return (
     <ul className="grid gap-1.5">
       {items.map((i) => (
@@ -64,7 +68,7 @@ function Checklist({ items }: { items: { label: string; done: boolean }[] }) {
             {i.done && <Check size={13} strokeWidth={3} />}
           </span>
           <span className={i.done ? 'text-[var(--fg-muted)] line-through decoration-[var(--fg-muted)]/60' : ''}>
-            <span className="sr-only">{i.done ? 'Fait : ' : 'À faire : '}</span>
+            <span className="sr-only">{i.done ? t('Fait : ') : t('À faire : ')}</span>
             {i.label}
           </span>
         </li>
@@ -73,7 +77,9 @@ function Checklist({ items }: { items: { label: string; done: boolean }[] }) {
   );
 }
 
-export default function ChantierPage() {
+export default async function ChantierPage() {
+  const t = await getT();
+  const locale = await getLocale();
   const ch = data.chantiers;
   const allItems = ch.flatMap((c) => c.items);
   const doneItems = allItems.filter((i) => i.done).length;
@@ -82,6 +88,10 @@ export default function ChantierPage() {
   const current = ch.find((c) => c.status === 'doing') ?? ch.find((c) => c.status === 'blocked') ?? ch.find((c) => c.status === 'todo');
   const openBlockers = data.blockers.filter((b) => b.open).length;
   const acDone = data.acceptance.filter((a) => a.done).length;
+  // Une seule phrase à traduire ; le nom du fichier reste en police à chasse fixe.
+  const [footerBefore, footerAfter = ''] = t('Mis à jour le {date}. Source : {file} du dépôt frontend (page générée au déploiement).', {
+    date: fmt(data.updatedAt, locale),
+  }).split('{file}');
 
   return (
     <>
@@ -89,12 +99,14 @@ export default function ChantierPage() {
       <main id="contenu" className="mx-auto max-w-6xl space-y-5 px-4 pb-16 pt-6">
         <header className="card grid items-end gap-6 !border-0 bg-[var(--color-brand-900)] p-6 text-white sm:p-8 lg:grid-cols-[1.3fr_1fr]">
           <div>
-            <p className="label !text-[var(--color-brand-200)]">Test technique MTDI · e-Santé</p>
-            <h1 className="mt-2 text-4xl font-bold">Chantier {data.project}</h1>
+            <p className="label !text-[var(--color-brand-200)]">{t('Test technique MTDI · e-Santé')}</p>
+            <h1 className="mt-2 text-4xl font-bold">{t('Chantier {project}', { project: data.project })}</h1>
             <p className="mt-2 max-w-xl text-[var(--color-brand-100)]">
-              {current ? `${STATUS[current.status].label} : ${current.id} ${current.title}. Livraison visée à ${hm(data.deadline)}.` : 'Tous les chantiers sont terminés.'}
+              {current
+                ? t('{status} : {id} {title}. Livraison visée à {time}.', { status: t(STATUS[current.status].label), id: current.id, title: current.title, time: hm(data.deadline, locale) })
+                : t('Tous les chantiers sont terminés.')}
             </p>
-            <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-white/20" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Avancement global">
+            <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-white/20" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={t('Avancement global')}>
               <div className="h-full rounded-full bg-white" style={{ width: `${pct}%` }} />
             </div>
           </div>
@@ -108,7 +120,7 @@ export default function ChantierPage() {
               ].map(([v, l]) => (
                 <div key={l} className="rounded-2xl bg-white/10 px-3 py-2.5">
                   <p className="num text-2xl font-bold leading-tight">{v}</p>
-                  <p className="text-sm text-[var(--color-brand-100)]">{l}</p>
+                  <p className="text-sm text-[var(--color-brand-100)]">{t(l)}</p>
                 </div>
               ))}
             </div>
@@ -118,10 +130,10 @@ export default function ChantierPage() {
         <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
           <section aria-labelledby="h-ch" className="card space-y-3 p-5">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 id="h-ch" className="text-xl font-bold">Chantiers</h2>
+              <h2 id="h-ch" className="text-xl font-bold">{t('Chantiers')}</h2>
               <p className="flex flex-wrap gap-1.5 text-sm">
                 {(Object.keys(STATUS) as Status[]).map((s) => (
-                  <span key={s} className={`pill ${STATUS[s].cls}`}>{STATUS[s].label} <span className="num">{ch.filter((c) => c.status === s).length}</span></span>
+                  <span key={s} className={`pill ${STATUS[s].cls}`}>{t(STATUS[s].label)} <span className="num">{ch.filter((c) => c.status === s).length}</span></span>
                 ))}
               </p>
             </div>
@@ -144,20 +156,20 @@ export default function ChantierPage() {
                         </span>
                       </span>
                       <span className="col-start-2 flex items-center gap-3 sm:col-start-auto sm:grid sm:justify-items-end sm:gap-2">
-                        <span className={`pill whitespace-nowrap ${STATUS[c.status].cls}`}>{STATUS[c.status].label}</span>
-                        <span className="h-1.5 w-24 overflow-hidden rounded-full bg-[var(--border)]" title={`${d}/${c.items.length}`} aria-label={`${d} tâches sur ${c.items.length}`}>
+                        <span className={`pill whitespace-nowrap ${STATUS[c.status].cls}`}>{t(STATUS[c.status].label)}</span>
+                        <span className="h-1.5 w-24 overflow-hidden rounded-full bg-[var(--border)]" title={`${d}/${c.items.length}`} aria-label={t('{done} tâches sur {total}', { done: d, total: c.items.length })}>
                           <span className="block h-full bg-[var(--color-brand-900)] dark:bg-[var(--color-brand-200)]" style={{ width: `${p}%` }} />
                         </span>
                       </span>
                     </summary>
                     <div className="grid gap-3.5 px-4 pb-4 sm:pl-[86px]">
-                      <Checklist items={c.items} />
+                      <Checklist items={c.items} t={t} />
                       <p className="rounded-xl bg-[var(--color-ocre-100)] px-3 py-2.5 text-base text-[var(--color-ink)]">
-                        <strong className="text-[var(--color-ocre-700)]">Critère d’acceptation.</strong> {c.acceptance}
+                        <strong className="text-[var(--color-ocre-700)]">{t('Critère d’acceptation.')}</strong> {c.acceptance}
                       </p>
                       {c.commits.length > 0 && (
                         <div className="grid gap-1">
-                          <p className="label">Commits sur develop</p>
+                          <p className="label">{t('Commits sur develop')}</p>
                           {c.commits.map((k) => (
                             <p key={`${k.repo}-${k.sha}`} className="flex flex-wrap items-baseline gap-2.5 text-base">
                               <code className="font-mono text-sm text-[var(--color-brand-500)]">{k.sha}</code>
@@ -177,31 +189,33 @@ export default function ChantierPage() {
           <aside className="grid gap-5">
             <section aria-labelledby="h-bl" className="card space-y-3 p-5">
               <div className="flex items-baseline justify-between gap-2">
-                <h2 id="h-bl" className="text-xl font-bold">Blocages</h2>
-                <span className="num text-sm text-[var(--fg-muted)]">{openBlockers ? `${openBlockers} ouvert${openBlockers > 1 ? 's' : ''}` : 'aucun'}</span>
+                <h2 id="h-bl" className="text-xl font-bold">{t('Blocages')}</h2>
+                <span className="num text-sm text-[var(--fg-muted)]">
+                  {openBlockers ? (openBlockers > 1 ? t('{n} ouverts', { n: openBlockers }) : t('{n} ouvert', { n: openBlockers })) : t('aucun')}
+                </span>
               </div>
               {data.blockers.map((b) => (
                 <div key={b.id} className={`grid gap-1 rounded-2xl p-3.5 ${b.open ? 'bg-[var(--color-ocre-100)] text-[var(--color-ink)]' : 'bg-[var(--color-brand-100)] text-[var(--color-brand-950)]'}`}>
                   <h3 className={`font-bold ${b.open ? 'text-[var(--color-ocre-700)]' : 'line-through'}`}>{b.title}</h3>
                   <p className="text-sm">{b.detail}</p>
-                  <p className="text-xs opacity-75">Action : {b.owner}</p>
+                  <p className="text-xs opacity-75">{t('Action : {owner}', { owner: b.owner })}</p>
                 </div>
               ))}
             </section>
 
             <section aria-labelledby="h-li" className="card space-y-3 p-5">
-              <h2 id="h-li" className="text-xl font-bold">Liens à transmettre</h2>
+              <h2 id="h-li" className="text-xl font-bold">{t('Liens à transmettre')}</h2>
               {LINKS.map(([key, label]) => {
                 const v = data.links[key];
                 return (
                   <div key={key} className="rounded-2xl border border-[var(--border)] px-3 py-2.5">
-                    <p className="text-xs text-[var(--fg-muted)]">{label}</p>
+                    <p className="text-xs text-[var(--fg-muted)]">{t(label)}</p>
                     {v ? (
                       <a href={v} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 break-all font-mono text-sm text-[var(--color-brand-500)] underline-offset-2 hover:underline">
                         {v} <ExternalLink size={12} aria-hidden />
                       </a>
                     ) : (
-                      <p className="font-mono text-sm text-[var(--fg-muted)]">[Lien] en attente</p>
+                      <p className="font-mono text-sm text-[var(--fg-muted)]">{t('[Lien] en attente')}</p>
                     )}
                   </div>
                 );
@@ -210,18 +224,18 @@ export default function ChantierPage() {
 
             <section aria-labelledby="h-ac" className="card space-y-3 p-5">
               <div className="flex items-baseline justify-between gap-2">
-                <h2 id="h-ac" className="text-xl font-bold">Critères d’acceptation</h2>
+                <h2 id="h-ac" className="text-xl font-bold">{t('Critères d’acceptation')}</h2>
                 <span className="num text-sm text-[var(--fg-muted)]">{acDone}/{data.acceptance.length}</span>
               </div>
-              <Checklist items={data.acceptance} />
+              <Checklist items={data.acceptance} t={t} />
             </section>
 
             <section aria-labelledby="h-lg" className="card space-y-3 p-5">
-              <h2 id="h-lg" className="text-xl font-bold">Journal</h2>
+              <h2 id="h-lg" className="text-xl font-bold">{t('Journal')}</h2>
               <ol className="grid gap-2.5 border-l-2 border-[var(--border)] pl-3.5">
                 {[...data.log].reverse().map((l) => (
                   <li key={`${l.at}-${l.text.slice(0, 20)}`} className="grid gap-0.5 text-base">
-                    <time dateTime={l.at} className="font-mono text-xs text-[var(--fg-muted)]">{fmt(l.at)}</time>
+                    <time dateTime={l.at} className="font-mono text-xs text-[var(--fg-muted)]">{fmt(l.at, locale)}</time>
                     <span>{l.text}</span>
                   </li>
                 ))}
@@ -231,7 +245,9 @@ export default function ChantierPage() {
         </div>
 
         <p className="text-sm text-[var(--fg-muted)]">
-          Mis à jour le {fmt(data.updatedAt)}. Source : <code className="font-mono">docs/progress.json</code> du dépôt frontend (page générée au déploiement).
+          {footerBefore}
+          <code className="font-mono">docs/progress.json</code>
+          {footerAfter}
         </p>
       </main>
     </>

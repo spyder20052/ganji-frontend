@@ -1,8 +1,12 @@
 import type { Metadata } from 'next';
+import { getT } from '@/i18n/server';
 import { tryServerApi } from '@/lib/server-api';
 import { Dashboard, type National } from './Dashboard';
 
-export const metadata: Metadata = { title: 'Tableau de bord' };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT();
+  return { title: t('Tableau de bord') };
+}
 export const dynamic = 'force-dynamic';
 
 export default async function MinisterePage() {

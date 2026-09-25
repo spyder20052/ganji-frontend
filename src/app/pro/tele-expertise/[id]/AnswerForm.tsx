@@ -2,6 +2,7 @@
 import { Send } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useId, useState } from 'react';
+import { useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { ErrorNote } from '../../_lib/ui';
 
@@ -9,6 +10,7 @@ const MIN = 10;
 
 export function AnswerForm({ id }: { id: string }) {
   const router = useRouter();
+  const t = useT();
   const uid = useId();
   const [answer, setAnswer] = useState('');
   const [busy, setBusy] = useState(false);
@@ -27,13 +29,13 @@ export function AnswerForm({ id }: { id: string }) {
           await api(`/tele-expertise/${id}/answer`, { method: 'POST', json: { answer: answer.trim() } });
           router.refresh();
         } catch (err) {
-          setError(err instanceof ApiError ? err.message : 'Réponse non envoyée. Réessayez.');
+          setError(err instanceof ApiError ? t(err.message) : t('Réponse non envoyée. Réessayez.'));
           setBusy(false);
         }
       }}
     >
       <label htmlFor={uid} className="sr-only">
-        Votre avis
+        {t('Votre avis')}
       </label>
       <textarea
         id={uid}
@@ -43,14 +45,14 @@ export function AnswerForm({ id }: { id: string }) {
         maxLength={4000}
         required
         aria-describedby={`${uid}-n`}
-        placeholder="Analyse, conduite à tenir, examens complémentaires, critères de transfert…"
+        placeholder={t('Analyse, conduite à tenir, examens complémentaires, critères de transfert…')}
       />
       <p id={`${uid}-n`} className="num text-sm text-[var(--fg-muted)]">
-        {len < MIN ? `${MIN - len} caractère(s) minimum restant(s)` : `${len} / 4000`}
+        {len < MIN ? t('{n} caractère(s) minimum restant(s)', { n: MIN - len }) : `${len} / 4000`}
       </p>
       <ErrorNote>{error}</ErrorNote>
       <button type="submit" className="btn btn-primary" disabled={busy || len < MIN}>
-        <Send size={18} aria-hidden /> {busy ? 'Envoi…' : 'Envoyer l’avis'}
+        <Send size={18} aria-hidden /> {busy ? t('Envoi…') : t('Envoyer l’avis')}
       </button>
     </form>
   );

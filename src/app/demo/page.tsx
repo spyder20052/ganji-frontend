@@ -1,8 +1,13 @@
 import type { Metadata } from 'next';
 import { TopBar } from '@/components/TopBar';
+import { I18nScope } from '@/i18n/I18nScope';
+import { getT } from '@/i18n/server';
 import { DemoPicker, type PersonaCard } from './DemoPicker';
 
-export const metadata: Metadata = { title: 'Comptes de démonstration' };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT();
+  return { title: t('Comptes de démonstration') };
+}
 
 const PERSONAS: PersonaCard[] = [
   { persona: 'koffi', name: 'Koffi Agossou', role: 'Patient · 34 ans, leucémie, Abomey-Calavi', story: 'Patient au long cours : un carnet unique, du sang et des médicaments à trouver chaque mois.', shows: 'carnet, QR de partage, journal d’accès, carte d’urgence hors ligne, ordonnance' },
@@ -20,20 +25,22 @@ const PERSONAS: PersonaCard[] = [
   { persona: 'ministere', name: 'Direction de la santé publique', role: 'Ministère', story: 'Voit ruptures, besoins en sang et alertes par département.', shows: 'tableau de bord national, alertes géolocalisées' },
 ];
 
-export default function DemoPage() {
+export default async function DemoPage() {
+  const t = await getT();
+  // Les noms sont des données (non traduits), sauf les mentions génériques entre parenthèses.
+  const personas = PERSONAS.map((p) => ({ ...p, name: t(p.name), role: t(p.role), story: t(p.story), shows: t(p.shows) }));
   return (
-    <>
+    <I18nScope area="public">
       <TopBar />
       <main id="contenu" className="mx-auto max-w-6xl space-y-6 px-4 py-8">
         <div>
-          <h1 className="text-3xl font-bold">Comptes de démonstration</h1>
+          <h1 className="text-3xl font-bold">{t('Comptes de démonstration')}</h1>
           <p className="mt-2 max-w-2xl text-[var(--fg-muted)]">
-            Chaque profil a son espace et ses droits. Toutes les personnes sont fictives ; les établissements, communes, médicaments et le calendrier vaccinal sont réels.
-            Les soignants ont une session de 30 minutes.
+            {t('Chaque profil a son espace et ses droits. Toutes les personnes sont fictives ; les établissements, communes, médicaments et le calendrier vaccinal sont réels. Les soignants ont une session de 30 minutes.')}
           </p>
         </div>
-        <DemoPicker personas={PERSONAS} />
+        <DemoPicker personas={personas} />
       </main>
-    </>
+    </I18nScope>
   );
 }

@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { ShieldAlert, ShieldX } from 'lucide-react';
 import { Pictogram } from '@/components/Pictogram';
+import { getLocale, getT } from '@/i18n/server';
+import type { Locale, T } from '@/i18n/translate';
 import { fmtDate, fmtDateTime } from '@/lib/format';
 import { Empty, ErrorNote, PageHead, Section } from '../../_components/ui';
 import { logSentence, SCOPE_LABEL, type AccessLogEntry } from '../../_lib/labels';
@@ -9,17 +11,20 @@ import { RevokeButton } from './RevokeButton';
 import { ShareFlow } from './ShareFlow';
 import type { ConsentView } from './types';
 
-export const metadata: Metadata = { title: 'Partager mon carnet' };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT();
+  return { title: t('Partager mon carnet') };
+}
 
 const SOURCE: Record<string, string> = { QR: 'QR scanné', CODE: 'code à 6 chiffres', TEAM: 'équipe de soins', BREAK_GLASS: 'accès d’urgence', TELE_EXPERTISE: 'avis de spécialiste' };
 
 export default async function PartagePage() {
-  const me = await getMe();
+  const [me, t, locale] = await Promise.all([getMe(), getT(), getLocale()]);
   if (!me.patientId) {
     return (
       <>
-        <PageHead icon="qr" title="Partager mon carnet" />
-        <Empty>Le partage est réservé au titulaire du carnet. Les personnes que vous aidez partagent leur carnet depuis leur propre téléphone.</Empty>
+        <PageHead icon="qr" title={t('Partager mon carnet')} />
+        <Empty>{t('Le partage est réservé au titulaire du carnet. Les personnes que vous aidez partagent leur carnet depuis leur propre téléphone.')}</Empty>
       </>
     );
   }
@@ -33,44 +38,46 @@ export default async function PartagePage() {
     <>
       <PageHead
         icon="qr"
-        title="Partager mon carnet"
-        intro="Vous choisissez qui voit quoi, et pour combien de temps. Personne ne lit votre carnet sans votre accord : chaque lecture est écrite dans votre journal."
-        listen="Pour montrer votre carnet à un soignant, cochez ce qu'il peut voir, choisissez la durée, puis touchez le bouton vert. Il scanne le code. Vous pouvez retirer l'accès à tout moment."
+        title={t('Partager mon carnet')}
+        intro={t('Vous choisissez qui voit quoi, et pour combien de temps. Personne ne lit votre carnet sans votre accord : chaque lecture est écrite dans votre journal.')}
+        listen={t("Pour montrer votre carnet à un soignant, cochez ce qu'il peut voir, choisissez la durée, puis touchez le bouton vert. Il scanne le code. Vous pouvez retirer l'accès à tout moment.")}
         audioKey="app.partage"
       />
 
-      <Section id="h-qr" title="Nouveau partage" icon="qr">
+      <Section id="h-qr" title={t('Nouveau partage')} icon="qr">
         <ShareFlow />
       </Section>
 
-      <Section id="h-actifs" title={`Qui a accès en ce moment${active.length ? ` (${active.length})` : ''}`} icon="people">
+      <Section id="h-actifs" title={active.length ? t('Qui a accès en ce moment ({n})', { n: active.length }) : t('Qui a accès en ce moment')} icon="people">
         {consRes.error && <ErrorNote error={consRes.error} />}
-        {consRes.data && active.length === 0 && <Empty>Personne en dehors de votre équipe de soins.</Empty>}
+        {consRes.data && active.length === 0 && <Empty>{t('Personne en dehors de votre équipe de soins.')}</Empty>}
         {active.length > 0 && (
           <ul className="space-y-3">
             {active.map((c) => (
               <li key={c.id} className={`flex flex-wrap items-center gap-3 rounded-2xl border p-4 ${c.source === 'BREAK_GLASS' ? 'border-[var(--color-danger-600)]/40 bg-[var(--color-danger-50)] text-[var(--color-danger-800)]' : 'border-[var(--border)]'}`}>
                 <span className="chip-round shrink-0 text-[var(--color-brand-900)]"><Pictogram name={c.source === 'BREAK_GLASS' ? 'emergency' : 'stethoscope'} size={20} /></span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-lg font-bold">{c.grantee ?? 'Soignant'}</p>
+                  <p className="text-lg font-bold">{c.grantee ?? t('Soignant')}</p>
                   <p className="text-base">
-                    Jusqu’à {fmtDateTime(c.expiresAt)} · {SOURCE[c.source] ?? c.source}
+                    {t('Jusqu’à {date} · {source}', { date: fmtDateTime(c.expiresAt, locale), source: SOURCE[c.source] ? t(SOURCE[c.source]) : c.source })}
                   </p>
-                  <p className="text-sm opacity-80">Voit : {c.scopes.map((s) => SCOPE_LABEL[s] ?? s).join(', ')}</p>
+                  <p className="text-sm opacity-80">{t('Voit : {list}', { list: c.scopes.map((s) => (SCOPE_LABEL[s] ? t(SCOPE_LABEL[s]) : s)).join(', ') })}</p>
                 </div>
-                <RevokeButton id={c.id} who={c.grantee ?? 'ce soignant'} />
+                <RevokeButton id={c.id} who={c.grantee ?? t('ce soignant')} />
               </li>
             ))}
           </ul>
         )}
         {past.length > 0 && (
           <details className="simple-hide mt-4">
-            <summary className="cursor-pointer py-2 font-bold">Anciens partages ({past.length})</summary>
+            <summary className="cursor-pointer py-2 font-bold">{t('Anciens partages ({n})', { n: past.length })}</summary>
             <ul className="mt-2 divide-y divide-[var(--border)]">
               {past.map((c) => (
                 <li key={c.id} className="py-3 text-base">
-                  <span className="font-bold">{c.grantee ?? 'Soignant'}</span> · depuis le {fmtDate(c.since, { day: 'numeric', month: 'long' })} ·{' '}
-                  {c.revokedAt ? `retiré le ${fmtDate(c.revokedAt, { day: 'numeric', month: 'long' })}` : `terminé le ${fmtDate(c.expiresAt, { day: 'numeric', month: 'long' })}`}
+                  <span className="font-bold">{c.grantee ?? t('Soignant')}</span> · {t('depuis le {date}', { date: fmtDate(c.since, { day: 'numeric', month: 'long' }, locale) })} ·{' '}
+                  {c.revokedAt
+                    ? t('retiré le {date}', { date: fmtDate(c.revokedAt, { day: 'numeric', month: 'long' }, locale) })
+                    : t('terminé le {date}', { date: fmtDate(c.expiresAt, { day: 'numeric', month: 'long' }, locale) })}
                 </li>
               ))}
             </ul>
@@ -78,28 +85,28 @@ export default async function PartagePage() {
         )}
       </Section>
 
-      <Section id="h-journal" title="Journal d’accès" icon="eye">
+      <Section id="h-journal" title={t('Journal d’accès')} icon="eye">
         <p className="mb-4 flex flex-wrap items-center gap-2 text-base text-[var(--fg-muted)]">
-          Personne ne peut l’effacer.
+          {t('Personne ne peut l’effacer.')}
           {alerts > 0 && (
             <span className="pill bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">
-              {alerts} à regarder
+              {t('{n} à regarder', { n: alerts })}
             </span>
           )}
         </p>
         {logRes.error && <ErrorNote error={logRes.error} />}
-        {logRes.data && log.length === 0 && <Empty>Aucun accès pour le moment.</Empty>}
+        {logRes.data && log.length === 0 && <Empty>{t('Aucun accès pour le moment.')}</Empty>}
         {log.length > 0 && (
           <>
-            <LogList entries={log.slice(0, RECENT)} me={me.displayName} />
+            <LogList entries={log.slice(0, RECENT)} me={me.displayName} t={t} locale={locale} />
             {log.length > RECENT && (
               <details className="group mt-3">
                 <summary className="btn btn-soft w-full cursor-pointer list-none">
-                  <span className="group-open:hidden">Voir tout le journal ({log.length})</span>
-                  <span className="hidden group-open:inline">Masquer</span>
+                  <span className="group-open:hidden">{t('Voir tout le journal ({n})', { n: log.length })}</span>
+                  <span className="hidden group-open:inline">{t('Masquer')}</span>
                 </summary>
                 <div className="mt-3">
-                  <LogList entries={log.slice(RECENT)} me={me.displayName} />
+                  <LogList entries={log.slice(RECENT)} me={me.displayName} t={t} locale={locale} />
                 </div>
               </details>
             )}
@@ -112,11 +119,11 @@ export default async function PartagePage() {
 
 const RECENT = 5;
 
-function LogList({ entries, me }: { entries: AccessLogEntry[]; me: string }) {
+function LogList({ entries, me, t, locale }: { entries: AccessLogEntry[]; me: string; t: T; locale: Locale }) {
   return (
     <ol className="space-y-2">
       {entries.map((e) => {
-        const { text, tone } = logSentence(e, me);
+        const { text, tone } = logSentence(e, me, t, locale);
         const style =
           tone === 'breakglass'
             ? 'bg-[var(--color-danger-50)] text-[var(--color-danger-800)]'

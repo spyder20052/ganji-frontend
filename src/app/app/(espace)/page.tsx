@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { ArrowUpRight, ChevronRight, EyeOff } from 'lucide-react';
 import { ListenButton } from '@/components/ListenButton';
 import { Pictogram } from '@/components/Pictogram';
+import { getLocale, getT } from '@/i18n/server';
+import type { T } from '@/i18n/translate';
 import { fmtDate, relative } from '@/lib/format';
 import type { Summary } from '@/lib/types';
 import { ErrorNote } from '../_components/ui';
@@ -11,7 +13,10 @@ import { hourOnly } from '../_lib/labels';
 import { getMe, load } from '../_lib/load';
 import { SaveEmergencyCard } from './SaveEmergencyCard';
 
-export const metadata: Metadata = { title: 'Mon espace' };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getT();
+  return { title: t('Mon espace') };
+}
 
 interface HealthAlert {
   id: string;
@@ -57,14 +62,15 @@ const PREVIEWS = [
   { href: '/app/cercle', icon: 'people', title: 'Cercle' },
 ];
 
-function greeting() {
+/** « Bonjour Koffi » ou « Bonsoir Koffi », selon l'heure du Bénin. */
+function greeting(firstName: string, t: T) {
   const part = new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Porto-Novo', hour: 'numeric', hourCycle: 'h23' }).formatToParts(new Date()).find((x) => x.type === 'hour');
   const h = Number(part?.value ?? 12);
-  return h >= 18 || h < 4 ? 'Bonsoir' : 'Bonjour';
+  return h >= 18 || h < 4 ? t('Bonsoir {prenom}', { prenom: firstName }) : t('Bonjour {prenom}', { prenom: firstName });
 }
 
 export default async function AppHome() {
-  const me = await getMe();
+  const [me, t, locale] = await Promise.all([getMe(), getT(), getLocale()]);
   const [summaryRes, helped] = await Promise.all([
     me.patientId ? load<Summary>('/me/summary') : Promise.resolve(null),
     Promise.all(me.delegations.map(async (d) => ({ d, res: await load<Summary>(`/patients/${d.patient.id}/summary`) }))),
@@ -75,11 +81,16 @@ export default async function AppHome() {
 
   const firstName = s?.firstName ?? me.displayName.split(' ')[0];
   const next = s?.nextReminders[0] ?? null;
-  const nextTitle = next ? (s?.discreetMode ? 'Rendez-vous de santé' : next.title) : null;
+  const nextTitle = next ? (s?.discreetMode ? t('Rendez-vous de santé') : next.title) : null;
+  const nextVars = next ? { title: nextTitle ?? '', date: fmtDate(next.dueAt, { weekday: 'long', day: 'numeric', month: 'long' }, locale), time: hourOnly(next.dueAt, locale), place: next.place ?? '' } : null;
   const listen = [
-    `${greeting()} ${firstName}.`,
-    next ? `Prochain rendez-vous : ${nextTitle}, le ${fmtDate(next.dueAt, { weekday: 'long', day: 'numeric', month: 'long' })} à ${hourOnly(next.dueAt)}${next.place ? `, à ${next.place}` : ''}.` : 'Aucun rendez-vous prévu pour le moment.',
-    'Touchez une grande case : carnet, médicaments, sang, ou urgence.',
+    `${greeting(firstName, t)}.`,
+    next && nextVars
+      ? next.place
+        ? t('Prochain rendez-vous : {title}, le {date} à {time}, à {place}.', nextVars)
+        : t('Prochain rendez-vous : {title}, le {date} à {time}.', nextVars)
+      : t('Aucun rendez-vous prévu pour le moment.'),
+    t('Touchez une grande case : carnet, médicaments, sang, ou urgence.'),
   ].join(' ');
 
   // Raccourcis : un mot sous chaque icône ; grossesse et enfants seulement quand ils existent.
@@ -95,10 +106,10 @@ export default async function AppHome() {
     <>
       {/* En-tête Forêt à la trame Ganji (maquette de la charte), puis la carte du rendez-vous qui le chevauche. */}
       <header className="motif-foret -mx-4 -mt-2 space-y-3 rounded-b-[2rem] px-4 pt-6 pb-20 text-white sm:mx-0 sm:mt-0 sm:rounded-[var(--radius-card)] sm:px-6">
-        <p className="text-base text-white/80 first-letter:uppercase">{fmtDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+        <p className="text-base text-white/80 first-letter:uppercase">{fmtDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' }, locale)}</p>
         <div className="flex items-center justify-between gap-3">
           <h1 className="min-w-0 text-[2.4rem] leading-[1.05] font-medium tracking-tight">
-            {greeting()} {firstName}
+            {greeting(firstName, t)}
           </h1>
           <ListenButton text={listen} audioKey="app.home" compact />
         </div>
@@ -106,11 +117,11 @@ export default async function AppHome() {
           {s && <SaveEmergencyCard card={cardFromSummary(s)} />}
           {s?.discreetMode && (
             <span className="pill bg-white/15 text-white">
-              <EyeOff size={16} aria-hidden /> Mode discret
+              <EyeOff size={16} aria-hidden /> {t('Mode discret')}
             </span>
           )}
         </div>
-        {summaryRes?.error && <ErrorNote what="Votre carnet" error={summaryRes.error} />}
+        {summaryRes?.error && <ErrorNote what={t('Votre carnet')} error={summaryRes.error} />}
       </header>
 
       {me.patientId && (
@@ -119,48 +130,48 @@ export default async function AppHome() {
             <div className="flex items-center gap-4">
               <p className="grid h-20 w-20 shrink-0 place-items-center rounded-2xl bg-[var(--color-brand-100)] text-center">
                 <span>
-                  <span className="block text-sm font-semibold text-[var(--color-brand-900)] uppercase">{fmtDate(next.dueAt, { weekday: 'short' }).replace('.', '')}</span>
-                  <span className="display block text-[2rem] font-semibold text-[var(--color-brand-900)]">{fmtDate(next.dueAt, { day: 'numeric' })}</span>
+                  <span className="block text-sm font-semibold text-[var(--color-brand-900)] uppercase">{fmtDate(next.dueAt, { weekday: 'short' }, locale).replace('.', '')}</span>
+                  <span className="display block text-[2rem] font-semibold text-[var(--color-brand-900)]">{fmtDate(next.dueAt, { day: 'numeric' }, locale)}</span>
                 </span>
               </p>
               <div className="min-w-0 flex-1">
                 <h2 id="h-rdv" className="text-sm font-normal text-[var(--fg-muted)]">
-                  Prochain rendez-vous · {relative(next.dueAt)}
+                  {t('Prochain rendez-vous · {when}', { when: relative(next.dueAt, locale) })}
                 </h2>
                 <p className="font-display text-lg leading-snug font-semibold text-[var(--color-brand-900)]">{nextTitle}</p>
                 <p className="num text-base text-[var(--fg-muted)]">
-                  {hourOnly(next.dueAt)}
+                  {hourOnly(next.dueAt, locale)}
                   {next.place && !s?.discreetMode ? ` · ${next.place}` : ''}
                 </p>
               </div>
             </div>
           ) : (
             <div>
-              <h2 id="h-rdv" className="text-sm font-normal text-[var(--fg-muted)]">Prochain rendez-vous</h2>
-              <p className="text-lg">Rien de prévu. Vos rappels arrivent aussi par SMS.</p>
+              <h2 id="h-rdv" className="text-sm font-normal text-[var(--fg-muted)]">{t('Prochain rendez-vous')}</h2>
+              <p className="text-lg">{t('Rien de prévu. Vos rappels arrivent aussi par SMS.')}</p>
             </div>
           )}
         </section>
       )}
 
-      <nav aria-label="Actions principales">
+      <nav aria-label={t('Actions principales')}>
         {/* Deux colonnes sur téléphone, une seule quand le texte est agrandi (largeur minimale en rem). */}
         <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,9.5rem),1fr))] gap-3 lg:grid-cols-4">
-          {tiles(s?.emergencyContact).map((t) => {
-            const tone = TILE_TONE[t.tone];
+          {tiles(s?.emergencyContact).map((tile) => {
+            const tone = TILE_TONE[tile.tone];
             return (
-              <li key={t.href} className={t.only === 'standard' ? 'simple-hide' : t.only === 'simple' ? 'simple-only' : undefined}>
+              <li key={tile.href} className={tile.only === 'standard' ? 'simple-hide' : tile.only === 'simple' ? 'simple-only' : undefined}>
                 <Link
-                  href={t.href}
+                  href={tile.href}
                   className={`flex aspect-[1/1.02] h-full flex-col justify-between rounded-[var(--radius-card)] p-4 transition-transform active:scale-[0.98] lg:aspect-[1.35/1] ${tone.card}`}
                 >
                   <span className="flex items-start justify-between">
                     <span className={`grid h-14 w-14 place-items-center rounded-full ${tone.chip}`}>
-                      <Pictogram name={t.icon} size={28} />
+                      <Pictogram name={tile.icon} size={28} />
                     </span>
                     <ArrowUpRight size={22} aria-hidden className="opacity-60" />
                   </span>
-                  <span className="text-[1.35rem] leading-tight font-semibold simple-big">{t.title}</span>
+                  <span className="text-[1.35rem] leading-tight font-semibold simple-big">{t(tile.title)}</span>
                 </Link>
               </li>
             );
@@ -172,7 +183,7 @@ export default async function AppHome() {
         const p = res.data;
         const r = p?.nextReminders[0];
         return (
-          <section key={d.patient.id} aria-label={`${d.patient.firstName}, que vous aidez`} className="card space-y-4 p-5">
+          <section key={d.patient.id} aria-label={t('{prenom}, que vous aidez', { prenom: d.patient.firstName })} className="card space-y-4 p-5">
             <div className="flex items-center gap-3">
               <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-leaf)] text-lg font-semibold text-[var(--color-ink)]" aria-hidden>
                 {d.patient.firstName.charAt(0)}
@@ -185,17 +196,17 @@ export default async function AppHome() {
             {p && (
               <dl className="grid grid-cols-[auto_1fr] gap-3">
                 <div className="rounded-3xl bg-[var(--color-danger-50)] px-4 py-3 text-[var(--color-danger-800)]">
-                  <dt className="text-sm">Groupe</dt>
+                  <dt className="text-sm">{t('Groupe')}</dt>
                   <dd className="display text-[2.2rem]">{p.bloodGroup ?? '?'}</dd>
                 </div>
                 <div className="rounded-3xl bg-[var(--bg)] px-4 py-3">
-                  <dt className="text-sm text-[var(--fg-muted)]">Prochain rendez-vous</dt>
-                  <dd className="font-semibold">{r ? `${fmtDate(r.dueAt, { weekday: 'short', day: 'numeric', month: 'short' })} · ${hourOnly(r.dueAt)}` : 'Aucun'}</dd>
+                  <dt className="text-sm text-[var(--fg-muted)]">{t('Prochain rendez-vous')}</dt>
+                  <dd className="font-semibold">{r ? `${fmtDate(r.dueAt, { weekday: 'short', day: 'numeric', month: 'short' }, locale)} · ${hourOnly(r.dueAt, locale)}` : t('Aucun')}</dd>
                 </div>
               </dl>
             )}
             <Link href={`/app/carnet?patient=${d.patient.id}`} className="btn btn-primary w-full">
-              Carnet de {d.patient.firstName}
+              {t('Carnet de {prenom}', { prenom: d.patient.firstName })}
             </Link>
           </section>
         );
@@ -210,15 +221,15 @@ export default async function AppHome() {
             <Pictogram name="warning" size={22} />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-sm">Alerte santé{s?.commune ? ` · ${s.commune}` : ''}</span>
+            <span className="block text-sm">{s?.commune ? t('Alerte santé · {commune}', { commune: s.commune }) : t('Alerte santé')}</span>
             <span className="block font-semibold">{alert.title}</span>
           </span>
           <ChevronRight size={20} aria-hidden className="shrink-0" />
         </Link>
       )}
-      {alertsRes?.error && <div className="simple-hide"><ErrorNote what="Alertes santé" error={alertsRes.error} /></div>}
+      {alertsRes?.error && <div className="simple-hide"><ErrorNote what={t('Alertes santé')} error={alertsRes.error} /></div>}
 
-      <nav aria-label="Raccourcis" className="simple-hide">
+      <nav aria-label={t('Raccourcis')} className="simple-hide">
         <ul className="flex flex-wrap justify-around gap-2">
           {shortcuts.map((x) => (
             <li key={x.href}>
@@ -226,7 +237,7 @@ export default async function AppHome() {
                 <span className="grid h-14 w-14 place-items-center rounded-full bg-[var(--card)] text-[var(--color-brand-900)] dark:text-[var(--color-leaf)]">
                   <Pictogram name={x.icon} size={24} />
                 </span>
-                <span className="text-base leading-tight font-medium">{x.title}</span>
+                <span className="text-base leading-tight font-medium">{t(x.title)}</span>
               </Link>
             </li>
           ))}
@@ -235,8 +246,8 @@ export default async function AppHome() {
 
       <section aria-labelledby="h-bientot" className="simple-hide card p-4">
         <div className="mb-3 flex items-center justify-between gap-2">
-          <h2 id="h-bientot" className="text-lg font-semibold">Bientôt</h2>
-          <span className="pill bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">Aperçus</span>
+          <h2 id="h-bientot" className="text-lg font-semibold">{t('Bientôt')}</h2>
+          <span className="pill bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">{t('Aperçus')}</span>
         </div>
         <ul className="grid grid-cols-4 gap-2">
           {PREVIEWS.map((x) => (
@@ -245,7 +256,7 @@ export default async function AppHome() {
                 <span className="grid h-12 w-12 place-items-center rounded-full bg-[var(--bg)] text-[var(--fg-muted)]">
                   <Pictogram name={x.icon} size={22} />
                 </span>
-                <span className="text-sm font-medium">{x.title}</span>
+                <span className="text-sm font-medium">{t(x.title)}</span>
               </Link>
             </li>
           ))}

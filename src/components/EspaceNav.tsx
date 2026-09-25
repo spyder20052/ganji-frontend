@@ -1,4 +1,5 @@
 'use client';
+import { useT } from '@/i18n/client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Pictogram } from './Pictogram';
@@ -24,9 +25,10 @@ function activeHref(path: string, links: NavLink[]) {
 
 /** Téléphone : barre d'onglets flottante en bas, à portée de pouce. L'onglet actif montre son nom. */
 export function TabBar({ links }: { links: NavLink[] }) {
+  const t = useT();
   const current = activeHref(usePathname(), links);
   return (
-    <nav aria-label="Navigation principale" className="tabbar fixed inset-x-0 bottom-0 z-40 px-[12px] pb-[max(12px,env(safe-area-inset-bottom))] md:hidden">
+    <nav aria-label={t('Navigation principale')} className="tabbar fixed inset-x-0 bottom-0 z-40 px-[12px] pb-[max(12px,env(safe-area-inset-bottom))] md:hidden">
       <ul className="mx-auto flex max-w-[448px] items-center justify-around gap-[4px] rounded-full bg-[var(--card)] p-[6px] shadow-[var(--shadow-soft)]">
         {links.map((l) => {
           if (l.danger) {
@@ -70,11 +72,12 @@ export function TabBar({ links }: { links: NavLink[] }) {
 
 /** Ordinateur et tablette : pilules dans l'en-tête, comme un onglet de navigateur. */
 export function NavPills({ links }: { links: NavLink[] }) {
+  const t = useT();
   const current = activeHref(usePathname(), links);
   // L'urgence est au centre de la barre du téléphone ; en haut de l'écran, elle ferme la liste.
   const ordered = [...links.filter((l) => !l.danger), ...links.filter((l) => l.danger)];
   return (
-    <nav aria-label="Navigation principale" className="hidden items-center gap-1 rounded-full bg-[var(--card)] p-1 md:flex">
+    <nav aria-label={t('Navigation principale')} className="hidden items-center gap-1 rounded-full bg-[var(--card)] p-1 md:flex">
       {ordered.map((l) => {
         const active = l.href === current;
         return (

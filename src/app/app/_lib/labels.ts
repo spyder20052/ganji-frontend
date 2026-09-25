@@ -1,4 +1,8 @@
+import { translate, type Locale, type T } from '@/i18n/translate';
 import { fmtDate, fmtTime } from '@/lib/format';
+
+/** Traducteur par défaut : le français tel quel. */
+const FR: T = (fr, vars) => translate({}, fr, vars);
 
 /** Ce que l'on peut partager avec un soignant (M1). */
 export const SCOPE_LABEL: Record<string, string> = {
@@ -34,13 +38,15 @@ export const TIMELINE_ICON: Record<string, string> = {
   ORDONNANCE: 'pill',
 };
 
-/** « 12/10 à 14 h 05 » : lisible à voix haute. */
-export function dayAndHour(d: string | Date) {
+/** « 12/10 à 14 h 05 » : lisible à voix haute (en anglais : « 12/10 at 14:05 »). */
+export function dayAndHour(d: string | Date, t: T = FR, locale: Locale = 'fr') {
   const [h, m] = fmtTime(d).split(':');
-  return `${fmtDate(d, { day: '2-digit', month: '2-digit' })} à ${Number(h)} h${m && m !== '00' ? ` ${m}` : ''}`;
+  const time = locale === 'fr' ? `${Number(h)} h${m && m !== '00' ? ` ${m}` : ''}` : fmtTime(d, locale);
+  return t('{date} à {time}', { date: fmtDate(d, { day: '2-digit', month: '2-digit' }, locale), time });
 }
 
-export function hourOnly(d: string | Date) {
+export function hourOnly(d: string | Date, locale: Locale = 'fr') {
+  if (locale !== 'fr') return fmtTime(d, locale);
   const [h, m] = fmtTime(d).split(':');
   return `${Number(h)} h ${m}`;
 }
@@ -62,8 +68,10 @@ const RESOURCE_PHRASE: Record<string, string> = {
   'Dossier (accès en urgence)': 'votre dossier',
 };
 
-export function resourcePhrase(r: string) {
-  return RESOURCE_PHRASE[r] ?? `« ${r.charAt(0).toLowerCase()}${r.slice(1)} »`;
+export function resourcePhrase(r: string, t: T = FR) {
+  if (RESOURCE_PHRASE[r]) return t(RESOURCE_PHRASE[r]);
+  const label = t(r);
+  return t('« {label} »', { label: `${label.charAt(0).toLowerCase()}${label.slice(1)}` });
 }
 
 export interface AccessLogEntry {
@@ -80,40 +88,61 @@ export interface AccessLogEntry {
 export type LogTone = 'normal' | 'denied' | 'breakglass' | 'self';
 
 /** Transforme une ligne du journal d'audit en phrase simple, au présent du patient. */
-export function logSentence(e: AccessLogEntry, myName: string): { text: string; tone: LogTone } {
-  const who = e.who === myName ? 'Vous' : e.who;
-  const when = dayAndHour(e.at);
-  const what = resourcePhrase(e.resource);
+export function logSentence(e: AccessLogEntry, myName: string, t: T = FR, locale: Locale = 'fr'): { text: string; tone: LogTone } {
+  const self = e.who === myName || e.who === 'Vous';
+  const who = e.who === myName ? t('Vous') : e.who;
+  const when = dayAndHour(e.at, t, locale);
+  const what = resourcePhrase(e.resource, t);
+  const resource = t(e.resource);
   switch (e.action) {
     case 'READ':
-      return { text: `${who} a consulté ${what} le ${when}.`, tone: 'normal' };
+      return { text: t('{who} a consulté {what} le {when}.', { who, what, when }), tone: 'normal' };
     case 'READ_BREAK_GLASS':
-      return { text: `${who} a consulté ${what} le ${when}, en accès d’urgence.`, tone: 'breakglass' };
+      return { text: t('{who} a consulté {what} le {when}, en accès d’urgence.', { who, what, when }), tone: 'breakglass' };
     case 'BREAK_GLASS':
-      return { text: `Accès d’urgence : ${who} a ouvert votre dossier le ${when}.${e.reason ? ` Motif donné : « ${e.reason} ».` : ''}`, tone: 'breakglass' };
+      return {
+        text: `${t('Accès d’urgence : {who} a ouvert votre dossier le {when}.', { who, when })}${e.reason ? ` ${t('Motif donné : « {reason} ».', { reason: e.reason })}` : ''}`,
+        tone: 'breakglass',
+      };
     case 'DENIED':
-      return { text: `Tentative refusée : ${who} n’avait pas votre accord (${what}), le ${when}.`, tone: 'denied' };
+      return { text: t('Tentative refusée : {who} n’avait pas votre accord ({what}), le {when}.', { who, what, when }), tone: 'denied' };
     case 'WRITE':
-      return { text: `${who} a ajouté à votre carnet : ${e.resource.charAt(0).toLowerCase()}${e.resource.slice(1)}, le ${when}.`, tone: who === 'Vous' ? 'self' : 'normal' };
+      return { text: t('{who} a ajouté à votre carnet : {what}, le {when}.', { who, what: `${resource.charAt(0).toLowerCase()}${resource.slice(1)}`, when }), tone: self ? 'self' : 'normal' };
     case 'CONSENT_OFFER':
-      return { text: `Vous avez préparé un QR de partage le ${when}${e.reason ? ` (${e.reason})` : ''}.`, tone: 'self' };
+      return {
+        text: e.reason
+          ? t('Vous avez préparé un QR de partage le {when} ({reason}).', { when, reason: e.reason })
+          : t('Vous avez préparé un QR de partage le {when}.', { when }),
+        tone: 'self',
+      };
     case 'CONSENT_GRANT':
-      return e.role === 'PATIENT' || who === 'Vous'
-        ? { text: `Vous avez donné un accès le ${when} : ${e.resource}.`, tone: 'self' }
-        : { text: `${who} a scanné votre QR le ${when}${e.reason ? ` : ${e.reason.toLowerCase()}` : ''}.`, tone: 'normal' };
+      return e.role === 'PATIENT' || self
+        ? { text: t('Vous avez donné un accès le {when} : {what}.', { when, what: resource }), tone: 'self' }
+        : {
+            text: e.reason
+              ? t('{who} a scanné votre QR le {when} : {reason}.', { who, when, reason: e.reason.toLowerCase() })
+              : t('{who} a scanné votre QR le {when}.', { who, when }),
+            tone: 'normal',
+          };
     case 'CONSENT_REVOKE':
-      return { text: `${who === 'Vous' ? 'Vous avez' : `${who} a`} retiré un accès le ${when} (${e.resource}).`, tone: 'self' };
+      return {
+        text: self ? t('Vous avez retiré un accès le {when} ({what}).', { when, what: resource }) : t('{who} a retiré un accès le {when} ({what}).', { who, when, what: resource }),
+        tone: 'self',
+      };
     case 'EMERGENCY_CARD':
-      return { text: `Votre carte d’urgence a été scannée le ${when}${e.who !== 'Système' ? ` par ${who}` : ''}.`, tone: 'normal' };
+      return {
+        text: e.who !== 'Système' ? t('Votre carte d’urgence a été scannée le {when} par {who}.', { when, who }) : t('Votre carte d’urgence a été scannée le {when}.', { when }),
+        tone: 'normal',
+      };
     case 'SOS':
-      return { text: `Alerte SOS envoyée le ${when}${e.reason ? ` : ${e.reason}` : ''}.`, tone: 'self' };
+      return { text: e.reason ? t('Alerte SOS envoyée le {when} : {reason}.', { when, reason: e.reason }) : t('Alerte SOS envoyée le {when}.', { when }), tone: 'self' };
     case 'SYMPTOM_ALERT':
-      return { text: `Signe d’alerte transmis à votre équipe le ${when}.`, tone: 'self' };
+      return { text: t('Signe d’alerte transmis à votre équipe le {when}.', { when }), tone: 'self' };
     case 'DONOR_FOUND':
-      return { text: `Un donneur de sang a répondu oui le ${when}.`, tone: 'normal' };
+      return { text: t('Un donneur de sang a répondu oui le {when}.', { when }), tone: 'normal' };
     case 'PROOF_CHECK':
-      return { text: `Une preuve de vaccination a été vérifiée le ${when}.`, tone: 'normal' };
+      return { text: t('Une preuve de vaccination a été vérifiée le {when}.', { when }), tone: 'normal' };
     default:
-      return { text: `${who} · ${e.resource} · ${when}`, tone: 'normal' };
+      return { text: `${who} · ${resource} · ${when}`, tone: 'normal' };
   }
 }

@@ -1,4 +1,5 @@
 'use client';
+import { useT } from '@/i18n/client';
 import 'leaflet/dist/leaflet.css';
 import type { CircleMarker, LayerGroup, Map as LeafletMap } from 'leaflet';
 import { useEffect, useRef, useState } from 'react';
@@ -36,7 +37,7 @@ export function MapView({
   focus,
   user,
   fitToMarkers = false,
-  label = 'Carte',
+  label,
 }: {
   markers: MapMarker[];
   center?: [number, number];
@@ -60,6 +61,8 @@ export function MapView({
   const onSelectRef = useRef(onSelect);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
+  const t = useT();
+  const youAreHere = t('Vous êtes ici');
 
   useEffect(() => {
     onSelectRef.current = onSelect;
@@ -138,10 +141,10 @@ export function MapView({
     userLayerRef.current = null;
     if (user) {
       userLayerRef.current = L.circleMarker([user.lat, user.lng], { radius: 9, color: '#ffffff', weight: 3, fillColor: MAP_COLORS.user, fillOpacity: 1 })
-        .bindTooltip('Vous êtes ici', { direction: 'top', offset: [0, -6] })
+        .bindTooltip(youAreHere, { direction: 'top', offset: [0, -6] })
         .addTo(map);
     }
-  }, [ready, user]);
+  }, [ready, user, youAreHere]);
 
   // Recentrage demandé.
   useEffect(() => {
@@ -151,10 +154,10 @@ export function MapView({
 
   return (
     <div className="relative" style={{ height }}>
-      <div ref={el} role="region" aria-label={label} className="h-full w-full rounded-[var(--radius-card)] bg-[var(--color-brand-50)]" />
+      <div ref={el} role="region" aria-label={label ?? t('Carte')} className="h-full w-full rounded-[var(--radius-card)] bg-[var(--color-brand-50)]" />
       {!ready && (
         <p className="pointer-events-none absolute inset-0 grid place-items-center text-base text-[var(--fg-muted)]" role="status">
-          {failed ? 'Carte indisponible (réseau). La liste reste utilisable.' : 'Chargement de la carte…'}
+          {t(failed ? 'Carte indisponible (réseau). La liste reste utilisable.' : 'Chargement de la carte…')}
         </p>
       )}
     </div>

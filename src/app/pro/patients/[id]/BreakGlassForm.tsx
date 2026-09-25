@@ -2,6 +2,7 @@
 import { Siren } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useId, useState } from 'react';
+import { useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { ErrorNote } from '../../_lib/ui';
 
@@ -10,6 +11,7 @@ const MIN = 20;
 /** Accès d'urgence justifié : 12 h, motif au journal, patient, proches et contrôleur prévenus. */
 export function BreakGlassForm({ patientId }: { patientId: string }) {
   const router = useRouter();
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
@@ -20,7 +22,7 @@ export function BreakGlassForm({ patientId }: { patientId: string }) {
   if (!open) {
     return (
       <button type="button" className="btn btn-danger w-full" onClick={() => setOpen(true)} aria-expanded={false}>
-        <Siren size={20} aria-hidden /> Accès d’urgence (bris de glace)
+        <Siren size={20} aria-hidden /> {t('Accès d’urgence (bris de glace)')}
       </button>
     );
   }
@@ -37,21 +39,21 @@ export function BreakGlassForm({ patientId }: { patientId: string }) {
           await api('/emergency/break-glass', { method: 'POST', json: { patientId, reason: reason.trim() } });
           router.refresh();
         } catch (err) {
-          setError(err instanceof ApiError ? err.message : 'Accès impossible. Réessayez.');
+          setError(err instanceof ApiError ? t(err.message) : t('Accès impossible. Réessayez.'));
           setBusy(false);
         }
       }}
     >
       <div className="rounded-2xl border border-[var(--color-danger-600)]/30 bg-[var(--color-danger-50)] p-3 text-sm text-[var(--color-danger-800)]">
-        <p className="font-bold">Accès contrôlé, à réserver à l’urgence vitale.</p>
+        <p className="font-bold">{t('Accès contrôlé, à réserver à l’urgence vitale.')}</p>
         <ul className="mt-1 list-disc pl-5">
-          <li>Ouvert 12 h, en lecture et pour les soins urgents.</li>
-          <li>Le patient et ses proches sont prévenus par SMS immédiatement.</li>
-          <li>Le contrôleur reçoit une alerte et vérifie votre motif a posteriori.</li>
+          <li>{t('Ouvert 12 h, en lecture et pour les soins urgents.')}</li>
+          <li>{t('Le patient et ses proches sont prévenus par SMS immédiatement.')}</li>
+          <li>{t('Le contrôleur reçoit une alerte et vérifie votre motif a posteriori.')}</li>
         </ul>
       </div>
       <label htmlFor={id} className="block font-bold">
-        Motif de l’accès d’urgence
+        {t('Motif de l’accès d’urgence')}
       </label>
       <textarea
         id={id}
@@ -61,18 +63,20 @@ export function BreakGlassForm({ patientId }: { patientId: string }) {
         maxLength={500}
         required
         aria-describedby={`${id}-n`}
-        placeholder="Ex. : patient inconscient admis aux urgences, besoin des antécédents et du groupe sanguin"
+        placeholder={t('Ex. : patient inconscient admis aux urgences, besoin des antécédents et du groupe sanguin')}
       />
       <p id={`${id}-n`} className={`num text-sm ${len < MIN ? 'text-[var(--fg-muted)]' : 'text-[var(--color-brand-700)]'}`}>
-        {len < MIN ? `Encore ${MIN - len} caractère${MIN - len > 1 ? 's' : ''} minimum : soyez précis.` : 'Motif suffisamment précis.'}
+        {len < MIN
+          ? t(MIN - len > 1 ? 'Encore {n} caractères minimum : soyez précis.' : 'Encore {n} caractère minimum : soyez précis.', { n: MIN - len })
+          : t('Motif suffisamment précis.')}
       </p>
       <ErrorNote>{error}</ErrorNote>
       <div className="flex flex-wrap gap-2">
         <button type="submit" className="btn btn-danger" disabled={busy || len < MIN}>
-          {busy ? 'Ouverture…' : 'Ouvrir le dossier en urgence'}
+          {busy ? t('Ouverture…') : t('Ouvrir le dossier en urgence')}
         </button>
         <button type="button" className="btn btn-ghost" onClick={() => setOpen(false)} disabled={busy}>
-          Annuler
+          {t('Annuler')}
         </button>
       </div>
     </form>

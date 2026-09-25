@@ -1,9 +1,12 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 
-export function RevokeButton({ id, who, path = '/me/consents', label = 'Retirer l’accès' }: { id: string; who: string; path?: string; label?: string }) {
+export function RevokeButton({ id, who, path = '/me/consents', label: labelFr = 'Retirer l’accès' }: { id: string; who: string; path?: string; label?: string }) {
+  const t = useT();
+  const label = t(labelFr);
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -13,22 +16,22 @@ export function RevokeButton({ id, who, path = '/me/consents', label = 'Retirer 
         type="button"
         className="btn btn-ghost"
         disabled={busy}
-        aria-label={`${label} : ${who}`}
+        aria-label={t('{action} : {who}', { action: label, who })}
         onClick={async () => {
-          if (!window.confirm(`${label} : ${who} ?`)) return;
+          if (!window.confirm(t('{action} : {who} ?', { action: label, who }))) return;
           setBusy(true);
           setError(null);
           try {
             await api(`${path}/${id}`, { method: 'DELETE' });
             router.refresh();
           } catch (e) {
-            setError(e instanceof ApiError ? e.message : 'Pas de réseau. Réessayez.');
+            setError(e instanceof ApiError ? e.message : t('Pas de réseau. Réessayez.'));
           } finally {
             setBusy(false);
           }
         }}
       >
-        {busy ? 'Retrait…' : label}
+        {busy ? t('Retrait…') : label}
       </button>
       {error && <span role="alert" className="text-sm font-bold text-[var(--color-ocre-700)]">{error}</span>}
     </span>

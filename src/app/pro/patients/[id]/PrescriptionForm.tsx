@@ -3,6 +3,7 @@ import { Plus, Search, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useId, useState } from 'react';
 import { QrClient } from '@/components/QrClient';
+import { useLocale, useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { fcfa, fmtDate } from '@/lib/format';
 import type { MedicationHit, PrescriptionView } from '../../_lib/types';
@@ -17,6 +18,8 @@ interface Line {
 
 export function PrescriptionForm({ patientId, firstName }: { patientId: string; firstName: string }) {
   const router = useRouter();
+  const t = useT();
+  const locale = useLocale();
   const uid = useId();
   const [q, setQ] = useState('');
   const [hits, setHits] = useState<MedicationHit[]>([]);
@@ -35,7 +38,7 @@ export function PrescriptionForm({ patientId, firstName }: { patientId: string; 
       return;
     }
     const ctrl = new AbortController();
-    const t = setTimeout(async () => {
+    const timer = setTimeout(async () => {
       setSearching(true);
       try {
         setHits(await api<MedicationHit[]>(`/medications/search?q=${encodeURIComponent(term)}`, { signal: ctrl.signal }));
@@ -46,7 +49,7 @@ export function PrescriptionForm({ patientId, firstName }: { patientId: string; 
       }
     }, 300);
     return () => {
-      clearTimeout(t);
+      clearTimeout(timer);
       ctrl.abort();
     };
   }, [q]);
@@ -67,11 +70,14 @@ export function PrescriptionForm({ patientId, firstName }: { patientId: string; 
   if (done?.qrPayload) {
     return (
       <div className="grid items-start gap-5 sm:grid-cols-[auto_1fr]">
-        <QrClient value={done.qrPayload} size={220} label={`QR de l’ordonnance de ${firstName}, à présenter en pharmacie`} />
+        <QrClient value={done.qrPayload} size={220} label={t('QR de l’ordonnance de {name}, à présenter en pharmacie', { name: firstName })} />
         <div className="space-y-3">
-          <p className="text-lg font-bold text-[var(--color-brand-900)] dark:text-[var(--color-brand-200)]">Ordonnance signée · à présenter en pharmacie</p>
+          <p className="text-lg font-bold text-[var(--color-brand-900)] dark:text-[var(--color-brand-200)]">{t('Ordonnance signée · à présenter en pharmacie')}</p>
           <p className="text-[var(--fg-muted)]">
-            {firstName} la retrouve aussi dans son carnet. Valable jusqu’au {fmtDate(done.expiresAt)}, délivrable une seule fois : une deuxième pharmacie la refusera.
+            {t('{name} la retrouve aussi dans son carnet. Valable jusqu’au {date}, délivrable une seule fois : une deuxième pharmacie la refusera.', {
+              name: firstName,
+              date: fmtDate(done.expiresAt, undefined, locale),
+            })}
           </p>
           <ul className="space-y-1">
             {done.items.map((i) => (
@@ -93,7 +99,7 @@ export function PrescriptionForm({ patientId, firstName }: { patientId: string; 
               setLines([]);
             }}
           >
-            Nouvelle ordonnance
+            {t('Nouvelle ordonnance')}
           </button>
         </div>
       </div>
@@ -120,7 +126,7 @@ export function PrescriptionForm({ patientId, firstName }: { patientId: string; 
           setDone(rx);
           router.refresh();
         } catch (err) {
-          setError(err instanceof ApiError ? err.message : 'Ordonnance non enregistrée. Réessayez.');
+          setError(err instanceof ApiError ? t(err.message) : t('Ordonnance non enregistrée. Réessayez.'));
         } finally {
           setBusy(false);
         }
@@ -128,7 +134,7 @@ export function PrescriptionForm({ patientId, firstName }: { patientId: string; 
     >
       <div className="relative">
         <label htmlFor={`${uid}-q`} className="label mb-2 block">
-          Ajouter un médicament (liste nationale des médicaments essentiels)
+          {t('Ajouter un médicament (liste nationale des médicaments essentiels)')}
         </label>
         <div className="relative">
           <Search size={18} aria-hidden className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--fg-muted)]" />
@@ -137,14 +143,14 @@ export function PrescriptionForm({ patientId, firstName }: { patientId: string; 
             className="input !pl-10"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="DCI ou classe : paracétamol, amoxicilline, antipaludique…"
+            placeholder={t('DCI ou classe : paracétamol, amoxicilline, antipaludique…')}
             autoComplete="off"
             aria-controls={`${uid}-hits`}
           />
         </div>
         <div id={`${uid}-hits`} aria-live="polite">
-          {searching && <p className="mt-2 text-sm text-[var(--fg-muted)]">Recherche…</p>}
-          {!searching && q.trim().length >= 2 && hits.length === 0 && <p className="mt-2 text-sm text-[var(--fg-muted)]">Aucun médicament trouvé.</p>}
+          {searching && <p className="mt-2 text-sm text-[var(--fg-muted)]">{t('Recherche…')}</p>}
+          {!searching && q.trim().length >= 2 && hits.length === 0 && <p className="mt-2 text-sm text-[var(--fg-muted)]">{t('Aucun médicament trouvé.')}</p>}
           {hits.length > 0 && (
             <ul className="mt-2 max-h-72 divide-y divide-[var(--border)] overflow-y-auto rounded-2xl border border-[var(--border)]">
               {hits.map((m) => {
@@ -160,7 +166,9 @@ export function PrescriptionForm({ patientId, firstName }: { patientId: string; 
                         <span className="text-sm text-[var(--fg-muted)]">{m.form}</span>
                       </span>
                       <span className={`shrink-0 text-sm ${m.pharmaciesInStock ? 'text-[var(--fg-muted)]' : 'font-bold text-[var(--color-ocre-700)]'}`}>
-                        {m.pharmaciesInStock ? `${m.pharmaciesInStock} pharmacie${m.pharmaciesInStock > 1 ? 's' : ''} · dès ${fcfa(m.minPriceFcfa)}` : 'En rupture partout'}
+                        {m.pharmaciesInStock
+                          ? t(m.pharmaciesInStock > 1 ? '{n} pharmacies · dès {price}' : '{n} pharmacie · dès {price}', { n: m.pharmaciesInStock, price: fcfa(m.minPriceFcfa, locale) })
+                          : t('En rupture partout')}
                       </span>
                     </button>
                   </li>
@@ -179,21 +187,21 @@ export function PrescriptionForm({ patientId, firstName }: { patientId: string; 
                 <p className="flex-1 font-bold">
                   {i + 1}. {l.med.dci} {l.med.strength} <span className="font-normal text-[var(--fg-muted)]">({l.med.form})</span>
                 </p>
-                <button type="button" className="chip-round !h-11 !w-11" onClick={() => setLines((ls) => ls.filter((_, j) => j !== i))} aria-label={`Retirer ${l.med.dci}`}>
+                <button type="button" className="chip-round !h-11 !w-11" onClick={() => setLines((ls) => ls.filter((_, j) => j !== i))} aria-label={t('Retirer {name}', { name: l.med.dci })}>
                   <Trash2 size={18} aria-hidden />
                 </button>
               </div>
               <div className="mt-2 grid gap-2 sm:grid-cols-[2fr_1fr_auto]">
                 <label className="text-sm font-bold">
-                  Posologie
-                  <input className="input mt-1 font-normal" value={l.dosage} onChange={(e) => update(i, { dosage: e.target.value })} placeholder="1 comprimé matin et soir" maxLength={120} required />
+                  {t('Posologie')}
+                  <input className="input mt-1 font-normal" value={l.dosage} onChange={(e) => update(i, { dosage: e.target.value })} placeholder={t('1 comprimé matin et soir')} maxLength={120} required />
                 </label>
                 <label className="text-sm font-bold">
-                  Durée
-                  <input className="input mt-1 font-normal" value={l.duration} onChange={(e) => update(i, { duration: e.target.value })} placeholder="7 jours" maxLength={60} required />
+                  {t('Durée')}
+                  <input className="input mt-1 font-normal" value={l.duration} onChange={(e) => update(i, { duration: e.target.value })} placeholder={t('7 jours')} maxLength={60} required />
                 </label>
                 <label className="text-sm font-bold">
-                  Boîtes
+                  {t('Boîtes')}
                   <input type="number" min={1} max={20} className="input num mt-1 w-24 font-normal" value={l.quantity} onChange={(e) => update(i, { quantity: Math.max(1, Math.min(20, Number(e.target.value) || 1)) })} />
                 </label>
               </div>
@@ -204,15 +212,15 @@ export function PrescriptionForm({ patientId, firstName }: { patientId: string; 
 
       <div className="flex flex-wrap items-end gap-3">
         <label className="text-sm font-bold">
-          Validité
+          {t('Validité')}
           <select className="input mt-1 font-normal" value={validity} onChange={(e) => setValidity(Number(e.target.value))}>
-            <option value={7}>7 jours</option>
-            <option value={30}>30 jours</option>
-            <option value={90}>90 jours (traitement chronique)</option>
+            <option value={7}>{t('7 jours')}</option>
+            <option value={30}>{t('30 jours')}</option>
+            <option value={90}>{t('90 jours (traitement chronique)')}</option>
           </select>
         </label>
         <button type="submit" className="btn btn-primary" disabled={busy || !ready}>
-          {busy ? 'Signature…' : `Signer l’ordonnance${lines.length ? ` (${lines.length})` : ''}`}
+          {busy ? t('Signature…') : lines.length ? t('Signer l’ordonnance ({n})', { n: lines.length }) : t('Signer l’ordonnance')}
         </button>
       </div>
       <ErrorNote>{error}</ErrorNote>

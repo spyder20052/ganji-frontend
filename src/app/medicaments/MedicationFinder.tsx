@@ -6,6 +6,7 @@ import { ListenButton } from '@/components/ListenButton';
 import { LocateControl } from '@/components/LocateControl';
 import { Pictogram } from '@/components/Pictogram';
 import { PlaceList } from '@/components/PlaceList';
+import { useLocale, useT } from '@/i18n/client';
 import { api } from '@/lib/api';
 import { fcfa, relative } from '@/lib/format';
 import { fmtKm, type Place } from '@/lib/places';
@@ -34,6 +35,8 @@ interface Availability {
 const SUGGESTIONS = ['Paracétamol', 'Amoxicilline', 'Artéméther', 'SRO', 'Metformine', 'Hydroxyurée'];
 
 export function MedicationFinder() {
+  const t = useT();
+  const locale = useLocale();
   const [q, setQ] = useState('');
   const [results, setResults] = useState<MedResult[] | null>(null);
   const [searching, setSearching] = useState(false);
@@ -56,7 +59,7 @@ export function MedicationFinder() {
       return;
     }
     const ctrl = new AbortController();
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       setSearching(true);
       setSearchError(null);
       api<MedResult[]>(`/medications/search?q=${encodeURIComponent(term)}`, { signal: ctrl.signal })
@@ -69,7 +72,7 @@ export function MedicationFinder() {
         });
     }, 300);
     return () => {
-      clearTimeout(t);
+      clearTimeout(timer);
       ctrl.abort();
     };
   }, [q]);
@@ -112,8 +115,8 @@ export function MedicationFinder() {
     <div className="space-y-6">
       {!med && (
         <section aria-labelledby="h-search" className="space-y-4">
-          <h2 id="h-search" className="sr-only">Rechercher</h2>
-          <label htmlFor="med-q" className="label block">Nom du médicament</label>
+          <h2 id="h-search" className="sr-only">{t('Rechercher')}</h2>
+          <label htmlFor="med-q" className="label block">{t('Nom du médicament')}</label>
           <div className="relative">
             <Search size={22} aria-hidden className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--fg-muted)]" />
             <input
@@ -125,7 +128,7 @@ export function MedicationFinder() {
               autoComplete="off"
               spellCheck={false}
               className="input !min-h-14 !rounded-full !pl-12 !pr-12 text-lg"
-              placeholder="Ex. paracétamol, amoxicilline…"
+              placeholder={t('Ex. paracétamol, amoxicilline…')}
               value={q}
               onChange={(e) => setQ(e.target.value)}
               aria-describedby="med-q-hint"
@@ -134,7 +137,7 @@ export function MedicationFinder() {
               <button
                 type="button"
                 className="absolute right-2 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full"
-                aria-label="Effacer la recherche"
+                aria-label={t('Effacer la recherche')}
                 onClick={() => {
                   setQ('');
                   inputRef.current?.focus();
@@ -144,10 +147,10 @@ export function MedicationFinder() {
               </button>
             )}
           </div>
-          <p id="med-q-hint" className="text-sm text-[var(--fg-muted)]">Nom du médicament (DCI), classe ou code ATC. Les accents ne sont pas obligatoires.</p>
+          <p id="med-q-hint" className="text-sm text-[var(--fg-muted)]">{t('Nom du médicament (DCI), classe ou code ATC. Les accents ne sont pas obligatoires.')}</p>
 
           {!q && (
-            <div className="flex flex-wrap gap-2" aria-label="Recherches fréquentes">
+            <div className="flex flex-wrap gap-2" aria-label={t('Recherches fréquentes')}>
               {SUGGESTIONS.map((s) => (
                 <button key={s} type="button" className="btn btn-ghost !min-h-11 text-base" onClick={() => setQ(s)}>{s}</button>
               ))}
@@ -155,10 +158,10 @@ export function MedicationFinder() {
           )}
 
           <div aria-live="polite" className="space-y-3">
-            {searching && <p className="flex items-center gap-2 text-[var(--fg-muted)]"><Loader2 size={18} className="animate-spin" aria-hidden /> Recherche…</p>}
-            {searchError && <p role="alert">{searchError}</p>}
+            {searching && <p className="flex items-center gap-2 text-[var(--fg-muted)]"><Loader2 size={18} className="animate-spin" aria-hidden /> {t('Recherche…')}</p>}
+            {searchError && <p role="alert">{t(searchError)}</p>}
             {results && !searching && results.length === 0 && (
-              <p>Aucun médicament trouvé pour « {q.trim()} ». Vérifiez l’orthographe ou demandez à votre pharmacien.</p>
+              <p>{t('Aucun médicament trouvé pour « {q} ». Vérifiez l’orthographe ou demandez à votre pharmacien.', { q: q.trim() })}</p>
             )}
             {results && results.length > 0 && (
               <ul className="grid gap-3">
@@ -175,11 +178,13 @@ export function MedicationFinder() {
                         <span className="mt-1 flex flex-wrap gap-1.5">
                           <span className={`pill ${m.pharmaciesInStock ? 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]' : 'border border-[var(--border)] text-[var(--fg-muted)]'}`}>
                             {m.pharmaciesInStock
-                              ? `disponible dans ${m.pharmaciesInStock} pharmacie${m.pharmaciesInStock > 1 ? 's' : ''}`
-                              : 'aucune pharmacie ne le signale'}
+                              ? m.pharmaciesInStock > 1
+                                ? t('disponible dans {n} pharmacies', { n: m.pharmaciesInStock })
+                                : t('disponible dans {n} pharmacie', { n: m.pharmaciesInStock })
+                              : t('aucune pharmacie ne le signale')}
                           </span>
                           {(m.minPriceFcfa ?? m.indicativePriceFcfa) != null && (
-                            <span className="pill num border border-[var(--border)]">à partir de {fcfa(m.minPriceFcfa ?? m.indicativePriceFcfa)} (prix indicatif)</span>
+                            <span className="pill num border border-[var(--border)]">{t('à partir de {price} (prix indicatif)', { price: fcfa(m.minPriceFcfa ?? m.indicativePriceFcfa, locale) })}</span>
                           )}
                         </span>
                       </span>
@@ -195,7 +200,7 @@ export function MedicationFinder() {
       {med && (
         <section aria-labelledby="h-med" className="space-y-4">
           <button type="button" className="btn btn-ghost !min-h-11 text-base" onClick={() => setMed(null)}>
-            <ArrowLeft size={18} aria-hidden /> Autre médicament
+            <ArrowLeft size={18} aria-hidden /> {t('Autre médicament')}
           </button>
           <div className="card flex flex-wrap items-center gap-4 p-5">
             <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[var(--color-brand-900)] text-white"><Pictogram name="pill" size={28} /></span>
@@ -207,8 +212,18 @@ export function MedicationFinder() {
               <ListenButton
                 text={
                   avail.pharmacies.length
-                    ? `${med.dci} ${med.strength} : disponible dans ${avail.pharmacies.length} pharmacies. ${avail.pharmacies[0].name}${avail.pharmacies[0].onDuty ? ', de garde' : ''}${avail.pharmacies[0].distanceKm != null ? `, à ${fmtKm(avail.pharmacies[0].distanceKm)}` : ''}.`
-                    : `${med.dci} : aucune pharmacie ne le signale en stock pour le moment.`
+                    ? t('{med} : disponible dans {n} pharmacies. {first}.', {
+                        med: `${med.dci} ${med.strength}`,
+                        n: avail.pharmacies.length,
+                        first: [
+                          avail.pharmacies[0].name,
+                          avail.pharmacies[0].onDuty ? t('de garde') : null,
+                          avail.pharmacies[0].distanceKm != null ? t('à {distance}', { distance: fmtKm(avail.pharmacies[0].distanceKm) }) : null,
+                        ]
+                          .filter(Boolean)
+                          .join(', '),
+                      })
+                    : t('{med} : aucune pharmacie ne le signale en stock pour le moment.', { med: med.dci })
                 }
                 audioKey="meds.result"
               />
@@ -216,26 +231,26 @@ export function MedicationFinder() {
           </div>
 
           <div className="card space-y-2 p-4">
-            <p className="font-bold">Trier par distance</p>
+            <p className="font-bold">{t('Trier par distance')}</p>
             <LocateControl idPrefix="med" status={geo.status} source={geo.source} onLocate={geo.request} onCommune={(p) => geo.setManual(p)} compact />
           </div>
 
-          <h3 className="text-xl font-bold">Pharmacies qui l’ont <span className="text-base font-normal text-[var(--fg-muted)]">(de garde d’abord)</span></h3>
-          {availLoading && <p className="flex items-center gap-2 text-[var(--fg-muted)]" role="status"><Loader2 size={18} className="animate-spin" aria-hidden /> Recherche des stocks…</p>}
+          <h3 className="text-xl font-bold">{t('Pharmacies qui l’ont')} <span className="text-base font-normal text-[var(--fg-muted)]">{t('(de garde d’abord)')}</span></h3>
+          {availLoading && <p className="flex items-center gap-2 text-[var(--fg-muted)]" role="status"><Loader2 size={18} className="animate-spin" aria-hidden /> {t('Recherche des stocks…')}</p>}
           {avail && !availLoading && (
             <PlaceList
               places={avail.pharmacies}
               from={from}
-              empty="Aucune pharmacie ne signale ce médicament en stock. Demandez un équivalent à votre pharmacien ou à votre médecin."
+              empty={t('Aucune pharmacie ne signale ce médicament en stock. Demandez un équivalent à votre pharmacien ou à votre médecin.')}
               extra={(p) => {
                 const s = p as PharmacyStock;
                 return (
                   <>
                     <span className={`pill ${s.availability === 'disponible' ? 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]' : 'bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]'}`}>
-                      {s.availability}
+                      {t(s.availability)}
                     </span>
-                    {s.priceFcfa != null && <span className="pill num border border-[var(--border)]">{fcfa(s.priceFcfa)}</span>}
-                    {s.updatedAt && <span className="text-sm text-[var(--fg-muted)]">stock mis à jour {relative(s.updatedAt)}</span>}
+                    {s.priceFcfa != null && <span className="pill num border border-[var(--border)]">{fcfa(s.priceFcfa, locale)}</span>}
+                    {s.updatedAt && <span className="text-sm text-[var(--fg-muted)]">{t('stock mis à jour {when}', { when: relative(s.updatedAt, locale) })}</span>}
                   </>
                 );
               }}
@@ -245,10 +260,10 @@ export function MedicationFinder() {
       )}
 
       <section aria-labelledby="h-duty" className="space-y-3">
-        <h2 id="h-duty" className="flex items-center gap-2 text-xl font-bold"><Pictogram name="pharmacy" size={24} /> Pharmacies de garde</h2>
-        {!onDuty && <p className="text-[var(--fg-muted)]" role="status">Chargement…</p>}
-        {onDuty && <PlaceList places={onDuty.slice(0, 6)} from={from} empty="Aucune pharmacie de garde signalée pour le moment." />}
-        {onDuty && onDuty.length > 6 && <p className="text-base text-[var(--fg-muted)]">Et {onDuty.length - 6} autres : voir la <Link className="underline" href="/carte">carte des lieux de soin</Link>.</p>}
+        <h2 id="h-duty" className="flex items-center gap-2 text-xl font-bold"><Pictogram name="pharmacy" size={24} /> {t('Pharmacies de garde')}</h2>
+        {!onDuty && <p className="text-[var(--fg-muted)]" role="status">{t('Chargement…')}</p>}
+        {onDuty && <PlaceList places={onDuty.slice(0, 6)} from={from} empty={t('Aucune pharmacie de garde signalée pour le moment.')} />}
+        {onDuty && onDuty.length > 6 && <p className="text-base text-[var(--fg-muted)]">{t('Et {n} autres : voir la', { n: onDuty.length - 6 })} <Link className="underline" href="/carte">{t('carte des lieux de soin')}</Link>.</p>}
       </section>
     </div>
   );
