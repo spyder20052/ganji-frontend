@@ -401,19 +401,19 @@ export default function Home() {
               <h2 id="h-5sans" className="reveal mb-3 text-[2.2rem] leading-tight font-medium sm:text-5xl">
                 Utile même sans…
               </h2>
-              <p className="reveal mb-10 max-w-[44ch] text-lg text-white/85">Ganji est conçu pour la personne la plus éloignée du numérique, pas pour l’usager connecté des villes.</p>
-              <ul tabIndex={0} aria-label="Les cinq situations, à faire défiler" className="-mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-5 md:overflow-visible md:px-0">
+              <p className="reveal mb-10 max-w-[44ch] text-lg text-white">Ganji est conçu pour la personne la plus éloignée du numérique, pas pour l’usager connecté des villes.</p>
+              <ul tabIndex={0} aria-label="Les cinq situations, à faire défiler" className="-mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 xl:grid-cols-5">
                 {FIVE_WITHOUT.map((f) => (
-                  <li key={f.title} className="reveal w-[78%] shrink-0 snap-start rounded-card bg-white/8 p-5 ring-1 ring-white/15 md:w-auto">
+                  <li key={f.title} className="reveal w-[78%] shrink-0 snap-start rounded-card bg-brand-700 p-5 md:w-auto">
                     <span className="grid h-12 w-12 place-items-center rounded-full bg-leaf text-brand-900">
                       <Pictogram name={f.icon} size={22} />
                     </span>
                     <h3 className="mt-4 text-xl font-medium">{f.title}</h3>
-                    <p className="mt-2 text-base text-white/85">{f.text}</p>
+                    <p className="mt-2 text-base leading-relaxed text-white">{f.text}</p>
                   </li>
                 ))}
               </ul>
-              <p className="reveal mt-8 max-w-[60ch] text-base text-white/80">Et plus de 12 000 relais communautaires servent de point d’accès à ceux qui n’ont pas de téléphone.</p>
+              <p className="reveal mt-8 max-w-[60ch] text-lg text-white">Et plus de 12 000 relais communautaires servent de point d’accès à ceux qui n’ont pas de téléphone.</p>
             </div>
           </div>
         </section>
