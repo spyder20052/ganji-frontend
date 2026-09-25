@@ -155,3 +155,37 @@ A person holds a large rounded shield made of the Ganji stepped shape in Forest 
 ```
 A wide, joyful group scene: the same six characters as the hero image (Koffi, Afiavi, the hematologist, the pharmacist, the pregnant woman, the community health worker) stand side by side and wave, with a large soft Ganji symbol behind them in Sprout and Sage. Ample empty space above them.
 ```
+
+## 8. Utile même sans… (5 vignettes, carré 1000 × 1000, format « sticker »)
+
+Ces images se posent sur des cartes de couleur (Forêt, gris, Pousse, noir, Sauge) : ajouter à la fin de chaque prompt la **consigne sticker** ci-dessous, pour qu'elles restent lisibles sur fond sombre comme sur fond clair.
+
+**Consigne sticker (à coller après chaque prompt) :**
+```
+Sticker composition: the whole subject sits on one soft Mist (#E6F0E9) rounded stepped-square backing shape with a thick white outline, centered, filling about 85% of the square canvas. Transparent background outside the backing shape. Single clear focal subject, readable at 160 px wide. No text.
+```
+
+### `sans-reseau.png` · carte « Sans réseau »
+```
+A young man (Koffi, 34, short hair, Sage t-shirt) looks calmly at his simple Android phone, which shows a large QR code with a green check mark. Above his head, a small signal icon made of stepped bars is crossed out in Ochre #D99A1E, meaning there is no network, yet the phone still works.
+```
+
+### `sans-smartphone.png` · carte « Sans smartphone »
+```
+An older woman (Afiavi, 52, bright wax-print headwrap in Ochre and Forest) holds a basic keypad phone to her ear and smiles; three stepped sound waves come out of the phone, and a small rounded speech bubble with three dots floats beside her. No smartphone in the image.
+```
+
+### `sans-lire.png` · carte « Sans savoir lire »
+```
+A hand with a deep brown skin tone points at a large phone screen showing four big rounded pictograms in a 2 × 2 grid: a house, a pill, a clinic with a green cross, a siren. A small speaker icon with stepped sound waves sits at the top of the screen, meaning the app talks. No letters anywhere.
+```
+
+### `sans-argent.png` · carte « Sans argent immédiat »
+```
+Two health workers in Ganji green scrubs carry a patient on a stretcher through the open door of a health center marked with a large green cross; one of them holds a phone showing a QR code. Urgent but calm, the care starts before any payment: no money, no cashier in the image. A small red cross appears only on the first-aid bag.
+```
+
+### `sans-compte.png` · carte « Sans compte »
+```
+A father holding a small child on his hip taps a phone that shows a simple map with three green cross pins and one highlighted pin; an open padlock shape in Sprout floats beside the phone, meaning no login is needed. Friendly, reassuring.
+```

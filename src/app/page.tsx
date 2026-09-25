@@ -147,11 +147,11 @@ const STEPS = [
 
 /** La règle des « 5 sans » ; les chiffres viennent du cahier des charges et de leurs sources. */
 const FIVE_WITHOUT = [
-  { title: 'Sans réseau', text: 'Carnet, carte d’urgence et rappels restent consultables hors ligne.', href: '/app/carte-urgence', tone: 'bg-brand-900 text-white', chip: 'bg-white/15', tilt: '-3deg', lift: '2.5rem' },
-  { title: 'Sans smartphone', text: 'SMS, menu *229*25# et appel vocal. Les femmes ne sont que 22 % des abonnés à l’internet mobile (ARCEP, 2025).', href: '/simulateur', tone: 'bg-line text-ink', chip: 'bg-ink/10', tilt: '3.5deg', lift: '0rem' },
-  { title: 'Sans savoir lire', text: 'Pictogrammes et voix en langue nationale : 51 % des adultes savent lire (2022).', href: '/orientation', tone: 'bg-leaf text-brand-900', chip: 'bg-brand-900/15', tilt: '-2.5deg', lift: '2rem' },
-  { title: 'Sans argent immédiat', text: 'L’urgence vitale d’abord : la carte QR guide les secours.', href: '/urgence', tone: 'bg-ink text-white ring-1 ring-white/15', chip: 'bg-white/15', tilt: '3deg', lift: '-0.5rem' },
-  { title: 'Sans compte', text: 'Orientation et lieux de soin ouverts, sans rien créer.', href: '/carte', tone: 'bg-sage text-brand-900', chip: 'bg-brand-900/15', tilt: '-3.5deg', lift: '1.5rem' },
+  { art: 'sans-reseau', icon: 'offline', title: 'Sans réseau', text: 'Carnet, carte d’urgence et rappels restent consultables hors ligne.', href: '/app/carte-urgence', tone: 'bg-brand-900 text-white', chip: 'bg-white/15', tilt: '-3deg', lift: '2.5rem' },
+  { art: 'sans-smartphone', icon: 'phone', title: 'Sans smartphone', text: 'SMS, menu *229*25# et appel vocal. Les femmes ne sont que 22 % des abonnés à l’internet mobile (ARCEP, 2025).', href: '/simulateur', tone: 'bg-line text-ink', chip: 'bg-ink/10', tilt: '3.5deg', lift: '0rem' },
+  { art: 'sans-lire', icon: 'listen', title: 'Sans savoir lire', text: 'Pictogrammes et voix en langue nationale : 51 % des adultes savent lire (2022).', href: '/orientation', tone: 'bg-leaf text-brand-900', chip: 'bg-brand-900/15', tilt: '-2.5deg', lift: '2rem' },
+  { art: 'sans-argent', icon: 'care', title: 'Sans argent immédiat', text: 'L’urgence vitale d’abord : la carte QR guide les secours.', href: '/urgence', tone: 'bg-ink text-white ring-1 ring-white/15', chip: 'bg-white/15', tilt: '3deg', lift: '-0.5rem' },
+  { art: 'sans-compte', icon: 'no-account', title: 'Sans compte', text: 'Orientation et lieux de soin ouverts, sans rien créer.', href: '/carte', tone: 'bg-sage text-brand-900', chip: 'bg-brand-900/15', tilt: '-3.5deg', lift: '1.5rem' },
 ];
 
 const JOURNAL = [
@@ -445,7 +445,17 @@ export default async function Home() {
                       <span className={`grid h-10 w-10 place-items-center rounded-full text-sm font-semibold ${f.chip}`}>0{i + 1}</span>
                       <ArrowUpRight size={22} aria-hidden />
                     </span>
-                    <span className="mt-auto pt-10">
+                    {/* Vignette « sticker » (docs/ILLUSTRATIONS.md, section 8) ; en attendant, le pictogramme. */}
+                    <span className="tilt-art mx-auto my-5 block w-[46%] max-w-[10rem] sm:w-[62%] lg:w-[78%]">
+                      {hasIllustration(f.art) ? (
+                        <Illustration name={f.art} icon={f.icon} alt="" sizes="160px" />
+                      ) : (
+                        <span aria-hidden className={`grid aspect-square place-items-center rounded-[30%] ${f.chip}`}>
+                          <Pictogram name={f.icon} size={52} />
+                        </span>
+                      )}
+                    </span>
+                    <span className="mt-auto">
                       <span className="font-display block text-xl leading-tight font-medium">{t(f.title)}</span>
                       <span className="mt-2 block text-base leading-snug">{t(f.text)}</span>
                     </span>
