@@ -7,7 +7,7 @@ import { fmtDate, relative } from '@/lib/format';
 import type { Summary } from '@/lib/types';
 import { ErrorNote } from '../_components/ui';
 import { cardFromSummary } from '../_lib/emergency-card';
-import { hourOnly, REMINDER_ICON } from '../_lib/labels';
+import { hourOnly } from '../_lib/labels';
 import { getMe, load } from '../_lib/load';
 import { SaveEmergencyCard } from './SaveEmergencyCard';
 
@@ -43,9 +43,9 @@ function tiles(contact: Summary['emergencyContact'] | undefined): Tile[] {
 }
 
 const TILE_TONE: Record<Tile['tone'], { card: string; chip: string }> = {
-  paper: { card: 'bg-[var(--card)]', chip: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]' },
-  leaf: { card: 'bg-[var(--color-brand-100)] text-[var(--color-ink)]', chip: 'bg-white text-[var(--color-brand-900)]' },
-  blood: { card: 'bg-[var(--color-danger-50)] text-[var(--color-danger-800)]', chip: 'bg-white text-[var(--color-danger-600)]' },
+  paper: { card: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]', chip: 'bg-[var(--color-brand-500)] text-white' },
+  leaf: { card: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]', chip: 'bg-[var(--color-brand-500)] text-white' },
+  blood: { card: 'bg-[var(--color-danger-50)] text-[var(--color-danger-800)]', chip: 'bg-[var(--color-danger-600)] text-white' },
   danger: { card: 'bg-[var(--color-danger-600)] text-white', chip: 'bg-white text-[var(--color-danger-600)]' },
 };
 
@@ -93,24 +93,55 @@ export default async function AppHome() {
 
   return (
     <>
-      <header className="space-y-3 pt-2">
-        <p className="text-base text-[var(--fg-muted)] first-letter:uppercase">{fmtDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+      {/* En-tête Forêt à la trame Ganji (maquette de la charte), puis la carte du rendez-vous qui le chevauche. */}
+      <header className="motif-foret -mx-4 -mt-2 space-y-3 rounded-b-[2rem] px-4 pt-6 pb-20 text-white sm:mx-0 sm:mt-0 sm:rounded-[var(--radius-card)] sm:px-6">
+        <p className="text-base text-white/80 first-letter:uppercase">{fmtDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })}</p>
         <div className="flex items-center justify-between gap-3">
-          <h1 className="min-w-0 text-[2.6rem] leading-[1.05] font-light tracking-tight">
-            {greeting()}, <span className="font-medium">{firstName}</span>
+          <h1 className="min-w-0 text-[2.4rem] leading-[1.05] font-medium tracking-tight">
+            {greeting()} {firstName}
           </h1>
           <ListenButton text={listen} audioKey="app.home" compact />
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {s && <SaveEmergencyCard card={cardFromSummary(s)} />}
           {s?.discreetMode && (
-            <span className="pill bg-[var(--card)] text-[var(--fg-muted)]">
+            <span className="pill bg-white/15 text-white">
               <EyeOff size={16} aria-hidden /> Mode discret
             </span>
           )}
         </div>
         {summaryRes?.error && <ErrorNote what="Votre carnet" error={summaryRes.error} />}
       </header>
+
+      {me.patientId && (
+        <section aria-labelledby="h-rdv" className="relative -mt-20 rounded-[var(--radius-card)] bg-[var(--card)] p-4 shadow-[var(--shadow-soft)]">
+          {next ? (
+            <div className="flex items-center gap-4">
+              <p className="grid h-20 w-20 shrink-0 place-items-center rounded-2xl bg-[var(--color-brand-100)] text-center">
+                <span>
+                  <span className="block text-sm font-semibold text-[var(--color-brand-900)] uppercase">{fmtDate(next.dueAt, { weekday: 'short' }).replace('.', '')}</span>
+                  <span className="display block text-[2rem] font-semibold text-[var(--color-brand-900)]">{fmtDate(next.dueAt, { day: 'numeric' })}</span>
+                </span>
+              </p>
+              <div className="min-w-0 flex-1">
+                <h2 id="h-rdv" className="text-sm font-normal text-[var(--fg-muted)]">
+                  Prochain rendez-vous · {relative(next.dueAt)}
+                </h2>
+                <p className="font-display text-lg leading-snug font-semibold text-[var(--color-brand-900)]">{nextTitle}</p>
+                <p className="num text-base text-[var(--fg-muted)]">
+                  {hourOnly(next.dueAt)}
+                  {next.place && !s?.discreetMode ? ` · ${next.place}` : ''}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <h2 id="h-rdv" className="text-sm font-normal text-[var(--fg-muted)]">Prochain rendez-vous</h2>
+              <p className="text-lg">Rien de prévu. Vos rappels arrivent aussi par SMS.</p>
+            </div>
+          )}
+        </section>
+      )}
 
       <nav aria-label="Actions principales">
         {/* Deux colonnes sur téléphone, une seule quand le texte est agrandi (largeur minimale en rem). */}
@@ -136,34 +167,6 @@ export default async function AppHome() {
           })}
         </ul>
       </nav>
-
-      {me.patientId && (
-        <section aria-labelledby="h-rdv" className="rounded-[var(--radius-card)] bg-[var(--color-brand-900)] p-5 text-white">
-          <h2 id="h-rdv" className="text-base text-white/80">
-            Prochain rendez-vous{next ? ` · ${relative(next.dueAt)}` : ''}
-          </h2>
-          {next ? (
-            <div className="mt-3 flex flex-wrap items-end gap-4">
-              <p className="shrink-0 text-center">
-                <span className="display block text-[3.6rem]">{fmtDate(next.dueAt, { day: 'numeric' })}</span>
-                <span className="block text-base first-letter:uppercase">{fmtDate(next.dueAt, { month: 'short' })}</span>
-              </p>
-              <div className="min-w-0 flex-1 border-l border-white/20 pl-4">
-                <p className="text-xl leading-snug font-semibold simple-big">{nextTitle}</p>
-                <p className="num mt-1 text-base text-white/85">
-                  {hourOnly(next.dueAt)}
-                  {next.place && !s?.discreetMode ? ` · ${next.place}` : ''}
-                </p>
-              </div>
-              <span className="grid h-12 w-12 shrink-0 place-items-center self-start rounded-full bg-white/15">
-                <Pictogram name={REMINDER_ICON[next.kind] ?? 'calendar'} size={22} />
-              </span>
-            </div>
-          ) : (
-            <p className="mt-2 text-lg">Rien de prévu. Vos rappels arrivent aussi par SMS.</p>
-          )}
-        </section>
-      )}
 
       {helped.map(({ d, res }) => {
         const p = res.data;

@@ -7,10 +7,10 @@ import { PrefsMenu } from '@/components/PrefsMenu';
 
 /** Sans compte : quatre gestes, un mot chacun. */
 const NO_ACCOUNT = [
-  { href: '/orientation', icon: 'fever', title: 'Symptôme', card: 'bg-[var(--color-brand-100)]', chip: 'bg-[var(--card)] text-[var(--color-brand-900)]' },
+  { href: '/orientation', icon: 'fever', title: 'Symptôme', card: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]', chip: 'bg-[var(--color-brand-500)] text-white' },
   { href: '/urgence', icon: 'emergency', title: 'Urgence', card: 'bg-[var(--color-danger-600)] text-white', chip: 'bg-white text-[var(--color-danger-600)]' },
-  { href: '/medicaments', icon: 'pill', title: 'Médicament', card: 'bg-[var(--card)]', chip: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]' },
-  { href: '/carte', icon: 'map', title: 'Lieux de soin', card: 'bg-[var(--card)]', chip: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]' },
+  { href: '/medicaments', icon: 'pill', title: 'Médicament', card: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]', chip: 'bg-[var(--color-brand-500)] text-white' },
+  { href: '/carte', icon: 'map', title: 'Lieux de soin', card: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]', chip: 'bg-[var(--color-brand-500)] text-white' },
 ];
 
 /** La règle des « 5 sans » du cahier, en un mot chacune. */
@@ -59,7 +59,7 @@ export default function Home() {
             <Link
               prefetch={false}
               href="/connexion"
-              className="flex items-center gap-4 rounded-[var(--radius-card)] bg-[var(--color-brand-900)] p-5 text-white"
+              className="motif-foret flex items-center gap-4 rounded-[var(--radius-card)] p-5 text-white"
             >
               <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-white/15">
                 <Pictogram name="carnet" size={26} />

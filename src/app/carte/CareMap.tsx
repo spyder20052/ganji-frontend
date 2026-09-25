@@ -139,7 +139,7 @@ export function CareMap() {
               className={`btn shrink-0 !px-4 text-base ${on ? 'btn-primary' : 'btn-ghost'}`}
             >
               <Pictogram name={f.icon} size={20} /> {f.label}
-              {facilities && <span className={`num text-sm ${on ? 'text-[var(--color-ink)]' : 'text-[var(--fg-muted)]'}`}>{n}</span>}
+              {facilities && <span className={`num text-sm ${on ? 'text-white' : 'text-[var(--fg-muted)]'}`}>{n}</span>}
             </button>
           );
         })}

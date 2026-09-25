@@ -34,9 +34,9 @@ export default function UrgencePage() {
       <TopBar />
       <main id="contenu" className="mx-auto max-w-4xl space-y-8 px-4 pb-16 pt-6">
         <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
+          <div className="min-w-0">
             <p className="label">Sans compte · gratuit</p>
-            <h1 className="mt-1 flex items-center gap-3 text-4xl font-bold">
+            <h1 className="mt-1 flex flex-wrap items-center gap-3 text-4xl font-bold">
               <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[var(--color-danger-600)] text-white"><Pictogram name="emergency" size={30} /></span>
               Urgence
             </h1>

@@ -13,44 +13,46 @@
   }
 }
 
-/* ── Jetons Ganji ─────────────────────────────────────────────
-   DA : fond menthe, cartes presque blanches, vert pastel pour l'action et l'onglet actif,
-   ardoise-sarcelle pour les surfaces sombres (valeurs mesurées sur les références).
-   Rouge = urgence et sang UNIQUEMENT ; ocre = rappels. Contrastes vérifiés AA (≥ 4,5:1). */
+/* ── Jetons Ganji (charte « Ganji · identité visuelle ») ──────────────────
+   Forêt #0B3D2C : fonds sombres, titres, boutons · Vert #168A56 : symbole, pictogrammes ·
+   Pousse #5FD08F : accent (onglet actif, pastilles) · Sauge #B7D3C1 · Brume #E6F0E9 : cartes ·
+   Papier #F5F4EE : fond · Encre #0A1A14 : texte. Rouge #C62828 : urgence et sang UNIQUEMENT.
+   Le Vert sur blanc fait 4,37:1 : jamais pour du texte courant, seulement pour les pictogrammes. */
 @theme {
-  --color-brand-50: #f1f7ee;
-  --color-brand-100: #e4f1dc;
-  --color-brand-200: #c9e6b6;
-  --color-leaf: #b1de97;
-  --color-leaf-strong: #9fd483;
-  --color-sage: #cfddd2;
-  --color-brand-500: #3e7d57;
-  --color-brand-700: #3c6d84;
-  --color-brand-900: #2a5669;
-  --color-brand-950: #17323e;
-  --color-ocre-100: #f6ecd0;
+  --color-brand-50: #eef5f0;
+  --color-brand-100: #e6f0e9;
+  --color-brand-200: #b7d3c1;
+  --color-leaf: #5fd08f;
+  --color-leaf-strong: #4cc47f;
+  --color-sage: #b7d3c1;
+  --color-brand-500: #168a56;
+  --color-brand-700: #145a40;
+  --color-brand-900: #0b3d2c;
+  --color-brand-950: #062418;
+  --color-ocre-100: #fbf0d6;
   --color-ocre-500: #d99a1e;
   --color-ocre-700: #8a5d06;
   --color-danger-50: #fbe4e5;
   --color-danger-600: #c62828;
   --color-danger-800: #8e1b1b;
-  --color-surface: #e2ede7;
-  --color-ink: #19201d;
-  --color-muted: #4e5a54;
-  --color-line: #d3dfd7;
-  --radius-card: 1.75rem;
+  --color-surface: #f5f4ee;
+  --color-ink: #0a1a14;
+  --color-muted: #4b5a52;
+  --color-line: #d8e3db;
+  --radius-card: 1.5rem;
   --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
-  /* Graisses allégées : « gras » = demi-gras, comme les références. */
+  --font-display: var(--font-poppins), var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+  /* Graisses allégées : « gras » = demi-gras. */
   --font-weight-bold: 600;
 }
 
 :root {
   --bg: var(--color-surface);
-  --card: #fcfdfc;
+  --card: #ffffff;
   --fg: var(--color-ink);
   --fg-muted: var(--color-muted);
   --border: var(--color-line);
-  --shadow-soft: 0 1px 2px rgb(25 32 29 / 0.04), 0 8px 24px -12px rgb(42 86 105 / 0.12);
+  --shadow-soft: 0 1px 2px rgb(10 26 20 / 0.05), 0 10px 28px -14px rgb(11 61 44 / 0.25);
   color-scheme: light;
 }
 /* Thème sombre : surfaces sombres, et les fonds teintés (alerte, rappel, urgence) deviennent des
@@ -93,7 +95,7 @@ body {
   line-height: 1.55;
   -webkit-tap-highlight-color: transparent;
 }
-h1, h2, h3 { text-wrap: balance; line-height: 1.15; letter-spacing: -0.015em; }
+h1, h2, h3, .font-display { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; letter-spacing: -0.01em; }
 
 @layer components {
   /* Cartes plates, sans bordure : c'est la différence de teinte avec le fond qui les dessine. */
@@ -108,9 +110,9 @@ h1, h2, h3 { text-wrap: balance; line-height: 1.15; letter-spacing: -0.015em; }
     transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .btn:active { transform: scale(0.98); }
-  /* Action principale : vert pastel, texte encre (10,9:1). */
-  .btn-primary { background: var(--color-leaf); color: var(--color-ink); }
-  .btn-primary:hover { background: var(--color-leaf-strong); }
+  /* Action principale : Forêt, texte blanc (12,2:1), comme le bouton de la maquette. */
+  .btn-primary { background: var(--color-brand-900); color: #fff; }
+  .btn-primary:hover { background: var(--color-brand-700); }
   .btn-dark { background: var(--color-brand-900); color: #fff; }
   .btn-dark:hover { background: var(--color-brand-700); }
   .btn-soft { background: var(--color-brand-100); color: var(--color-ink); }
@@ -131,7 +133,7 @@ h1, h2, h3 { text-wrap: balance; line-height: 1.15; letter-spacing: -0.015em; }
   .pill { display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 999px; padding: 0.2rem 0.75rem; font-size: 0.875rem; font-weight: 600; }
   .num { font-variant-numeric: tabular-nums; }
   /* Grand chiffre fin, signature des références (« 120/80 », « 46,5 »). */
-  .display { font-weight: 300; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .display { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
 }
 
 :focus-visible { outline: 3px solid var(--color-brand-900); outline-offset: 2px; border-radius: 6px; }
@@ -165,6 +167,16 @@ h1, h2, h3 { text-wrap: balance; line-height: 1.15; letter-spacing: -0.015em; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) .text-\[var\(--color-danger-600\)\]:not(.bg-white) {
     color: #ff8f85;
+  }
+}
+
+/* Vert foncé employé comme texte sur fond sombre : il passe au vert Pousse (lisible). */
+:root[data-theme='dark'] .text-\[var\(--color-brand-700\)\]:not(.bg-white) {
+  color: var(--color-leaf);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .text-\[var\(--color-brand-700\)\]:not(.bg-white) {
+    color: var(--color-leaf);
   }
 }
 
@@ -223,6 +235,14 @@ body {
 
 /* Grands chiffres (indicateurs, compteurs) : graisse fine et approche serrée, comme les références. */
 .num:is(.text-4xl, .text-5xl, .text-6xl, .text-7xl, .text-8xl) {
-  font-weight: 300;
-  letter-spacing: -0.03em;
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* Trame Ganji (charte, motif « trame » en version Forêt) : en-têtes sombres. */
+.motif-foret {
+  background-color: var(--color-brand-900);
+  background-image: url('/motifs/trame-foret.svg');
+  background-size: 180px 180px;
 }

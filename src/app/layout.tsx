@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Atkinson_Hyperlegible_Next } from 'next/font/google';
+import { Atkinson_Hyperlegible_Next, Poppins } from 'next/font/google';
 import { DemoBanner } from '@/components/DemoBanner';
 import { SwRegister } from '@/components/SwRegister';
 import './globals.css';
@@ -7,6 +7,8 @@ import './globals.css';
 // Atkinson Hyperlegible Next (conçue pour les malvoyants, exigence du cahier), en variable : les
 // graisses fines des grands chiffres et le demi-gras des libellés dans un seul fichier.
 const atkinson = Atkinson_Hyperlegible_Next({ subsets: ['latin'], variable: '--font-atkinson', display: 'swap' });
+// Poppins (charte Ganji) : titres et logotype.
+const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-poppins', display: 'swap' });
 
 export const metadata: Metadata = {
   title: { default: 'Ganji · la santé de chaque Béninois', template: '%s · Ganji' },
@@ -14,11 +16,11 @@ export const metadata: Metadata = {
   manifest: '/manifest.webmanifest',
   applicationName: 'Ganji',
   appleWebApp: { capable: true, title: 'Ganji', statusBarStyle: 'default' },
-  icons: { icon: '/icon.svg', apple: '/icon-192.png' },
+  icons: { icon: '/icon.svg', apple: '/apple-icon.png' },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#e2ede7',
+  themeColor: '#f5f4ee',
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
@@ -29,7 +31,7 @@ const PREFS = `try{var p=JSON.parse(localStorage.getItem('ganji-prefs')||'{}');v
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={atkinson.variable} suppressHydrationWarning>
+    <html lang="fr" className={`${atkinson.variable} ${poppins.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: PREFS }} />
       </head>

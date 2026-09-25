@@ -15,9 +15,9 @@ export function SaveEmergencyCard({ card }: { card: EmergencyCard }) {
   return (
     <Link
       href="/app/carte-urgence"
-      className="inline-flex items-center gap-2 rounded-full bg-[var(--card)] py-1.5 pr-4 pl-2 text-sm font-medium text-[var(--fg)]"
+      className="inline-flex items-center gap-2 rounded-full bg-white/12 py-1.5 pr-4 pl-2 text-sm font-medium text-white ring-1 ring-white/25"
     >
-      <span className="grid h-6 w-6 place-items-center rounded-full bg-[var(--color-leaf)] text-[var(--color-ink)]">
+      <span className="grid h-6 w-6 place-items-center rounded-full bg-[var(--color-leaf)] text-[var(--color-brand-900)]">
         <CheckCircle2 size={14} aria-hidden />
       </span>
       Carte d’urgence prête sans réseau
