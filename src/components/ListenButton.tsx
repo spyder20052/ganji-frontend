@@ -6,7 +6,7 @@ import { INTL } from '@/i18n/translate';
 
 const LANG_LABEL: Record<string, string> = { fr: 'français', en: 'anglais', fon: 'fon', yoruba: 'yoruba', bariba: 'bariba', dendi: 'dendi' };
 /** Voix de synthèse (traduction automatique) : à faire valider par un locuteur natif, et on le dit. */
-const SYNTHETIC = new Set(['yoruba']);
+const SYNTHETIC = new Set(['yoruba', 'fon']);
 
 /**
  * Bouton « écouter » présent sur chaque écran patient.

@@ -7,7 +7,7 @@ import { LOCALE_COOKIE, type Locale } from '@/i18n/translate';
 /** Voix en langues nationales : synthèse à valider, ou enregistrement à venir (docs/ENREGISTREMENTS.md). */
 const VOICES = [
   ['yoruba', 'Yoruba', 'voix de synthèse'],
-  ['fon', 'Fon (Fɔngbè)', 'bientôt'],
+  ['fon', 'Fon (Fɔngbè)', 'voix de synthèse'],
   ['bariba', 'Bariba (Baatonum)', 'bientôt'],
   ['dendi', 'Dendi', 'bientôt'],
 ] as const;

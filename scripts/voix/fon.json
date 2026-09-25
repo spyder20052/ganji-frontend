@@ -1,0 +1,14 @@
+{
+ "welcome": ["Bienvenue sur Ganji. Votre santé, près de chez vous.", "Mi kúabɔ̀ dó Ganji. Lanmɛ mitɔn, ɖò xwé mitɔn kpá."],
+ "consent.request": ["Acceptez-vous qu'un agent de santé consulte votre dossier ? Répondez oui ou non.", "Mi jló bɔ dotóo ɖé ni kpɔ́n wěma azɔ̌n mitɔn à? Mi ɖɔ ɛɛn alǒ éǒ."],
+ "reminder.cpn": ["Votre consultation prénatale approche. Apportez votre carnet.", "Azǎn e mi na yi dotóoxwé ɖó xo mitɔn wu é ɔ ko sɛkpɔ́. Mi hɛn wěma azɔ̌n mitɔn."],
+ "reminder.medication": ["C'est l'heure de prendre votre médicament. Ne l'arrêtez pas sans l'avis du soignant.", "Hwenu ko sù bɔ mi na nu amasin mitɔn. Mi ma jó e dó ǎ, cobɔ mi na kan dotóo ɔ."],
+ "donor.call": ["Un malade a besoin de sang aujourd'hui. Pouvez-vous venir donner votre sang ? Tapez un pour oui, deux pour non.", "Azɔ̌nnɔ ɖé jló hun égbé. Mi sixu wá na hun à? Mi zín ɖokpó nú ɛɛn, wè nú éǒ."],
+ "donor.found": ["Bonne nouvelle : la personne qui va donner son sang a été trouvée.", "Wɛnɖagbe: mǐ mɔ mɛ e na na hun ɔ."],
+ "donor.thanks": ["Merci pour le sang que vous avez donné. Vous avez peut-être sauvé une vie.", "Mi wanú ɖó hun e mi na é. Vlafo mi hwlɛ̀n gbɛ̀ mɛ ɖé tɔn."],
+ "advice.emergency": ["Danger. Allez tout de suite à l'hôpital le plus proche.", "Afɔku. Mi yi dotóoxwé e sɛkpɔ́ mi hú bǐ ɔ dìn."],
+ "emergency.page": ["Urgence. Appelez le 118.", "Afɔku. Mi ylɔ́ ɖokpó ɖokpó tantɔn."],
+ "triage.who": ["Qui est malade ? Un enfant de moins de cinq ans. Un adulte. Une femme enceinte. Une personne âgée.", "Mɛ̌ wɛ jɛ azɔ̌n? Vǐ e ma ko ɖó xwe atɔ́ɔ́n ǎ. Mɛxó. Nyɔ̀nu e ɖò xo. Mɛxóxó."],
+ "triage.outcome.urgence": ["Allez à l'hôpital maintenant. Allez vite à l'hôpital le plus proche.", "Mi yi dotóoxwé dìn. Mi yi dotóoxwé e sɛkpɔ́ mi hú bǐ ɔ blówú."],
+ "triage.outcome.maison": ["Vous pouvez vous soigner à la maison. Reposez-vous et buvez de l'eau propre. Si cela ne va pas mieux dans deux jours, allez à l'hôpital.", "Mi sixu ɖǒ azɔ̌n ɔ ɖò xwé. Mi gbɔ̀jɛ, bo nɔ nu sin wiwe. Enyi é ma ɖó ɖagbe ǎ ɖò azǎn wè mɛ ɔ, mi yi dotóoxwé."]
+}

@@ -19,7 +19,7 @@ Le patient au long cours (leucémie, drépanocytose, diabète, VIH) vit chaque m
 
 Ganji reste utile **sans réseau** (PWA hors ligne, carte d'urgence), **sans smartphone** (SMS, USSD, appel vocal, relais communautaire), **sans savoir lire** (pictogrammes, bouton « écouter », voix en langue nationale), **sans argent immédiat** (urgence vitale, droits ARCH) et **sans compte** (orientation anonyme, carte QR).
 
-L'interface existe **en français et en anglais** (Réglages → Langue · Language). Voix : français et anglais par la synthèse du téléphone, **yoruba** en voix de synthèse à faire valider par un locuteur natif ; fon et bariba à enregistrer (voir `docs/ENREGISTREMENTS.md`).
+L'interface existe **en français et en anglais** (Réglages → Langue · Language). Voix : français et anglais par la synthèse du téléphone, **yoruba et fon** en voix de synthèse à faire valider par un locuteur natif ; bariba et dendi à enregistrer (voir `docs/ENREGISTREMENTS.md`).
 
 ## Parcours à essayer (comptes de démo en un clic sur `/demo`)
 

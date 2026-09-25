@@ -7,13 +7,13 @@ Le cahier des charges demande des messages vocaux dans au moins deux langues nat
 | Langue | État | Détail |
 |---|---|---|
 | Yoruba | **Voix de synthèse, à valider** | 34 messages (rappels, don de sang, urgence, orientation, conseils). Traduction rédigée par une IA (Claude) à partir du français, voix Meta MMS-TTS (licence CC-BY-NC 4.0). L’application le signale à l’écoute. Textes source et yoruba : `scripts/voix/yoruba.json` et `public/audio/manifest.json`. |
-| Fon | À enregistrer | Traduction automatique essayée puis écartée (voir plus bas). |
+| Fon | **Voix de synthèse, à valider** | 12 messages essentiels (accueil, urgence, don de sang, rappels, orientation), phrases courtes. Même méthode que le yoruba ; relecture par un locuteur fon indispensable. Textes : `scripts/voix/fon.json`. |
 | Bariba | À enregistrer | Pas de traducteur automatique ; voix de synthèse possible dès qu’un texte validé existe. |
 | Dendi | À enregistrer | — |
 
 **Pourquoi pas de traduction automatique.** Le modèle NLLB-200 (600M) a été essayé pour le fon et le yoruba : sens faux sur les messages de santé. En fon, les signes de danger de la grossesse deviennent une répétition sans sens (« kpinkpinkpink… ») et le conseil moustiquaire revient en « veillez et lamentez-vous » ; en yoruba, « Votre santé » devient « votre maladie » et la moustiquaire devient « des vêtements ». Ces sorties n’ont pas été publiées.
 
-**Pour passer du yoruba de synthèse à une vraie voix** : un locuteur natif relit `scripts/voix/yoruba.json` (corrections puis `scripts/voix/synthese.py`), ou enregistre directement les fichiers au même chemin, qui remplacent la synthèse sans changer le code.
+**Pour passer de la synthèse à une vraie voix** : un locuteur natif relit `scripts/voix/yoruba.json` ou `scripts/voix/fon.json` (corrections puis `scripts/voix/synthese.py`), ou enregistre directement les fichiers au même chemin, qui remplacent la synthèse sans changer le code.
 
 ## Comment ça marche
 

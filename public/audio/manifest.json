@@ -1,9 +1,9 @@
 {
  "generatedAt": "2026-09-25",
  "synthetic": true,
- "method": "Traduction rédigée par une IA (Claude) à partir du texte français, voix de synthèse Meta MMS-TTS (yoruba). À faire valider par un locuteur natif avant tout usage réel.",
+ "method": "Traductions rédigées par une IA (Claude) à partir du texte français, voix de synthèse Meta MMS-TTS. À faire valider par un locuteur natif avant tout usage réel.",
  "rejected": "La traduction automatique NLLB-200 (600M) a été écartée : sens faux sur les messages de santé (fon et yoruba).",
- "license": "Voix : modèle Meta MMS-TTS, licence CC-BY-NC 4.0 (usage non commercial).",
+ "license": "Voix : modèles Meta MMS-TTS, licence CC-BY-NC 4.0 (usage non commercial).",
  "languages": {
   "yoruba": {
    "welcome": {
@@ -141,6 +141,56 @@
    "triage.come_back_if": {
     "fr": "Allez au centre de santé si la fièvre dure plus de deux jours, si la personne ne peut plus boire, si elle respire vite, si du sang apparaît, si elle est très endormie, ou si cela ne va pas mieux dans deux jours.",
     "text": "Ẹ lọ sí ilé ìwòsàn tí ibà bá ju ọjọ́ méjì lọ, tí aláìsàn kò bá lè mu omi mọ́, tí ó bá ń mí kíákíá, tí ẹ̀jẹ̀ bá jáde, tí oorun bá ń kùn ún jù, tàbí tí kò bá sàn láàárín ọjọ́ méjì."
+   }
+  },
+  "fon": {
+   "welcome": {
+    "fr": "Bienvenue sur Ganji. Votre santé, près de chez vous.",
+    "text": "Mi kúabɔ̀ dó Ganji. Lanmɛ mitɔn, ɖò xwé mitɔn kpá."
+   },
+   "consent.request": {
+    "fr": "Acceptez-vous qu'un agent de santé consulte votre dossier ? Répondez oui ou non.",
+    "text": "Mi jló bɔ dotóo ɖé ni kpɔ́n wěma azɔ̌n mitɔn à? Mi ɖɔ ɛɛn alǒ éǒ."
+   },
+   "reminder.cpn": {
+    "fr": "Votre consultation prénatale approche. Apportez votre carnet.",
+    "text": "Azǎn e mi na yi dotóoxwé ɖó xo mitɔn wu é ɔ ko sɛkpɔ́. Mi hɛn wěma azɔ̌n mitɔn."
+   },
+   "reminder.medication": {
+    "fr": "C'est l'heure de prendre votre médicament. Ne l'arrêtez pas sans l'avis du soignant.",
+    "text": "Hwenu ko sù bɔ mi na nu amasin mitɔn. Mi ma jó e dó ǎ, cobɔ mi na kan dotóo ɔ."
+   },
+   "donor.call": {
+    "fr": "Un malade a besoin de sang aujourd'hui. Pouvez-vous venir donner votre sang ? Tapez un pour oui, deux pour non.",
+    "text": "Azɔ̌nnɔ ɖé jló hun égbé. Mi sixu wá na hun à? Mi zín ɖokpó nú ɛɛn, wè nú éǒ."
+   },
+   "donor.found": {
+    "fr": "Bonne nouvelle : la personne qui va donner son sang a été trouvée.",
+    "text": "Wɛnɖagbe: mǐ mɔ mɛ e na na hun ɔ."
+   },
+   "donor.thanks": {
+    "fr": "Merci pour le sang que vous avez donné. Vous avez peut-être sauvé une vie.",
+    "text": "Mi wanú ɖó hun e mi na é. Vlafo mi hwlɛ̀n gbɛ̀ mɛ ɖé tɔn."
+   },
+   "advice.emergency": {
+    "fr": "Danger. Allez tout de suite à l'hôpital le plus proche.",
+    "text": "Afɔku. Mi yi dotóoxwé e sɛkpɔ́ mi hú bǐ ɔ dìn."
+   },
+   "emergency.page": {
+    "fr": "Urgence. Appelez le 118.",
+    "text": "Afɔku. Mi ylɔ́ ɖokpó ɖokpó tantɔn."
+   },
+   "triage.who": {
+    "fr": "Qui est malade ? Un enfant de moins de cinq ans. Un adulte. Une femme enceinte. Une personne âgée.",
+    "text": "Mɛ̌ wɛ jɛ azɔ̌n? Vǐ e ma ko ɖó xwe atɔ́ɔ́n ǎ. Mɛxó. Nyɔ̀nu e ɖò xo. Mɛxóxó."
+   },
+   "triage.outcome.urgence": {
+    "fr": "Allez à l'hôpital maintenant. Allez vite à l'hôpital le plus proche.",
+    "text": "Mi yi dotóoxwé dìn. Mi yi dotóoxwé e sɛkpɔ́ mi hú bǐ ɔ blówú."
+   },
+   "triage.outcome.maison": {
+    "fr": "Vous pouvez vous soigner à la maison. Reposez-vous et buvez de l'eau propre. Si cela ne va pas mieux dans deux jours, allez à l'hôpital.",
+    "text": "Mi sixu ɖǒ azɔ̌n ɔ ɖò xwé. Mi gbɔ̀jɛ, bo nɔ nu sin wiwe. Enyi é ma ɖó ɖagbe ǎ ɖò azǎn wè mɛ ɔ, mi yi dotóoxwé."
    }
   }
  }
