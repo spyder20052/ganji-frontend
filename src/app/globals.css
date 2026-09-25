@@ -40,6 +40,12 @@
   --color-muted: #4b5a52;
   --color-line: #d8e3db;
   --radius-card: 1.5rem;
+  /* Alias courts des surfaces dynamiques (clair / sombre) : bg-card, text-fg-muted… */
+  --color-card: var(--card);
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-border: var(--border);
   --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-poppins), var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
   /* Graisses allégées : « gras » = demi-gras. */
@@ -232,6 +238,17 @@ body {
 :root[style*='--text-scale: 2'] .tabbar-label {
   display: none;
 }
+/* Notifications décoratives du hero : sans place autour de l'onde en grand texte. */
+:root[style*='--text-scale: 1.5'] .hero-chip,
+:root[style*='--text-scale: 2'] .hero-chip {
+  display: none;
+}
+/* En-têtes collants : en grand texte, ils occuperaient près de la moitié de l'écran et
+   masqueraient l'élément qui a le focus (WCAG 2.4.11). Ils défilent alors avec la page. */
+:root[style*='--text-scale: 1.5'] header.sticky,
+:root[style*='--text-scale: 2'] header.sticky {
+  position: static;
+}
 
 /* Grands chiffres (indicateurs, compteurs) : graisse fine et approche serrée, comme les références. */
 .num:is(.text-4xl, .text-5xl, .text-6xl, .text-7xl, .text-8xl) {
@@ -245,4 +262,63 @@ body {
   background-color: var(--color-brand-900);
   background-image: url('/motifs/trame-foret.svg');
   background-size: 180px 180px;
+}
+
+/* ── Landing ───────────────────────────────────────────────────────────────
+   Toutes ces animations sont coupées par la règle « mouvement réduit » plus haut. */
+
+/* L'onde Ganji : deux ondes partent du symbole, l'une après l'autre (le signal qui atteint chacun). */
+@keyframes onde-pulse {
+  from { transform: scale(0.62); opacity: 0.7; }
+  to { transform: scale(1.62); opacity: 0; }
+}
+.onde-wave {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: onde-pulse 5.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+.onde-wave-2 { animation-delay: 2.6s; }
+@keyframes onde-breathe {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+.onde-heart { animation: onde-breathe 2.6s ease-in-out infinite alternate; }
+
+/* Notifications du hero : elles entrent après le titre, puis flottent doucement, chacune à son rythme
+   (translate et transform sont deux propriétés distinctes : les deux animations se cumulent). */
+@keyframes chip-float {
+  from { translate: 0 0; }
+  to { translate: 0 -8px; }
+}
+.hero-chip {
+  animation: rise-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both, chip-float 4.6s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i, 0) * 110ms), calc(var(--i, 0) * -1.4s);
+}
+
+/* Entrée du hero : titre, texte puis boutons, en cascade. */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+.rise-in { animation: rise-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i, 0) * 90ms); }
+
+/* Apparition au défilement, en CSS natif (sans JavaScript). Sans support : contenu visible d'emblée. */
+@keyframes reveal-in {
+  from { opacity: 0; translate: 0 28px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal-in both cubic-bezier(0.16, 1, 0.3, 1);
+    animation-timeline: view();
+    animation-range: entry 0% cover 25%;
+  }
+}
+
+/* Sections sous la ligne de flottaison : rendues (et leurs fonds chargés) à l'approche seulement.
+   Premier affichage plus léger en 2G et sur les téléphones modestes. */
+.below-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
 }

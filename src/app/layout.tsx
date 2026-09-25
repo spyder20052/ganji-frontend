@@ -1,15 +1,14 @@
 import type { Metadata, Viewport } from 'next';
-import { Atkinson_Hyperlegible_Next, Poppins } from 'next/font/google';
+import { Atkinson_Hyperlegible, Poppins } from 'next/font/google';
 import { DemoBanner } from '@/components/DemoBanner';
 import { SwRegister } from '@/components/SwRegister';
 import './globals.css';
 
-// Atkinson Hyperlegible Next (conçue pour les malvoyants, exigence du cahier) : texte courant et
-// demi-gras des libellés.
-const atkinson = Atkinson_Hyperlegible_Next({ subsets: ['latin'], weight: ['400', '600'], variable: '--font-atkinson', display: 'swap' });
+// Atkinson Hyperlegible (conçue pour les malvoyants, exigence du cahier) : deux fichiers légers.
+const atkinson = Atkinson_Hyperlegible({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-atkinson', display: 'swap' });
 // Poppins (charte Ganji) : titres et logotype.
-// Deux graisses seulement : la première page doit rester sous 200 Ko en 2G.
-const poppins = Poppins({ subsets: ['latin'], weight: ['500', '600'], variable: '--font-poppins', display: 'swap' });
+// Une graisse (Medium, celle de la charte pour les titres) : la première page reste sous 200 Ko en 2G.
+const poppins = Poppins({ subsets: ['latin'], weight: ['500'], variable: '--font-poppins', display: 'swap' });
 
 export const metadata: Metadata = {
   title: { default: 'Ganji · la santé de chaque Béninois', template: '%s · Ganji' },

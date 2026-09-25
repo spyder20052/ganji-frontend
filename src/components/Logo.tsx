@@ -1,15 +1,14 @@
 import Link from 'next/link';
+import { GanjiSymbol } from './GanjiSymbol';
 
 /**
- * Logo Ganji (charte) : symbole modulaire en escalier, quatre feuilles autour d'une croix en creux,
- * et logotype en Poppins Medium. Hauteur du symbole ≥ 24 px à l'écran (taille minimale de la charte).
+ * Logo Ganji (charte) : symbole modulaire en escalier et logotype en Poppins Medium.
+ * Hauteur du symbole ≥ 24 px à l'écran (taille minimale de la charte).
  */
 export function Logo({ href = '/', light = false }: { href?: string; light?: boolean }) {
   return (
     <Link href={href} prefetch={false} className="inline-flex items-center gap-2.5" aria-label="Ganji, accueil">
-      <svg width="30" height="30" viewBox="0 0 520 520" aria-hidden="true">
-        <path d="M240,60L240,140A20,20 0 0 1 220,160L212,160A12,12 0 0 0 200,172L200,180A20,20 0 0 1 180,200L172,200A12,12 0 0 0 160,212L160,220A20,20 0 0 1 140,240L60,240A20,20 0 0 1 40,220L40,140A20,20 0 0 1 60,120L68,120A12,12 0 0 0 80,108L80,100A20,20 0 0 1 100,80L108,80A12,12 0 0 0 120,68L120,60A20,20 0 0 1 140,40L220,40A20,20 0 0 1 240,60ZM220,480L140,480A20,20 0 0 1 120,460L120,452A12,12 0 0 0 108,440L100,440A20,20 0 0 1 80,420L80,412A12,12 0 0 0 68,400L60,400A20,20 0 0 1 40,380L40,300A20,20 0 0 1 60,280L140,280A20,20 0 0 1 160,300L160,308A12,12 0 0 0 172,320L180,320A20,20 0 0 1 200,340L200,348A12,12 0 0 0 212,360L220,360A20,20 0 0 1 240,380L240,460A20,20 0 0 1 220,480ZM460,400L452,400A12,12 0 0 0 440,412L440,420A20,20 0 0 1 420,440L412,440A12,12 0 0 0 400,452L400,460A20,20 0 0 1 380,480L300,480A20,20 0 0 1 280,460L280,380A20,20 0 0 1 300,360L308,360A12,12 0 0 0 320,348L320,340A20,20 0 0 1 340,320L348,320A12,12 0 0 0 360,308L360,300A20,20 0 0 1 380,280L460,280A20,20 0 0 1 480,300L480,380A20,20 0 0 1 460,400ZM400,60L400,68A12,12 0 0 0 412,80L420,80A20,20 0 0 1 440,100L440,108A12,12 0 0 0 452,120L460,120A20,20 0 0 1 480,140L480,220A20,20 0 0 1 460,240L380,240A20,20 0 0 1 360,220L360,212A12,12 0 0 0 348,200L340,200A20,20 0 0 1 320,180L320,172A12,12 0 0 0 308,160L300,160A20,20 0 0 1 280,140L280,60A20,20 0 0 1 300,40L380,40A20,20 0 0 1 400,60Z" fill="#168A56"/>
-      </svg>
+      <GanjiSymbol size={30} />
       <span className={`font-display text-[1.45rem] leading-none font-medium tracking-tight ${light ? 'text-white' : 'text-[var(--color-brand-900)] dark:text-[var(--fg)]'}`}>Ganji</span>
     </Link>
   );

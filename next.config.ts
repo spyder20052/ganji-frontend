@@ -20,6 +20,8 @@ const csp = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Illustrations de la landing : AVIF d'abord (le plus léger en 2G), WebP sinon.
+  images: { formats: ['image/avif', 'image/webp'] },
   reactStrictMode: true,
   async rewrites() {
     // Même origine pour l'API : cookies de session first-party, aucun CORS à ouvrir.

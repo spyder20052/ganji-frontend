@@ -1,6 +1,6 @@
 {
   "project": "Ganji",
-  "updatedAt": "2026-09-25T01:16:18+01:00",
+  "updatedAt": "2026-09-25T03:18:20+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": "https://github.com/spyder20052/ganji-frontend",
@@ -738,6 +738,10 @@
     {
       "at": "2026-09-25T01:16:18+01:00",
       "text": "Renommage en Ganji, identité visuelle de la charte intégrée, dépôts publics créés (develop), déploiement Vercel : ganji-sante.vercel.app et ganji-api.vercel.app (Neon Postgres). Vérifié en production : parcours héros de bout en bout, 2e pharmacie refusée (409), carte d'urgence hors ligne. CI verte sur develop."
+    },
+    {
+      "at": "2026-09-25T03:18:20+01:00",
+      "text": "Landing de présentation : hero avec l'onde Ganji animée et quatre notifications de service, 5 ruptures et leurs réponses, histoire de Koffi racontée au défilement (le visiteur répond « 1 »), mosaïque des 9 services, 8 profils essayables en un clic, 3 gestes, règle des 5 sans, journal d'accès, appel final. 24 illustrations sur mesure (prompts dans docs/ILLUSTRATIONS.md), chargées à 400 px de l'écran : première page 195 Ko transférés sur téléphone et ordinateur (budget 200 Ko). Contenu de toutes les pages aligné sur les marges de la barre de navigation. Vérifié : 0 violation axe-core en clair et en sombre (390 et 1440 px), texte à 200 % sans débordement, clavier (onglets aux flèches, touche « 1 »), mouvement réduit."
     }
   ]
 }
