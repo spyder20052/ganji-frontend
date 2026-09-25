@@ -64,6 +64,8 @@ test('interface en anglais : le choix de langue est gardé et la page suit', asy
 });
 
 test('accessibilité : aucune violation grave sur les écrans publics', async ({ page }) => {
+  // Rendu final, sans les animations d'entrée : un contraste mesuré en plein fondu ne veut rien dire.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   for (const path of ['/', '/orientation', '/urgence', '/medicaments', '/connexion']) {
     await page.goto(path);
     const r = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();

@@ -214,4 +214,10 @@ export const landing: Messages = {
   "Pour les soignants et le pays": "For health workers and the country",
   "Même sans réseau ni smartphone": "Even without a network or a smartphone",
   "Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies.": "Shared record, blood, medicines, emergencies: Ganji connects patients, health workers and pharmacies.",
+  "Donneur trouvé pour Koffi": "Donor found for Koffi",
+  "Avis de l’hématologue reçu": "Haematologist’s advice received",
+  "3 signalements : alerte envoyée": "3 reports: alert sent",
+  "Carte d’urgence lue hors ligne": "Emergency card read offline",
+  "Carte du Bénin : les 77 communes reliées par Ganji": "Map of Benin: the 77 districts connected by Ganji",
+  "77 communes, du littoral à l’Alibori": "77 districts, from the coast to Alibori",
 };
