@@ -40,7 +40,7 @@ export default async function EmergencyCardPage({ params }: { params: Promise<{ 
     return (
       <>
         <TopBar />
-        <main id="contenu" className="mx-auto max-w-2xl space-y-6 px-4 py-8">
+        <main id="contenu" className="mx-auto max-w-6xl space-y-6 px-4 py-8 *:max-w-2xl">
           <h1 className="text-3xl font-bold">Carte d’urgence introuvable</h1>
           <p className="text-lg">
             Ce code ne correspond à aucune carte active : il a peut-être été renouvelé par son titulaire, ou mal lu. Réessayez de scanner le QR code imprimé.
@@ -68,7 +68,7 @@ export default async function EmergencyCardPage({ params }: { params: Promise<{ 
   return (
     <>
       <TopBar />
-      <main id="contenu" className="mx-auto max-w-3xl space-y-5 px-4 pb-16 pt-5">
+      <main id="contenu" className="mx-auto max-w-6xl space-y-5 px-4 pb-16 pt-5 *:max-w-3xl">
         <p className="flex items-start gap-3 rounded-2xl bg-[var(--color-ocre-100)] p-4 text-base font-bold text-[var(--color-ocre-700)]" role="note">
           <Eye size={22} className="mt-0.5 shrink-0" aria-hidden />
           Cette consultation est enregistrée et le patient est prévenu.

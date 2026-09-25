@@ -11,7 +11,7 @@ export default function AlertesPage() {
   return (
     <>
       <TopBar />
-      <main id="contenu" className="mx-auto max-w-3xl space-y-6 px-4 pb-16 pt-6">
+      <main id="contenu" className="mx-auto max-w-6xl space-y-6 px-4 pb-16 pt-6 *:max-w-3xl">
         <AlertsBoard />
       </main>
     </>

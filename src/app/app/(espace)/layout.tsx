@@ -25,7 +25,7 @@ export default async function EspaceLayout({ children }: { children: ReactNode }
     <>
       <TopBar home="/app" who={me.displayName} links={LINKS} />
       <NetworkStatus />
-      <main id="contenu" className="mx-auto max-w-5xl space-y-5 px-4 pb-6 pt-2">
+      <main id="contenu" className="mx-auto max-w-6xl space-y-5 px-4 pb-6 pt-2">
         {children}
       </main>
     </>

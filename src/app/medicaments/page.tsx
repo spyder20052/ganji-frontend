@@ -13,7 +13,7 @@ export default function MedicamentsPage() {
   return (
     <>
       <TopBar />
-      <main id="contenu" className="mx-auto max-w-4xl space-y-6 px-4 pb-16 pt-6">
+      <main id="contenu" className="mx-auto max-w-6xl space-y-6 px-4 pb-16 pt-6 *:max-w-4xl">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="label">Sans compte</p>

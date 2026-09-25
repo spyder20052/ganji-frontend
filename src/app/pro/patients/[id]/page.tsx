@@ -275,7 +275,7 @@ function NotShared({ what }: { what: string }) {
 
 function Refusal({ patientId }: { patientId: string }) {
   return (
-    <div className="mx-auto max-w-3xl space-y-5">
+    <div className="max-w-3xl space-y-5">
       <Link href="/pro" className="text-base font-bold text-[var(--fg-muted)] hover:text-[var(--fg)]">
         ← Mes patients
       </Link>

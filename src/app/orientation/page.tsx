@@ -11,7 +11,7 @@ export default function OrientationPage() {
   return (
     <>
       <TopBar />
-      <main id="contenu" className="mx-auto max-w-3xl px-4 pb-16 pt-6">
+      <main id="contenu" className="mx-auto max-w-6xl px-4 pb-16 pt-6 *:max-w-3xl">
         <Triage />
       </main>
     </>

@@ -32,7 +32,7 @@ export default function UrgencePage() {
   return (
     <>
       <TopBar />
-      <main id="contenu" className="mx-auto max-w-4xl space-y-8 px-4 pb-16 pt-6">
+      <main id="contenu" className="mx-auto max-w-6xl space-y-8 px-4 pb-16 pt-6 *:max-w-4xl">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="min-w-0">
             <p className="label">Sans compte · gratuit</p>

@@ -13,7 +13,7 @@ export default async function SimulateurPage({ searchParams }: { searchParams: P
   return (
     <>
       <TopBar />
-      <main id="contenu" className="mx-auto max-w-7xl space-y-6 px-4 pb-16 pt-6">
+      <main id="contenu" className="mx-auto max-w-6xl space-y-6 px-4 pb-16 pt-6">
         <Simulator initialTel={initialTel} />
       </main>
     </>

@@ -31,7 +31,7 @@ export default async function TeleDetailPage({ params }: { params: Promise<{ id:
     if (e instanceof ServerApiError && e.status === 404) notFound();
     if (e instanceof ServerApiError && e.status === 403) {
       return (
-        <div className="card mx-auto max-w-xl space-y-3 p-6">
+        <div className="card max-w-xl space-y-3 p-6">
           <h1 className="text-2xl font-bold">Demande non accessible</h1>
           <p className="text-[var(--fg-muted)]">Votre accès au carnet de ce patient a expiré. La tentative a été inscrite dans son journal d’accès.</p>
           <Link href="/pro/tele-expertise" className="btn btn-primary">
@@ -50,7 +50,7 @@ export default async function TeleDetailPage({ params }: { params: Promise<{ id:
   const photos = (t.attachments ?? []).map(dataUrl).filter((u): u is string => !!u);
 
   return (
-    <div className="mx-auto max-w-4xl space-y-5">
+    <div className="max-w-4xl space-y-5">
       <Link href="/pro/tele-expertise" className="text-base font-bold text-[var(--fg-muted)] hover:text-[var(--fg)]">
         ← Télé-expertise
       </Link>

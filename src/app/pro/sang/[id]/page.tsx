@@ -19,7 +19,7 @@ export default async function BloodRequestPage({ params }: { params: Promise<{ i
     if (e instanceof ServerApiError && e.status === 404) notFound();
     if (e instanceof ServerApiError && e.status === 403) {
       return (
-        <div className="card mx-auto max-w-xl space-y-3 p-6">
+        <div className="card max-w-xl space-y-3 p-6">
           <h1 className="text-2xl font-bold">Demande non accessible</h1>
           <p className="text-[var(--fg-muted)]">Seuls le prescripteur, l’équipe soignante du patient et la banque de sang suivent cette demande.</p>
           <Link href="/pro" className="btn btn-primary">
