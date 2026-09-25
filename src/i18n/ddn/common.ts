@@ -10,7 +10,7 @@ export const common: Messages = {
   'Démo · données fictives': 'Démo · baaru kaŋ manti cimi',
   Comptes: 'Compte',
   'Simulateur SMS': 'SMS simulateur',
-  'Ganji, accueil': 'Ganji, sintin',
+  'Ganji, accueil': 'Ganji, fu',
   'Navigation principale': 'Menu beeri',
   'Se déconnecter': 'Fatta',
   // Réglages

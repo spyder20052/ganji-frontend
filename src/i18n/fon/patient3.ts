@@ -1,4 +1,177 @@
 import type { Messages } from '../translate';
 
 /** Traductions en fon (patient3). Clé = phrase française exacte. À valider par un locuteur natif. */
-export const patient3: Messages = {};
+export const patient3: Messages = {
+  // Écoute anonyme
+  'Écoute anonyme': 'Tóɖíɖó hwlɛ́hwlɛ́',
+  'Quand ça va mal dans la tête ou dans le cœur : écrire à quelqu’un de formé, sans donner son nom.': 'Hwenu e ta alǒ ayi ma ɖò te ǎ é : wlán wěn dó mɛ e è kplɔ́n é ɖé, bo ma ɖɔ nyǐkɔ́ ǎ.',
+  "Ici, vous pouvez écrire ce qui vous pèse, sans donner votre nom. Une écoutante formée vous répond sous vingt-quatre heures. Si vous êtes en danger, un bouton vous met tout de suite en contact avec quelqu'un.":
+    'Fí ɔ, mi sixu wlán nǔ e kpɛn dó ayi mitɔn jí é, bo ma ɖɔ nyǐkɔ́ mitɔn ǎ. Mɛ e è kplɔ́n bɔ é nɔ ɖótó mɛ é ɖé na yí gbè nú mi ɖò gan 24 mɛ. Enyi afɔku ɖò mi jí ɔ, bouton ɖé na kplá mi dó mɛ ɖé gɔ̌n tlóló.',
+  'Maquette cliquable (module M12). Les messages restent dans cette page : rien n’est envoyé ni enregistré. Essayez d’écrire « je veux en finir » pour voir l’aide de crise.':
+    'Maquette (module M12). Wěn lɛ nɔ wěma elɔ mɛ : è ma nɔ sɛ́ nǔ ɖěbǔ alǒ ɖó nǔ ɖěbǔ ɖó ǎ. Mi tè wlán « je veux en finir » kpɔ́n bo na mɔ alɔdó afɔku tɔn.',
+  'Sans nom': 'Nyǐkɔ́ ma ɖè ǎ',
+  'Aucune identité, aucun lien avec votre carnet.': 'Nyǐkɔ́ ɖěbǔ ǎ, é ma kàn dó wěma azɔ̌n mitɔn wu ǎ.',
+  'Réponse sous 24 h': 'Gbèyíyí ɖò 24 h mɛ',
+  'Par une écoutante formée (psychologue, pair aidant).': 'Mɛ e è kplɔ́n bɔ é nɔ ɖótó mɛ é (psychologue, pair aidant).',
+  'Crise : tout de suite': 'Afɔku : tlóló',
+  'Certains mots ouvrent l’aide immédiate.': 'Xó ɖé lɛ nɔ hùn alɔdó tlóló.',
+  'Bonjour. Ici, personne ne vous juge. Qu’est-ce qui vous pèse en ce moment ?': 'Kúabɔ̀. Fí ɔ, mɛ ɖěbǔ ma na ɖǒ hwɛ nú mi ǎ. Etɛ́ wɛ kpɛn dó ayi mitɔn jí dìn ?',
+  'Merci de nous écrire. Vous pouvez tout dire ici, sans donner votre nom. Une écoutante formée vous répondra sous 24 heures.':
+    'Mi wanú ɖó wěn e mi wlán é. Mi sixu ɖɔ nǔ bǐ ɖò fí, bo ma ɖɔ nyǐkɔ́ mitɔn ǎ. Mɛ e è kplɔ́n bɔ é nɔ ɖótó mɛ é ɖé na yí gbè nú mi ɖò gan 24 mɛ.',
+  'Ce que vous vivez compte. Vous n’êtes pas seul·e : quelqu’un peut vous parler maintenant, voir le bandeau en haut.':
+    'Nǔ e mi ɖò mimɔ wɛ é ɖò taji. Mi ɖò ɖéɖée ǎ : mɛ ɖé sixu ɖɔ xó xá mi dìn, mi kpɔ́n wěma ɔ tamɛ.',
+  'Vous comptez. Parlons maintenant.': 'Mi ɖò taji. Mǐ ni ɖɔ xó dìn.',
+  'Si vous pensez à mettre fin à vos jours, ne restez pas seul·e. Une personne formée peut vous écouter tout de suite.':
+    'Enyi mi ɖò linlin wɛ ɖɔ mi jló na kú ɔ, mi ma nɔ ɖéɖée ǎ. Mɛ e è kplɔ́n é ɖé sixu ɖótó mi tlóló.',
+  'Parler à quelqu’un maintenant': 'Ɖɔ xó nú mɛ ɖé dìn',
+  'Être rappelé·e': 'Byɔ́ ɖɔ è ni ylɔ́ mi',
+  'Demande de rappel notée (maquette : rien n’est envoyé). Dans la version réelle, une écoutante vous appelle dans l’heure.':
+    'Mǐ wlán byɔ̌ mitɔn dó (maquette : è ma sɛ́ nǔ ɖěbǔ ǎ). Ðò nugbǒ mɛ ɔ, mɛ e nɔ ɖótó mɛ é ɖé na ylɔ́ mi ɖò gan ɖokpo mɛ.',
+  'Numéro où vous rappeler (il n’est pas enregistré)': 'Numéro e è na ylɔ́ mi ɖò é (è ma nɔ ɖó ɛ ɖó ǎ)',
+  'Demander le rappel': 'Byɔ́ ɖɔ è ni ylɔ́ mi',
+  'Numéro d’appel de la démonstration : sapeurs-pompiers 118. La ligne d’écoute dédiée reste à désigner avec le ministère.':
+    'Numéro démo tɔn : sapeurs-pompiers 118. Mǐ kpo ministère kpo na de numéro tóɖíɖó tɔn.',
+  'Conversation': 'Xóɖɔɖɔ',
+  'Vous : ': 'Mi : ',
+  'Écoute Ganji : ': 'Tóɖíɖó Ganji tɔn : ',
+  'Votre message': 'Wěn mitɔn',
+  'Écrivez ici…': 'Mi wlán ɖò fí…',
+  'Envoyer': 'Sɛ́',
+  // Cercle de soin
+  'Cercle de soin': 'Kplékplé alɔdótɔ́ lɛ tɔn',
+  'Plusieurs proches et le relais du quartier, chacun avec son rôle. Quand un rappel n’est pas confirmé, le cercle prend le relais.':
+    'Xwédo mɛ gègě kpo relais toxo mɛ tɔn kpo, mɛ ɖokpo ɖokpo kpo azɔ̌ tɔn kpo. Enyi è ma ɖɔ ɛɛn nú nǔ e nɔ flín mɛ é ǎ ɔ, kplékplé ɔ nɔ yí azɔ̌ ɔ.',
+  'Le cercle de soin réunit vos aidants, le relais communautaire et votre équipe de soins. Si vous ne confirmez pas un rappel, un aidant est prévenu, sans détail médical.':
+    'Kplékplé ɔ nɔ kplé alɔdótɔ́ mitɔn lɛ, relais ɔ kpo dotóo mitɔn lɛ kpo. Enyi mi ma ɖɔ ɛɛn nú nǔ e nɔ flín mi é ǎ ɔ, è nɔ ɖɔ nú alɔdótɔ́ ɖé, nǔ azɔ̌n tɔn ɖěbǔ ma nɔ ɖò mɛ ǎ.',
+  'Maquette cliquable (module M15). Les personnes et les visites sont des exemples fictifs ; les aidants réels se gèrent déjà dans « Aidants et réglages ».':
+    'Maquette (module M15). Mɛ lɛ kpo yiyi lɛ kpo ma nyí nugbǒ ǎ ; è nɔ ɖó alɔdótɔ́ nugbǒ lɛ ɖò « Alɔdótɔ́ lɛ kpo tuto lɛ kpo » mɛ.',
+  'Qui fait partie du cercle': 'Mɛ e ɖò kplékplé ɔ mɛ lɛ',
+  'Mère · aidante principale': 'Nɔ · alɔdótɔ́ ɖaxó',
+  'Rappels, sang, fiche vitale': 'Nǔ e nɔ flín mɛ lɛ, hun, nǔ taji lɛ',
+  'Sœur · aidante': 'Nɔví nyɔ̀nu · alɔdótɔ́',
+  'Rappels de rendez-vous': 'Nǔ e nɔ flín rendez-vous lɛ',
+  'Relais communautaire': 'Relais communautaire',
+  'Visites à domicile, sans accès au dossier': 'É nɔ wá xwé, amɔ̌ é ma nɔ kpɔ́n wěma azɔ̌n ǎ',
+  'Hématologue référent': 'Dotóo hun tɔn ɖaxó',
+  'Équipe de soins': 'Dotóo lɛ',
+  'Rappel non confirmé : aidant prévenu': 'È ma ɖɔ ɛɛn ǎ : è ɖɔ nú alɔdótɔ́',
+  'Visites du relais': 'Relais ɔ sín yiyi lɛ',
+  'Faite': 'Ko vɔ',
+  'Prévue': 'Na wá',
+  'Lundi 14 h': 'Lundi 14 h',
+  'Jeudi 10 h': 'Jeudi 10 h',
+  'Mathieu (relais)': 'Mathieu (relais)',
+  'Visite faite : traitement pris, pas de fièvre. Aucun signe d’alerte.': 'É wá : è nu amasin, lanmɛ̀ zozo ɖè ǎ. Nǔ e nɔ xlɛ́ afɔku é ɖěbǔ ɖè ǎ.',
+  'Visite prévue : apporter le rappel de la prise de sang de contrôle.': 'Yiyi e na wá é : é na hɛn nǔ e nɔ flín analyse hun tɔn é wá.',
+  'Simuler : rappel de 8 h non confirmé': 'Tè kpɔ́n : è ma ɖɔ ɛɛn nú nǔ e nɔ flín mɛ 8 h tɔn é ǎ',
+  'Effacer': 'Ɖè',
+  'Rappel envoyé à Koffi': 'È sɛ́ nǔ e nɔ flín mɛ é dó Koffi',
+  'Notification et SMS : « Prenez votre traitement du matin ».': 'Wěn kpo SMS kpo : « Mi nu amasin zǎnzǎn tɔn mitɔn ».',
+  'Pas de confirmation': 'È ma ɖɔ ɛɛn ǎ',
+  'Deuxième rappel, par message vocal en fon.': 'Nǔ e nɔ flín mɛ é wegɔ́, ɖò wěn gbè tɔn mɛ ɖò fɔngbè.',
+  'Aidante prévenue': 'È ɖɔ nú alɔdótɔ́',
+  'Afiavi (mère) reçoit : « Koffi n’a pas confirmé sa prise de 8 h ». Aucune donnée médicale dans le SMS.':
+    'Afiavi (nɔ) yí : « Koffi ma ɖɔ ɖɔ emi nu amasin 8 h tɔn ǎ ». Nǔ azɔ̌n tɔn ɖěbǔ ma ɖò SMS ɔ mɛ ǎ.',
+  'Confirmé par l’aidante': 'Alɔdótɔ́ ɔ ɖɔ ɛɛn',
+  'Afiavi a appelé Koffi : prise faite. L’équipe de soins le voit dans le carnet.': 'Afiavi ylɔ́ Koffi : é nu amasin ɔ. Dotóo lɛ mɔ ɖò wěma azɔ̌n ɔ mɛ.',
+  // Assistant
+  'Assistant': 'Assistant',
+  'Votre ordonnance expliquée avec des mots simples, et lue à voix haute.': 'Ordonnance mitɔn, ɖò xó bɔkún mɛ, bo na xà ɛ nú mi.',
+  "L'assistant explique votre ordonnance avec des mots simples et peut vous la lire. Il ne fait jamais de diagnostic : pour toute question sur votre santé, il vous envoie vers un soignant.":
+    'Assistant ɔ nɔ ɖè ordonnance mitɔn sín tinmɛ ɖò xó bɔkún mɛ, bo sixu xà ɛ nú mi. É ma nɔ ɖɔ azɔ̌n e mi ɖó é gbeɖé ǎ : kanbyɔ́ lanmɛ̀fífá tɔn ɖěbǔ ɔ, é nɔ sɛ́ mi dó dotóo gɔ̌n.',
+  'Maquette cliquable (module M8). Les réponses viennent de règles fixes écrites à l’avance, pas d’une intelligence artificielle : c’est ce comportement, avec ses garde-fous, qui sera à valider par des médecins.':
+    'Maquette (module M8). Gbèyíyí lɛ gbɔn sɛ́n e è wlán ɖò nukɔn lɛ jí, é ma nyí IA ǎ : lɛ e é nɔ wà nǔ é, kpo sɛ́n tɔn lɛ kpo, wɛ dotóo lɛ ɖó na gbéjé kpɔ́n.',
+  'Ses garde-fous': 'Sɛ́n tɔn lɛ',
+  'Jamais de diagnostic': 'É ma nɔ ɖɔ azɔ̌n e mi ɖó é gbeɖé ǎ',
+  'Il ne dit pas quelle maladie vous avez et ne change jamais un traitement.': 'É nɔ ɖɔ azɔ̌n e mi ɖó é ǎ, bo nɔ ɖyɔ̌ amasin gbeɖé ǎ.',
+  'Seulement vos documents': 'Wěma mitɔn lɛ kɛ́ɖɛ́',
+  'Il explique ce qui est écrit sur votre ordonnance, avec des mots simples.': 'É nɔ ɖè nǔ e è wlán dó ordonnance mitɔn jí é sín tinmɛ, ɖò xó bɔkún mɛ.',
+  'Toujours vers un soignant': 'Hwebǔ dó dotóo gɔ̌n',
+  'Au moindre doute, il vous oriente vers le centre de santé ou le pharmacien.': 'Enyi é ma ɖeji ǎ kpɛ́ɖé ɔ, é nɔ xlɛ́ ali dotóoxwé kpɛví alǒ pharmacien mi.',
+  'À l’écrit et à voix haute': 'Ɖò wěma jí kpo gbè kpo',
+  'Chaque réponse peut être lue, pour ceux qui lisent peu.': 'È sixu xà gbèyíyí ɖokpo ɖokpo nú mɛ e nɔ xà nǔ kpɛ́ɖé lɛ.',
+  'un comprimé à avaler avec de l’eau': 'comprimé e è nɔ mì kpo sìn kpo é',
+  'une gélule à avaler avec de l’eau': 'gélule e è nɔ mì kpo sìn kpo é',
+  'un sirop à boire avec la cuillère fournie': 'sirop e è nɔ nu kpo cuillère e è na mi é kpo é',
+  'une piqûre faite par un soignant': 'piqûre e dotóo ɖé nɔ wà é',
+  'une pommade à mettre sur la peau': 'pommade e è nɔ sá dó wǔ jí é',
+  'un suppositoire': 'suppositoire',
+  'un médicament sous forme de {form}': 'amasin {form} tɔn',
+  '{dci} {strength} : c’est {form}. À prendre ainsi : {dosage}, pendant {duration}. N’arrêtez pas avant la fin sans en parler à votre médecin.':
+    '{dci} {strength} : é nyí {form}. Lɛ e mi na nu é : {dosage}, nú {duration}. Mi ma jó dó cobɔ é na vɔ ǎ, enyi mi ma ɖɔ nú dotóo mitɔn ǎ.',
+  'Je ne peux pas dire quelle maladie vous avez : seul un soignant peut le faire. Si vous ne vous sentez pas bien, utilisez « Je ne me sens pas bien » ou allez au centre de santé.':
+    'Un sixu ɖɔ azɔ̌n e mi ɖó é ǎ : dotóo ɖeɖé wɛ sixu ɖɔ. Enyi lanmɛ̀ mitɔn ma nyɔ́ ǎ ɔ, mi zín « Lanmɛ̀ ce ma nyɔ́ ǎ » alǒ mi yi dotóoxwé kpɛví.',
+  'Je ne peux pas changer votre traitement. Suivez l’ordonnance telle qu’elle est, et posez la question à votre médecin ou à votre pharmacien.':
+    'Un sixu ɖyɔ̌ amasin mitɔn ǎ. Mi nu amasin ɖí lɛ e ordonnance ɔ ɖɔ é ɖɔhun, bo kanbyɔ́ dotóo mitɔn alǒ pharmacien mitɔn.',
+  'Si vous avez oublié une prise : ne doublez pas la suivante. Prenez la prochaine à l’heure prévue et demandez conseil au pharmacien.':
+    'Enyi mi wɔn amasin nunu ɖokpo ɔ : mi ma sɔ́ amasin wè nu ɖò hwe ɖokpo ǎ. Mi nu e bɔ́ dó wu é ɖò gan tɔn jí, bo kanbyɔ́ pharmacien ɔ.',
+  'Beaucoup de médicaments se prennent pendant ou après le repas pour protéger l’estomac. Pour le vôtre, le pharmacien peut vous le confirmer en lisant l’ordonnance.':
+    'Amasin gègě wɛ è nɔ nu ɖò nǔ ɖuɖu hwenu alǒ ɖò nǔ ɖuɖu gudo, bo na hwlɛ̀n xomɛ̀. Nú mitɔn ɔ, pharmacien ɔ sixu ɖɔ nú mi ɖò ordonnance ɔ xixà gudo.',
+  'Je peux expliquer votre ordonnance avec des mots simples et vous la lire. Pour toute question sur votre santé, parlez-en à un soignant.':
+    'Un sixu ɖè ordonnance mitɔn sín tinmɛ ɖò xó bɔkún mɛ, bo xà ɛ nú mi. Kanbyɔ́ lanmɛ̀fífá tɔn ɖěbǔ ɔ, mi ɖɔ nú dotóo ɖé.',
+  'Mon ordonnance, expliquée simplement': 'Ordonnance ce, ɖò xó bɔkún mɛ',
+  'Aucune ordonnance à expliquer pour le moment. Exemple de ce que vous verriez : « Paracétamol 500 mg : c’est un comprimé à avaler avec de l’eau. »':
+    'Ordonnance ɖěbǔ ɖè dìn ǎ. Nǔ e mi na mɔ é ɖíe : « Paracétamol 500 mg : é nyí comprimé e è nɔ mì kpo sìn kpo é. »',
+  'Prescrite par {prescriber}': '{prescriber} wɛ wlán',
+  'Me lire l’explication': 'Xà tinmɛ ɔ nú mi',
+  'Poser une question': 'Kanbyɔ́ nǔ ɖé',
+  'Explique mon ordonnance': 'Ɖè ordonnance ce sín tinmɛ',
+  'J’ai oublié une prise': 'Un wɔn amasin nunu ɖokpo',
+  'Est-ce que j’ai le palu ?': 'Un ɖó palu à ?',
+  'Je peux doubler la dose ?': 'Un sixu nu dose wè à ?',
+  'Assistant : ': 'Assistant : ',
+  'Votre question': 'Kanbyɔ́ mitɔn',
+  'Votre question…': 'Kanbyɔ́ mitɔn…',
+  // Mes droits et frais
+  'Mes droits et frais': 'Acɛ ce lɛ kpo akwɛ lɛ kpo',
+  'Savoir ce qui est pris en charge, combien il reste à payer, et payer depuis son téléphone.': 'Tuùn nǔ e è na sú akwɛ tɔn nú mi é, akwɛ nabí wɛ kpò nú mi é, bo sú akwɛ ɔ sín alokan mitɔn jí.',
+  "Cette page montre votre couverture santé ARCH, une estimation du prix de vos soins et de vos médicaments, et ce qu'il vous reste à payer. En urgence vitale, on vous soigne d'abord : on paie après.":
+    'Wěma elɔ nɔ xlɛ́ assurance ARCH mitɔn, akwɛ e azɔ̌n ɖiɖǒ kpo amasin mitɔn lɛ kpo sixu nyí é, kpo akwɛ e kpò nú mi é kpo. Ðò afɔku gbɛ̀ tɔn mɛ ɔ, è nɔ ɖǒ azɔ̌n nú mi jɛ nukɔn : è nɔ sú akwɛ ɖò gudo.',
+  'Maquette cliquable (module M14). Le statut ARCH et les tarifs des actes sont fictifs ; les prix des médicaments viennent de la recherche Ganji. Le paiement est un bac à sable : rien n’est débité.':
+    'Maquette (module M14). ARCH tɔn kpo akwɛ azɔ̌n ɖiɖǒ tɔn lɛ kpo ma nyí nugbǒ ǎ ; akwɛ amasin lɛ tɔn gosin Ganji sín nǔ bibà mɛ. Akwɛ sisú ɔ nyí tɛ̀nkpɔ́n : è ma ɖè akwɛ ɖěbǔ ǎ.',
+  'Ma couverture santé': 'Assurance lanmɛ̀fífá tɔn ce',
+  'Couvert par l’ARCH': 'ARCH nɔ sú akwɛ nú mi',
+  'Pas encore couvert': 'ARCH ko nɔ sú nú mi ǎ',
+  'Assurance maladie · {name} · droits valables jusqu’au 31 décembre (exemple)': 'Assurance azɔ̌n tɔn · {name} · acɛ ɔ nɔ wà azɔ̌ kaka 31 décembre (kpɔ́ndéwú)',
+  'Vérifié via X-Road (simulé)': 'È gbéjé kpɔ́n gbɔn X-Road jí (tɛ̀nkpɔ́n)',
+  'Dans la version réelle, Ganji interroge le registre ARCH avec votre NPI, sans que vous ayez à montrer de papier.': 'Ðò nugbǒ mɛ ɔ, Ganji na kanbyɔ́ wěma ARCH tɔn kpo NPI mitɔn kpo, mi ma na xlɛ́ wěma ɖěbǔ ǎ.',
+  'Combien vais-je payer ?': 'Akwɛ nabí un na sú ?',
+  'Bon d’urgence vitale': 'Bon afɔku gbɛ̀ tɔn',
+  'En urgence vitale : soigné d’abord, payé après': 'Ðò afɔku gbɛ̀ tɔn mɛ : è nɔ ɖǒ azɔ̌n jɛ nukɔn, è nɔ sú akwɛ ɖò gudo',
+  'Quand votre vie est en danger (hémorragie, accouchement difficile, accident grave), l’hôpital émet un bon d’urgence vitale dans Ganji. Les soins commencent tout de suite, sans avance d’argent.':
+    'Hwenu e gbɛ̀ mitɔn ɖò afɔku mɛ é (hun gègě tɔ́n, vǐ jiji e vɛ́ é, afɔku ɖaxó), dotóoxwé ɔ nɔ bló bon afɔku gbɛ̀ tɔn ɖé ɖò Ganji mɛ. Azɔ̌n ɖiɖǒ nɔ bɛ́ tlóló, bɔ mi ma nɔ sú akwɛ jɛ nukɔn ǎ.',
+  'Le soignant constate l’urgence et crée le bon, tracé dans votre journal.': 'Dotóo ɔ nɔ mɔ afɔku ɔ bo nɔ bló bon ɔ ; è nɔ wlán ɛ dó wěma mitɔn mɛ.',
+  'Les soins, le sang et les médicaments sont délivrés sans paiement préalable.': 'È nɔ ɖǒ azɔ̌n, bo nɔ na hun kpo amasin kpo, cobɔ è na sú akwɛ.',
+  'La facture est réglée ensuite : ARCH, fonds d’urgence, puis vous si un reste existe.': 'È nɔ sú akwɛ ɔ ɖò gudo : ARCH, akwɛ afɔku tɔn, enɛ gudo ɔ mi, enyi é kpò ɔ.',
+  'Le principe proposé : un soin d’urgence vitale ne se refuse jamais faute d’argent.': 'Sɛ́n e mǐ ɖò xlɛ́ wɛ é : enyi gbɛ̀ ɖò afɔku mɛ ɔ, è ma nɔ gbɛ́ azɔ̌n ɖiɖǒ ɖó akwɛ wú gbeɖé ǎ.',
+  'Consultation au centre de santé': 'Dotóo kpíkpɔ́n ɖò dotóoxwé kpɛví',
+  'Analyse de sang (NFS)': 'Analyse hun tɔn (NFS)',
+  '{price} l’unité': '{price} ɖokpo',
+  '{price} l’unité (prix le plus bas relevé)': '{price} ɖokpo (akwɛ e kpɛ́ɖé hú bǐ é)',
+  'Moins : {label}': 'Ɖè ɖokpo : {label}',
+  'Quantité : {qty}': 'Nabí : {qty}',
+  'Plus : {label}': 'Sɔ́ ɖokpo dó : {label}',
+  'Retirer {label}': 'Ɖè {label}',
+  'Ajouter un médicament': 'Sɔ́ amasin ɖé dó',
+  'Ex. : paracétamol, amoxicilline': 'Ɖí : paracétamol, amoxicilline',
+  'Recherche…': 'Ðò bà wɛ…',
+  'Recherche impossible sans réseau.': 'Mǐ sixu bà ǎ, réseau ɖè ǎ.',
+  '{n} pharmacies en stock': 'Ɖò pharmacie {n} mɛ',
+  '{n} pharmacie en stock': 'Ɖò pharmacie {n} mɛ',
+  '0 pharmacie en stock': 'Pharmacie ɖěbǔ ma ɖó ǎ',
+  'prix inconnu': 'mǐ ma tuùn akwɛ tɔn ǎ',
+  'Coût estimé': 'Akwɛ e é sixu nyí é',
+  'Pris en charge ARCH': 'ARCH na sú',
+  'Reste à payer': 'Akwɛ e kpò',
+  'Tarifs des actes et taux ARCH ({rate} %) fictifs. Prix des médicaments : relevés de la démonstration.': 'Akwɛ azɔ̌n ɖiɖǒ tɔn lɛ kpo ARCH tɔn ({rate} %) kpo ma nyí nugbǒ ǎ. Akwɛ amasin lɛ tɔn : démo tɔn.',
+  'Paiement simulé réussi': 'Mi sú akwɛ ɔ ganjí (tɛ̀nkpɔ́n)',
+  'Référence {ref} · {amount} via {op}. Bac à sable : aucune somme n’a été débitée.': 'Référence {ref} · {amount} gbɔn {op} jí. Tɛ̀nkpɔ́n wɛ : è ma ɖè akwɛ ɖěbǔ ǎ.',
+  'Recommencer': 'Vɔ́ bɛ́',
+  'Payer le reste par mobile money (bac à sable)': 'Sú akwɛ e kpò é gbɔn mobile money jí (tɛ̀nkpɔ́n)',
+  'Opérateur': 'Opérateur',
+  'Numéro de téléphone (fictif pour la démonstration)': 'Numéro alokan tɔn (é ma nyí nugbǒ ǎ, démo wɛ)',
+  'Dans la vraie version, vous confirmez sur votre propre téléphone avec votre code secret : Ganji ne le demande jamais.':
+    'Ðò nugbǒ mɛ ɔ, mi na ɖɔ ɛɛn ɖò alokan mitɔn ɖésúnɔ jí kpo code hwlɛ́hwlɛ́ mitɔn kpo : Ganji ma nɔ byɔ́ ɛ gbeɖé ǎ.',
+  'En attente de confirmation sur le téléphone…': 'Ðò nɔte kpɔ́n wɛ bɔ mi na ɖɔ ɛɛn ɖò alokan ɔ jí…',
+  'Payer {amount} (simulation)': 'Sú {amount} (tɛ̀nkpɔ́n)',
+};
