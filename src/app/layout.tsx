@@ -4,11 +4,12 @@ import { DemoBanner } from '@/components/DemoBanner';
 import { SwRegister } from '@/components/SwRegister';
 import './globals.css';
 
-// Atkinson Hyperlegible Next (conçue pour les malvoyants, exigence du cahier), en variable : les
-// graisses fines des grands chiffres et le demi-gras des libellés dans un seul fichier.
-const atkinson = Atkinson_Hyperlegible_Next({ subsets: ['latin'], variable: '--font-atkinson', display: 'swap' });
+// Atkinson Hyperlegible Next (conçue pour les malvoyants, exigence du cahier) : texte courant et
+// demi-gras des libellés.
+const atkinson = Atkinson_Hyperlegible_Next({ subsets: ['latin'], weight: ['400', '600'], variable: '--font-atkinson', display: 'swap' });
 // Poppins (charte Ganji) : titres et logotype.
-const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-poppins', display: 'swap' });
+// Deux graisses seulement : la première page doit rester sous 200 Ko en 2G.
+const poppins = Poppins({ subsets: ['latin'], weight: ['500', '600'], variable: '--font-poppins', display: 'swap' });
 
 export const metadata: Metadata = {
   title: { default: 'Ganji · la santé de chaque Béninois', template: '%s · Ganji' },
