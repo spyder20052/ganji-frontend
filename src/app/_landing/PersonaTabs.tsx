@@ -93,7 +93,7 @@ export function PersonaTabs({ personas, available }: { personas: PersonaView[]; 
         })}
       </div>
 
-      <div role="tabpanel" id="panel-persona" aria-labelledby={`tab-${p.key}`} className="grid gap-6 rounded-card bg-card p-5 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] md:items-center md:gap-10 md:p-8">
+      <div key={p.key} role="tabpanel" id="panel-persona" aria-labelledby={`tab-${p.key}`} className="panel-in grid gap-6 rounded-card bg-card p-5 md:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] md:items-center md:gap-10 md:p-8">
         <div className="overflow-hidden rounded-[8%]">
           <IllustrationView
             name={`persona-${p.key}`}

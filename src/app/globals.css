@@ -322,3 +322,101 @@ body {
   content-visibility: auto;
   contain-intrinsic-size: auto 900px;
 }
+
+/* Étiquette de section (« Services », « Parcours »…) : le nom de la section, comme dans la navigation. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  background: var(--card);
+  padding: 0.35rem 0.95rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+/* Sections en « feuilles » : coins arrondis qui glissent sur la section précédente. */
+.sheet {
+  position: relative;
+  z-index: 1;
+  margin-top: -2rem;
+  border-radius: 2rem 2rem 0 0;
+}
+@media (min-width: 768px) {
+  .sheet { margin-top: -3rem; border-radius: 3rem 3rem 0 0; }
+}
+
+/* Progression de lecture : fine barre Pousse sous l'en-tête, pilotée par le défilement. */
+.scroll-progress { transform-origin: 0 50%; scale: 0 1; }
+
+/* Services : rail d'illustrations. Téléphone : cartes ouvertes qui défilent au doigt. Ordinateur :
+   la carte survolée ou ciblée au clavier s'ouvre, les autres restent en vignettes (référence : galerie
+   de cas clients). La dernière carte ouverte le reste, pas de clignotement entre deux cartes. */
+.svc-rail {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.svc-item { flex: 0 0 82%; height: 27rem; scroll-snap-align: start; list-style: none; }
+.svc-mini { display: none; }
+.svc-scrim { background: linear-gradient(to top, rgb(6 36 24 / 0.94) 0%, rgb(6 36 24 / 0.6) 42%, rgb(6 36 24 / 0) 72%); }
+.svc-img img { transition: scale 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.svc-link:hover .svc-img img, .svc-link:focus-visible .svc-img img { scale: 1.06; }
+@media (min-width: 768px) {
+  .svc-rail { overflow: visible; height: 30rem; gap: 0.625rem; }
+  .svc-item { flex: 1 1 0; min-width: 0; height: auto; transition: flex-grow 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+  .svc-item[data-open] { flex-grow: 7; }
+  .svc-mini { display: flex; transition: opacity 0.25s; }
+  .svc-item[data-open] .svc-mini { opacity: 0; }
+  .svc-full { width: 26rem; max-width: none; opacity: 0; translate: 0 14px; transition: opacity 0.25s, translate 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+  .svc-item[data-open] .svc-full { opacity: 1; translate: 0 0; transition-delay: 0.22s; }
+}
+
+/* Parcours : la route se trace et le repère avance pendant la lecture (référence : feuille de route). */
+.road-section { view-timeline: --road block; }
+.road-progress { stroke-dasharray: 1 1; stroke-dashoffset: 0; }
+.road-marker { offset-path: path('M -60 520 C 180 520 300 330 520 330 S 860 470 1040 470 S 1320 300 1500 280'); offset-distance: 58%; offset-rotate: 0deg; }
+@keyframes road-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes road-move { from { offset-distance: 4%; } to { offset-distance: 96%; } }
+
+/* « Utile même sans… » : cartes inclinées qui tombent en place ; au survol, la carte se redresse. */
+/* Téléphone et tablette : inclinaison adoucie, sans décalage vertical (les cartes ne se chevauchent pas). */
+.tilt-card { --t: calc(var(--tilt, 0deg) * 0.4); --l: 0rem; translate: 0 var(--l); rotate: var(--t); }
+@media (min-width: 1024px) {
+  .tilt-card { --t: var(--tilt, 0deg); --l: var(--lift, 0rem); }
+}
+.tilt-card > a { transition: rotate 0.5s cubic-bezier(0.16, 1, 0.3, 1), translate 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s; }
+.tilt-card > a:hover, .tilt-card > a:focus-visible { rotate: calc(var(--t) * -1); translate: 0 -6px; box-shadow: 0 24px 40px -20px rgb(11 61 44 / 0.45); }
+@keyframes tilt-in { from { translate: 0 70px; rotate: 0deg; opacity: 0; } }
+
+/* Le problème barré, puis la réponse qui glisse en place. */
+.strike { background: linear-gradient(currentColor, currentColor) no-repeat 0 58% / 100% 1.5px; }
+@keyframes strike-in { from { background-size: 0% 1.5px; } }
+@keyframes slide-in { from { opacity: 0; translate: 18px 0; } }
+
+/* Illustrations : léger recul à l'entrée. Hero : l'onde s'efface doucement quand on descend. */
+@keyframes zoom-in { from { scale: 1.08; } }
+@keyframes hero-out { to { opacity: 0.35; scale: 0.92; translate: 0 50px; } }
+@keyframes grow-x { to { scale: 1 1; } }
+
+/* Journal d'accès : la tentative refusée appelle l'œil (anneau qui pulse). */
+@keyframes ring-pulse { 0% { box-shadow: 0 0 0 0 rgb(217 154 30 / 0.55); } 70%, 100% { box-shadow: 0 0 0 10px rgb(217 154 30 / 0); } }
+.pulse-ring { border-radius: 999px; animation: ring-pulse 2.4s ease-out infinite; }
+
+/* Profils : le panneau change en fondu à chaque onglet. */
+@keyframes panel-in { from { opacity: 0; translate: 0 10px; } }
+.panel-in { animation: panel-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@supports (animation-timeline: view()) {
+  .scroll-progress { animation: grow-x linear both; animation-timeline: scroll(root); }
+  .road-progress { animation: road-draw linear both; animation-timeline: --road; animation-range: cover 15% cover 70%; }
+  .road-marker { animation: road-move linear both; animation-timeline: --road; animation-range: cover 15% cover 70%; }
+  .tilt-card { animation: tilt-in both cubic-bezier(0.16, 1, 0.3, 1); animation-timeline: view(); animation-range: entry 0% cover 30%; }
+  .strike { animation: strike-in linear both; animation-timeline: view(); animation-range: entry 60% cover 40%; }
+  .slide-in { animation: slide-in both cubic-bezier(0.16, 1, 0.3, 1); animation-timeline: view(); animation-range: entry 70% cover 40%; }
+  .zoom-in img { animation: zoom-in both linear; animation-timeline: view(); animation-range: entry 0% cover 50%; }
+  .hero-art { animation: hero-out linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
+}

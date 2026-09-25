@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, ArrowUpRight, Check, LogIn, ShieldX, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUpRight, Check, LogIn, Plus, ShieldX, X } from 'lucide-react';
 import { ListenButton } from '@/components/ListenButton';
 import { GanjiSymbol } from '@/components/GanjiSymbol';
 import { Logo } from '@/components/Logo';
@@ -12,6 +12,7 @@ import { DeferredImages } from './_landing/DeferredImages';
 import { KoffiStory } from './_landing/KoffiStory';
 import { Onde } from './_landing/Onde';
 import { PersonaTabs, type PersonaView } from './_landing/PersonaTabs';
+import { ServiceRail } from './_landing/ServiceRail';
 
 /* Conteneur commun : mêmes marges que la barre de navigation, sur toutes les sections. */
 const WRAP = 'mx-auto w-full max-w-6xl px-4';
@@ -49,25 +50,19 @@ const PROBLEMS = [
 
 /** Neuf services, en mosaïque : la taille de chaque case suit son poids dans le parcours. */
 const SERVICES = [
-  {
-    key: 'carnet',
-    frame: 'aspect-[4/3] md:aspect-auto md:w-[56%] md:shrink-0',
-    title: 'Carnet partagé',
-    text: 'Fiche vitale, soins et analyses. Vous décidez qui voit quoi, et pour combien de temps.',
-    icon: 'carnet',
-    href: '/connexion',
-    span: 'md:col-span-4 md:*:flex-row',
-    tone: 'bg-card',
-  },
-  { key: 'sang', title: 'Sang', text: 'Stocks de l’ANTS visibles, donneurs alertés, réponse par SMS.', icon: 'blood', href: '/demo', span: 'md:col-span-2', frame: 'aspect-[4/3]', tone: 'bg-danger-50 text-danger-800' },
-  { key: 'medicaments', title: 'Médicaments', text: 'Qui a mon médicament, et laquelle est de garde.', icon: 'pill', href: '/medicaments', span: 'md:col-span-2', frame: 'aspect-[4/3]', tone: 'bg-brand-100' },
-  { key: 'urgence', title: 'Urgence', text: 'Carte QR lisible par les secours, même en mode avion.', icon: 'emergency', href: '/urgence', span: 'md:col-span-2', frame: 'aspect-[4/3]', tone: 'bg-card' },
-  { key: 'orientation', title: 'Orientation', text: 'Des pictogrammes pour savoir où aller, sans compte.', icon: 'fever', href: '/orientation', span: 'md:col-span-2', frame: 'aspect-[4/3]', tone: 'bg-brand-100' },
-  { key: 'mere-enfant', title: 'Mère et enfant', text: 'Consultations prénatales, vaccins, rappels en langue nationale.', icon: 'pregnant', href: '/demo', span: 'md:col-span-3', frame: 'aspect-[16/9]', tone: 'bg-ocre-100 text-ocre-700' },
-  { key: 'teleexpertise', title: 'Avis d’un spécialiste', text: 'Photos et résultats envoyés en 2G, réponse écrite ou vocale.', icon: 'talk', href: '/demo', span: 'md:col-span-3', frame: 'aspect-[16/9]', tone: 'bg-card' },
-  { key: 'relais', title: 'Relais et épidémies', text: 'Signaler en 3 gestes, même hors ligne ; alerte au médecin chef de zone.', icon: 'people', href: '/demo', span: 'md:col-span-3', frame: 'aspect-[16/9]', tone: 'bg-card' },
-  { key: 'pilotage', title: 'Pilotage national', text: 'Ruptures et besoins en sang par département, en données anonymes.', icon: 'map', href: '/demo', span: 'md:col-span-3', frame: 'aspect-[16/9]', tone: 'motif-foret text-white' },
+  { key: 'carnet', title: 'Carnet partagé', text: 'Fiche vitale, soins et analyses. Vous décidez qui voit quoi, et pour combien de temps.', icon: 'carnet', href: '/connexion', pos: '30% 50%' },
+  { key: 'sang', title: 'Sang', text: 'Stocks de l’ANTS visibles, donneurs alertés, réponse par SMS.', icon: 'blood', href: '/demo', pos: '35% 50%' },
+  { key: 'medicaments', title: 'Médicaments', text: 'Qui a mon médicament, et laquelle est de garde.', icon: 'pill', href: '/medicaments', pos: '50% 50%' },
+  { key: 'urgence', title: 'Urgence', text: 'Carte QR lisible par les secours, même en mode avion.', icon: 'emergency', href: '/urgence', pos: '40% 50%' },
+  { key: 'orientation', title: 'Orientation', text: 'Des pictogrammes pour savoir où aller, sans compte.', icon: 'fever', href: '/orientation', pos: '45% 50%' },
+  { key: 'mere-enfant', title: 'Mère et enfant', text: 'Consultations prénatales, vaccins, rappels en langue nationale.', icon: 'pregnant', href: '/demo', pos: '50% 50%' },
+  { key: 'teleexpertise', title: 'Avis d’un spécialiste', text: 'Photos et résultats envoyés en 2G, réponse écrite ou vocale.', icon: 'talk', href: '/demo', pos: '50% 50%' },
+  { key: 'relais', title: 'Relais et épidémies', text: 'Signaler en 3 gestes, même hors ligne ; alerte au médecin chef de zone.', icon: 'people', href: '/demo', pos: '40% 50%' },
+  { key: 'pilotage', title: 'Pilotage national', text: 'Ruptures et besoins en sang par département, en données anonymes.', icon: 'map', href: '/demo', pos: '40% 50%' },
 ];
+
+/** Route de la section « Parcours » (repère 1440 × 560) ; le même tracé guide le repère en CSS. */
+const ROAD = 'M -60 520 C 180 520 300 330 520 330 S 860 470 1040 470 S 1320 300 1500 280';
 
 const PERSONAS: (PersonaView & { icon: string })[] = [
   {
@@ -152,11 +147,11 @@ const STEPS = [
 
 /** La règle des « 5 sans » ; les chiffres viennent du cahier des charges et de leurs sources. */
 const FIVE_WITHOUT = [
-  { icon: 'offline', title: 'Sans réseau', text: 'Carnet, carte d’urgence et rappels restent consultables hors ligne.' },
-  { icon: 'phone', title: 'Sans smartphone', text: 'SMS, menu *229*25# et appel vocal. Les femmes ne sont que 22 % des abonnés à l’internet mobile (ARCEP, 2025).' },
-  { icon: 'listen', title: 'Sans savoir lire', text: 'Pictogrammes et voix en langue nationale : 51 % des adultes savent lire (2022).' },
-  { icon: 'care', title: 'Sans argent immédiat', text: 'L’urgence vitale d’abord : la carte QR guide les secours.' },
-  { icon: 'no-account', title: 'Sans compte', text: 'Orientation et lieux de soin ouverts, sans rien créer.' },
+  { title: 'Sans réseau', text: 'Carnet, carte d’urgence et rappels restent consultables hors ligne.', href: '/app/carte-urgence', tone: 'bg-brand-900 text-white', chip: 'bg-white/15', tilt: '-3deg', lift: '2.5rem' },
+  { title: 'Sans smartphone', text: 'SMS, menu *229*25# et appel vocal. Les femmes ne sont que 22 % des abonnés à l’internet mobile (ARCEP, 2025).', href: '/simulateur', tone: 'bg-line text-ink', chip: 'bg-ink/10', tilt: '3.5deg', lift: '0rem' },
+  { title: 'Sans savoir lire', text: 'Pictogrammes et voix en langue nationale : 51 % des adultes savent lire (2022).', href: '/orientation', tone: 'bg-leaf text-brand-900', chip: 'bg-brand-900/15', tilt: '-2.5deg', lift: '2rem' },
+  { title: 'Sans argent immédiat', text: 'L’urgence vitale d’abord : la carte QR guide les secours.', href: '/urgence', tone: 'bg-ink text-white ring-1 ring-white/15', chip: 'bg-white/15', tilt: '3deg', lift: '-0.5rem' },
+  { title: 'Sans compte', text: 'Orientation et lieux de soin ouverts, sans rien créer.', href: '/carte', tone: 'bg-sage text-brand-900', chip: 'bg-brand-900/15', tilt: '-3.5deg', lift: '1.5rem' },
 ];
 
 const JOURNAL = [
@@ -187,6 +182,7 @@ export default async function Home() {
   return (
     <>
       <header className="sticky top-0 z-30 bg-bg/90 backdrop-blur">
+        <span aria-hidden className="scroll-progress absolute inset-x-0 bottom-0 h-[3px] bg-leaf" />
         <div className={`${WRAP} flex flex-wrap items-center gap-3 py-3`}>
           <Logo />
           <nav aria-label={t('Sections de la page')} className="ml-6 hidden items-center gap-1 lg:flex">
@@ -205,7 +201,7 @@ export default async function Home() {
         </div>
       </header>
 
-      <I18nScope area="landing">
+      <I18nScope area="landingClient">
       <main id="contenu">
         {/* ── Hero : le slogan de la charte et l'onde Ganji ── */}
         <section className={`${WRAP} grid items-center gap-8 pt-6 pb-12 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] md:gap-12 md:pt-12 md:pb-20`}>
@@ -230,7 +226,7 @@ export default async function Home() {
           </div>
           {/* Onde en SVG (aucune image à télécharger : budget de 200 Ko) et quatre notifications
               qui flottent autour : ce que Ganji fait, avant même de lire. */}
-          <div aria-hidden className="relative">
+          <div aria-hidden className="hero-art relative">
             <Onde />
             {HERO_CHIPS.map((c, i) => (
               <span
@@ -255,9 +251,9 @@ export default async function Home() {
           <ul className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {NO_ACCOUNT.map((a) => (
               <li key={a.href}>
-                <Link prefetch={false} href={a.href} className={`flex aspect-[1/0.9] flex-col justify-between rounded-card p-4 transition-transform hover:-translate-y-0.5 active:scale-[0.98] md:aspect-[1.3/1] ${a.card}`}>
+                <Link prefetch={false} href={a.href} className={`group flex aspect-[1/0.9] flex-col justify-between rounded-card p-4 transition-transform hover:-translate-y-0.5 active:scale-[0.98] md:aspect-[1.3/1] ${a.card}`}>
                   <span className="flex items-start justify-between">
-                    <span className={`grid h-14 w-14 place-items-center rounded-full ${a.chip}`}>
+                    <span className={`grid h-14 w-14 place-items-center rounded-full transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 ${a.chip}`}>
                       <Pictogram name={a.icon} size={28} />
                     </span>
                     <ArrowUpRight size={22} aria-hidden className="opacity-60" />
@@ -270,14 +266,15 @@ export default async function Home() {
         </section>
 
         {/* ── Le problème, la réponse ── */}
-        <section aria-labelledby="h-probleme" className="below-fold bg-card py-16 md:py-24">
+        <section aria-labelledby="h-probleme" className="below-fold sheet bg-card py-16 md:py-24">
           <div className={`${WRAP} grid gap-10 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:gap-14`}>
             <div className="reveal space-y-5 md:sticky md:top-28 md:self-start">
+              <p className="eyebrow">{t('Le problème')}</p>
               <h2 id="h-probleme" className="text-[2.2rem] leading-tight font-medium sm:text-5xl">
                 {t('Les mêmes ruptures, chaque mois.')}
               </h2>
               <p className="max-w-[40ch] text-lg text-fg-muted">{t('Avec une maladie chronique, ces cinq problèmes reviennent sans cesse. Voici ce que Ganji change pour chacun.')}</p>
-              <div className="overflow-hidden rounded-card">
+              <div className="zoom-in overflow-hidden rounded-card">
                 <Illustration name="probleme-course" icon="warning" alt={t('Une famille court à moto-taxi avec une poche de sang vide pendant qu’un homme trouve une pharmacie fermée')} />
               </div>
             </div>
@@ -295,10 +292,10 @@ export default async function Home() {
                       <X size={18} aria-hidden className="mt-1 shrink-0" />
                       <span>
                         <span className="sr-only">{t('Aujourd’hui :')} </span>
-                        {t(p.before)}
+                        <span className="strike">{t(p.before)}</span>
                       </span>
                     </p>
-                    <p className="flex gap-2 rounded-2xl bg-brand-100 p-3 text-base font-medium text-brand-900">
+                    <p className="slide-in flex gap-2 rounded-2xl bg-brand-100 p-3 text-base font-medium text-brand-900">
                       <Check size={18} aria-hidden className="mt-1 shrink-0" />
                       <span>
                         <span className="sr-only">{t('Avec Ganji :')} </span>
@@ -313,45 +310,66 @@ export default async function Home() {
         </section>
 
         {/* ── Signature : l'histoire de Koffi ── */}
-        <section aria-labelledby="h-koffi" className={`${WRAP} py-16 md:py-24`}>
+        <section aria-labelledby="h-koffi" className="sheet bg-bg py-16 md:py-24">
+          <div className={WRAP}>
           <div className="reveal mb-10 max-w-[40rem] space-y-3">
+            <p className="eyebrow">{t('L’histoire de Koffi')}</p>
             <h2 id="h-koffi" className="text-[2.2rem] leading-tight font-medium sm:text-5xl">
               {t('Koffi a besoin de plaquettes demain.')}
             </h2>
             <p className="text-lg text-fg-muted">{t('Suivez sa demande, de l’hématologue au donneur. À une étape, c’est vous qui répondez.')}</p>
           </div>
           <KoffiStory />
+          </div>
         </section>
 
-        {/* ── Ce que Ganji permet : mosaïque de neuf services ── */}
-        <section id="services" aria-labelledby="h-services" className="below-fold scroll-mt-20 bg-card py-16 md:py-24">
+        {/* ── Ce que Ganji permet : rail d'illustrations, la carte survolée s'ouvre ── */}
+        <section id="services" aria-labelledby="h-services" className="below-fold sheet scroll-mt-20 bg-brand-100 py-16 md:py-24 dark:bg-brand-950">
           <div className={WRAP}>
-            <h2 id="h-services" className="reveal mb-8 max-w-[18ch] text-[2.2rem] leading-tight font-medium sm:text-5xl">
-              {t('Tout ce qui touche à la santé, au même endroit.')}
-            </h2>
-            <ul className="grid gap-3 md:grid-cols-6">
-              {SERVICES.map((s) => (
-                <li key={s.key} className={`reveal ${s.span}`}>
-                  <Link prefetch={false} href={s.href} className={`group flex h-full flex-col overflow-hidden rounded-card transition-transform hover:-translate-y-0.5 ${s.tone} ${s.tone.includes('bg-card') ? 'ring-1 ring-border' : ''}`}>
-                    <Illustration name={`service-${s.key}`} icon={s.icon} alt="" frame={s.frame} sizes="(min-width: 768px) 33vw, 100vw" />
-                    <span className="flex flex-1 flex-col gap-1 p-5">
-                      <span className="font-display flex items-center justify-between gap-2 text-xl font-medium">
-                        {t(s.title)}
-                        <ArrowUpRight size={20} aria-hidden className="opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            <div className="reveal mb-10 space-y-4 text-center">
+              <p className="eyebrow">{t('Services')}</p>
+              <h2 id="h-services" className="mx-auto max-w-[18ch] text-[2.2rem] leading-tight font-medium sm:text-5xl">
+                {t('Tout ce qui touche à la santé, au même endroit.')}
+              </h2>
+              <p className="mx-auto max-w-[44ch] text-lg text-fg-muted">{t('Neuf services, un seul carnet.')}</p>
+            </div>
+            <ServiceRail label={t('Les neuf services')}>
+              {SERVICES.map((s, i) => (
+                <li key={s.key} data-i={i} data-open={i === 0 ? '' : undefined} className="svc-item">
+                  <Link prefetch={false} href={s.href} className="svc-link group relative block h-full overflow-hidden rounded-card bg-brand-900 text-white">
+                    <span className="svc-img absolute inset-0">
+                      <Illustration name={`service-${s.key}`} icon={s.icon} alt="" frame="h-full" position={s.pos} sizes="(min-width: 768px) 600px, 82vw" />
+                    </span>
+                    <span aria-hidden className="svc-scrim absolute inset-0" />
+                    <span aria-hidden className="svc-mini absolute inset-x-0 bottom-5 flex-col items-center gap-3">
+                      <span className="grid h-10 w-10 place-items-center rounded-full bg-white text-brand-900">
+                        <Pictogram name={s.icon} size={18} />
                       </span>
-                      <span className="text-base">{t(s.text)}</span>
+                      <span className="font-display rotate-180 text-base font-medium whitespace-nowrap [writing-mode:vertical-rl]">{t(s.title)}</span>
+                    </span>
+                    <span className="svc-full absolute bottom-0 left-0 flex max-w-full flex-col gap-2 p-6">
+                      <span className="grid h-11 w-11 place-items-center rounded-full bg-leaf text-brand-900">
+                        <Pictogram name={s.icon} size={20} />
+                      </span>
+                      <span className="font-display text-2xl font-medium">{t(s.title)}</span>
+                      <span className="text-base text-white/90">{t(s.text)}</span>
+                      <span className="mt-1 inline-flex items-center gap-2 text-sm font-semibold">
+                        {t('Découvrir')} <ArrowRight size={16} aria-hidden className="transition-transform group-hover:translate-x-1" />
+                      </span>
                     </span>
                   </Link>
                 </li>
               ))}
-            </ul>
+            </ServiceRail>
           </div>
         </section>
 
         {/* ── Pour chacun : un onglet par profil, essai en un clic ── */}
-        <section id="pour-qui" aria-labelledby="h-pour-qui" className={`below-fold ${WRAP} scroll-mt-20 py-16 md:py-24`}>
+        <section id="pour-qui" aria-labelledby="h-pour-qui" className="below-fold sheet scroll-mt-20 bg-bg py-16 md:py-24">
+          <div className={WRAP}>
           <div className="reveal mb-8 grid items-center gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,0.75fr)] md:gap-12">
             <div className="space-y-3">
+              <p className="eyebrow">{t('Profils')}</p>
               <h2 id="h-pour-qui" className="text-[2.2rem] leading-tight font-medium sm:text-5xl">
                 {t('Pensé pour chacun.')}
               </h2>
@@ -360,60 +378,95 @@ export default async function Home() {
             <Illustration name="hero-communaute" icon="people" alt="" sizes="(min-width: 768px) 36vw, 90vw" className="mx-auto max-w-[440px]" />
           </div>
           <PersonaTabs personas={PERSONAS.map((x) => ({ ...x, name: t(x.name), role: t(x.role), need: t(x.need), benefits: x.benefits.map((b) => t(b)) }))} available={Object.fromEntries(PERSONAS.map((p) => [p.key, hasIllustration(`persona-${p.key}`)]))} />
-        </section>
-
-        {/* ── Comment ça marche : trois gestes, dans l'ordre ── */}
-        <section id="comment" aria-labelledby="h-comment" className="below-fold scroll-mt-20 bg-card py-16 md:py-24">
-          <div className={WRAP}>
-            <h2 id="h-comment" className="reveal mb-10 text-[2.2rem] leading-tight font-medium sm:text-5xl">
-              {t('Trois gestes pour commencer.')}
-            </h2>
-            <ol className="grid gap-8 md:grid-cols-3 md:gap-6">
-              {STEPS.map((s, i) => (
-                <li key={s.name} className="reveal space-y-4">
-                  <div className="overflow-hidden rounded-[8%]">
-                    <Illustration name={s.name} icon={s.icon} alt="" sizes="(min-width: 768px) 30vw, 90vw" />
-                  </div>
-                  <h3 className="flex items-center gap-3 text-2xl font-medium">
-                    <span aria-hidden className="font-display grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-900 text-lg text-white">
-                      {i + 1}
-                    </span>
-                    {t(s.title)}
-                  </h3>
-                  <p className="text-lg text-fg-muted">{t(s.text)}</p>
-                </li>
-              ))}
-            </ol>
           </div>
         </section>
 
-        {/* ── La règle des 5 sans : un seul bloc Forêt sur la page ── */}
-        <section aria-labelledby="h-5sans" className="below-fold bg-brand-900 text-white">
-          <div className="motif-foret py-16 md:py-24 [&_:focus-visible]:!outline-leaf">
-            <div className={WRAP}>
-              <h2 id="h-5sans" className="reveal mb-3 text-[2.2rem] leading-tight font-medium sm:text-5xl">
-                {t('Utile même sans…')}
+        {/* ── Comment ça marche : trois étapes sur une route qui se trace au défilement ── */}
+        <section id="comment" aria-labelledby="h-comment" className="below-fold sheet road-section scroll-mt-20 overflow-hidden bg-card pt-16 pb-44 md:pt-24 md:pb-52">
+          <div className={WRAP}>
+            <div className="reveal mb-10 space-y-4">
+              <p className="eyebrow">{t('Parcours')}</p>
+              <h2 id="h-comment" className="text-[2.2rem] leading-tight font-medium sm:text-5xl">
+                {t('Trois gestes pour commencer.')}
               </h2>
-              <p className="reveal mb-10 max-w-[44ch] text-lg text-white">{t('Ganji est conçu pour la personne la plus éloignée du numérique, pas pour l’usager connecté des villes.')}</p>
-              <ul tabIndex={0} aria-label={t('Les cinq situations, à faire défiler')} className="-mx-4 flex snap-x scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 xl:grid-cols-5">
-                {FIVE_WITHOUT.map((f) => (
-                  <li key={t(f.title)} className="reveal w-[78%] shrink-0 snap-start rounded-card bg-brand-700 p-5 md:w-auto">
-                    <span className="grid h-12 w-12 place-items-center rounded-full bg-leaf text-brand-900">
-                      <Pictogram name={f.icon} size={22} />
-                    </span>
-                    <h3 className="mt-4 text-xl font-medium">{t(f.title)}</h3>
-                    <p className="mt-2 text-base leading-relaxed text-white">{t(f.text)}</p>
+            </div>
+            <div className="relative">
+              {/* La route court sous les cartes et remonte derrière leur bas, d'un bord de l'écran à l'autre. */}
+              <svg aria-hidden viewBox="0 0 1440 560" preserveAspectRatio="xMidYMid slice" className="pointer-events-none absolute -bottom-[250px] left-1/2 h-[560px] w-screen -translate-x-1/2">
+                <path d={ROAD} fill="none" stroke="var(--color-leaf)" strokeWidth="46" strokeLinecap="round" />
+                <path className="road-progress" pathLength={1} d={ROAD} fill="none" stroke="var(--color-brand-500)" strokeWidth="46" strokeLinecap="round" />
+                <path d={ROAD} fill="none" stroke="#fff" strokeWidth="2.5" strokeDasharray="10 12" />
+                <g className="road-marker">
+                  <circle r="19" fill="#fff" stroke="var(--color-brand-900)" strokeWidth="5" />
+                  <circle r="7" fill="var(--color-brand-900)" />
+                </g>
+              </svg>
+              <ol tabIndex={0} aria-label={t('Les trois étapes, à faire défiler')} className="relative -mx-4 flex snap-x scroll-px-4 gap-4 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0">
+                {STEPS.map((s, i) => (
+                  <li
+                    key={s.name}
+                    className={`reveal flex w-[80%] shrink-0 snap-start flex-col rounded-card p-5 backdrop-blur-md md:w-auto ${i === STEPS.length - 1 ? 'bg-leaf text-brand-900' : 'bg-card/65 ring-1 ring-border'}`}
+                  >
+                    <h3 className="font-display text-2xl leading-tight font-medium">{t(s.title)}</h3>
+                    <p className={`mt-2 text-base ${i === STEPS.length - 1 ? 'text-brand-900' : 'text-fg-muted'}`}>{t(s.text)}</p>
+                    <div className="zoom-in mt-5 overflow-hidden rounded-[8%]">
+                      <Illustration name={s.name} icon={s.icon} alt="" sizes="(min-width: 768px) 30vw, 75vw" />
+                    </div>
+                    <p className="mt-5 flex items-center justify-between text-sm font-semibold tracking-wide uppercase">
+                      {t('Étape {n}', { n: `0${i + 1}` })} <Plus size={16} aria-hidden />
+                    </p>
                   </li>
                 ))}
-              </ul>
-              <p className="reveal mt-8 max-w-[60ch] text-lg text-white">{t('Et plus de 12 000 relais communautaires servent de point d’accès à ceux qui n’ont pas de téléphone.')}</p>
+              </ol>
             </div>
           </div>
         </section>
 
+        {/* ── La règle des 5 sans : cartes de couleur inclinées, chacune mène à l'outil concerné ── */}
+        <section id="inclusion" aria-labelledby="h-5sans" className="below-fold sheet scroll-mt-20 bg-bg py-16 md:py-24">
+          <div className={WRAP}>
+            <div className="reveal mb-12 flex items-start justify-between gap-6 md:mb-16">
+              <div className="max-w-[42rem] min-w-0 flex-1 space-y-4">
+                <p className="eyebrow">{t('Inclusion')}</p>
+                <h2 id="h-5sans" className="text-[2.6rem] leading-[1.05] font-medium sm:text-6xl">
+                  {t('Utile même sans…')}
+                </h2>
+                <p className="text-lg text-fg-muted">{t('Ganji est conçu pour la personne la plus éloignée du numérique, pas pour l’usager connecté des villes.')}</p>
+              </div>
+              <a href="#confiance" aria-label={t('Section suivante')} className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-brand-900 text-white transition-transform hover:translate-y-0.5">
+                <ArrowDown size={20} aria-hidden />
+              </a>
+            </div>
+            <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5 lg:gap-0 lg:px-2">
+              {FIVE_WITHOUT.map((f, i) => (
+                <li key={f.href} className="tilt-card lg:-mx-1" style={{ '--tilt': f.tilt, '--lift': f.lift } as React.CSSProperties}>
+                  <Link prefetch={false} href={f.href} className={`flex h-full min-h-[15rem] flex-col rounded-[1.75rem] p-5 ${f.tone}`}>
+                    <span className="flex items-start justify-between">
+                      <span className={`grid h-10 w-10 place-items-center rounded-full text-sm font-semibold ${f.chip}`}>0{i + 1}</span>
+                      <ArrowUpRight size={22} aria-hidden />
+                    </span>
+                    <span className="mt-auto pt-10">
+                      <span className="font-display block text-xl leading-tight font-medium">{t(f.title)}</span>
+                      <span className="mt-2 block text-base leading-snug">{t(f.text)}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="reveal mt-14 flex max-w-[60ch] items-center gap-3 text-lg text-fg-muted">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-100 text-brand-900">
+                <Pictogram name="people" size={20} />
+              </span>
+              {t('Et plus de 12 000 relais communautaires servent de point d’accès à ceux qui n’ont pas de téléphone.')}
+            </p>
+          </div>
+        </section>
+
         {/* ── Confiance : un vrai journal d'accès ── */}
-        <section id="confiance" aria-labelledby="h-confiance" className={`below-fold ${WRAP} scroll-mt-20 grid gap-10 py-16 md:grid-cols-2 md:items-center md:gap-14 md:py-24`}>
+        <section id="confiance" aria-labelledby="h-confiance" className="below-fold sheet scroll-mt-20 bg-card py-16 md:py-24">
+          <div className={`${WRAP} grid gap-10 md:grid-cols-2 md:items-center md:gap-14`}>
           <div className="reveal space-y-6">
+            <p className="eyebrow">{t('Confiance')}</p>
             <h2 id="h-confiance" className="text-[2.2rem] leading-tight font-medium sm:text-5xl">
               {t('Personne ne lit votre carnet sans votre accord.')}
             </h2>
@@ -429,15 +482,15 @@ export default async function Home() {
             </ul>
           </div>
           <div className="reveal relative">
-            <div className="w-2/3 overflow-hidden rounded-[8%] md:w-3/5">
+            <div className="zoom-in w-2/3 overflow-hidden rounded-[8%] md:w-3/5">
               <Illustration name="confiance-journal" icon="shield" alt="" sizes="(min-width: 768px) 30vw, 60vw" />
             </div>
             <figure className="relative -mt-16 ml-auto w-[92%] rounded-card bg-card p-4 shadow-[var(--shadow-soft)] md:-mt-24 md:w-4/5">
               <figcaption className="mb-3 text-sm font-semibold text-fg-muted">{t('Journal d’accès de Koffi')}</figcaption>
               <ul className="space-y-2">
                 {JOURNAL.map((j) => (
-                  <li key={t(j.text)} className={`flex gap-3 rounded-2xl px-3 py-2 text-base ${j.tone === 'denied' ? 'bg-ocre-100 text-ocre-700' : 'bg-bg'}`}>
-                    {j.tone === 'denied' ? <ShieldX size={18} aria-hidden className="mt-1 shrink-0" /> : <Check size={18} aria-hidden className="mt-1 shrink-0 text-brand-500" />}
+                  <li key={t(j.text)} className={`slide-in flex gap-3 rounded-2xl px-3 py-2 text-base ${j.tone === 'denied' ? 'bg-ocre-100 text-ocre-700' : 'bg-bg'}`}>
+                    {j.tone === 'denied' ? <span className="pulse-ring mt-0.5 grid h-6 w-6 shrink-0 place-items-center"><ShieldX size={18} aria-hidden /></span> : <Check size={18} aria-hidden className="mt-1 shrink-0 text-brand-500" />}
                     <span className="min-w-0">
                       <span className="block font-medium">{t(j.text)}</span>
                       <span className="block text-sm">{t(j.when)}</span>
@@ -447,10 +500,12 @@ export default async function Home() {
               </ul>
             </figure>
           </div>
+          </div>
         </section>
 
         {/* ── Appel final ── */}
-        <section aria-labelledby="h-cta" className={`below-fold ${WRAP} pb-16 md:pb-24`}>
+        <section aria-labelledby="h-cta" className="below-fold sheet bg-bg py-16 md:py-24">
+          <div className={WRAP}>
           {/* Fond de la carte = ciel Brume de l'illustration, pour qu'elle s'y fonde. */}
           <div className="reveal overflow-hidden rounded-card bg-[#e0ede5] [&_:focus-visible]:!outline-brand-900">
             <div className="flex flex-wrap items-end justify-between gap-6 p-6 pb-2 md:p-10 md:pb-0">
@@ -469,7 +524,8 @@ export default async function Home() {
                 </Link>
               </div>
             </div>
-            <Illustration name="cta-ensemble" icon="people" alt="" frame="aspect-[16/9] md:aspect-[12/5]" position="50% 100%" sizes="(min-width: 1152px) 1152px, 100vw" />
+            <Illustration name="cta-ensemble" icon="people" alt="" className="zoom-in" frame="aspect-[16/9] md:aspect-[12/5]" position="50% 100%" sizes="(min-width: 1152px) 1152px, 100vw" />
+          </div>
           </div>
         </section>
       </main>
