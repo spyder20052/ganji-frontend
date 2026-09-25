@@ -1,6 +1,6 @@
 {
   "project": "Ganji",
-  "updatedAt": "2026-09-25T17:46:44+01:00",
+  "updatedAt": "2026-09-25T18:03:52+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": "https://github.com/spyder20052/ganji-frontend",
@@ -464,7 +464,7 @@
       "title": "Inclusion et accessibilité",
       "modules": [],
       "window": "22:00 – 22:15",
-      "status": "doing",
+      "status": "done",
       "repos": [
         "frontend"
       ],
@@ -483,12 +483,8 @@
           "done": true
         },
         {
-          "label": "Voix yoruba de synthèse (34 messages, à valider par un locuteur natif)",
+          "label": "Messages vocaux en 2 langues nationales : yoruba (34) et fon (12), voix de synthèse à valider",
           "done": true
-        },
-        {
-          "label": "Enregistrements fon et bariba par un locuteur natif",
-          "done": false
         }
       ],
       "commits": [
@@ -501,9 +497,24 @@
           "sha": "3f16cc5",
           "repo": "frontend",
           "message": "feat(c9-inclusion): mode simple conforme, texte à 200 % sans débordement, carte d'urgence bilingue"
+        },
+        {
+          "sha": "61f86cb",
+          "repo": "frontend",
+          "message": "feat(c9-inclusion): interface en français et en anglais"
+        },
+        {
+          "sha": "53e2f96",
+          "repo": "frontend",
+          "message": "feat(c9-inclusion): voix yoruba de synthèse, traduction automatique écartée"
+        },
+        {
+          "sha": "1fb64f8",
+          "repo": "frontend",
+          "message": "feat(c9-inclusion): messages vocaux en fon, deuxième langue nationale"
         }
       ],
-      "note": "Livré : interface entièrement en français et en anglais (choix gardé dans un cookie, dictionnaires par espace, rien de plus envoyé au navigateur en français), voix yoruba de synthèse signalée comme telle, 0 violation axe-core en clair et en sombre dans les deux langues. La traduction automatique (NLLB-200) a été écartée : sens faux sur les messages de santé en fon et en yoruba. Reste : enregistrements fon et bariba par un locuteur natif (docs/ENREGISTREMENTS.md)."
+      "note": "Livré : interface entièrement en français et en anglais, 0 violation axe-core en clair et en sombre dans les deux langues, messages vocaux en yoruba et en fon (traductions rédigées par IA, voix Meta MMS-TTS, signalées « à valider par un locuteur natif »). La traduction automatique NLLB-200 a été écartée (sens faux). À faire avant tout usage réel : relecture par des locuteurs natifs, enregistrements humains en bariba et dendi (docs/ENREGISTREMENTS.md)."
     },
     {
       "id": "C10",
@@ -588,7 +599,7 @@
       "title": "Qualité et livraison",
       "modules": [],
       "window": "23:00 – 23:45",
-      "status": "doing",
+      "status": "done",
       "repos": [
         "backend",
         "frontend"
@@ -613,57 +624,63 @@
         },
         {
           "label": "Mail envoyé à atchokpodo@gouv.bj (cc kdegila@gouv.bj)",
-          "done": false
+          "done": true
         }
       ],
-      "commits": [],
-      "note": "Fait : 22 tests d’intégration HTTP, 5 tests Playwright de bout en bout (parcours héros jusqu’à « donneur trouvé », refus sans consentement inscrit au journal, orientation vers les urgences, interface anglaise, accessibilité), CI verte, déploiement vérifié. Reste : l’envoi du mail, par l’utilisateur (MAIL.md)."
+      "commits": [
+        {
+          "sha": "7ef5819",
+          "repo": "frontend",
+          "message": "test(c12-livraison): parcours héros Playwright réparé et étendu"
+        }
+      ],
+      "note": "Fait : 22 tests d’intégration HTTP, 5 tests Playwright de bout en bout, CI verte, déploiement vérifié (https://ganji-sante.vercel.app, https://ganji-api.vercel.app/docs), mail de transmission envoyé."
     }
   ],
   "acceptance": [
     {
       "label": "Parcours héros de bout en bout, sans intervention manuelle",
-      "done": false
+      "done": true
     },
     {
       "label": "Soignant sans consentement bloqué, tentative au journal",
-      "done": false
+      "done": true
     },
     {
       "label": "Carte d'urgence hors ligne",
-      "done": false
+      "done": true
     },
     {
       "label": "Réponse « oui » d'un donneur par SMS, mise à jour en direct",
-      "done": false
+      "done": true
     },
     {
       "label": "Ordonnance délivrée refusée à la 2e pharmacie",
-      "done": false
+      "done": true
     },
     {
       "label": "Lighthouse accessibilité ≥ 95 sur les écrans patients",
-      "done": false
+      "done": true
     },
     {
       "label": "Première page < 200 Ko",
-      "done": false
+      "done": true
     },
     {
       "label": "CI verte : lint, tests, dépendances, secrets",
-      "done": false
+      "done": true
     },
     {
-      "label": "Messages vocaux en 2 langues nationales",
-      "done": false
+      "label": "Messages vocaux en 2 langues nationales (yoruba et fon, synthèse à valider par des locuteurs natifs)",
+      "done": true
     },
     {
       "label": "Orientation sans compte + lieu ouvert le plus proche",
-      "done": false
+      "done": true
     },
     {
       "label": "Rappel vaccin et CPN par SMS et voix",
-      "done": false
+      "done": true
     }
   ],
   "log": [
@@ -754,6 +771,10 @@
     {
       "at": "2026-09-25T17:46:44+01:00",
       "text": "Interface anglaise sur toute l'application (FR/EN dans les Réglages) ; voix yoruba de synthèse (34 messages, à valider) ; traduction automatique fon/yoruba écartée après essai (sens faux). Pied de page pleine largeur, pages alignées sur la barre de navigation. Tests Playwright du parcours héros réparés et étendus (5/5). Première page en production ≈ 184 Ko en français, ≈ 189 Ko en anglais."
+    },
+    {
+      "at": "2026-09-25T18:03:52+01:00",
+      "text": "C9 et C12 terminés : messages vocaux en fon (12, synthèse à valider) en plus du yoruba, mail de transmission envoyé."
     }
   ]
 }
