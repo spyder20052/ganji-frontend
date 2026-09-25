@@ -5,6 +5,7 @@
 // - Cible : JavaScript initial < 100 Ko. React 19 et le runtime de Next.js pèsent à eux seuls
 //   environ 100 Ko compressés : la cible est affichée, et seul un dépassement de 120 Ko
 //   (régression du code de l'application) bloque.
+import { spawn } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
@@ -16,7 +17,7 @@ const JS_GUARD = 120 * 1024;
 
 const manifestPath = join(NEXT, 'app-build-manifest.json');
 const htmlPath = join(NEXT, 'server/app/index.html');
-if (!existsSync(manifestPath) || !existsSync(htmlPath)) {
+if (!existsSync(manifestPath)) {
   console.error('Lancer `npm run build` avant ce contrôle.');
   process.exit(1);
 }
@@ -28,7 +29,26 @@ const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
 const assets = [...new Set([...(manifest.pages['/page'] ?? []), ...(manifest.pages['/layout'] ?? [])])];
 const js = assets.filter((f) => f.endsWith('.js')).reduce((n, f) => n + gz(join(NEXT, f)), 0);
 const css = assets.filter((f) => f.endsWith('.css')).reduce((n, f) => n + gz(join(NEXT, f)), 0);
-const html = readFileSync(htmlPath, 'utf8');
+// Page rendue à la demande (la langue de l'interface vient d'un cookie) : on la demande au serveur
+// de production, en français, la langue par défaut. Page statique : on lit le fichier généré.
+async function firstPageHtml() {
+  if (existsSync(htmlPath)) return readFileSync(htmlPath, 'utf8');
+  const port = 3999;
+  const server = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '-p', String(port)], { stdio: 'ignore' });
+  try {
+    for (let i = 0; i < 120; i++) {
+      try {
+        const res = await fetch(`http://localhost:${port}/`);
+        if (res.ok) return await res.text();
+      } catch {}
+      await new Promise((r) => setTimeout(r, 500));
+    }
+    throw new Error('Serveur de production injoignable pour mesurer la première page.');
+  } finally {
+    server.kill();
+  }
+}
+const html = await firstPageHtml();
 const fonts = [...new Set(html.match(/\/_next\/static\/media\/[\w.-]+\.woff2/g) ?? [])];
 // Les polices woff2 sont déjà compressées : on compte leur taille brute.
 const fontBytes = fonts.reduce((n, f) => n + readFileSync(join(NEXT, f.replace('/_next/', ''))).length, 0);
