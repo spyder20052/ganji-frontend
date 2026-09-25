@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, Check, LogIn, ShieldX, X } from 'lucide-react';
 import { ListenButton } from '@/components/ListenButton';
+import { GanjiSymbol } from '@/components/GanjiSymbol';
 import { Logo } from '@/components/Logo';
 import { Pictogram } from '@/components/Pictogram';
 import { PrefsMenu } from '@/components/PrefsMenu';
@@ -162,33 +163,21 @@ const JOURNAL = [
   { tone: 'ok', text: 'La pharmacie Camp Guézo a délivré votre ordonnance', when: 'Aujourd’hui, 9 h 30' },
 ] as const;
 
-const FOOTER = [
-  {
-    title: 'Sans compte',
-    links: [
-      ['/orientation', 'J’ai un symptôme'],
-      ['/urgence', 'Urgence'],
-      ['/medicaments', 'Trouver un médicament'],
-      ['/carte', 'Lieux de soin'],
-    ],
-  },
-  {
-    title: 'Démonstration',
-    links: [
-      ['/demo', 'Comptes de démo'],
-      ['/simulateur', 'Simulateur SMS'],
-      ['/chantier', 'Suivi du chantier'],
-    ],
-  },
-  {
-    title: 'Projet',
-    links: [
-      ['https://github.com/spyder20052/ganji-frontend', 'Code de l’application'],
-      ['https://github.com/spyder20052/ganji-backend', 'Code de l’API'],
-      ['https://ganji-api.vercel.app/docs', 'Documentation de l’API'],
-    ],
-  },
+/** Pied de page : liens rapides (deux colonnes), liens du projet (externes), garanties vérifiées. */
+const QUICK_LINKS = [
+  ['/medicaments', 'Médicaments'],
+  ['/demo', 'Comptes de démo'],
+  ['/carte', 'Lieux de soin'],
+  ['/simulateur', 'Simulateur SMS'],
+  ['/alertes', 'Alertes'],
+  ['/chantier', 'Suivi du chantier'],
 ] as const;
+const PROJECT_LINKS = [
+  ['https://github.com/spyder20052/ganji-frontend', 'Code de l’app'],
+  ['https://github.com/spyder20052/ganji-backend', 'Code de l’API'],
+  ['https://ganji-api.vercel.app/docs', 'Doc de l’API'],
+] as const;
+const PROOFS = ['WCAG 2.2 AA', 'Première page < 200 Ko', 'Utilisable hors ligne'];
 
 // Pas de préchargement des pages liées : en 2G, chaque Ko compte (budget de la première page < 200 Ko).
 export default function Home() {
@@ -396,7 +385,7 @@ export default function Home() {
 
         {/* ── La règle des 5 sans : un seul bloc Forêt sur la page ── */}
         <section aria-labelledby="h-5sans" className="below-fold bg-brand-900 text-white">
-          <div className="motif-foret py-16 md:py-24">
+          <div className="motif-foret py-16 md:py-24 [&_:focus-visible]:!outline-leaf">
             <div className={WRAP}>
               <h2 id="h-5sans" className="reveal mb-3 text-[2.2rem] leading-tight font-medium sm:text-5xl">
                 Utile même sans…
@@ -482,38 +471,86 @@ export default function Home() {
       </main>
       <DeferredImages />
 
-      <footer className="below-fold border-t border-border bg-card">
-        <div className={`${WRAP} grid gap-10 py-12 md:grid-cols-[1.2fr_repeat(3,1fr)]`}>
-          <div className="space-y-3">
-            <Logo />
-            <p className="font-display text-xl font-medium">Votre santé, suivie partout.</p>
-            <p className="max-w-[32ch] text-base text-fg-muted">Plateforme nationale de suivi des patients, prototype pour le challenge e-Santé du MTDI.</p>
-          </div>
-          {FOOTER.map((col) => (
-            <nav key={col.title} aria-label={col.title} className="space-y-3">
-              <h2 className="text-base font-semibold">{col.title}</h2>
-              <ul className="space-y-2">
-                {col.links.map(([href, label]) => (
-                  <li key={href}>
-                    {href.startsWith('http') ? (
-                      <a href={href} className="text-base text-fg-muted underline-offset-4 hover:text-fg hover:underline" rel="noopener">
-                        {label}
-                      </a>
-                    ) : (
-                      <Link prefetch={false} href={href} className="text-base text-fg-muted underline-offset-4 hover:text-fg hover:underline">
+      {/* Pied de page : carte Forêt tramée, symbole Ganji à cheval sur son bord (il respire), la
+          marque au centre, l'aide sans compte, les liens de part et d'autre. */}
+      <footer className="below-fold pt-20 pb-4">
+        <div className={WRAP}>
+          <div className="motif-foret relative rounded-[2.5rem] px-5 pt-20 pb-5 text-white md:px-10 md:pt-24 [&_:focus-visible]:!outline-leaf">
+            <GanjiSymbol size={144} color="#5FD08F" className="onde-heart absolute top-0 left-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 md:h-36 md:w-36" />
+            <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-end md:gap-8">
+              <div className="text-center md:order-2">
+                <p className="font-display text-[3.4rem] leading-none font-medium md:text-7xl">Ganji</p>
+                <p className="mt-3 text-lg text-sage">Votre santé, suivie partout.</p>
+                <div className="mt-6 flex flex-wrap justify-center gap-3">
+                  <Link prefetch={false} href="/orientation" className="btn bg-leaf !pr-2 text-brand-900 hover:bg-leaf-strong">
+                    J’ai un symptôme
+                    <span className="grid h-9 w-9 place-items-center rounded-full bg-brand-900 text-leaf">
+                      <ArrowRight size={18} aria-hidden />
+                    </span>
+                  </Link>
+                  <Link prefetch={false} href="/urgence" className="btn bg-brand-700 !pr-2 text-white ring-1 ring-white/20">
+                    Urgence
+                    <span className="grid h-9 w-9 place-items-center rounded-full bg-danger-600 text-white">
+                      <ArrowRight size={18} aria-hidden />
+                    </span>
+                  </Link>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-6 md:order-1">
+                <div className="space-y-1.5">
+                  <h2 className="font-display text-xl font-medium">Sans internet</h2>
+                  <p className="text-base text-sage">
+                    Menu <span className="font-semibold whitespace-nowrap text-white">*229*25#</span>
+                  </p>
+                  <p className="text-base text-sage">SMS et appel vocal</p>
+                  <p className="text-base text-sage">
+                    Urgence : <span className="font-semibold text-white">118</span>
+                  </p>
+                </div>
+                <nav aria-label="Le projet" className="self-end">
+                  <ul className="space-y-1.5">
+                    {PROJECT_LINKS.map(([href, label]) => (
+                      <li key={href}>
+                        <a href={href} rel="noopener" className="inline-flex items-center gap-1 text-base underline-offset-4 hover:underline">
+                          {label} <ArrowUpRight size={16} aria-hidden className="shrink-0 text-leaf" />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </div>
+              <nav aria-labelledby="h-aller-vite" className="md:order-3 md:justify-self-end">
+                <h2 id="h-aller-vite" className="font-display mb-1.5 text-xl font-medium">
+                  Aller vite à
+                </h2>
+                <ul className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+                  {QUICK_LINKS.map(([href, label]) => (
+                    <li key={href}>
+                      <Link prefetch={false} href={href} className="text-base text-sage underline-offset-4 hover:text-white hover:underline">
                         {label}
                       </Link>
-                    )}
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+            <div className="mt-10 flex flex-wrap items-center justify-between gap-4">
+              <ul aria-label="Garanties vérifiées" className="flex flex-wrap gap-2">
+                {PROOFS.map((t) => (
+                  <li key={t} className="flex items-center gap-1.5 rounded-full bg-brand-700 py-1 pr-3 pl-1.5 text-sm font-semibold">
+                    <span className="grid h-5 w-5 place-items-center rounded-full bg-leaf text-brand-900">
+                      <Check size={13} aria-hidden />
+                    </span>
+                    {t}
                   </li>
                 ))}
               </ul>
-            </nav>
-          ))}
-        </div>
-        <div className={WRAP}>
-          <div className="flex flex-wrap justify-between gap-2 border-t border-border py-5 text-sm text-fg-muted">
-            <p>Ganji ne remplace pas un avis médical. Urgence : sapeurs-pompiers 118.</p>
-            <p>Données personnelles fictives, pour la démonstration.</p>
+              <p className="flex flex-wrap gap-x-4 gap-y-1 rounded-2xl bg-surface px-4 py-2 text-sm text-brand-900">
+                <span>Données fictives</span>
+                <span>Ne remplace pas un avis médical</span>
+                <span>© 2026 Ganji</span>
+              </p>
+            </div>
           </div>
         </div>
       </footer>
