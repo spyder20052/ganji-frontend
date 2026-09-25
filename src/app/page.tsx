@@ -272,7 +272,7 @@ export default function Home() {
               <h2 id="h-probleme" className="text-[2.2rem] leading-tight font-medium sm:text-5xl">
                 Les mêmes ruptures, chaque mois.
               </h2>
-              <p className="max-w-[40ch] text-lg text-fg-muted">Le patient au long cours les vit toutes. Ganji les règle une par une.</p>
+              <p className="max-w-[40ch] text-lg text-fg-muted">Avec une maladie chronique, ces cinq problèmes reviennent sans cesse. Voici ce que Ganji change pour chacun.</p>
               <div className="overflow-hidden rounded-card">
                 <Illustration name="probleme-course" icon="warning" alt="Une famille court à moto-taxi avec une poche de sang vide pendant qu’un homme trouve une pharmacie fermée" />
               </div>
