@@ -473,9 +473,9 @@ export default function Home() {
 
       {/* Pied de page : carte Forêt tramée, symbole Ganji à cheval sur son bord (il respire), la
           marque au centre, l'aide sans compte, les liens de part et d'autre. */}
-      <footer className="below-fold pt-20 pb-4">
-        <div className={WRAP}>
-          <div className="motif-foret relative rounded-[2.5rem] px-5 pt-20 pb-5 text-white md:px-10 md:pt-24 [&_:focus-visible]:!outline-leaf">
+      <footer className="below-fold pt-20">
+        <div className="motif-foret relative rounded-t-[2rem] pt-20 pb-6 text-white md:rounded-t-[3rem] md:pt-24 [&_:focus-visible]:!outline-leaf">
+          <div className={WRAP}>
             <GanjiSymbol size={144} color="#5FD08F" className="onde-heart absolute top-0 left-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 md:h-36 md:w-36" />
             <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-end md:gap-8">
               <div className="text-center md:order-2">
