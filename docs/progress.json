@@ -1,12 +1,12 @@
 {
   "project": "Ganji",
-  "updatedAt": "2026-09-24T20:16:04+01:00",
+  "updatedAt": "2026-09-25T01:16:18+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
-    "frontendRepo": null,
-    "backendRepo": null,
-    "app": null,
-    "apiDocs": null
+    "frontendRepo": "https://github.com/spyder20052/ganji-frontend",
+    "backendRepo": "https://github.com/spyder20052/ganji-backend",
+    "app": "https://ganji-sante.vercel.app",
+    "apiDocs": "https://ganji-api.vercel.app/docs"
   },
   "blockers": [
     {
@@ -21,14 +21,14 @@
       "title": "Compte GitHub non relié",
       "detail": "Connecter GitHub à Claude et autoriser github.com dans les domaines. Nécessaire pour le push initial et les pushs sur develop.",
       "owner": "Hub",
-      "open": true
+      "open": false
     },
     {
       "id": "vercel",
       "title": "Projets Vercel à créer",
       "detail": "Importer ganji-frontend et ganji-backend dans Vercel, ajouter Neon Postgres au backend, renseigner les variables d'environnement du fichier .env.example.",
       "owner": "Hub",
-      "open": true
+      "open": false
     }
   ],
   "chantiers": [
@@ -580,7 +580,7 @@
       "title": "Qualité et livraison",
       "modules": [],
       "window": "23:00 – 23:45",
-      "status": "todo",
+      "status": "doing",
       "repos": [
         "backend",
         "frontend"
@@ -589,7 +589,7 @@
       "items": [
         {
           "label": "Tests d'autorisation (IDOR, consentement)",
-          "done": false
+          "done": true
         },
         {
           "label": "Tests Playwright du parcours héros",
@@ -597,18 +597,19 @@
         },
         {
           "label": "SECURITY.md, ARCHITECTURE.md, README",
-          "done": false
+          "done": true
         },
         {
           "label": "Déploiement Vercel (2 projets)",
-          "done": false
+          "done": true
         },
         {
           "label": "Mail envoyé à atchokpodo@gouv.bj (cc kdegila@gouv.bj)",
           "done": false
         }
       ],
-      "commits": []
+      "commits": [],
+      "note": "Fait : 22 tests d'intégration HTTP (autorisations, IDOR, consentement, parcours héros) et couverture métier 64 % ; CI verte ; déploiement https://ganji-sante.vercel.app et https://ganji-api.vercel.app/docs vérifiés (parcours héros, double délivrance refusée, carte d'urgence hors ligne). Reste : sélecteurs du test Playwright à ajuster, envoi du mail par l'utilisateur."
     }
   ],
   "acceptance": [
@@ -733,6 +734,10 @@
     {
       "at": "2026-09-24T20:16:04+01:00",
       "text": "Refonte visuelle demandée : DA des références (fond menthe, vert pastel, ardoise-sarcelle, couleurs mesurées), Atkinson Hyperlegible Next variable, barre d'onglets flottante sur téléphone avec l'urgence au centre, accueils et écrans patients allégés (un mot par case, intros retirées de l'affichage mais lues par Écouter). Vérifié : 0 violation axe-core en clair et en sombre, texte à 200 % sans débordement, clavier, mouvement réduit."
+    },
+    {
+      "at": "2026-09-25T01:16:18+01:00",
+      "text": "Renommage en Ganji, identité visuelle de la charte intégrée, dépôts publics créés (develop), déploiement Vercel : ganji-sante.vercel.app et ganji-api.vercel.app (Neon Postgres). Vérifié en production : parcours héros de bout en bout, 2e pharmacie refusée (409), carte d'urgence hors ligne. CI verte sur develop."
     }
   ]
 }

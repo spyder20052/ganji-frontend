@@ -4,8 +4,8 @@
 
 | | |
 |---|---|
-| Application | [Lien] |
-| API et documentation Swagger | [Lien] · dépôt [`ganji-backend`](../../../ganji-backend) |
+| Application | **https://ganji-sante.vercel.app** · comptes de démo en un clic : [/demo](https://ganji-sante.vercel.app/demo) |
+| API et documentation Swagger | https://ganji-api.vercel.app/docs · dépôt [`ganji-backend`](https://github.com/spyder20052/ganji-backend) |
 | Suivi du chantier | `/chantier` dans l'application |
 | Cahier des charges | [`docs/CAHIER_DES_CHARGES.pdf`](docs/CAHIER_DES_CHARGES.pdf) · plan de conception [`docs/PLAN.md`](docs/PLAN.md) |
 
@@ -55,4 +55,4 @@ Next.js 15 (App Router, Server Components) + Tailwind CSS 4, PWA avec service wo
 
 ## Déploiement
 
-Projet Vercel séparé ; variable `BACKEND_URL` = URL du projet Vercel `ganji-backend`.
+Projet Vercel `ganji-sante` (framework Next.js déclaré dans `vercel.json`), branche de production `develop`, variable `BACKEND_URL=https://ganji-api.vercel.app`. Chaque push sur `develop` redéploie ; la CI (lint, typecheck, tests, build, budget de poids, audit, gitleaks, CodeQL) tourne sur GitHub Actions.
