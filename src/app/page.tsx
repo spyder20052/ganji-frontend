@@ -1,7 +1,8 @@
 import { Poppins } from 'next/font/google';
+import localFont from 'next/font/local';
 import Link from 'next/link';
 import { Fragment } from 'react';
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, Droplet, Heart, LogIn, ShieldX, X } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Check, Droplet, Heart, LogIn, ShieldX, X } from 'lucide-react';
 import { ListenButton } from '@/components/ListenButton';
 import { GanjiSymbol } from '@/components/GanjiSymbol';
 import { Logo } from '@/components/Logo';
@@ -21,6 +22,10 @@ import { ServiceRail } from './_landing/ServiceRail';
    déjà chargé par la mise en page). Préchargée sur cette page seulement. */
 const poppinsText = Poppins({ subsets: ['latin'], weight: ['400', '600'], variable: '--font-poppins-text', display: 'swap' });
 
+/* Titre du hero : Bricolage Grotesque Bold, taille optique 96, réduite aux lettres du titre (2,5 Ko,
+   scripts/polices/titre.sh). Ses pièges à encre et son approche serrée donnent du caractère au titre. */
+const titleFont = localFont({ src: './_landing/fonts/bricolage-titre.woff2', weight: '700', variable: '--font-titre', display: 'swap' });
+
 /* Conteneur commun : mêmes marges que la barre de navigation, sur toutes les sections. */
 const WRAP = 'mx-auto w-full max-w-6xl px-4';
 
@@ -31,12 +36,12 @@ const NAV = [
   { href: '#confiance', label: 'Confiance' },
 ];
 
-/** Notifications du hero : un service chacune, placées autour du symbole sans le couvrir. */
+/** Notifications du hero : un service chacune, en orbite autour du symbole, à un quart de tour l'une de l'autre. */
 const HERO_CHIPS = [
-  { icon: 'blood', label: 'Donneur trouvé', chip: 'bg-danger-600 text-white', x: -46, y: -78 },
-  { icon: 'listen', label: 'Rappel en bariba', chip: 'bg-leaf text-brand-900', x: 50, y: -44 },
-  { icon: 'pill', label: 'Ordonnance vérifiée', chip: 'bg-brand-500 text-white', x: -50, y: 46 },
-  { icon: 'offline', label: 'Carte d’urgence hors ligne', chip: 'bg-brand-900 text-white', x: 38, y: 80 },
+  { icon: 'blood', label: 'Donneur trouvé', chip: 'bg-danger-600 text-white', angle: -120 },
+  { icon: 'listen', label: 'Rappel en bariba', chip: 'bg-leaf text-brand-900', angle: -30 },
+  { icon: 'pill', label: 'Ordonnance vérifiée', chip: 'bg-brand-500 text-white', angle: 150 },
+  { icon: 'offline', label: 'Carte d’urgence hors ligne', chip: 'bg-brand-900 text-white', angle: 60 },
 ];
 
 const NO_ACCOUNT = [
@@ -172,11 +177,11 @@ const STEPS = [
 
 /** La règle des « 5 sans » ; les chiffres viennent du cahier des charges et de leurs sources. */
 const FIVE_WITHOUT = [
-  { art: 'sans-reseau', icon: 'offline', title: 'Sans réseau', text: 'Carnet, carte d’urgence et rappels restent consultables hors ligne.', href: '/app/carte-urgence', tone: 'bg-brand-900 text-white', chip: 'bg-white/15', tilt: '-3deg', lift: '2.5rem' },
-  { art: 'sans-smartphone', icon: 'phone', title: 'Sans smartphone', text: 'SMS, menu *229*25# et appel vocal. Les femmes ne sont que 22 % des abonnés à l’internet mobile (ARCEP, 2025).', href: '/simulateur', tone: 'bg-line text-ink', chip: 'bg-ink/10', tilt: '3.5deg', lift: '0rem' },
-  { art: 'sans-lire', icon: 'listen', title: 'Sans savoir lire', text: 'Pictogrammes et voix en langue nationale : 51 % des adultes savent lire (2022).', href: '/orientation', tone: 'bg-leaf text-brand-900', chip: 'bg-brand-900/15', tilt: '-2.5deg', lift: '2rem' },
-  { art: 'sans-argent', icon: 'care', title: 'Sans argent immédiat', text: 'L’urgence vitale d’abord : la carte QR guide les secours.', href: '/urgence', tone: 'bg-ink text-white ring-1 ring-white/15', chip: 'bg-white/15', tilt: '3deg', lift: '-0.5rem' },
-  { art: 'sans-compte', icon: 'no-account', title: 'Sans compte', text: 'Orientation et lieux de soin ouverts, sans rien créer.', href: '/carte', tone: 'bg-sage text-brand-900', chip: 'bg-brand-900/15', tilt: '-3.5deg', lift: '1.5rem' },
+  { art: 'sans-reseau', icon: 'offline', title: 'Sans réseau', text: 'Carnet, carte d’urgence et rappels restent consultables hors ligne.', href: '/app/carte-urgence' },
+  { art: 'sans-smartphone', icon: 'phone', title: 'Sans smartphone', text: 'SMS, menu *229*25# et appel vocal. Les femmes ne sont que 22 % des abonnés à l’internet mobile (ARCEP, 2025).', href: '/simulateur' },
+  { art: 'sans-lire', icon: 'listen', title: 'Sans savoir lire', text: 'Pictogrammes et voix en langue nationale : 51 % des adultes savent lire (2022).', href: '/orientation' },
+  { art: 'sans-argent', icon: 'care', title: 'Sans argent immédiat', text: 'L’urgence vitale d’abord : la carte QR guide les secours.', href: '/urgence' },
+  { art: 'sans-compte', icon: 'no-account', title: 'Sans compte', text: 'Orientation et lieux de soin ouverts, sans rien créer.', href: '/carte' },
 ];
 
 const JOURNAL = [
@@ -205,22 +210,24 @@ const PROOFS = ['WCAG 2.2 AA', 'Première page < 200 Ko', 'Utilisable hors ligne
 export default async function Home() {
   const t = await getT();
   return (
-    <div className={`${poppinsText.variable} landing-text`}>
+    <div className={`${poppinsText.variable} ${titleFont.variable} landing-text`}>
       <Intro />
-      <header className="sticky top-0 z-30 bg-bg/90 backdrop-blur">
+      {/* En-tête fondu dans le hero : même Forêt, rien ne le sépare du titre ; il garde ce fond en
+          descendant, et la barre de lecture Pousse apparaît sous lui. */}
+      <header className="sticky top-0 z-30 bg-brand-900 [&_:focus-visible]:!outline-leaf">
         <span aria-hidden className="scroll-progress absolute inset-x-0 bottom-0 h-[3px] bg-leaf" />
         <div className={`${WRAP} flex flex-wrap items-center gap-3 py-3`}>
-          <Logo />
+          <Logo light />
           <nav aria-label={t('Sections de la page')} className="ml-6 hidden items-center gap-1 lg:flex">
             {NAV.map((n) => (
-              <a key={n.href} href={n.href} className="rounded-full px-4 py-2 text-base font-medium text-fg-muted hover:bg-card hover:text-fg">
+              <a key={n.href} href={n.href} className="rounded-full px-4 py-2 text-base font-medium text-sage transition-colors hover:bg-white/10 hover:text-white">
                 {t(n.label)}
               </a>
             ))}
           </nav>
-          <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-2">
+          <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-2 [&_summary]:!bg-white/10 [&_summary]:text-white [&_summary]:!shadow-none [&_summary]:transition-colors [&_summary:hover]:!bg-white/20">
             <PrefsMenu />
-            <Link prefetch={false} href="/connexion" className="btn btn-primary max-sm:!px-4 max-[380px]:[&>svg]:hidden">
+            <Link prefetch={false} href="/connexion" className="btn bg-white text-brand-900 transition-colors hover:bg-leaf max-sm:!px-4 max-[380px]:[&>svg]:hidden">
               <LogIn size={20} aria-hidden /> {t('Se connecter')}
             </Link>
           </div>
@@ -229,9 +236,9 @@ export default async function Home() {
 
       <I18nScope area="landingClient">
       <main id="contenu">
-        {/* ── Hero : fond Forêt et onde de l'affiche de la charte ; tout entre une fois, rien ne tourne en boucle ── */}
+        {/* ── Hero : fond Forêt et onde de l'affiche de la charte ; les notifications tournent lentement autour du symbole ── */}
         <section className="relative overflow-hidden bg-brand-900 text-white [&_:focus-visible]:!outline-leaf">
-          <div className={`${WRAP} relative grid items-center gap-10 pt-10 pb-24 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] md:gap-12 md:pt-16 md:pb-32`}>
+          <div className={`${WRAP} relative grid items-center gap-10 pt-10 pb-24 md:pt-16 md:pb-32 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12`}>
             <div className="space-y-7">
               <div className="flex items-center justify-between gap-4">
                 <p className="rise-in inline-flex items-center gap-2 rounded-full bg-white/10 py-1.5 pr-4 pl-3 text-sm font-semibold ring-1 ring-white/15" style={{ '--i': 0 } as React.CSSProperties}>
@@ -241,7 +248,7 @@ export default async function Home() {
                 <ListenButton compact text={t('Ganji. Votre santé, suivie partout. Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies, même sans réseau ni smartphone.')} audioKey="welcome" />
               </div>
               <div>
-                <h1 className="min-w-0 text-[min(3.1rem,13vw)] leading-[1.02] font-medium tracking-tight [hyphens:manual] sm:text-[min(4.4rem,9.5vw)]">
+                <h1 className="hero-title min-w-0 text-[min(3.3rem,13.5vw)] font-bold [hyphens:manual] sm:text-[min(4.6rem,9.8vw)]">
                   {t('Votre santé, suivie partout.')
                     .split(' ')
                     .map((w, i, all) => (
@@ -470,53 +477,39 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ── La règle des 5 sans : cartes de couleur inclinées, chacune mène à l'outil concerné ── */}
-        <section id="inclusion" aria-labelledby="h-5sans" className="below-fold sheet scroll-mt-20 bg-bg py-16 md:py-24">
+        {/* ── La règle des 5 sans : bandeau Forêt, la trame de la marque en filigrane ; chaque carte mène à l'outil ── */}
+        <section id="inclusion" aria-labelledby="h-5sans" className="below-fold sheet filigrane scroll-mt-20 bg-brand-900 py-16 text-white md:py-24 [&_:focus-visible]:!outline-leaf">
           <div className={WRAP}>
-            <div className="reveal mb-12 flex items-start justify-between gap-6 md:mb-16">
-              <div className="max-w-[42rem] min-w-0 flex-1 space-y-4">
-                <p className="eyebrow">{t('Inclusion')}</p>
-                <h2 id="h-5sans" className="text-[2.6rem] leading-[1.05] font-medium sm:text-6xl">
-                  {t('Utile même sans…')}
-                </h2>
-                <p className="text-lg text-fg-muted">{t('Ganji est conçu pour la personne la plus éloignée du numérique, pas pour l’usager connecté des villes.')}</p>
-              </div>
-              <a href="#confiance" aria-label={t('Section suivante')} className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-brand-900 text-white transition-transform hover:translate-y-0.5">
-                <ArrowDown size={20} aria-hidden />
-              </a>
+            <div className="reveal mb-10 max-w-[44rem] space-y-5 md:mb-14">
+              <h2 id="h-5sans" className="text-[2.6rem] leading-[1.05] font-medium sm:text-6xl">
+                {t('Utile même sans…')}
+              </h2>
+              <p className="max-w-[46ch] text-lg">{t('Ganji est conçu pour la personne la plus éloignée du numérique, pas pour l’usager connecté des villes.')}</p>
             </div>
-            <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5 lg:gap-0 lg:px-2">
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5 lg:gap-4">
               {FIVE_WITHOUT.map((f, i) => (
-                <li key={f.href} className="tilt-card lg:-mx-1" style={{ '--tilt': f.tilt, '--lift': f.lift } as React.CSSProperties}>
-                  <Link prefetch={false} href={f.href} className={`flex h-full min-h-[15rem] flex-col rounded-[1.75rem] p-5 ${f.tone}`}>
+                <li key={f.href} className="sans-card" style={{ '--i': i } as React.CSSProperties}>
+                  <Link prefetch={false} href={f.href} className="group flex h-full flex-col rounded-card bg-brand-700 p-5 transition-[translate,background-color,box-shadow] duration-300 hover:-translate-y-1.5 hover:bg-[#1a6a4c] hover:shadow-[0_24px_40px_-22px_rgb(0_0_0_/_0.7)]">
                     <span className="flex items-start justify-between">
-                      <span className={`grid h-10 w-10 place-items-center rounded-full text-sm font-semibold ${f.chip}`}>0{i + 1}</span>
-                      <ArrowUpRight size={22} aria-hidden />
-                    </span>
-                    {/* Vignette « sticker » (docs/ILLUSTRATIONS.md, section 8) ; en attendant, le pictogramme. */}
-                    <span className="tilt-art mx-auto my-5 block w-[46%] max-w-[10rem] sm:w-[62%] lg:w-[78%]">
+                      {/* Vignette « sticker » quand elle existe (docs/ILLUSTRATIONS.md, section 8), sinon le pictogramme. */}
                       {hasIllustration(f.art) ? (
-                        <Illustration name={f.art} icon={f.icon} alt="" sizes="160px" />
+                        <span className="block w-20 transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110">
+                          <Illustration name={f.art} icon={f.icon} alt="" sizes="80px" />
+                        </span>
                       ) : (
-                        <span aria-hidden className={`grid aspect-square place-items-center rounded-[30%] ${f.chip}`}>
-                          <Pictogram name={f.icon} size={52} />
+                        <span aria-hidden className="grid h-12 w-12 place-items-center rounded-full bg-leaf text-brand-900 transition-transform duration-500 group-hover:-rotate-12 group-hover:scale-110">
+                          <Pictogram name={f.icon} size={22} />
                         </span>
                       )}
+                      <ArrowUpRight size={22} aria-hidden className="text-leaf opacity-0 transition-[opacity,translate] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 group-focus-visible:opacity-100" />
                     </span>
-                    <span className="mt-auto">
-                      <span className="font-display block text-xl leading-tight font-medium">{t(f.title)}</span>
-                      <span className="mt-2 block text-base leading-snug">{t(f.text)}</span>
-                    </span>
+                    <span className="mt-5 block text-xl leading-tight font-medium">{t(f.title)}</span>
+                    <span className="mt-2 block text-base leading-relaxed">{t(f.text)}</span>
                   </Link>
                 </li>
               ))}
             </ul>
-            <p className="reveal mt-14 flex max-w-[60ch] items-center gap-3 text-lg text-fg-muted">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-100 text-brand-900">
-                <Pictogram name="people" size={20} />
-              </span>
-              {t('Et plus de 12 000 relais communautaires servent de point d’accès à ceux qui n’ont pas de téléphone.')}
-            </p>
+            <p className="reveal mt-10 max-w-[60ch] text-lg md:mt-14">{t('Et plus de 12 000 relais communautaires servent de point d’accès à ceux qui n’ont pas de téléphone.')}</p>
           </div>
         </section>
 

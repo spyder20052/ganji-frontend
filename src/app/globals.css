@@ -296,11 +296,53 @@ body {
 @keyframes layer-in { from { opacity: 0; scale: 0.72; } }
 .hero-mark { transform-box: fill-box; transform-origin: center; animation: mark-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--intro) + 0.1s); }
 @keyframes mark-in { from { opacity: 0; scale: 0.4; rotate: -45deg; } }
-/* Un trait part du symbole vers chaque notification, puis la notification apparaît et reste. */
-.hero-link { stroke-dasharray: 1 1; stroke-dashoffset: 0; animation: link-draw 0.5s ease-out both; animation-delay: calc(var(--intro) + 0.6s + var(--i, 0) * 0.25s); }
-@keyframes link-draw { from { stroke-dashoffset: 1; } }
-.hero-chip { animation: chip-pop 0.6s cubic-bezier(0.34, 1.4, 0.64, 1) both; animation-delay: calc(var(--intro) + 0.95s + var(--i, 0) * 0.25s); }
+/* Orbite : un fil part du symbole vers chaque notification, la notification apparaît, puis l'ensemble
+   tourne lentement (70 s par tour). Chaque bras est tourné de son angle ; la notification, au bout,
+   tourne en sens inverse pour que le texte reste droit. Les fils passent sous le symbole, les
+   notifications au-dessus. --r : rayon de l'orbite, en largeur du hero (plus court sur téléphone). */
+.hero-onde { container-type: inline-size; --r: 31.5cqw; --chip-w: 9.5rem; --orbit: 70s; --orbit-start: calc(var(--intro) + 2.1s); }
+@media (max-width: 639px) { .hero-onde > svg { scale: 0.8; } }
+@media (max-width: 379px) { .hero-onde { --r: 32.5cqw; --chip-w: 8.6rem; } .hero-onde > svg { scale: 0.74; } }
+@media (min-width: 640px) { .hero-onde { --r: 36cqw; --chip-w: 11.5rem; } }
+@media (min-width: 1024px) { .hero-onde { --r: 32cqw; } .hero-onde > svg { scale: 0.9; } }
+@media (min-width: 1280px) { .hero-onde { --r: 38cqw; --chip-w: 14rem; } .hero-onde > svg { scale: none; } }
+.hero-orbit { animation: orbit-spin var(--orbit) linear var(--orbit-start) infinite; }
+@keyframes orbit-spin { to { rotate: 360deg; } }
+.orbit-arm { position: absolute; left: 50%; top: 50%; width: var(--r); height: 0; transform-origin: 0 0; rotate: var(--a); }
+.hero-link {
+  position: absolute; left: 0; right: 0; top: -0.75px; height: 1.5px; border-radius: 1px;
+  background: linear-gradient(90deg, #5fd08f 40%, rgb(95 208 143 / 0.55));
+  transform-origin: 0 50%;
+  animation: link-draw 0.55s ease-out both; animation-delay: calc(var(--intro) + 0.6s + var(--i, 0) * 0.25s);
+}
+@keyframes link-draw { from { scale: 0 1; } }
+.orbit-chip {
+  position: absolute; left: 100%; top: 0; translate: -50% -50%;
+  transform: rotate(calc(-1 * var(--a)));
+  animation: orbit-counter var(--orbit) linear var(--orbit-start) infinite;
+}
+@keyframes orbit-counter { to { rotate: -360deg; } }
+.hero-chip {
+  max-width: var(--chip-w);
+  transition: translate 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s;
+  animation: chip-pop 0.6s cubic-bezier(0.34, 1.4, 0.64, 1) both; animation-delay: calc(var(--intro) + 0.95s + var(--i, 0) * 0.25s);
+}
+.hero-chip:hover { translate: 0 -4px; box-shadow: 0 22px 36px -16px rgb(0 0 0 / 0.6); }
 @keyframes chip-pop { from { opacity: 0; scale: 0.6; } }
+
+/* Survol du symbole : ses quatre feuilles s'écartent, la plaque s'éclaire, l'onde se propage du centre
+   vers l'extérieur, et la ronde s'arrête (pour lire, on s'arrête aussi en survolant une notification). */
+.hero-core { pointer-events: auto; }
+.core-plate, .mark-leaf, .onde-ripple { transform-box: fill-box; transform-origin: center; transition: translate 0.6s cubic-bezier(0.34, 1.5, 0.64, 1), rotate 0.6s cubic-bezier(0.34, 1.5, 0.64, 1), scale 0.6s cubic-bezier(0.34, 1.5, 0.64, 1), filter 0.4s; }
+.onde-ripple { transition-delay: calc(var(--k) * 45ms); }
+.hero-core:hover .core-plate { scale: 1.07; filter: brightness(1.35); }
+.hero-core:hover .mark-leaf { rotate: -12deg; }
+.hero-core:hover .mark-leaf-0 { translate: -44px -44px; }
+.hero-core:hover .mark-leaf-1 { translate: -44px 44px; }
+.hero-core:hover .mark-leaf-2 { translate: 44px 44px; }
+.hero-core:hover .mark-leaf-3 { translate: 44px -44px; }
+.hero-onde:has(.hero-core:hover) .onde-ripple { scale: calc(1 + var(--k) * 0.012); filter: brightness(1.12); }
+.hero-onde:has(.hero-core:hover, .hero-chip:hover) :is(.hero-orbit, .orbit-chip) { animation-play-state: paused; }
 
 /* Boutons du hero. Principal : le rond de la flèche s'étend et remplit le bouton, la flèche avance.
    Secondaire : le blanc balaie le bouton de gauche à droite. Au clavier, même effet qu'au survol. */
@@ -327,8 +369,10 @@ body {
 .cta-sweep:hover::before, .cta-sweep:focus-visible::before { scale: 1 1; }
 .cta-fill:active, .cta-sweep:active { transform: scale(0.97); }
 
-/* Titre : chaque mot monte de derrière un masque ; le dernier, en Pousse, se souligne. */
-.hw { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+/* Titre du hero en Bricolage Grotesque (sous-ensemble du titre ; autre texte : Poppins en secours). */
+.hero-title { font-family: var(--font-titre), var(--font-poppins), ui-sans-serif, system-ui, sans-serif; line-height: 1; letter-spacing: -0.012em; }
+/* Titre : chaque mot monte de derrière un masque (assez haut pour les accents et les jambages). */
+.hw { display: inline-block; overflow: hidden; vertical-align: bottom; padding-block: 0.1em 0.2em; margin-block: -0.1em -0.2em; }
 .hw > span { display: inline-block; animation: word-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--intro) + var(--i, 0) * 80ms); }
 @keyframes word-up { from { translate: 0 110%; } }
 .hw-accent { color: var(--color-leaf); }
@@ -466,18 +510,18 @@ body {
   .flow-cell, .intro { display: none; }
 }
 
-/* « Utile même sans… » : cartes inclinées qui tombent en place ; au survol, la carte se redresse. */
-/* Téléphone et tablette : inclinaison adoucie, sans décalage vertical (les cartes ne se chevauchent pas). */
-.tilt-card { --t: calc(var(--tilt, 0deg) * 0.4); --l: 0rem; translate: 0 var(--l); rotate: var(--t); }
-@media (min-width: 1024px) {
-  .tilt-card { --t: var(--tilt, 0deg); --l: var(--lift, 0rem); }
+/* « Utile même sans… » : la trame de la marque en filigrane, sur un calque à part (déplacé sans repeindre)
+   qui glisse un peu moins vite que la page au défilement. Les cartes montent l'une après l'autre. */
+.filigrane { isolation: isolate; overflow: hidden; }
+.filigrane::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -90px 0;
+  background: url('/motifs/trame-foret.svg') 0 0 / 180px 180px;
 }
-.tilt-card > a { transition: rotate 0.5s cubic-bezier(0.16, 1, 0.3, 1), translate 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s; }
-.tilt-card > a:hover, .tilt-card > a:focus-visible { rotate: calc(var(--t) * -1); translate: 0 -6px; box-shadow: 0 24px 40px -20px rgb(11 61 44 / 0.45); }
-/* L'illustration de la carte se soulève un peu au survol. */
-.tilt-art { transition: translate 0.5s cubic-bezier(0.16, 1, 0.3, 1), scale 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-.tilt-card > a:hover .tilt-art, .tilt-card > a:focus-visible .tilt-art { translate: 0 -6px; scale: 1.06; }
-@keyframes tilt-in { from { translate: 0 70px; rotate: 0deg; opacity: 0; } }
+@keyframes trame-drift { from { translate: 0 -70px; } to { translate: 0 70px; } }
+@keyframes card-up { from { opacity: 0; translate: 0 48px; } }
 
 /* Le problème barré, puis la réponse qui glisse en place. */
 .strike { background: linear-gradient(currentColor, currentColor) no-repeat 0 58% / 100% 1.5px; }
@@ -501,7 +545,9 @@ body {
   .flow-blood { animation: blood-fill linear both; animation-timeline: --flow; animation-range: cover 50vh cover calc(100% - 50vh); }
   .flow-node, .flow-end { animation: node-on linear both; animation-timeline: view(); animation-range: cover calc(50vh - 24px) cover calc(50vh + 12px); }
   .flow-end { animation-name: heart-on; }
-  .tilt-card { animation: tilt-in both cubic-bezier(0.16, 1, 0.3, 1); animation-timeline: view(); animation-range: entry 0% cover 30%; }
+  .filigrane::before { animation: trame-drift linear both; animation-timeline: --filigrane; }
+  .filigrane { view-timeline-name: --filigrane; }
+  .sans-card { animation: card-up both cubic-bezier(0.16, 1, 0.3, 1); animation-timeline: view(); animation-range: entry 0% cover calc(18% + var(--i) * 4%); }
   .strike { animation: strike-in linear both; animation-timeline: view(); animation-range: entry 60% cover 40%; }
   .slide-in { animation: slide-in both cubic-bezier(0.16, 1, 0.3, 1); animation-timeline: view(); animation-range: entry 70% cover 40%; }
   .zoom-in img { animation: zoom-in both linear; animation-timeline: view(); animation-range: entry 0% cover 50%; }

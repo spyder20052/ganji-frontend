@@ -5,9 +5,8 @@ export interface HeroChip {
   icon: string;
   label: string;
   chip: string;
-  /** Point d'ancrage dans le repère de l'onde (-100 à 100). */
-  x: number;
-  y: number;
+  /** Position de départ sur l'orbite, en degrés (0 : à droite du symbole, sens des aiguilles d'une montre). */
+  angle: number;
 }
 
 /** Carré en escalier (deux marches par angle), comme l'onde de la charte (planches 05 et 12). */
@@ -30,58 +29,63 @@ const LAYERS = [
   { h: 50, fill: '#168a56' },
 ];
 
+const vars = (v: Record<string, string | number>) => v as React.CSSProperties;
+
 /**
- * Hero : l'onde Ganji telle que la dessine l'affiche de la charte. Elle s'ouvre une fois depuis le centre,
- * un trait part du symbole vers chaque notification, qui apparaît puis reste immobile. Aucun mouvement
- * en boucle. Tout en SVG et CSS (aucune image à télécharger : budget de 200 Ko).
+ * Hero : l'onde Ganji de l'affiche de la charte. Elle s'ouvre une fois depuis le centre, puis les
+ * notifications tournent lentement autour du symbole, chacune reliée à lui par son fil (texte toujours
+ * droit). Au survol du symbole, ses feuilles s'écartent et l'onde se propage ; la ronde s'arrête pour
+ * qu'on puisse lire. Trois couches superposées : l'onde, les fils, le symbole, puis les notifications.
+ * Tout en SVG et CSS (aucune image à télécharger : budget de 200 Ko).
  */
 export function HeroOnde({ chips }: { chips: HeroChip[] }) {
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[560px]">
+    <div className="hero-onde relative mx-auto aspect-square w-full max-w-[560px]">
       <svg viewBox="-100 -100 200 200" aria-hidden="true" className="absolute inset-0 h-full w-full overflow-visible">
         {LAYERS.map((l, i) => (
-          <path key={l.h} className="onde-layer" style={{ '--i': LAYERS.length - 1 - i } as React.CSSProperties} d={stepped(l.h)} fill={l.fill} />
+          <g key={l.h} className="onde-ripple" style={vars({ '--k': LAYERS.length - i })}>
+            <path className="onde-layer" style={vars({ '--i': LAYERS.length - 1 - i })} d={stepped(l.h)} fill={l.fill} />
+          </g>
         ))}
-        <rect className="onde-layer" style={{ '--i': 0 } as React.CSSProperties} x="-33" y="-33" width="66" height="66" rx="9" fill="#0b3d2c" />
-        {chips.map((c, i) => {
-          const r = Math.hypot(c.x, c.y);
-          return (
-            <line
-              key={c.label}
-              className="hero-link"
-              style={{ '--i': i } as React.CSSProperties}
-              pathLength={1}
-              x1={((c.x / r) * 36).toFixed(1)}
-              y1={((c.y / r) * 36).toFixed(1)}
-              x2={c.x}
-              y2={c.y}
-              stroke="#5FD08F"
-              strokeWidth="0.7"
-              strokeLinecap="round"
-            />
-          );
-        })}
-        <g className="hero-mark">
-          <g transform="translate(-24 -24) scale(0.0923)">
-            {SYMBOL_LEAVES.map((leaf, i) => (
-              <path key={i} d={leaf} fill="#5FD08F" />
-            ))}
+      </svg>
+      <div className="hero-orbit absolute inset-0">
+        {chips.map((c, i) => (
+          <div key={c.label} className="orbit-arm" style={vars({ '--a': `${c.angle}deg` })}>
+            <span className="hero-link" style={vars({ '--i': i })} />
+          </div>
+        ))}
+      </div>
+      <svg viewBox="-100 -100 200 200" aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full overflow-visible">
+        <g className="hero-core">
+          <g className="core-plate">
+            <rect className="onde-layer" style={vars({ '--i': 0 })} x="-33" y="-33" width="66" height="66" rx="9" fill="#0b3d2c" />
+          </g>
+          <g className="hero-mark">
+            <g transform="translate(-24 -24) scale(0.0923)">
+              {SYMBOL_LEAVES.map((leaf, i) => (
+                <path key={i} className={`mark-leaf mark-leaf-${i}`} d={leaf} fill="#5FD08F" />
+              ))}
+            </g>
           </g>
         </g>
       </svg>
-      {chips.map((c, i) => (
-        <span key={c.label} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${(c.x + 100) / 2}%`, top: `${(c.y + 100) / 2}%` }}>
-          <span
-            className="hero-chip flex items-center gap-2 rounded-2xl bg-white py-1.5 pr-3.5 pl-1.5 text-sm font-semibold whitespace-nowrap text-ink shadow-[0_14px_30px_-14px_rgb(0_0_0_/_0.55)] sm:text-base"
-            style={{ '--i': i } as React.CSSProperties}
-          >
-            <span className={`grid h-8 w-8 place-items-center rounded-full ${c.chip}`}>
-              <Pictogram name={c.icon} size={16} />
+      <div className="hero-orbit pointer-events-none absolute inset-0">
+        {chips.map((c, i) => (
+          <div key={c.label} className="orbit-arm" style={vars({ '--a': `${c.angle}deg` })}>
+            <span className="orbit-chip">
+              <span
+                className="hero-chip pointer-events-auto flex w-max items-center gap-1.5 rounded-2xl bg-white py-1 pr-2.5 pl-1 text-[0.75rem] leading-tight font-semibold text-ink shadow-[0_14px_30px_-14px_rgb(0_0_0_/_0.55)] sm:gap-2 sm:py-1.5 sm:pr-3.5 sm:pl-1.5 sm:text-sm xl:text-base"
+                style={vars({ '--i': i })}
+              >
+                <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full sm:h-8 sm:w-8 ${c.chip}`}>
+                  <Pictogram name={c.icon} size={16} />
+                </span>
+                {c.label}
+              </span>
             </span>
-            {c.label}
-          </span>
-        </span>
-      ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
