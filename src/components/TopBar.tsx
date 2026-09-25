@@ -1,5 +1,6 @@
 import { NavPills, TabBar, type NavLink } from './EspaceNav';
 import { Logo } from './Logo';
+import { NotificationBell } from './NotificationBell';
 import { LogoutButton } from './LogoutButton';
 import { PrefsMenu } from './PrefsMenu';
 
@@ -17,6 +18,7 @@ export function TopBar({ home = '/', who, links = [] }: { home?: string; who?: s
           )}
           <div className="ml-auto flex items-center gap-2">
             {who && <span className="hidden max-w-[16rem] truncate text-base text-[var(--fg-muted)] xl:inline">{who}</span>}
+            {who && <NotificationBell />}
             <PrefsMenu />
             {who && <LogoutButton />}
           </div>

@@ -1,3 +1,8 @@
+import { droits } from './droits';
+import { ecoute } from './ecoute';
+import { livraison } from './livraison';
+import { sangPartage } from './sang-partage';
+import { compte } from './compte';
 import { common } from './common';
 import { landing } from './landing';
 import { landingClient } from './landing-client';
@@ -11,7 +16,7 @@ import { relay } from './relay';
 import { structures } from './structures';
 
 /** Dictionnaires anglais par domaine : chaque domaine n'envoie au navigateur que les siens. */
-export const EN_AREAS = { common, landing, landingClient, orientation, public: publicPages, relay, patient, patient2, patient3, pro, structures };
+export const EN_AREAS = { compte, sangPartage, livraison, ecoute, droits, common, landing, landingClient, orientation, public: publicPages, relay, patient, patient2, patient3, pro, structures };
 export type Area = keyof typeof EN_AREAS;
 
 /**
@@ -20,5 +25,5 @@ export type Area = keyof typeof EN_AREAS;
  * d'urgence chez le soignant) : les espaces professionnels passent d'abord, le public et le commun en
  * dernier, donc le sens grand public l'emporte côté serveur. Côté client, chaque espace garde le sien.
  */
-const SERVER_ORDER: Area[] = ['pro', 'structures', 'relay', 'patient3', 'patient2', 'patient', 'orientation', 'public', 'landingClient', 'landing', 'common'];
+export const SERVER_ORDER: Area[] = ['pro', 'structures', 'relay', 'droits', 'ecoute', 'livraison', 'sangPartage', 'compte', 'patient3', 'patient2', 'patient', 'orientation', 'public', 'landingClient', 'landing', 'common'];
 export const EN = Object.assign({}, ...SERVER_ORDER.map((a) => EN_AREAS[a])) as Record<string, string>;

@@ -1,4 +1,4 @@
-import { translate, type Locale, type T } from '@/i18n/translate';
+import { translate, type Locale, type T, frenchStyle } from '@/i18n/translate';
 import { fmtDate, fmtTime } from '@/lib/format';
 
 /** Traducteur par défaut : le français tel quel. */
@@ -41,12 +41,12 @@ export const TIMELINE_ICON: Record<string, string> = {
 /** « 12/10 à 14 h 05 » : lisible à voix haute (en anglais : « 12/10 at 14:05 »). */
 export function dayAndHour(d: string | Date, t: T = FR, locale: Locale = 'fr') {
   const [h, m] = fmtTime(d).split(':');
-  const time = locale === 'fr' ? `${Number(h)} h${m && m !== '00' ? ` ${m}` : ''}` : fmtTime(d, locale);
+  const time = frenchStyle(locale) ? `${Number(h)} h${m && m !== '00' ? ` ${m}` : ''}` : fmtTime(d, locale);
   return t('{date} à {time}', { date: fmtDate(d, { day: '2-digit', month: '2-digit' }, locale), time });
 }
 
 export function hourOnly(d: string | Date, locale: Locale = 'fr') {
-  if (locale !== 'fr') return fmtTime(d, locale);
+  if (!frenchStyle(locale)) return fmtTime(d, locale);
   const [h, m] = fmtTime(d).split(':');
   return `${Number(h)} h ${m}`;
 }

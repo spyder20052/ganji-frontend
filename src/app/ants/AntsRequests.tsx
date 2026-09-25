@@ -2,7 +2,7 @@
 import { ChevronDown, MessageSquareText, PhoneCall, RefreshCw, Smartphone, type LucideIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useLocale, useT } from '@/i18n/client';
-import { INTL, type Locale } from '@/i18n/translate';
+import { INTL, type Locale, frenchStyle } from '@/i18n/translate';
 import { api, ApiError } from '@/lib/api';
 import { fmtDateTime, relative } from '@/lib/format';
 import type { BloodRequestView } from '@/lib/types';
@@ -14,7 +14,7 @@ const CAN_ALERT = new Set(['OUVERTE', 'DONNEURS_ALERTES']);
 const CHANNEL_ICON: Record<string, LucideIcon> = { APP: Smartphone, SMS: MessageSquareText, VOICE: PhoneCall };
 
 /** Distance avec le séparateur décimal de la langue (rendu de km() inchangé en français). */
-const kmIn = (n: number, locale: Locale) => (locale === 'fr' ? km(n) : `${n.toLocaleString(INTL[locale], { maximumFractionDigits: n < 10 ? 1 : 0 })} km`);
+const kmIn = (n: number, locale: Locale) => (frenchStyle(locale) ? km(n) : `${n.toLocaleString(INTL[locale], { maximumFractionDigits: n < 10 ? 1 : 0 })} km`);
 
 /** Demandes de sang du pays : ouvertes d'abord, donneurs visibles au dépliage. */
 export function AntsRequests({ initial }: { initial: BloodRequestView[] }) {

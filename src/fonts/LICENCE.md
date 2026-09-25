@@ -9,3 +9,6 @@ Toutes deux sous la SIL Open Font License, version 1.1 : https://openfontlicense
 
 `bricolage-titres.woff2` (titres de l'application), `../app/_landing/fonts/bricolage-titre.woff2` (titre de
 l'accueil) et le logotype sont produits par `scripts/polices/polices.py`.
+- **Noto Sans** (lettres des langues nationales : `noto-afrique-400.woff2`, `noto-afrique-700.woff2`) : Copyright 2022
+  The Noto Project Authors (https://github.com/notofonts/latin-greek-cyrillic), SIL Open Font License 1.1. Sous-ensemble
+  servi par Google Fonts (paramètre text=), voir src/app/layout.tsx.

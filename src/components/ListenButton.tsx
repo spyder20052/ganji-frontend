@@ -2,7 +2,7 @@
 import { Volume2, Square } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useLocale, useT } from '@/i18n/client';
-import { INTL } from '@/i18n/translate';
+import { INTL, VOICE_OF } from '@/i18n/translate';
 
 const LANG_LABEL: Record<string, string> = { fr: 'français', en: 'anglais', fon: 'fon', yoruba: 'yoruba', bariba: 'bariba', dendi: 'dendi' };
 /** Voix de synthèse (traduction automatique) : à faire valider par un locuteur natif, et on le dit. */
@@ -45,7 +45,7 @@ export function ListenButton({
   async function play() {
     if (playing) return stop();
     setNote(null);
-    const userLang = lang ?? (typeof document !== 'undefined' ? document.documentElement.dataset.voice : undefined) ?? locale;
+    const userLang = lang ?? (typeof document !== 'undefined' ? document.documentElement.dataset.voice : undefined) ?? VOICE_OF[locale];
     if (audioKey && userLang !== 'fr' && userLang !== 'en') {
       const src = `/audio/${userLang}/${audioKey}.mp3`;
       const ok = await fetch(src, { method: 'HEAD' }).then((r) => r.ok).catch(() => false);
@@ -58,7 +58,7 @@ export function ListenButton({
         await a.play().catch(() => setPlaying(false));
         return;
       }
-      setNote(t('Enregistrement en {langue} pas encore disponible : lecture en {repli}.', { langue: t(LANG_LABEL[userLang] ?? userLang), repli: t(LANG_LABEL[locale]) }));
+      setNote(t('Enregistrement en {langue} pas encore disponible : lecture en {repli}.', { langue: t(LANG_LABEL[userLang] ?? userLang), repli: t(LANG_LABEL[VOICE_OF[locale]] ?? 'français') }));
     }
     const synth = window.speechSynthesis;
     if (!synth) return setNote(t('La lecture vocale n’est pas disponible sur ce téléphone.'));

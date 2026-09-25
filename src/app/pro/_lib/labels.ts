@@ -2,7 +2,7 @@
  * Libellés et tons partagés par les espaces soignant, pharmacie et banque de sang.
  * Ils restent en français ici : les écrans les traduisent à l'affichage avec t(libellé).
  */
-import { INTL, translate, type Locale, type T } from '@/i18n/translate';
+import { INTL, translate, type Locale, type T, frenchStyle } from '@/i18n/translate';
 
 /** Traducteur neutre (français) : valeur par défaut des aides ci-dessous. */
 const FR: T = (fr, vars) => translate({}, fr, vars);
@@ -103,7 +103,7 @@ export function km(n: number, locale: Locale = 'fr') {
 
 /** « 8 h » ou « 8 h 30 », à l'heure de Cotonou (« 08:30 » en anglais). */
 export function hourFr(d: string | Date, locale: Locale = 'fr') {
-  if (locale !== 'fr') return new Date(d).toLocaleTimeString(INTL[locale], { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
+  if (!frenchStyle(locale)) return new Date(d).toLocaleTimeString(INTL[locale], { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
   const parts = new Intl.DateTimeFormat('fr-FR', { timeZone: TZ, hour: 'numeric', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(d));
   const h = Number(parts.find((p) => p.type === 'hour')?.value ?? 0);
   const m = parts.find((p) => p.type === 'minute')?.value ?? '00';

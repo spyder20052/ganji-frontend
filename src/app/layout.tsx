@@ -5,6 +5,7 @@ import { DemoBanner } from '@/components/DemoBanner';
 import { SwRegister } from '@/components/SwRegister';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getLocale, getT } from '@/i18n/server';
+import { HTML_LANG } from '@/i18n/translate';
 import './globals.css';
 
 // Atkinson Hyperlegible (conçue pour les malvoyants, exigence du cahier) : texte courant des espaces
@@ -13,6 +14,19 @@ const atkinson = Atkinson_Hyperlegible({ subsets: ['latin'], weight: ['400', '70
 // Bricolage Grotesque SemiBold : titres de toute l'application (le logotype, en Poppins Medium, est un
 // tracé). Une seule graisse, déclarée pour 500 à 700 : pas de gras simulé, 15 Ko (scripts/polices/polices.py).
 const bricolage = localFont({ src: '../fonts/bricolage-titres.woff2', weight: '500 700', variable: '--font-bricolage', display: 'swap' });
+// Lettres des langues nationales (ɔ, ɛ, ɖ, ẹ, ọ, ṣ, tons…) absentes des polices ci-dessus : mini Noto Sans (5 Ko par
+// graisse), téléchargée seulement si la page en affiche (unicode-range). Rien de plus en français ni en anglais.
+const afrique = localFont({
+  src: [
+    { path: '../fonts/noto-afrique-400.woff2', weight: '400' },
+    { path: '../fonts/noto-afrique-700.woff2', weight: '700' },
+  ],
+  variable: '--font-afrique',
+  display: 'swap',
+  preload: false,
+  adjustFontFallback: false,
+  declarations: [{ prop: 'unicode-range', value: 'U+0129,U+0143,U+0144,U+014A,U+014B,U+014D,U+0169,U+0186,U+0189,U+0190,U+019D,U+01CE,U+01D0,U+01D2,U+01D4,U+01F9,U+0254,U+0256,U+025B,U+0272,U+0300,U+0301,U+0303,U+0304,U+0323,U+1E62,U+1E63,U+1EB8,U+1EB9,U+1EBD,U+1ECC,U+1ECD' }],
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -39,7 +53,7 @@ const PREFS = `try{var p=JSON.parse(localStorage.getItem('ganji-prefs')||'{}');v
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const t = await getT();
   return (
-    <html lang={await getLocale()} className={`${atkinson.variable} ${bricolage.variable}`} suppressHydrationWarning>
+    <html lang={HTML_LANG[await getLocale()]} className={`${atkinson.variable} ${bricolage.variable} ${afrique.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: PREFS }} />
       </head>

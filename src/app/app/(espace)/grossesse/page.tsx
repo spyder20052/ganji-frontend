@@ -37,7 +37,7 @@ const VISIT_STYLE: Record<Visit['status'], { box: string; dot: string; text: str
 };
 
 /** Suffixe ordinal du trimestre (1er, 2e, 3e / 1st, 2nd, 3rd) : il dépend du chiffre, pas seulement de la langue. */
-const ORDINAL: Record<Locale, [string, string, string]> = { fr: ['er', 'e', 'e'], en: ['st', 'nd', 'rd'] };
+const ORDINAL: Partial<Record<Locale, [string, string, string]>> = { fr: ['er', 'e', 'e'], en: ['st', 'nd', 'rd'], yo: ['', '', ''] };
 
 export default async function GrossessePage() {
   const t = await getT();
@@ -81,7 +81,7 @@ export default async function GrossessePage() {
         <div className="card grid grid-cols-2 gap-3 p-5 sm:col-span-2">
           <div className="rounded-2xl bg-[var(--bg)] p-4">
             <p className="label">{t('Trimestre')}</p>
-            <p className="num text-4xl font-bold">{p.trimester}<span className="text-xl">{ORDINAL[locale][p.trimester - 1]}</span></p>
+            <p className="num text-4xl font-bold">{p.trimester}<span className="text-xl">{(ORDINAL[locale] ?? ORDINAL.fr!)[p.trimester - 1]}</span></p>
           </div>
           <div className="rounded-2xl bg-[var(--bg)] p-4">
             <p className="label">{t('Terme prévu')}</p>

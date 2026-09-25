@@ -92,4 +92,12 @@ export const common: Messages = {
   National: 'Nationwide',
   'Détection automatique': 'Automatic detection',
   Nouveau: 'New',
+  // Cloche des notifications (en-tête)
+  Notifications: 'Notifications',
+  'Notifications, {n} non lues': 'Notifications, {n} unread',
+  'Tout marquer comme lu': 'Mark all as read',
+  'Rien de nouveau pour le moment.': 'Nothing new for now.',
+  'Non lue': 'Unread',
+  // Réglages : langues nationales
+  'Traduction faite par IA, à faire valider par des locuteurs natifs.': 'AI translation, to be checked by native speakers.',
 };

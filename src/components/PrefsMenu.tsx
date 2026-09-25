@@ -2,7 +2,7 @@
 import { Settings2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useLocale, useT } from '@/i18n/client';
-import { LOCALE_COOKIE, type Locale } from '@/i18n/translate';
+import { HTML_LANG, LOCALE_COOKIE, LOCALE_NAMES, LOCALES, NATIONAL, type Locale } from '@/i18n/translate';
 
 /** Voix en langues nationales : synthèse à valider, ou enregistrement à venir (docs/ENREGISTREMENTS.md). */
 const VOICES = [
@@ -27,9 +27,11 @@ function apply(p: Prefs) {
   window.dispatchEvent(new Event('ganji-prefs'));
 }
 
-/** Langue de l'interface : cookie lu par le serveur, puis la page est rechargée dans la nouvelle langue. */
-function setLocale(l: Locale) {
+/** Langue de l'interface : cookie lu par le serveur (et langue des SMS si l'on est connecté), puis la page
+ *  est rechargée dans la nouvelle langue. */
+async function setLocale(l: Locale) {
   document.cookie = `${LOCALE_COOKIE}=${l}; path=/; max-age=31536000; samesite=lax`;
+  await fetch('/api/me/lang', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ lang: l }) }).catch(() => undefined);
   window.location.reload();
 }
 
@@ -53,12 +55,13 @@ export function PrefsMenu() {
             Langue · <span lang="en">Language</span>
           </legend>
           <div className="grid grid-cols-2 gap-1">
-            {([['fr', 'Français'], ['en', 'English']] as const).map(([v, l]) => (
-              <button key={v} type="button" lang={v} onClick={() => v !== locale && setLocale(v)} aria-pressed={locale === v} className={`btn !min-h-10 !px-0 text-sm ${locale === v ? 'btn-primary' : 'btn-ghost'}`}>
-                {l}
+            {LOCALES.map((v) => (
+              <button key={v} type="button" lang={HTML_LANG[v]} onClick={() => v !== locale && setLocale(v)} aria-pressed={locale === v} className={`btn !min-h-10 !px-0 text-sm ${locale === v ? 'btn-primary' : 'btn-ghost'}`}>
+                {LOCALE_NAMES[v]}
               </button>
             ))}
           </div>
+          {NATIONAL.includes(locale) && <p className="mt-2 text-sm text-[var(--fg-muted)]">{t('Traduction faite par IA, à faire valider par des locuteurs natifs.')}</p>}
         </fieldset>
         <fieldset>
           <legend className="label mb-2">{t('Taille du texte')}</legend>
