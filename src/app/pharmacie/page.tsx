@@ -19,7 +19,7 @@ export default async function PharmaciePage() {
           {stock && <OnDutyToggle initial={stock.pharmacy.onDuty} />}
           {ruptures.length > 0 && (
             <section aria-labelledby="h-rupt" className="card p-5">
-              <h2 id="h-rupt" className="text-lg font-bold">
+              <h2 id="h-rupt" className="text-xl font-bold">
                 {t('En rupture ({n})', { n: ruptures.length })}
               </h2>
               <ul className="mt-2 space-y-1 text-[0.95rem]">

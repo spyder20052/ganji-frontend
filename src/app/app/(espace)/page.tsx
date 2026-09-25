@@ -138,7 +138,7 @@ export default async function AppHome() {
                 <h2 id="h-rdv" className="text-sm font-normal text-[var(--fg-muted)]">
                   {t('Prochain rendez-vous · {when}', { when: relative(next.dueAt, locale) })}
                 </h2>
-                <p className="font-display text-lg leading-snug font-semibold text-[var(--color-brand-900)]">{nextTitle}</p>
+                <p className="font-display text-lg leading-snug font-semibold text-[var(--color-brand-900)] dark:text-[var(--fg)]">{nextTitle}</p>
                 <p className="num text-base text-[var(--fg-muted)]">
                   {hourOnly(next.dueAt, locale)}
                   {next.place && !s?.discreetMode ? ` · ${next.place}` : ''}
@@ -246,7 +246,7 @@ export default async function AppHome() {
 
       <section aria-labelledby="h-bientot" className="simple-hide card p-4">
         <div className="mb-3 flex items-center justify-between gap-2">
-          <h2 id="h-bientot" className="text-lg font-semibold">{t('Bientôt')}</h2>
+          <h2 id="h-bientot" className="text-xl font-semibold">{t('Bientôt')}</h2>
           <span className="pill bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">{t('Aperçus')}</span>
         </div>
         <ul className="grid grid-cols-4 gap-2">

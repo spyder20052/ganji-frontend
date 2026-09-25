@@ -46,7 +46,7 @@ export function Section({ id, title, icon, children, className = '', action }: {
   return (
     <section aria-labelledby={id} className={`card p-5 sm:p-6 ${className}`}>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 id={id} className="flex items-center gap-3 text-lg font-semibold">
+        <h2 id={id} className="flex items-center gap-3 text-xl font-semibold">
           {icon && (
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">
               <Pictogram name={icon} size={20} />

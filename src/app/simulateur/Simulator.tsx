@@ -216,7 +216,7 @@ export function Simulator({ initialTel }: { initialTel: string }) {
       <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)_320px]">
         {/* ── Choix du téléphone ── */}
         <section aria-labelledby="h-phones" className="space-y-4">
-          <h2 id="h-phones" className="text-lg font-bold">{t('Quel téléphone ?')}</h2>
+          <h2 id="h-phones" className="text-xl font-bold">{t('Quel téléphone ?')}</h2>
           <form onSubmit={submitFree} className="flex gap-2">
             <label htmlFor="sim-tel" className="sr-only">{t('Numéro de téléphone')}</label>
             <input id="sim-tel" type="tel" inputMode="tel" className="input num" placeholder="01 96 00 01 23" value={free} onChange={(e) => setFree(e.target.value)} />
@@ -281,7 +281,7 @@ export function Simulator({ initialTel }: { initialTel: string }) {
 
         {/* ── Tous les messages ── */}
         <section aria-labelledby="h-feed" className="space-y-3">
-          <h2 id="h-feed" className="text-lg font-bold">{t('Tous les messages')} <span className="num text-base font-normal text-[var(--fg-muted)]">({feed.length})</span></h2>
+          <h2 id="h-feed" className="text-xl font-bold">{t('Tous les messages')} <span className="num text-base font-normal text-[var(--fg-muted)]">({feed.length})</span></h2>
           <ul className="card max-h-[680px] divide-y divide-[var(--border)] overflow-y-auto">
             {feed.length === 0 && <li className="p-4 text-base text-[var(--fg-muted)]">{t('Aucun message envoyé pour le moment.')}</li>}
             {feed.map((m) => (

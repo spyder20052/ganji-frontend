@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
-import { Atkinson_Hyperlegible, Poppins } from 'next/font/google';
+import { Atkinson_Hyperlegible } from 'next/font/google';
+import localFont from 'next/font/local';
 import { DemoBanner } from '@/components/DemoBanner';
 import { SwRegister } from '@/components/SwRegister';
 import { I18nScope } from '@/i18n/I18nScope';
@@ -9,9 +10,9 @@ import './globals.css';
 // Atkinson Hyperlegible (conçue pour les malvoyants, exigence du cahier) : texte courant des espaces
 // patients. Pas de préchargement : l'accueil, en Poppins, ne la télécharge pas (budget de 200 Ko).
 const atkinson = Atkinson_Hyperlegible({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-atkinson', display: 'swap', preload: false });
-// Poppins (charte Ganji) : titres et logotype.
-// Une graisse (Medium, celle de la charte pour les titres) : la première page reste sous 200 Ko en 2G.
-const poppins = Poppins({ subsets: ['latin'], weight: ['500'], variable: '--font-poppins', display: 'swap' });
+// Bricolage Grotesque SemiBold : titres de toute l'application (le logotype, en Poppins Medium, est un
+// tracé). Une seule graisse, déclarée pour 500 à 700 : pas de gras simulé, 15 Ko (scripts/polices/polices.py).
+const bricolage = localFont({ src: '../fonts/bricolage-titres.woff2', weight: '500 700', variable: '--font-bricolage', display: 'swap' });
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -38,7 +39,7 @@ const PREFS = `try{var p=JSON.parse(localStorage.getItem('ganji-prefs')||'{}');v
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const t = await getT();
   return (
-    <html lang={await getLocale()} className={`${atkinson.variable} ${poppins.variable}`} suppressHydrationWarning>
+    <html lang={await getLocale()} className={`${atkinson.variable} ${bricolage.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: PREFS }} />
       </head>

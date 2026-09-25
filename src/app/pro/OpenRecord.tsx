@@ -30,7 +30,7 @@ export function OpenRecord() {
   return (
     <section aria-labelledby="h-open" className="card space-y-4 p-5">
       <div>
-        <h2 id="h-open" className="text-xl font-bold">{t('Ouvrir un carnet')}</h2>
+        <h2 id="h-open" className="mb-1.5 text-xl font-bold">{t('Ouvrir un carnet')}</h2>
         <p className="text-[var(--fg-muted)]">{t('Le patient montre son QR de partage (ou vous dicte son code). L’accès est limité dans le temps et il le voit dans son journal.')}</p>
       </div>
       <QrScanner

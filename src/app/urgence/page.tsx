@@ -93,7 +93,7 @@ export default async function UrgencePage() {
         <section className="card flex flex-wrap items-center gap-4 p-5">
           <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[var(--color-brand-900)] text-white"><QrCode size={28} aria-hidden /></span>
           <div className="min-w-0 flex-1">
-            <h2 className="text-lg font-bold">{t('Ma carte d’urgence')}</h2>
+            <h2 className="text-xl font-bold">{t('Ma carte d’urgence')}</h2>
             <p className="text-base text-[var(--fg-muted)]">{t('Groupe sanguin, allergies, personne à prévenir : lisible par les secours, même sans réseau.')}</p>
           </div>
           <Link href="/app/carte-urgence" className="btn btn-primary">{t('Ouvrir ma carte')}</Link>

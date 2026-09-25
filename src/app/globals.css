@@ -47,7 +47,7 @@
   --color-fg-muted: var(--fg-muted);
   --color-border: var(--border);
   --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-poppins), var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
   /* Graisses allégées : « gras » = demi-gras. */
   --font-weight-bold: 600;
 }
@@ -252,12 +252,14 @@ body {
   position: static;
 }
 
-/* Grands chiffres (indicateurs, compteurs) : graisse fine et approche serrée, comme les références. */
-.num:is(.text-4xl, .text-5xl, .text-6xl, .text-7xl, .text-8xl) {
+/* Grands chiffres (indicateurs, compteurs) et grandes phrases en gras (statuts) : police des titres,
+   chiffres alignés, partout la même voix. Les codes à recopier gardent Atkinson (zéro barré, pas de
+   confusion avec la lettre O) : classe font-sans. */
+:is(.text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl, .text-7xl, .text-8xl):is(.num, .font-bold, .font-semibold):not(.font-sans) {
   font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
+.num:is(.text-4xl, .text-5xl, .text-6xl, .text-7xl, .text-8xl):not(.font-sans) { font-weight: 500; letter-spacing: -0.02em; }
 
 /* Trame Ganji (charte, motif « trame » en version Forêt) : en-têtes sombres. */
 .motif-foret {
@@ -305,7 +307,7 @@ body {
 @media (max-width: 379px) { .hero-onde { --r: 32.5cqw; --chip-w: 8.6rem; } .hero-onde > svg { scale: 0.74; } }
 @media (min-width: 640px) { .hero-onde { --r: 36cqw; --chip-w: 11.5rem; } }
 @media (min-width: 1024px) { .hero-onde { --r: 32cqw; } .hero-onde > svg { scale: 0.9; } }
-@media (min-width: 1280px) { .hero-onde { --r: 38cqw; --chip-w: 14rem; } .hero-onde > svg { scale: none; } }
+@media (min-width: 1280px) { .hero-onde { --r: 38cqw; --chip-w: 16.5rem; } .hero-onde > svg { scale: none; } }
 .hero-orbit { animation: orbit-spin var(--orbit) linear var(--orbit-start) infinite; }
 @keyframes orbit-spin { to { rotate: 360deg; } }
 .orbit-arm { position: absolute; left: 50%; top: 50%; width: var(--r); height: 0; transform-origin: 0 0; rotate: var(--a); }
@@ -324,6 +326,7 @@ body {
 @keyframes orbit-counter { to { rotate: -360deg; } }
 .hero-chip {
   max-width: var(--chip-w);
+  text-wrap: balance;
   transition: translate 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s;
   animation: chip-pop 0.6s cubic-bezier(0.34, 1.4, 0.64, 1) both; animation-delay: calc(var(--intro) + 0.95s + var(--i, 0) * 0.25s);
 }
@@ -369,8 +372,8 @@ body {
 .cta-sweep:hover::before, .cta-sweep:focus-visible::before { scale: 1 1; }
 .cta-fill:active, .cta-sweep:active { transform: scale(0.97); }
 
-/* Titre du hero en Bricolage Grotesque (sous-ensemble du titre ; autre texte : Poppins en secours). */
-.hero-title { font-family: var(--font-titre), var(--font-poppins), ui-sans-serif, system-ui, sans-serif; line-height: 1; letter-spacing: -0.012em; }
+/* Titre du hero en Bricolage Grotesque Bold, taille optique 96 (sous-ensemble du titre ; sinon, la police des titres). */
+.hero-title { font-family: var(--font-titre), var(--font-display); line-height: 1; letter-spacing: -0.004em; }
 /* Titre : chaque mot monte de derrière un masque (assez haut pour les accents et les jambages). */
 .hw { display: inline-block; overflow: hidden; vertical-align: bottom; padding-block: 0.1em 0.2em; margin-block: -0.1em -0.2em; }
 .hw > span { display: inline-block; animation: word-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--intro) + var(--i, 0) * 80ms); }
@@ -406,8 +409,13 @@ body {
   contain-intrinsic-size: auto 900px;
 }
 
-/* Accueil : texte en Poppins Regular et SemiBold, comme la charte (les titres restent en Poppins Medium). */
-.landing-text { font-family: var(--font-poppins-text), var(--font-poppins), ui-sans-serif, system-ui, sans-serif; }
+/* Accueil : texte courant en Poppins Regular (charte) ; titres, liens, boutons, étiquettes et tout ce qui
+   est en gras en Bricolage Grotesque, avec Poppins en secours (jamais Atkinson : 2 fichiers de plus). */
+.landing-text {
+  --font-display: var(--font-bricolage), var(--font-poppins-text), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-poppins-text), ui-sans-serif, system-ui, sans-serif;
+}
+.landing-text :where(.font-medium, .font-semibold, .font-bold, .btn, .eyebrow, .pill, b, strong):not(.hero-title) { font-family: var(--font-display); }
 
 /* Étiquette de section (« Services », « Parcours »…) : le nom de la section, comme dans la navigation. */
 .eyebrow {
@@ -510,18 +518,82 @@ body {
   .flow-cell, .intro { display: none; }
 }
 
-/* « Utile même sans… » : la trame de la marque en filigrane, sur un calque à part (déplacé sans repeindre)
-   qui glisse un peu moins vite que la page au défilement. Les cartes montent l'une après l'autre. */
-.filigrane { isolation: isolate; overflow: hidden; }
+/* « Utile même sans… » : bandeau Forêt, deux calques de filigrane en parallaxe (déplacés sans repeindre) :
+   la trame de la marque, plus lente que la page, et le symbole géant, plus rapide, qui tourne.
+   overflow: clip (et non hidden) : la section ne devient pas un conteneur de défilement, les animations
+   liées au défilement de ses enfants restent actives. */
+.filigrane { isolation: isolate; overflow: clip; }
 .filigrane::before {
   content: '';
   position: absolute;
   z-index: -1;
-  inset: -90px 0;
-  background: url('/motifs/trame-foret.svg') 0 0 / 180px 180px;
+  inset: -260px 0;
+  background: url('/motifs/trame-filigrane.svg') 0 0 / 180px 180px;
 }
-@keyframes trame-drift { from { translate: 0 -70px; } to { translate: 0 70px; } }
-@keyframes card-up { from { opacity: 0; translate: 0 48px; } }
+.filigrane-mark { position: absolute; z-index: -1; top: 10%; right: -30%; width: min(40rem, 105vw); aspect-ratio: 1; pointer-events: none; }
+@media (min-width: 768px) { .filigrane-mark { right: 4%; top: 12%; } }
+@keyframes trame-drift { from { translate: 0 -220px; } to { translate: 0 220px; } }
+@keyframes mark-drift { from { translate: 0 -65%; rotate: -35deg; } to { translate: 0 65%; rotate: 35deg; } }
+
+/* Le jeu de cartes (référence : cartes de couleur inclinées, en quinconce). Téléphone et tablette : on les
+   fait défiler au doigt, légèrement inclinées. Grand écran : les cinq côte à côte, inclinaison et décalage
+   complets. Pastille (pictogramme) et flèche découpées dans l'illustration, de la couleur de la carte. */
+.sans-deck {
+  display: flex;
+  gap: 1.25rem;
+  margin-inline: -1rem;
+  padding: 2rem 1rem 2.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(95 208 143 / 0.35) transparent;
+}
+.sans-card { --t: calc(var(--tilt, 0deg) * 0.4); flex: 0 0 min(19rem, 80%); scroll-snap-align: start; rotate: var(--t); }
+@media (min-width: 1280px) {
+  .sans-deck { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: start; gap: 1.25rem; margin: 0; padding: 0 0 2rem; overflow: visible; }
+  .sans-card { --t: var(--tilt, 0deg); translate: 0 var(--lift, 0rem); }
+}
+.sans-face {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 1.75rem;
+  padding: 0.75rem;
+  background: var(--sc-bg);
+  color: var(--sc-fg);
+  transition: rotate 0.55s cubic-bezier(0.34, 1.4, 0.64, 1), translate 0.55s cubic-bezier(0.34, 1.4, 0.64, 1), scale 0.55s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.4s, opacity 0.4s, filter 0.4s;
+}
+.sans-art { position: relative; display: block; }
+.sans-art > div { border-radius: 1.15rem; }
+.sans-art img { scale: var(--z, 1); transform-origin: var(--o, 50% 50%); transition: scale 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+.sans-badge, .sans-arrow {
+  position: absolute;
+  top: -0.2rem;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  background: var(--sc-bg);
+  color: var(--sc-fg);
+  box-shadow: 0 0 0 0.4rem var(--sc-bg);
+  transition: rotate 0.45s cubic-bezier(0.34, 1.4, 0.64, 1), background-color 0.3s, color 0.3s, scale 0.45s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+.sans-badge { left: -0.2rem; }
+.sans-arrow { right: -0.2rem; }
+/* Survol ou clavier : la carte se redresse, monte et grandit un peu, l'illustration s'avance, la pastille
+   rebondit, la flèche tourne vers l'avant ; les autres cartes s'effacent. */
+.sans-card:has(.sans-face:hover, .sans-face:focus-visible) { position: relative; z-index: 2; }
+.sans-face:hover, .sans-face:focus-visible { rotate: calc(var(--t) * -1); translate: 0 -14px; scale: 1.04; box-shadow: 0 32px 60px -18px rgb(0 0 0 / 0.7), 0 0 48px -8px rgb(95 208 143 / 0.35); }
+.sans-face:hover .sans-art img, .sans-face:focus-visible .sans-art img { scale: calc(var(--z, 1) * 1.14); }
+.sans-face:hover .sans-badge, .sans-face:focus-visible .sans-badge { scale: 1.12; rotate: -10deg; }
+.sans-face:hover .sans-arrow, .sans-face:focus-visible .sans-arrow { rotate: 45deg; background: #fff; color: #0b3d2c; }
+@media (hover: hover) {
+  .sans-deck:has(.sans-face:hover) .sans-face:not(:hover) { opacity: 0.7; }
+}
+@keyframes card-deal { from { opacity: 0; translate: 0 110px; rotate: 0deg; } }
+@keyframes card-slide { from { scale: 0.92; } }
 
 /* Le problème barré, puis la réponse qui glisse en place. */
 .strike { background: linear-gradient(currentColor, currentColor) no-repeat 0 58% / 100% 1.5px; }
@@ -545,9 +617,14 @@ body {
   .flow-blood { animation: blood-fill linear both; animation-timeline: --flow; animation-range: cover 50vh cover calc(100% - 50vh); }
   .flow-node, .flow-end { animation: node-on linear both; animation-timeline: view(); animation-range: cover calc(50vh - 24px) cover calc(50vh + 12px); }
   .flow-end { animation-name: heart-on; }
-  .filigrane::before { animation: trame-drift linear both; animation-timeline: --filigrane; }
   .filigrane { view-timeline-name: --filigrane; }
-  .sans-card { animation: card-up both cubic-bezier(0.16, 1, 0.3, 1); animation-timeline: view(); animation-range: entry 0% cover calc(18% + var(--i) * 4%); }
+  .filigrane::before { animation: trame-drift linear both; animation-timeline: --filigrane; }
+  .filigrane-mark { animation: mark-drift linear both; animation-timeline: --filigrane; }
+  /* Rail : chaque carte grandit en entrant par le côté. Grand écran : elles tombent en place, l'une après l'autre. */
+  .sans-card { animation: card-slide linear both; animation-timeline: view(inline); animation-range: entry 0% entry 100%; }
+  @media (min-width: 1280px) {
+    .sans-card { animation: card-deal both cubic-bezier(0.16, 1, 0.3, 1); animation-timeline: view(); animation-range: entry 0% cover calc(24% + var(--i) * 5%); }
+  }
   .strike { animation: strike-in linear both; animation-timeline: view(); animation-range: entry 60% cover 40%; }
   .slide-in { animation: slide-in both cubic-bezier(0.16, 1, 0.3, 1); animation-timeline: view(); animation-range: entry 70% cover 40%; }
   .zoom-in img { animation: zoom-in both linear; animation-timeline: view(); animation-range: entry 0% cover 50%; }

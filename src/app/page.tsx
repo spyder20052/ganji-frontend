@@ -6,6 +6,7 @@ import { ArrowRight, ArrowUpRight, Check, Droplet, Heart, LogIn, ShieldX, X } fr
 import { ListenButton } from '@/components/ListenButton';
 import { GanjiSymbol } from '@/components/GanjiSymbol';
 import { Logo } from '@/components/Logo';
+import { Logotype } from '@/components/Logotype';
 import { Pictogram } from '@/components/Pictogram';
 import { PrefsMenu } from '@/components/PrefsMenu';
 import { I18nScope } from '@/i18n/I18nScope';
@@ -18,12 +19,12 @@ import { Intro } from './_landing/Intro';
 import { PersonaTabs, type PersonaView } from './_landing/PersonaTabs';
 import { ServiceRail } from './_landing/ServiceRail';
 
-/* Charte : Poppins pour tout l'accueil (Regular pour le texte, SemiBold pour l'accent, Medium pour les titres,
-   déjà chargé par la mise en page). Préchargée sur cette page seulement. */
-const poppinsText = Poppins({ subsets: ['latin'], weight: ['400', '600'], variable: '--font-poppins-text', display: 'swap' });
+/* Charte : Poppins Regular pour le texte courant de l'accueil (les titres et les accents sont en Bricolage
+   Grotesque, chargée par la mise en page). Préchargée sur cette page seulement. */
+const poppinsText = Poppins({ subsets: ['latin'], weight: ['400'], variable: '--font-poppins-text', display: 'swap' });
 
 /* Titre du hero : Bricolage Grotesque Bold, taille optique 96, réduite aux lettres du titre (2,5 Ko,
-   scripts/polices/titre.sh). Ses pièges à encre et son approche serrée donnent du caractère au titre. */
+   scripts/polices/polices.py). Ses pièges à encre et son approche serrée donnent du caractère au titre. */
 const titleFont = localFont({ src: './_landing/fonts/bricolage-titre.woff2', weight: '700', variable: '--font-titre', display: 'swap' });
 
 /* Conteneur commun : mêmes marges que la barre de navigation, sur toutes les sections. */
@@ -175,13 +176,15 @@ const STEPS = [
   { name: 'tuto-rappels', icon: 'calendar', title: 'Recevez vos rappels', text: 'Rendez-vous, médicaments, vaccins : par SMS, appel vocal ou notification.' },
 ];
 
-/** La règle des « 5 sans » ; les chiffres viennent du cahier des charges et de leurs sources. */
+/** La règle des « 5 sans » ; les chiffres viennent du cahier des charges et de leurs sources. Chaque carte :
+ *  une illustration recadrée sur le détail utile (pos, zoom), ses couleurs (fond, texte), son inclinaison et son
+ *  décalage vertical (en quinconce, comme un jeu de cartes posé). */
 const FIVE_WITHOUT = [
-  { art: 'sans-reseau', icon: 'offline', title: 'Sans réseau', text: 'Carnet, carte d’urgence et rappels restent consultables hors ligne.', href: '/app/carte-urgence' },
-  { art: 'sans-smartphone', icon: 'phone', title: 'Sans smartphone', text: 'SMS, menu *229*25# et appel vocal. Les femmes ne sont que 22 % des abonnés à l’internet mobile (ARCEP, 2025).', href: '/simulateur' },
-  { art: 'sans-lire', icon: 'listen', title: 'Sans savoir lire', text: 'Pictogrammes et voix en langue nationale : 51 % des adultes savent lire (2022).', href: '/orientation' },
-  { art: 'sans-argent', icon: 'care', title: 'Sans argent immédiat', text: 'L’urgence vitale d’abord : la carte QR guide les secours.', href: '/urgence' },
-  { art: 'sans-compte', icon: 'no-account', title: 'Sans compte', text: 'Orientation et lieux de soin ouverts, sans rien créer.', href: '/carte' },
+  { art: 'service-relais', pos: '60% 10%', zoom: 1.25, icon: 'offline', title: 'Sans réseau', text: 'Carnet, carte d’urgence et rappels restent consultables hors ligne.', href: '/app/carte-urgence', bg: '#0a1a14', fg: '#ffffff', tilt: '0deg', lift: '3rem' },
+  { art: 'service-sang', pos: '30% 0%', zoom: 1.25, icon: 'phone', title: 'Sans smartphone', text: 'SMS, menu *229*25# et appel vocal. Les femmes ne sont que 22 % des abonnés à l’internet mobile (ARCEP, 2025).', href: '/simulateur', bg: '#e6f0e9', fg: '#0a1a14', tilt: '-2deg', lift: '0rem' },
+  { art: 'persona-afiavi', pos: '50% 0%', zoom: 1, icon: 'listen', title: 'Sans savoir lire', text: 'Pictogrammes et voix en langue nationale : 51 % des adultes savent lire (2022).', href: '/orientation', bg: '#5fd08f', fg: '#0b3d2c', tilt: '1.5deg', lift: '2.75rem' },
+  { art: 'service-urgence', pos: '60% 25%', zoom: 1.08, icon: 'care', title: 'Sans argent immédiat', text: 'L’urgence vitale d’abord : la carte QR guide les secours.', href: '/urgence', bg: '#0a1a14', fg: '#ffffff', tilt: '0deg', lift: '0.5rem' },
+  { art: 'service-orientation', pos: '100% 55%', zoom: 1.6, icon: 'no-account', title: 'Sans compte', text: 'Orientation et lieux de soin ouverts, sans rien créer.', href: '/carte', bg: '#b7d3c1', fg: '#0a1a14', tilt: '-1.75deg', lift: '2.25rem' },
 ];
 
 const JOURNAL = [
@@ -240,7 +243,7 @@ export default async function Home() {
         <section className="relative overflow-hidden bg-brand-900 text-white [&_:focus-visible]:!outline-leaf">
           <div className={`${WRAP} relative grid items-center gap-10 pt-10 pb-24 md:pt-16 md:pb-32 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12`}>
             <div className="space-y-7">
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
                 <p className="rise-in inline-flex items-center gap-2 rounded-full bg-white/10 py-1.5 pr-4 pl-3 text-sm font-semibold ring-1 ring-white/15" style={{ '--i': 0 } as React.CSSProperties}>
                   <span aria-hidden className="h-2 w-2 rounded-full bg-leaf" />
                   {t('Même sans réseau ni smartphone')}
@@ -264,9 +267,9 @@ export default async function Home() {
               <p className="rise-in max-w-[34ch] text-xl text-sage" style={{ '--i': 5 } as React.CSSProperties}>
                 {t('Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies.')}
               </p>
-              <div className="rise-in flex flex-wrap gap-3" style={{ '--i': 6 } as React.CSSProperties}>
+              <div className="rise-in flex flex-wrap gap-3 max-sm:[&>a]:w-full" style={{ '--i': 6 } as React.CSSProperties}>
                 {/* Au survol, le rond de la flèche s'étend et remplit le bouton ; la flèche avance. */}
-                <Link prefetch={false} href="/connexion" className="cta-fill btn !min-h-14 bg-leaf !pr-2 !pl-6 text-lg text-brand-900">
+                <Link prefetch={false} href="/connexion" className="cta-fill btn !min-h-14 bg-leaf !pr-2 !pl-6 text-lg text-brand-900 max-sm:justify-between">
                   <span>{t('Ouvrir mon carnet')}</span>
                   <span className="cta-arrow grid h-10 w-10 place-items-center rounded-full text-leaf">
                     <ArrowRight size={18} aria-hidden />
@@ -478,38 +481,41 @@ export default async function Home() {
         </section>
 
         {/* ── La règle des 5 sans : bandeau Forêt, la trame de la marque en filigrane ; chaque carte mène à l'outil ── */}
-        <section id="inclusion" aria-labelledby="h-5sans" className="below-fold sheet filigrane scroll-mt-20 bg-brand-900 py-16 text-white md:py-24 [&_:focus-visible]:!outline-leaf">
-          <div className={WRAP}>
+        <section id="inclusion" aria-labelledby="h-5sans" className="below-fold sheet filigrane scroll-mt-24 bg-brand-900 py-16 text-white md:py-24 [&_:focus-visible]:!outline-leaf">
+          {/* Deux calques de filigrane à des vitesses différentes : la trame, et le symbole géant qui tourne. */}
+          <span aria-hidden className="filigrane-mark">
+            <GanjiSymbol size="100%" color="#0f4a35" />
+          </span>
+          <div className={`${WRAP} relative`}>
             <div className="reveal mb-10 max-w-[44rem] space-y-5 md:mb-14">
               <h2 id="h-5sans" className="text-[2.6rem] leading-[1.05] font-medium sm:text-6xl">
                 {t('Utile même sans…')}
               </h2>
               <p className="max-w-[46ch] text-lg">{t('Ganji est conçu pour la personne la plus éloignée du numérique, pas pour l’usager connecté des villes.')}</p>
             </div>
-            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5 lg:gap-4">
+            {/* Cartes de couleur inclinées, en quinconce ; au survol (ou au clavier) la carte se redresse et monte,
+                son illustration s'avance, la flèche tourne, et les autres s'effacent un peu.
+                Téléphone et tablette : on les fait défiler au doigt. */}
+            <ul tabIndex={0} aria-label={t('Les cinq situations, à faire défiler')} className="sans-deck">
               {FIVE_WITHOUT.map((f, i) => (
-                <li key={f.href} className="sans-card" style={{ '--i': i } as React.CSSProperties}>
-                  <Link prefetch={false} href={f.href} className="group flex h-full flex-col rounded-card bg-brand-700 p-5 transition-[translate,background-color,box-shadow] duration-300 hover:-translate-y-1.5 hover:bg-[#1a6a4c] hover:shadow-[0_24px_40px_-22px_rgb(0_0_0_/_0.7)]">
-                    <span className="flex items-start justify-between">
-                      {/* Vignette « sticker » quand elle existe (docs/ILLUSTRATIONS.md, section 8), sinon le pictogramme. */}
-                      {hasIllustration(f.art) ? (
-                        <span className="block w-20 transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110">
-                          <Illustration name={f.art} icon={f.icon} alt="" sizes="80px" />
-                        </span>
-                      ) : (
-                        <span aria-hidden className="grid h-12 w-12 place-items-center rounded-full bg-leaf text-brand-900 transition-transform duration-500 group-hover:-rotate-12 group-hover:scale-110">
-                          <Pictogram name={f.icon} size={22} />
-                        </span>
-                      )}
-                      <ArrowUpRight size={22} aria-hidden className="text-leaf opacity-0 transition-[opacity,translate] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 group-focus-visible:opacity-100" />
+                <li key={f.href} className="sans-card" style={{ '--i': i, '--tilt': f.tilt, '--lift': f.lift, '--z': f.zoom, '--o': f.pos, '--sc-bg': f.bg, '--sc-fg': f.fg } as React.CSSProperties}>
+                  <Link prefetch={false} href={f.href} className="sans-face">
+                    <span className="sans-art">
+                      <Illustration name={f.art} icon={f.icon} alt="" frame="aspect-[5/4]" position={f.pos} sizes="(min-width: 1280px) 400px, 520px" />
+                      <span aria-hidden className="sans-badge">
+                        <Pictogram name={f.icon} size={20} />
+                      </span>
+                      <span aria-hidden className="sans-arrow">
+                        <ArrowUpRight size={18} />
+                      </span>
                     </span>
-                    <span className="mt-5 block text-xl leading-tight font-medium">{t(f.title)}</span>
-                    <span className="mt-2 block text-base leading-relaxed">{t(f.text)}</span>
+                    <span className="mt-4 block px-2 text-xl leading-tight font-semibold">{t(f.title)}</span>
+                    <span className="mt-2 block px-2 pb-2 text-[0.95rem] leading-snug">{t(f.text)}</span>
                   </Link>
                 </li>
               ))}
             </ul>
-            <p className="reveal mt-10 max-w-[60ch] text-lg md:mt-14">{t('Et plus de 12 000 relais communautaires servent de point d’accès à ceux qui n’ont pas de téléphone.')}</p>
+            <p className="reveal mt-8 max-w-[60ch] text-lg md:mt-10">{t('Et plus de 12 000 relais communautaires servent de point d’accès à ceux qui n’ont pas de téléphone.')}</p>
           </div>
         </section>
 
@@ -591,7 +597,9 @@ export default async function Home() {
             <GanjiSymbol size={144} color="#5FD08F" className="onde-heart absolute top-0 left-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 md:h-36 md:w-36" />
             <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-end md:gap-8">
               <div className="text-center md:order-2">
-                <p className="font-display text-[3.4rem] leading-none font-medium md:text-7xl">Ganji</p>
+                <p className="flex justify-center text-[3.4rem] md:text-7xl">
+                  <Logotype label="Ganji" />
+                </p>
                 <p className="mt-3 text-lg text-sage">{t('Votre santé, suivie partout.')}</p>
                 <div className="mt-6 flex flex-wrap justify-center gap-3">
                   <Link prefetch={false} href="/orientation" className="btn bg-leaf !pr-2 text-brand-900 hover:bg-leaf-strong">

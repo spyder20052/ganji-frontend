@@ -23,7 +23,7 @@ export function DemoPicker({ personas }: { personas: PersonaCard[] }) {
             <p className="text-base text-[var(--fg-muted)]">{p.story}</p>
             <p className="text-sm"><span className="font-bold">{t('Montre : ')}</span>{p.shows}</p>
             <button
-              className="btn btn-primary mt-auto"
+              className="btn btn-primary mt-auto !min-h-14 py-2 text-balance"
               disabled={busy !== null}
               onClick={async () => {
                 setBusy(p.persona);
@@ -38,7 +38,7 @@ export function DemoPicker({ personas }: { personas: PersonaCard[] }) {
                 }
               }}
             >
-              {busy === p.persona ? t('Connexion…') : t('Entrer en tant que {name}', { name: p.name.split(' ')[0] === 'Dr' ? p.name : p.name.split(' ')[0] })}
+              {busy === p.persona ? t('Connexion…') : t('Entrer en tant que {name}', { name: p.name.split(' ')[0] === 'Dr' ? p.name.replace('Dr ', 'Dr\u00a0') : p.name.split(' ')[0] })}
             </button>
           </li>
         ))}

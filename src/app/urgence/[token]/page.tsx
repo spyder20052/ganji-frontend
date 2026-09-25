@@ -138,7 +138,7 @@ export default async function EmergencyCardPage({ params }: { params: Promise<{ 
         </section>
 
         <section aria-labelledby="h-pro" className="card space-y-3 p-5">
-          <h2 id="h-pro" className="flex items-center gap-2 text-lg font-bold"><ShieldAlert size={22} aria-hidden /> {t('Vous êtes soignant ?')}</h2>
+          <h2 id="h-pro" className="flex items-center gap-2 text-xl font-bold"><ShieldAlert size={22} aria-hidden /> {t('Vous êtes soignant ?')}</h2>
           <p className="text-base text-[var(--fg-muted)]">
             {t('Cette carte ne montre que l’essentiel vital. Pour le dossier complet en urgence, connectez-vous avec votre compte professionnel puis utilisez l’accès « bris de glace » depuis la fiche patient : motif obligatoire, accès limité à 12 h, journalisé et notifié au patient.')}
           </p>

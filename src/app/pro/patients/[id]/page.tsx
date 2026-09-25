@@ -311,7 +311,7 @@ function Refusal({ patientId, t }: { patientId: string; t: T }) {
           <span className="chip-round text-[var(--color-brand-900)]">
             <QrCode size={22} aria-hidden />
           </span>
-          <h2 id="h-ask" className="text-lg font-bold">
+          <h2 id="h-ask" className="text-xl font-bold">
             {t('Demander au patient de montrer son QR')}
           </h2>
           <p className="text-[var(--fg-muted)]">
@@ -325,7 +325,7 @@ function Refusal({ patientId, t }: { patientId: string; t: T }) {
           <span className="chip-round text-[var(--color-danger-600)]">
             <Siren size={22} aria-hidden />
           </span>
-          <h2 id="h-bg" className="text-lg font-bold">
+          <h2 id="h-bg" className="text-xl font-bold">
             {t('Urgence vitale et patient hors d’état de consentir')}
           </h2>
           <p className="text-[var(--fg-muted)]">{t('Le bris de glace ouvre le dossier 12 h. Il est justifié, tracé et contrôlé.')}</p>

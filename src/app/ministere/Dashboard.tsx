@@ -114,9 +114,11 @@ export function Dashboard({ initial }: { initial: National | null }) {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-brand-500)] opacity-60" />
             <span className="relative inline-flex h-3 w-3 rounded-full bg-[var(--color-brand-500)]" />
           </span>
-          {liveBefore}
-          <span className="num">{updatedAt ? fmtTime(updatedAt, locale) : '—'}</span>
-          {liveAfter}
+          <span>
+            {liveBefore}
+            <span className="num">{updatedAt ? fmtTime(updatedAt, locale) : '—'}</span>
+            {liveAfter}
+          </span>
         </p>
       </div>
 
@@ -165,7 +167,7 @@ export function Dashboard({ initial }: { initial: National | null }) {
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
             <DeptMap departments={data.departments} />
             <section aria-labelledby="h-rup" className="card space-y-3 p-5">
-              <h2 id="h-rup" className="flex items-center gap-2 text-lg font-bold"><Pictogram name="pill" size={22} /> {t('Ruptures les plus fréquentes')}</h2>
+              <h2 id="h-rup" className="flex items-center gap-2 text-xl font-bold"><Pictogram name="pill" size={22} /> {t('Ruptures les plus fréquentes')}</h2>
               {data.topRuptures.length === 0 ? (
                 <p className="text-[var(--fg-muted)]">{t('Aucune rupture signalée.')}</p>
               ) : (
@@ -175,7 +177,7 @@ export function Dashboard({ initial }: { initial: National | null }) {
                     return (
                       <li key={r.medication} className="space-y-1">
                         <div className="flex items-baseline justify-between gap-3 text-base">
-                          <span><span className="num text-[var(--fg-muted)]">{i + 1}.</span> {r.medication}</span>
+                          <span><span className="num text-[var(--fg-muted)]">{i + 1}.</span> {r.medication.replace(/(\d) (mg|g|ml|µg)\b/g, '$1\u00a0$2')}</span>
                           <span className="num shrink-0 font-bold">{t('{n} pharm.', { n: r.pharmacies })}</span>
                         </div>
                         <div className="h-2 rounded-full bg-[var(--bg)]" aria-hidden>
@@ -288,7 +290,7 @@ function DeptMap({ departments: fresh }: { departments: DeptRow[] }) {
 
   return (
     <section aria-labelledby="h-map" className="card space-y-3 p-4">
-      <h2 id="h-map" className="text-lg font-bold">{t('Sang et médicaments par département')}</h2>
+      <h2 id="h-map" className="text-xl font-bold">{t('Sang et médicaments par département')}</h2>
       <MapView markers={markers} center={[9.3, 2.3]} zoom={6} height={440} label={t('Carte des départements : taille = poches de sang, couleur = ruptures')} />
       <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-[var(--fg-muted)]">
         <span>{t('Taille du cercle : poches de sang en stock')}</span>
@@ -344,7 +346,7 @@ function DeptTable({ departments }: { departments: DeptRow[] }) {
 
   return (
     <section aria-labelledby="h-table" className="card space-y-3 p-4">
-      <h2 id="h-table" className="text-lg font-bold">{t('Par département')}</h2>
+      <h2 id="h-table" className="text-xl font-bold">{t('Par département')}</h2>
       <div className="-mx-4 overflow-x-auto px-4">
         <table className="w-full min-w-[760px] border-collapse text-base">
           <caption className="sr-only">{t('Indicateurs par département, triables')}</caption>

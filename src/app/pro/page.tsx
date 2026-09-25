@@ -87,15 +87,15 @@ export default async function ProHome() {
             </Link>
           </div>
           <dl className="mt-4 grid grid-cols-3 gap-3 text-center">
-            <div className="rounded-2xl bg-[var(--color-ocre-100)] p-3">
+            <div className="flex flex-col justify-between rounded-2xl bg-[var(--color-ocre-100)] p-3">
               <dt className="text-sm font-bold text-[var(--color-ocre-700)]">{t('À répondre')}</dt>
               <dd className="num text-3xl font-bold text-[var(--color-ocre-700)]">{toAnswer.length}</dd>
             </div>
-            <div className="rounded-2xl bg-[var(--bg)] p-3">
+            <div className="flex flex-col justify-between rounded-2xl bg-[var(--bg)] p-3">
               <dt className="text-sm font-bold text-[var(--fg-muted)]">{t('Mes demandes en attente')}</dt>
               <dd className="num text-3xl font-bold">{waitingMine.length}</dd>
             </div>
-            <div className="rounded-2xl bg-[var(--color-brand-100)] p-3">
+            <div className="flex flex-col justify-between rounded-2xl bg-[var(--color-brand-100)] p-3">
               <dt className="text-sm font-bold text-[var(--color-brand-900)]">{t('Avis reçus')}</dt>
               <dd className="num text-3xl font-bold text-[var(--color-brand-900)]">{answeredMine.length}</dd>
             </div>

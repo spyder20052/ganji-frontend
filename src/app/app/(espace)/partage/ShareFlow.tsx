@@ -90,7 +90,7 @@ export function ShareFlow() {
         </div>
         <div>
           <p className="label">{t('Ou dictez ce code')}</p>
-          <p className="num text-5xl font-bold tracking-[.2em]" aria-label={t('Code : {code}', { code: share.shareCode.split('').join(' ') })}>
+          <p className="num font-sans text-5xl font-bold tracking-[.2em]" aria-label={t('Code : {code}', { code: share.shareCode.split('').join(' ') })}>
             {share.shareCode.slice(0, 3)} {share.shareCode.slice(3)}
           </p>
         </div>

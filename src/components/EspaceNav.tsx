@@ -57,7 +57,7 @@ export function TabBar({ links }: { links: NavLink[] }) {
               >
                 <Pictogram name={l.icon} size={22} />
                 {active && (
-                  <span aria-hidden className="tabbar-label text-base font-semibold">
+                  <span aria-hidden className="tabbar-label max-w-[6.5rem] text-sm leading-tight font-semibold text-balance">
                     {l.label}
                   </span>
                 )}
