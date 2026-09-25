@@ -210,4 +210,8 @@ export const landing: Messages = {
   "Le problème": "The problem",
   "L’histoire de Koffi": "Koffi’s story",
   "Les trois étapes, à faire défiler": "The three steps, scroll to see them",
+  "Pour vous et vos proches": "For you and your family",
+  "Pour les soignants et le pays": "For health workers and the country",
+  "Même sans réseau ni smartphone": "Even without a network or a smartphone",
+  "Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies.": "Shared record, blood, medicines, emergencies: Ganji connects patients, health workers and pharmacies.",
 };

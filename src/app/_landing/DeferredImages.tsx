@@ -1,5 +1,6 @@
 'use client';
 import { useEffect } from 'react';
+import { optimized, srcSetFor } from './image-url';
 
 /**
  * Pose l'adresse des illustrations différées (voir IllustrationView) quand elles arrivent à 400 px
@@ -13,14 +14,15 @@ export function DeferredImages() {
         for (const e of entries) {
           if (!e.isIntersecting) continue;
           const img = e.target as HTMLImageElement;
-          img.srcset = img.dataset.srcset ?? '';
-          img.src = img.dataset.src ?? '';
+          const name = img.dataset.img ?? '';
+          img.srcset = srcSetFor(name);
+          img.src = optimized(name, 1080);
           io.unobserve(img);
         }
       },
       { rootMargin: '400px' },
     );
-    document.querySelectorAll<HTMLImageElement>('img[data-src]').forEach((img) => io.observe(img));
+    document.querySelectorAll<HTMLImageElement>('img[data-img]').forEach((img) => io.observe(img));
     return () => io.disconnect();
   }, []);
   return null;

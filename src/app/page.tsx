@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, LogIn, Plus, ShieldX, X } from 'lucide-react';
+import { Fragment } from 'react';
+import { ArrowDown, ArrowRight, ArrowUpRight, Check, Droplet, Heart, LogIn, ShieldX, X } from 'lucide-react';
 import { ListenButton } from '@/components/ListenButton';
 import { GanjiSymbol } from '@/components/GanjiSymbol';
 import { Logo } from '@/components/Logo';
@@ -10,7 +11,8 @@ import { getT } from '@/i18n/server';
 import { hasIllustration, Illustration } from './_landing/Illustration';
 import { DeferredImages } from './_landing/DeferredImages';
 import { KoffiStory } from './_landing/KoffiStory';
-import { Onde } from './_landing/Onde';
+import { HeroOnde } from './_landing/HeroOnde';
+import { Intro } from './_landing/Intro';
 import { PersonaTabs, type PersonaView } from './_landing/PersonaTabs';
 import { ServiceRail } from './_landing/ServiceRail';
 
@@ -26,10 +28,10 @@ const NAV = [
 
 /** Notifications du hero : un service chacune, placées autour du symbole sans le couvrir. */
 const HERO_CHIPS = [
-  { icon: 'blood', label: 'Donneur trouvé', chip: 'bg-danger-600 text-white', at: 'top-[5%] left-0' },
-  { icon: 'listen', label: 'Rappel en bariba', chip: 'bg-leaf text-brand-900', at: 'top-[19%] right-0' },
-  { icon: 'pill', label: 'Ordonnance vérifiée', chip: 'bg-brand-500 text-white', at: 'bottom-[17%] left-0' },
-  { icon: 'offline', label: 'Carte d’urgence hors ligne', chip: 'bg-brand-900 text-white', at: 'right-[4%] bottom-[3%]' },
+  { icon: 'blood', label: 'Donneur trouvé', chip: 'bg-danger-600 text-white', x: -46, y: -78 },
+  { icon: 'listen', label: 'Rappel en bariba', chip: 'bg-leaf text-brand-900', x: 50, y: -44 },
+  { icon: 'pill', label: 'Ordonnance vérifiée', chip: 'bg-brand-500 text-white', x: -50, y: 46 },
+  { icon: 'offline', label: 'Carte d’urgence hors ligne', chip: 'bg-brand-900 text-white', x: 38, y: 80 },
 ];
 
 const NO_ACCOUNT = [
@@ -49,20 +51,38 @@ const PROBLEMS = [
 ];
 
 /** Neuf services, en mosaïque : la taille de chaque case suit son poids dans le parcours. */
-const SERVICES = [
-  { key: 'carnet', title: 'Carnet partagé', text: 'Fiche vitale, soins et analyses. Vous décidez qui voit quoi, et pour combien de temps.', icon: 'carnet', href: '/connexion', pos: '30% 50%' },
-  { key: 'sang', title: 'Sang', text: 'Stocks de l’ANTS visibles, donneurs alertés, réponse par SMS.', icon: 'blood', href: '/demo', pos: '35% 50%' },
-  { key: 'medicaments', title: 'Médicaments', text: 'Qui a mon médicament, et laquelle est de garde.', icon: 'pill', href: '/medicaments', pos: '50% 50%' },
-  { key: 'urgence', title: 'Urgence', text: 'Carte QR lisible par les secours, même en mode avion.', icon: 'emergency', href: '/urgence', pos: '40% 50%' },
-  { key: 'orientation', title: 'Orientation', text: 'Des pictogrammes pour savoir où aller, sans compte.', icon: 'fever', href: '/orientation', pos: '45% 50%' },
-  { key: 'mere-enfant', title: 'Mère et enfant', text: 'Consultations prénatales, vaccins, rappels en langue nationale.', icon: 'pregnant', href: '/demo', pos: '50% 50%' },
-  { key: 'teleexpertise', title: 'Avis d’un spécialiste', text: 'Photos et résultats envoyés en 2G, réponse écrite ou vocale.', icon: 'talk', href: '/demo', pos: '50% 50%' },
-  { key: 'relais', title: 'Relais et épidémies', text: 'Signaler en 3 gestes, même hors ligne ; alerte au médecin chef de zone.', icon: 'people', href: '/demo', pos: '40% 50%' },
-  { key: 'pilotage', title: 'Pilotage national', text: 'Ruptures et besoins en sang par département, en données anonymes.', icon: 'map', href: '/demo', pos: '40% 50%' },
+/** Neuf services en deux rangées, chacune avec sa grande carte (la première, ouverte d'emblée). */
+const SERVICE_GROUPS = [
+  {
+    title: 'Pour vous et vos proches',
+    items: [
+      { key: 'carnet', title: 'Carnet partagé', text: 'Fiche vitale, soins et analyses. Vous décidez qui voit quoi, et pour combien de temps.', icon: 'carnet', href: '/connexion', pos: '30% 50%' },
+      { key: 'urgence', title: 'Urgence', text: 'Carte QR lisible par les secours, même en mode avion.', icon: 'emergency', href: '/urgence', pos: '40% 50%' },
+      { key: 'orientation', title: 'Orientation', text: 'Des pictogrammes pour savoir où aller, sans compte.', icon: 'fever', href: '/orientation', pos: '45% 50%' },
+      { key: 'medicaments', title: 'Médicaments', text: 'Qui a mon médicament, et laquelle est de garde.', icon: 'pill', href: '/medicaments', pos: '50% 50%' },
+      { key: 'mere-enfant', title: 'Mère et enfant', text: 'Consultations prénatales, vaccins, rappels en langue nationale.', icon: 'pregnant', href: '/demo', pos: '50% 50%' },
+    ],
+  },
+  {
+    title: 'Pour les soignants et le pays',
+    items: [
+      { key: 'sang', title: 'Sang', text: 'Stocks de l’ANTS visibles, donneurs alertés, réponse par SMS.', icon: 'blood', href: '/demo', pos: '35% 50%' },
+      { key: 'teleexpertise', title: 'Avis d’un spécialiste', text: 'Photos et résultats envoyés en 2G, réponse écrite ou vocale.', icon: 'talk', href: '/demo', pos: '50% 50%' },
+      { key: 'relais', title: 'Relais et épidémies', text: 'Signaler en 3 gestes, même hors ligne ; alerte au médecin chef de zone.', icon: 'people', href: '/demo', pos: '40% 50%' },
+      { key: 'pilotage', title: 'Pilotage national', text: 'Ruptures et besoins en sang par département, en données anonymes.', icon: 'map', href: '/demo', pos: '40% 50%' },
+    ],
+  },
 ];
 
-/** Route de la section « Parcours » (repère 1440 × 560) ; le même tracé guide le repère en CSS. */
-const ROAD = 'M -60 520 C 180 520 300 330 520 330 S 860 470 1040 470 S 1320 300 1500 280';
+/** Globules du tube de transfusion : taille, décalage, durée, départ. */
+const CELLS = [
+  { s: '8px', x: '-2px', dur: '5s', d: '0s' },
+  { s: '6px', x: '3px', dur: '6.5s', d: '-2.1s' },
+  { s: '9px', x: '1px', dur: '5.8s', d: '-3.7s' },
+  { s: '7px', x: '-3px', dur: '7.2s', d: '-1.2s' },
+  { s: '6px', x: '2px', dur: '4.6s', d: '-4.4s' },
+  { s: '8px', x: '-1px', dur: '6.1s', d: '-5.3s' },
+];
 
 const PERSONAS: (PersonaView & { icon: string })[] = [
   {
@@ -181,6 +201,7 @@ export default async function Home() {
   const t = await getT();
   return (
     <>
+      <Intro />
       <header className="sticky top-0 z-30 bg-bg/90 backdrop-blur">
         <span aria-hidden className="scroll-progress absolute inset-x-0 bottom-0 h-[3px] bg-leaf" />
         <div className={`${WRAP} flex flex-wrap items-center gap-3 py-3`}>
@@ -203,48 +224,56 @@ export default async function Home() {
 
       <I18nScope area="landingClient">
       <main id="contenu">
-        {/* ── Hero : le slogan de la charte et l'onde Ganji ── */}
-        <section className={`${WRAP} grid items-center gap-8 pt-6 pb-12 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] md:gap-12 md:pt-12 md:pb-20`}>
-          <div className="space-y-6">
-            <div className="flex items-start justify-between gap-4">
-              <h1 className="rise-in min-w-0 text-[min(2.9rem,12.5vw)] leading-[1.02] font-medium tracking-tight [hyphens:manual] sm:text-[min(4rem,9vw)]" style={{ '--i': 0 } as React.CSSProperties}>
-                {t('Votre santé, suivie partout.')}
-              </h1>
-              <ListenButton compact text={t('Ganji. Votre santé, suivie partout. Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies, même sans réseau ni smartphone.')} audioKey="welcome" />
+        {/* ── Hero : fond Forêt, titre qui monte mot à mot, onde en radar d'où partent les notifications ── */}
+        <section className="relative overflow-hidden bg-brand-900 text-white [&_:focus-visible]:!outline-leaf">
+          <span aria-hidden className="hero-glow" />
+          <div className={`${WRAP} relative grid items-center gap-10 pt-10 pb-24 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] md:gap-12 md:pt-16 md:pb-32`}>
+            <div className="space-y-7">
+              <div className="flex items-center justify-between gap-4">
+                <p className="rise-in inline-flex items-center gap-2 rounded-full bg-white/10 py-1.5 pr-4 pl-3 text-sm font-semibold ring-1 ring-white/15" style={{ '--i': 0 } as React.CSSProperties}>
+                  <span aria-hidden className="live-dot h-2 w-2 rounded-full bg-leaf" />
+                  {t('Même sans réseau ni smartphone')}
+                </p>
+                <ListenButton compact text={t('Ganji. Votre santé, suivie partout. Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies, même sans réseau ni smartphone.')} audioKey="welcome" />
+              </div>
+              <div>
+                <h1 className="min-w-0 text-[min(3.1rem,13vw)] leading-[1.02] font-medium tracking-tight [hyphens:manual] sm:text-[min(4.4rem,9.5vw)]">
+                  {t('Votre santé, suivie partout.')
+                    .split(' ')
+                    .map((w, i, all) => (
+                      <Fragment key={i}>
+                        <span className={`hw ${i === all.length - 1 ? 'hw-accent' : ''}`}>
+                          <span style={{ '--i': i + 1 } as React.CSSProperties}>{w}</span>
+                        </span>
+                        {i < all.length - 1 ? ' ' : ''}
+                      </Fragment>
+                    ))}
+                </h1>
+              </div>
+              <p className="rise-in max-w-[34ch] text-xl text-sage" style={{ '--i': 5 } as React.CSSProperties}>
+                {t('Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies.')}
+              </p>
+              <div className="rise-in flex flex-wrap gap-3" style={{ '--i': 6 } as React.CSSProperties}>
+                <Link prefetch={false} href="/connexion" className="btn group !min-h-14 bg-leaf !pr-2 !pl-6 text-lg text-brand-900 hover:bg-leaf-strong">
+                  {t('Ouvrir mon carnet')}
+                  <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-900 text-leaf transition-transform group-hover:translate-x-0.5">
+                    <ArrowRight size={18} aria-hidden />
+                  </span>
+                </Link>
+                <Link prefetch={false} href="/orientation" className="btn !min-h-14 !px-6 text-lg text-white ring-1 ring-white/35 hover:bg-white/10">
+                  {t('J’ai un symptôme')}
+                </Link>
+              </div>
             </div>
-            <p className="rise-in max-w-[34ch] text-xl text-fg-muted" style={{ '--i': 1 } as React.CSSProperties}>
-              {t('Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies, même sans réseau ni smartphone.')}
-            </p>
-            <div className="rise-in flex flex-wrap gap-3" style={{ '--i': 2 } as React.CSSProperties}>
-              <Link prefetch={false} href="/connexion" className="btn btn-primary !min-h-14 !px-6 text-lg">
-                {t('Ouvrir mon carnet')}
-              </Link>
-              <Link prefetch={false} href="/orientation" className="btn btn-ghost !min-h-14 !px-6 text-lg">
-                {t('J’ai un symptôme')}
-              </Link>
+            <div aria-hidden className="hero-art relative">
+              <HeroOnde chips={HERO_CHIPS.map((c) => ({ ...c, label: t(c.label) }))} />
             </div>
-          </div>
-          {/* Onde en SVG (aucune image à télécharger : budget de 200 Ko) et quatre notifications
-              qui flottent autour : ce que Ganji fait, avant même de lire. */}
-          <div aria-hidden className="hero-art relative">
-            <Onde />
-            {HERO_CHIPS.map((c, i) => (
-              <span
-                key={c.label}
-                className={`hero-chip absolute flex items-center gap-2 rounded-2xl bg-card py-1.5 pr-3 pl-1.5 text-sm font-semibold whitespace-nowrap shadow-[var(--shadow-soft)] sm:text-base ${c.at}`}
-                style={{ '--i': i + 3 } as React.CSSProperties}
-              >
-                <span className={`grid h-8 w-8 place-items-center rounded-full ${c.chip}`}>
-                  <Pictogram name={c.icon} size={16} />
-                </span>
-                {t(c.label)}
-              </span>
-            ))}
           </div>
         </section>
 
         {/* ── Sans compte, tout de suite ── */}
-        <section aria-labelledby="h-sans-compte" className={`${WRAP} reveal pb-16 md:pb-24`}>
+        <section aria-labelledby="h-sans-compte" className="sheet bg-bg pt-12 pb-16 md:pt-16 md:pb-24">
+          <div className={`${WRAP} reveal`}>
           <h2 id="h-sans-compte" className="mb-4 text-2xl font-medium">
             {t('Sans compte, tout de suite')}
           </h2>
@@ -263,6 +292,7 @@ export default async function Home() {
               </li>
             ))}
           </ul>
+          </div>
         </section>
 
         {/* ── Le problème, la réponse ── */}
@@ -323,44 +353,51 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ── Ce que Ganji permet : rail d'illustrations, la carte survolée s'ouvre ── */}
+        {/* ── Ce que Ganji permet : deux rails d'illustrations, la carte survolée s'ouvre ── */}
         <section id="services" aria-labelledby="h-services" className="below-fold sheet scroll-mt-20 bg-brand-100 py-16 md:py-24 dark:bg-brand-950">
           <div className={WRAP}>
-            <div className="reveal mb-10 space-y-4 text-center">
+            <div className="reveal mb-12 space-y-4 text-center">
               <p className="eyebrow">{t('Services')}</p>
               <h2 id="h-services" className="mx-auto max-w-[18ch] text-[2.2rem] leading-tight font-medium sm:text-5xl">
                 {t('Tout ce qui touche à la santé, au même endroit.')}
               </h2>
               <p className="mx-auto max-w-[44ch] text-lg text-fg-muted">{t('Neuf services, un seul carnet.')}</p>
             </div>
-            <ServiceRail label={t('Les neuf services')}>
-              {SERVICES.map((s, i) => (
-                <li key={s.key} data-i={i} data-open={i === 0 ? '' : undefined} className="svc-item">
-                  <Link prefetch={false} href={s.href} className="svc-link group relative block h-full overflow-hidden rounded-card bg-brand-900 text-white">
-                    <span className="svc-img absolute inset-0">
-                      <Illustration name={`service-${s.key}`} icon={s.icon} alt="" frame="h-full" position={s.pos} sizes="(min-width: 768px) 600px, 82vw" />
-                    </span>
-                    <span aria-hidden className="svc-scrim absolute inset-0" />
-                    <span aria-hidden className="svc-mini absolute inset-x-0 bottom-5 flex-col items-center gap-3">
-                      <span className="grid h-10 w-10 place-items-center rounded-full bg-white text-brand-900">
-                        <Pictogram name={s.icon} size={18} />
-                      </span>
-                      <span className="font-display rotate-180 text-base font-medium whitespace-nowrap [writing-mode:vertical-rl]">{t(s.title)}</span>
-                    </span>
-                    <span className="svc-full absolute bottom-0 left-0 flex max-w-full flex-col gap-2 p-6">
-                      <span className="grid h-11 w-11 place-items-center rounded-full bg-leaf text-brand-900">
-                        <Pictogram name={s.icon} size={20} />
-                      </span>
-                      <span className="font-display text-2xl font-medium">{t(s.title)}</span>
-                      <span className="text-base text-white/90">{t(s.text)}</span>
-                      <span className="mt-1 inline-flex items-center gap-2 text-sm font-semibold">
-                        {t('Découvrir')} <ArrowRight size={16} aria-hidden className="transition-transform group-hover:translate-x-1" />
-                      </span>
-                    </span>
-                  </Link>
-                </li>
+            <div className="space-y-10">
+              {SERVICE_GROUPS.map((g) => (
+                <div key={g.title} className="reveal space-y-4">
+                  <h3 className="font-display text-xl font-medium">{t(g.title)}</h3>
+                  <ServiceRail label={t(g.title)}>
+                    {g.items.map((s, i) => (
+                      <li key={s.key} data-i={i} data-open={i === 0 ? '' : undefined} className="svc-item">
+                        <Link prefetch={false} href={s.href} className="svc-link group relative block h-full overflow-hidden rounded-card bg-brand-900 text-white">
+                          <span className="svc-img absolute inset-0">
+                            <Illustration name={`service-${s.key}`} icon={s.icon} alt="" frame="h-full" position={s.pos} sizes="(min-width: 768px) 560px, 82vw" />
+                          </span>
+                          <span aria-hidden className="svc-scrim absolute inset-0" />
+                          <span className="svc-more absolute top-4 right-4 inline-flex items-center gap-2 rounded-full bg-white/90 py-1.5 pr-1.5 pl-3.5 text-sm font-semibold text-brand-900">
+                            {t('Découvrir')}
+                            <span className="grid h-6 w-6 place-items-center rounded-full bg-brand-900 text-white">
+                              <ArrowRight size={14} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
+                            </span>
+                          </span>
+                          <span aria-hidden className="svc-mini absolute inset-x-3 bottom-4 flex-col items-start gap-2">
+                            <span className="grid h-9 w-9 place-items-center rounded-full bg-white text-brand-900">
+                              <Pictogram name={s.icon} size={17} />
+                            </span>
+                            <span className="font-display text-base leading-tight font-medium">{t(s.title)}</span>
+                          </span>
+                          <span className="svc-full absolute bottom-0 left-0 flex max-w-full flex-col gap-1.5 p-6">
+                            <span className="font-display text-3xl leading-tight font-medium">{t(s.title)}</span>
+                            <span className="text-base text-white/90">{t(s.text)}</span>
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ServiceRail>
+                </div>
               ))}
-            </ServiceRail>
+            </div>
           </div>
         </section>
 
@@ -381,43 +418,47 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ── Comment ça marche : trois étapes sur une route qui se trace au défilement ── */}
-        <section id="comment" aria-labelledby="h-comment" className="below-fold sheet road-section scroll-mt-20 overflow-hidden bg-card pt-16 pb-44 md:pt-24 md:pb-52">
+        {/* ── Comment ça marche : trois étapes le long d'un tube de transfusion où le sang monte au défilement ── */}
+        <section id="comment" aria-labelledby="h-comment" className="below-fold sheet scroll-mt-20 bg-card py-16 md:py-24">
           <div className={WRAP}>
-            <div className="reveal mb-10 space-y-4">
+            <div className="reveal mb-12 space-y-4 md:mb-16 md:text-center">
               <p className="eyebrow">{t('Parcours')}</p>
               <h2 id="h-comment" className="text-[2.2rem] leading-tight font-medium sm:text-5xl">
                 {t('Trois gestes pour commencer.')}
               </h2>
             </div>
-            <div className="relative">
-              {/* La route court sous les cartes et remonte derrière leur bas, d'un bord de l'écran à l'autre. */}
-              <svg aria-hidden viewBox="0 0 1440 560" preserveAspectRatio="xMidYMid slice" className="pointer-events-none absolute -bottom-[250px] left-1/2 h-[560px] w-screen -translate-x-1/2">
-                <path d={ROAD} fill="none" stroke="var(--color-leaf)" strokeWidth="46" strokeLinecap="round" />
-                <path className="road-progress" pathLength={1} d={ROAD} fill="none" stroke="var(--color-brand-500)" strokeWidth="46" strokeLinecap="round" />
-                <path d={ROAD} fill="none" stroke="#fff" strokeWidth="2.5" strokeDasharray="10 12" />
-                <g className="road-marker">
-                  <circle r="19" fill="#fff" stroke="var(--color-brand-900)" strokeWidth="5" />
-                  <circle r="7" fill="var(--color-brand-900)" />
-                </g>
-              </svg>
-              <ol tabIndex={0} aria-label={t('Les trois étapes, à faire défiler')} className="relative -mx-4 flex snap-x scroll-px-4 gap-4 overflow-x-auto px-4 pb-4 md:mx-0 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0">
+            <div className="flow relative pb-20">
+              {/* Le tube : verre, sang qui monte, reflet qui coule, globules qui circulent. */}
+              <div aria-hidden className="flow-tube absolute top-5 bottom-10 left-5 w-[18px] -translate-x-1/2 md:left-1/2">
+                <span className="flow-blood absolute inset-0">
+                  {CELLS.map((c) => (
+                    <span key={c.d} className="flow-cell" style={{ '--s': c.s, '--x': c.x, '--dur': c.dur, '--d': c.d } as React.CSSProperties} />
+                  ))}
+                </span>
+              </div>
+              <span aria-hidden className="absolute top-0 left-5 grid h-11 w-11 -translate-x-1/2 place-items-center rounded-full bg-danger-600 text-white shadow-[0_0_0_6px_rgb(198_40_40_/_0.14)] md:left-1/2">
+                <Droplet size={20} />
+              </span>
+              <ol className="relative space-y-16 pt-20 md:space-y-24">
                 {STEPS.map((s, i) => (
-                  <li
-                    key={s.name}
-                    className={`reveal flex w-[80%] shrink-0 snap-start flex-col rounded-card p-5 backdrop-blur-md md:w-auto ${i === STEPS.length - 1 ? 'bg-leaf text-brand-900' : 'bg-card/65 ring-1 ring-border'}`}
-                  >
-                    <h3 className="font-display text-2xl leading-tight font-medium">{t(s.title)}</h3>
-                    <p className={`mt-2 text-base ${i === STEPS.length - 1 ? 'text-brand-900' : 'text-fg-muted'}`}>{t(s.text)}</p>
-                    <div className="zoom-in mt-5 overflow-hidden rounded-[8%]">
-                      <Illustration name={s.name} icon={s.icon} alt="" sizes="(min-width: 768px) 30vw, 75vw" />
+                  <li key={s.name} className="relative grid gap-6 pl-14 md:grid-cols-2 md:gap-28 md:pl-0">
+                    <span aria-hidden className="flow-node font-display absolute top-0 left-5 z-10 grid h-10 w-10 -translate-x-1/2 place-items-center rounded-full text-base font-medium md:left-1/2">
+                      {i + 1}
+                    </span>
+                    <div className={`reveal space-y-3 ${i % 2 ? 'md:order-2' : 'md:text-right'}`}>
+                      <p className="text-sm font-semibold tracking-wide text-[var(--color-danger-600)] uppercase">{t('Étape {n}', { n: `0${i + 1}` })}</p>
+                      <h3 className="font-display text-3xl leading-tight font-medium">{t(s.title)}</h3>
+                      <p className={`max-w-[36ch] text-lg text-fg-muted ${i % 2 ? '' : 'md:ml-auto'}`}>{t(s.text)}</p>
                     </div>
-                    <p className="mt-5 flex items-center justify-between text-sm font-semibold tracking-wide uppercase">
-                      {t('Étape {n}', { n: `0${i + 1}` })} <Plus size={16} aria-hidden />
-                    </p>
+                    <div className={`zoom-in w-full max-w-[20rem] overflow-hidden rounded-[8%] ${i % 2 ? 'md:order-1 md:justify-self-end' : ''}`}>
+                      <Illustration name={s.name} icon={s.icon} alt="" sizes="(min-width: 768px) 320px, 70vw" />
+                    </div>
                   </li>
                 ))}
               </ol>
+              <span aria-hidden className="flow-end absolute bottom-0 left-5 grid h-12 w-12 -translate-x-1/2 place-items-center rounded-full bg-danger-600 text-white md:left-1/2">
+                <Heart size={22} />
+              </span>
             </div>
           </div>
         </section>

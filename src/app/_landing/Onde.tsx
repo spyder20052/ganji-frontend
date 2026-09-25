@@ -1,7 +1,7 @@
 import { GanjiSymbol } from '@/components/GanjiSymbol';
 
 /** Carré en escalier (deux marches par angle), comme l'onde de la charte (planches 05 et 12). */
-function stepped(h: number) {
+export function stepped(h: number) {
   const d = h * 0.2;
   const p: [number, number][] = [
     [-h + 2 * d, -h],

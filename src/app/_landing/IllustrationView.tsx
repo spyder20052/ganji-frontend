@@ -1,16 +1,14 @@
 import type { ReactNode } from 'react';
 
-const WIDTHS = [96, 128, 256, 384, 640, 828, 1080, 1200, 1920];
-
-/** URL du service d'optimisation d'images de Next (AVIF ou WebP selon le navigateur). */
-const optimized = (name: string, w: number) => `/_next/image?url=${encodeURIComponent(`/illustrations/${name}.png`)}&w=${w}&q=75`;
+import { optimized, srcSetFor } from './image-url';
 
 /**
  * Illustration sur mesure, en simple balise <img> servie par l'optimiseur d'images : pas de
  * JavaScript de plus sur la première page. Sans fichier, visuel de marque (symbole Ganji en Sauge
  * et pictogramme sur pastille Vert). Utilisable côté serveur comme côté client.
  *
- * `defer` : l'adresse attend dans data-src et <DeferredImages> la pose à l'approche de l'écran.
+ * `defer` : seul le nom part dans la page (data-img) ; <DeferredImages> construit les adresses à l'approche
+ * de l'écran. La page reste légère : pas neuf variantes d'URL par image, deux fois.
  * Le chargement paresseux natif ne suffit pas : en 2G, Chrome précharge jusqu'à 6 000 px plus bas.
  */
 export function IllustrationView({
@@ -53,11 +51,11 @@ export function IllustrationView({
     );
   }
   const src = optimized(name, 1080);
-  const srcSet = WIDTHS.map((x) => `${optimized(name, x)} ${x}w`).join(', ');
+  const srcSet = srcSetFor(name);
   const img = (
     // eslint-disable-next-line @next/next/no-img-element -- srcset de l'optimiseur, sans le JS de next/image
     <img
-      {...(defer ? { 'data-src': src, 'data-srcset': srcSet } : { src, srcSet })}
+      {...(defer ? { 'data-img': name } : { src, srcSet })}
       sizes={sizes}
       alt={alt}
       width={w}
