@@ -6,8 +6,9 @@ import { I18nScope } from '@/i18n/I18nScope';
 import { getLocale, getT } from '@/i18n/server';
 import './globals.css';
 
-// Atkinson Hyperlegible (conçue pour les malvoyants, exigence du cahier) : deux fichiers légers.
-const atkinson = Atkinson_Hyperlegible({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-atkinson', display: 'swap' });
+// Atkinson Hyperlegible (conçue pour les malvoyants, exigence du cahier) : texte courant des espaces
+// patients. Pas de préchargement : l'accueil, en Poppins, ne la télécharge pas (budget de 200 Ko).
+const atkinson = Atkinson_Hyperlegible({ subsets: ['latin'], weight: ['400', '700'], variable: '--font-atkinson', display: 'swap', preload: false });
 // Poppins (charte Ganji) : titres et logotype.
 // Une graisse (Medium, celle de la charte pour les titres) : la première page reste sous 200 Ko en 2G.
 const poppins = Poppins({ subsets: ['latin'], weight: ['500'], variable: '--font-poppins', display: 'swap' });
@@ -42,7 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script dangerouslySetInnerHTML={{ __html: PREFS }} />
       </head>
       <body className="min-h-dvh">
-        <a href="#contenu" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 btn btn-primary">
+        <a href="#contenu" className="font-display sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 btn btn-primary">
           {t('Aller au contenu')}
         </a>
         <I18nScope area="common">

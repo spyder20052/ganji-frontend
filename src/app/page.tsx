@@ -1,3 +1,4 @@
+import { Poppins } from 'next/font/google';
 import Link from 'next/link';
 import { Fragment } from 'react';
 import { ArrowDown, ArrowRight, ArrowUpRight, Check, Droplet, Heart, LogIn, ShieldX, X } from 'lucide-react';
@@ -11,9 +12,14 @@ import { getT } from '@/i18n/server';
 import { hasIllustration, Illustration } from './_landing/Illustration';
 import { DeferredImages } from './_landing/DeferredImages';
 import { KoffiStory } from './_landing/KoffiStory';
-import { HeroMap } from './_landing/HeroMap';
+import { HeroOnde } from './_landing/HeroOnde';
+import { Intro } from './_landing/Intro';
 import { PersonaTabs, type PersonaView } from './_landing/PersonaTabs';
 import { ServiceRail } from './_landing/ServiceRail';
+
+/* Charte : Poppins pour tout l'accueil (Regular pour le texte, SemiBold pour l'accent, Medium pour les titres,
+   déjà chargé par la mise en page). Préchargée sur cette page seulement. */
+const poppinsText = Poppins({ subsets: ['latin'], weight: ['400', '600'], variable: '--font-poppins-text', display: 'swap' });
 
 /* Conteneur commun : mêmes marges que la barre de navigation, sur toutes les sections. */
 const WRAP = 'mx-auto w-full max-w-6xl px-4';
@@ -26,14 +32,11 @@ const NAV = [
 ];
 
 /** Notifications du hero : un service chacune, placées autour du symbole sans le couvrir. */
-/** Scènes de la carte du hero, chacune dans sa commune (positions : scripts/carte/benin.py). */
-const MAP_EVENTS = [
-  { commune: 'Cotonou', icon: 'blood', text: 'Donneur trouvé pour Koffi', tone: 'bg-danger-600 text-white', x: 52.8, y: 96.2 },
-  { commune: 'Kandi', icon: 'listen', text: 'Rappel de consultation en bariba', tone: 'bg-leaf text-brand-900', x: 70.2, y: 17.8 },
-  { commune: 'Djougou', icon: 'talk', text: 'Avis de l’hématologue reçu', tone: 'bg-brand-500 text-white', x: 27.8, y: 41.2 },
-  { commune: 'Parakou', icon: 'pill', text: 'Ordonnance vérifiée', tone: 'bg-brand-500 text-white', x: 59.9, y: 47.3 },
-  { commune: 'Natitingou', icon: 'warning', text: '3 signalements : alerte envoyée', tone: 'bg-ocre-500 text-ink', x: 18.1, y: 31.5 },
-  { commune: 'Abomey-Calavi', icon: 'offline', text: 'Carte d’urgence lue hors ligne', tone: 'bg-danger-600 text-white', x: 50.5, y: 94.9 },
+const HERO_CHIPS = [
+  { icon: 'blood', label: 'Donneur trouvé', chip: 'bg-danger-600 text-white', x: -46, y: -78 },
+  { icon: 'listen', label: 'Rappel en bariba', chip: 'bg-leaf text-brand-900', x: 50, y: -44 },
+  { icon: 'pill', label: 'Ordonnance vérifiée', chip: 'bg-brand-500 text-white', x: -50, y: 46 },
+  { icon: 'offline', label: 'Carte d’urgence hors ligne', chip: 'bg-brand-900 text-white', x: 38, y: 80 },
 ];
 
 const NO_ACCOUNT = [
@@ -202,7 +205,8 @@ const PROOFS = ['WCAG 2.2 AA', 'Première page < 200 Ko', 'Utilisable hors ligne
 export default async function Home() {
   const t = await getT();
   return (
-    <>
+    <div className={`${poppinsText.variable} landing-text`}>
+      <Intro />
       <header className="sticky top-0 z-30 bg-bg/90 backdrop-blur">
         <span aria-hidden className="scroll-progress absolute inset-x-0 bottom-0 h-[3px] bg-leaf" />
         <div className={`${WRAP} flex flex-wrap items-center gap-3 py-3`}>
@@ -216,7 +220,7 @@ export default async function Home() {
           </nav>
           <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-2">
             <PrefsMenu />
-            <Link prefetch={false} href="/connexion" className="btn btn-primary">
+            <Link prefetch={false} href="/connexion" className="btn btn-primary max-sm:!px-4 max-[380px]:[&>svg]:hidden">
               <LogIn size={20} aria-hidden /> {t('Se connecter')}
             </Link>
           </div>
@@ -225,57 +229,57 @@ export default async function Home() {
 
       <I18nScope area="landingClient">
       <main id="contenu">
-        {/* ── Hero : le Bénin dessiné par ses 77 communes ; le réseau s'allume au chargement, puis des scènes
-            réelles de Ganji apparaissent dans leur commune. Aucune image lourde : une SVG de 2,5 Ko. ── */}
-        <section className="hero-light relative overflow-hidden">
-          <div className={`${WRAP} relative grid items-center gap-10 pt-8 pb-20 md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:gap-8 md:pt-10 md:pb-24`}>
+        {/* ── Hero : fond Forêt et onde de l'affiche de la charte ; tout entre une fois, rien ne tourne en boucle ── */}
+        <section className="relative overflow-hidden bg-brand-900 text-white [&_:focus-visible]:!outline-leaf">
+          <div className={`${WRAP} relative grid items-center gap-10 pt-10 pb-24 md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] md:gap-12 md:pt-16 md:pb-32`}>
             <div className="space-y-7">
               <div className="flex items-center justify-between gap-4">
-                <p className="rise-in inline-flex items-center gap-2 rounded-full bg-card py-1.5 pr-4 pl-3 text-sm font-semibold ring-1 ring-border" style={{ '--i': 0 } as React.CSSProperties}>
-                  <span aria-hidden className="live-dot h-2 w-2 rounded-full bg-leaf" />
+                <p className="rise-in inline-flex items-center gap-2 rounded-full bg-white/10 py-1.5 pr-4 pl-3 text-sm font-semibold ring-1 ring-white/15" style={{ '--i': 0 } as React.CSSProperties}>
+                  <span aria-hidden className="h-2 w-2 rounded-full bg-leaf" />
                   {t('Même sans réseau ni smartphone')}
                 </p>
                 <ListenButton compact text={t('Ganji. Votre santé, suivie partout. Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies, même sans réseau ni smartphone.')} audioKey="welcome" />
               </div>
-              <h1 className="text-[min(3.2rem,13.5vw)] leading-[1.02] font-medium tracking-tight [hyphens:manual] sm:text-[min(4.6rem,9.5vw)]">
-                {t('Votre santé, suivie partout.')
-                  .split(' ')
-                  .map((w, i, all) => (
-                    <Fragment key={i}>
-                      <span className={`hw ${i === all.length - 1 ? 'hw-accent' : ''}`}>
-                        <span style={{ '--i': i + 1 } as React.CSSProperties}>{w}</span>
-                      </span>
-                      {i < all.length - 1 ? ' ' : ''}
-                    </Fragment>
-                  ))}
-              </h1>
-              <p className="rise-in max-w-[36ch] text-xl text-fg-muted" style={{ '--i': 5 } as React.CSSProperties}>
+              <div>
+                <h1 className="min-w-0 text-[min(3.1rem,13vw)] leading-[1.02] font-medium tracking-tight [hyphens:manual] sm:text-[min(4.4rem,9.5vw)]">
+                  {t('Votre santé, suivie partout.')
+                    .split(' ')
+                    .map((w, i, all) => (
+                      <Fragment key={i}>
+                        <span className={`hw ${i === all.length - 1 ? 'hw-accent' : ''}`}>
+                          <span style={{ '--i': i + 1 } as React.CSSProperties}>{w}</span>
+                        </span>
+                        {i < all.length - 1 ? ' ' : ''}
+                      </Fragment>
+                    ))}
+                </h1>
+              </div>
+              <p className="rise-in max-w-[34ch] text-xl text-sage" style={{ '--i': 5 } as React.CSSProperties}>
                 {t('Carnet partagé, sang, médicaments, urgences : Ganji relie patients, soignants et pharmacies.')}
               </p>
               <div className="rise-in flex flex-wrap gap-3" style={{ '--i': 6 } as React.CSSProperties}>
-                <Link prefetch={false} href="/connexion" className="btn btn-primary group !min-h-14 !pr-2 !pl-6 text-lg">
-                  {t('Ouvrir mon carnet')}
-                  <span className="grid h-10 w-10 place-items-center rounded-full bg-leaf text-brand-900 transition-transform group-hover:translate-x-0.5">
+                {/* Au survol, le rond de la flèche s'étend et remplit le bouton ; la flèche avance. */}
+                <Link prefetch={false} href="/connexion" className="cta-fill btn !min-h-14 bg-leaf !pr-2 !pl-6 text-lg text-brand-900">
+                  <span>{t('Ouvrir mon carnet')}</span>
+                  <span className="cta-arrow grid h-10 w-10 place-items-center rounded-full text-leaf">
                     <ArrowRight size={18} aria-hidden />
                   </span>
                 </Link>
-                <Link prefetch={false} href="/orientation" className="btn btn-ghost !min-h-14 !px-6 text-lg">
-                  {t('J’ai un symptôme')}
+                {/* Au survol, le blanc balaie le bouton de gauche à droite. */}
+                <Link prefetch={false} href="/orientation" className="cta-sweep btn !min-h-14 !px-6 text-lg text-white ring-1 ring-white/40">
+                  <Pictogram name="fever" size={20} />
+                  <span>{t('J’ai un symptôme')}</span>
                 </Link>
               </div>
             </div>
-            <div className="relative">
-              <HeroMap events={MAP_EVENTS.map((e) => ({ ...e, text: t(e.text) }))} alt={t('Carte du Bénin : les 77 communes reliées par Ganji')} />
-              <p className="rise-in mt-4 flex items-center justify-center gap-2 text-sm font-semibold text-fg-muted" style={{ '--i': 8 } as React.CSSProperties}>
-                <span aria-hidden className="live-dot h-2 w-2 rounded-full bg-leaf" />
-                {t('77 communes, du littoral à l’Alibori')}
-              </p>
+            <div aria-hidden className="relative">
+              <HeroOnde chips={HERO_CHIPS.map((c) => ({ ...c, label: t(c.label) }))} />
             </div>
           </div>
         </section>
 
         {/* ── Sans compte, tout de suite ── */}
-        <section aria-labelledby="h-sans-compte" className="sheet bg-card pt-12 pb-16 md:pt-16 md:pb-24">
+        <section aria-labelledby="h-sans-compte" className="sheet bg-bg pt-12 pb-16 md:pt-16 md:pb-24">
           <div className={`${WRAP} reveal`}>
           <h2 id="h-sans-compte" className="mb-4 text-2xl font-medium">
             {t('Sans compte, tout de suite')}
@@ -669,6 +673,6 @@ export default async function Home() {
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
