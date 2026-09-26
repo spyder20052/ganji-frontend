@@ -1,6 +1,6 @@
 {
   "project": "Ganji",
-  "updatedAt": "2026-09-25T18:03:52+01:00",
+  "updatedAt": "2026-09-26T02:02:37+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": "https://github.com/spyder20052/ganji-frontend",
@@ -567,7 +567,7 @@
       "repos": [
         "frontend"
       ],
-      "acceptance": "Parcours cliquables marqués « aperçu »",
+      "acceptance": "Parcours cliquables marqués « aperçu », puis devenus de vraies fonctions (C13)",
       "items": [
         {
           "label": "Assistant Ganji (garde-fous)",
@@ -592,7 +592,8 @@
           "repo": "frontend",
           "message": "feat(c11-apercus): écoute anonyme, droits et frais, assistant et cercle de soin en aperçus cliquables"
         }
-      ]
+      ],
+      "note": "Les quatre aperçus (assistant, écoute, droits, cercle) sont devenus de vraies fonctions de bout en bout le 26 septembre : voir C13."
     },
     {
       "id": "C12",
@@ -635,6 +636,111 @@
         }
       ],
       "note": "Fait : 22 tests d’intégration HTTP, 5 tests Playwright de bout en bout, CI verte, déploiement vérifié (https://ganji-sante.vercel.app, https://ganji-api.vercel.app/docs), mail de transmission envoyé."
+    },
+    {
+      "id": "C13",
+      "title": "Retours d’usage : tout fonctionne de bout en bout",
+      "modules": [
+        "M1",
+        "M4",
+        "M5",
+        "M8",
+        "M12",
+        "M14",
+        "M15",
+        "C9"
+      ],
+      "window": "26 sept.",
+      "status": "done",
+      "repos": [
+        "backend",
+        "frontend"
+      ],
+      "acceptance": "Un compte neuf se remplit et se corrige ; aucun « Réservé » ; le sang parvient aux donneurs, à l’ANTS et au médecin ; documents partagés ; livraison ; les 4 fonctions « Bientôt » réelles ; 6 langues",
+      "items": [
+        {
+          "label": "Profil modifiable et accueil en 5 étapes après inscription",
+          "done": true
+        },
+        {
+          "label": "Prise de rendez-vous (patient → établissement → rappel la veille)",
+          "done": true
+        },
+        {
+          "label": "Devenir donneur, demandes proches, ANTS et médecin toujours prévenus",
+          "done": true
+        },
+        {
+          "label": "Documents et ordonnances visibles par le soignant quand le patient les partage",
+          "done": true
+        },
+        {
+          "label": "Commande de médicaments : livraison à domicile ou retrait, mobile money",
+          "done": true
+        },
+        {
+          "label": "Écoute psychologique réelle (file des psychologues, détresse reconnue)",
+          "done": true
+        },
+        {
+          "label": "Cercle de soins : aidants puis relais prévenus quand un rappel reste sans réponse",
+          "done": true
+        },
+        {
+          "label": "Droits : couverture, reste à charge, paiement et reçu",
+          "done": true
+        },
+        {
+          "label": "Assistant de traitement : plan de prises, observance, questions",
+          "done": true
+        },
+        {
+          "label": "Interface en fon, yoruba, bariba et dendi (IA, à valider par des locuteurs natifs)",
+          "done": true
+        },
+        {
+          "label": "Revue de sécurité des nouvelles fonctions et correctifs",
+          "done": true
+        }
+      ],
+      "commits": [
+        {
+          "sha": "e005d25",
+          "repo": "backend",
+          "message": "feat(compte): profil modifiable, accueil après inscription, prise de rendez-vous"
+        },
+        {
+          "sha": "361c570",
+          "repo": "backend",
+          "message": "feat(m4-sang): chacun peut devenir donneur, l’ANTS et le médecin sont toujours prévenus ; documents partagés"
+        },
+        {
+          "sha": "9886d31",
+          "repo": "backend",
+          "message": "feat(m5-medicaments): commande en pharmacie, livraison à domicile ou retrait"
+        },
+        {
+          "sha": "dcbe46d",
+          "repo": "backend",
+          "message": "feat(m12-m15): écoute psychologique et cercle de soins, de bout en bout"
+        },
+        {
+          "sha": "43babe9",
+          "repo": "backend",
+          "message": "feat(m8-m14): mes droits (couverture, reste à charge, paiement) et assistant de traitement"
+        },
+        {
+          "sha": "4385ebe",
+          "repo": "frontend",
+          "message": "feat(c9-inclusion): interface traduite en fon, yoruba, bariba et dendi"
+        },
+        {
+          "sha": "df6d764",
+          "repo": "frontend",
+          "message": "feat(accueil-patient): « Mes services » remplace le bloc « Bientôt »"
+        }
+      ],
+      "note": "249 tests d’API et 5 tests de bout en bout verts ; axe-core sans violation sur toutes les pages (clair et sombre) ; première page en production 193,7 Ko (FR) et 196,1 Ko (EN)."
     }
   ],
   "acceptance": [
@@ -775,6 +881,10 @@
     {
       "at": "2026-09-25T18:03:52+01:00",
       "text": "C9 et C12 terminés : messages vocaux en fon (12, synthèse à valider) en plus du yoruba, mail de transmission envoyé."
+    },
+    {
+      "at": "2026-09-26T02:02:37+01:00",
+      "text": "Retours d’usage traités : profil et accueil après inscription, rendez-vous, don de sang qui parvient aux donneurs, à l’ANTS et au médecin, documents partagés, livraison de médicaments, écoute, cercle de soins, droits et assistant réels, interface en six langues. Revue de sécurité et correctifs. Démo remise à jour automatiquement au déploiement."
     }
   ]
 }
