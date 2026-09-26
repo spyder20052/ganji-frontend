@@ -100,4 +100,6 @@ export const common: Messages = {
   'Non lue': 'Ni mana a caw',
   // Réglages : langues nationales
   'Traduction faite par IA, à faire valider par des locuteurs natifs.': 'IA no n’a barmay : borey kaŋ ga senni woo salaŋ ma a guna.',
+  'Préparation de la voix…': 'I go jinde soolu…',
+  'Voix en {langue} indisponible pour le moment. Réessayez dans un instant.': 'Jinde {langue} si no sohõ. Ceeci koyne.',
 };

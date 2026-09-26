@@ -100,4 +100,6 @@ export const common: Messages = {
   'Non lue': 'Unread',
   // Réglages : langues nationales
   'Traduction faite par IA, à faire valider par des locuteurs natifs.': 'AI translation, to be checked by native speakers.',
+  'Préparation de la voix…': 'Preparing the voice…',
+  'Voix en {langue} indisponible pour le moment. Réessayez dans un instant.': '{langue} voice unavailable for now. Try again in a moment.',
 };

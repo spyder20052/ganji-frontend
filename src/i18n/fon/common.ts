@@ -100,4 +100,6 @@ export const common: Messages = {
   'Non lue': 'Mi ma ko xà ǎ',
   // Réglages : langues nationales
   'Traduction faite par IA, à faire valider par des locuteurs natifs.': 'IA wɛ lilɛ́ gbè ɔ, mɛ e nɔ ɖɔ gbè ɔ lɛ ni gbéjé kpɔ́n.',
+  'Préparation de la voix…': 'È ɖò gbè ɔ wlí dó wɛ…',
+  'Voix en {langue} indisponible pour le moment. Réessayez dans un instant.': 'Gbè {langue} ɔ ma ɖè dìn ǎ. Vɛ́ bɔ bló dó.',
 };

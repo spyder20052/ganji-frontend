@@ -98,4 +98,6 @@ export const common: Messages = {
   'Non lue': 'A ǹ gari gina',
   // Réglages : langues nationales
   'Traduction faite par IA, à faire valider par des locuteurs natifs.': 'IA ya gari yi gɔsia: n weenɛ barum yɛ̃robu bu yi mɛɛri.',
+  'Préparation de la voix…': 'Ba ra nɛɛ sɔ̃ɔrɔ kua…',
+  'Voix en {langue} indisponible pour le moment. Réessayez dans un instant.': 'Sɔ̃ɔrɔ {langue} sari tɛ. A n wura a ka kua.',
 };
