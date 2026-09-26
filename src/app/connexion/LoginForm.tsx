@@ -26,7 +26,17 @@ export function LoginForm({ suite }: { suite?: string }) {
     try { await fn(); } catch (e) { setError(e instanceof ApiError ? e.message : 'Connexion impossible. Vérifiez votre réseau.'); } finally { setBusy(false); }
   }
 
-  const requestCode = () => run(async () => { await api('/auth/otp/request', { method: 'POST', json: { phone } }); setStep('code'); });
+  const [noAccount, setNoAccount] = useState(false);
+  // Démo : l'API dit si le numéro a un compte (les remises à zéro de la démo effacent les comptes créés).
+  const requestCode = () => run(async () => {
+    const r = await api<{ account?: boolean }>('/auth/otp/request', { method: 'POST', json: { phone } });
+    if (r.account === false) {
+      setNoAccount(true);
+      setStep('register');
+      return;
+    }
+    setStep('code');
+  });
   const verify = () => run(async () => {
     const me = await api<Me & { profileDone?: boolean }>('/auth/otp/verify', { method: 'POST', json: { phone, code } });
     const target = suite?.startsWith(ROLE_HOME[me.role]) ? suite : ROLE_HOME[me.role];
@@ -54,6 +64,11 @@ export function LoginForm({ suite }: { suite?: string }) {
         </form>
       )}
 
+      {step === 'register' && noAccount && (
+        <p role="status" className="rounded-2xl bg-[var(--color-ocre-100)] px-4 py-3 text-base text-[var(--color-ocre-700)]">
+          {t('Aucun carnet avec ce numéro (la démo est remise à zéro à chaque mise à jour). Créez-le en une minute.')}
+        </p>
+      )}
       {step === 'register' && (
         <form onSubmit={(e) => { e.preventDefault(); void register(); }} className="space-y-3">
           <p className="text-base text-[var(--fg-muted)]">{t('Votre NPI (numéro personnel d’identification, 10 chiffres) relie votre carnet à votre identité. Il n’est jamais stocké en clair.')}</p>

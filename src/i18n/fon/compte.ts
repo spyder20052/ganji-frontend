@@ -390,4 +390,5 @@ export const compte: Messages = {
   'L’accès est limité dans le temps et le patient le voit dans son journal.': 'Ali ɔ nɔ te hwe kpɛ́ɖé kɛ́ɖɛ́, bɔ azɔ̌nnɔ ɔ nɔ mɔ ɖò wěma tɔn mɛ.',
   'Plus bas : vos patients, la télé-expertise et vos demandes de sang.': 'Ðò glɔ́ ɔ : azɔ̌nnɔ mitɔn lɛ, télé-expertise kpo hun byɔ̌ mitɔn lɛ kpo.',
   'Alertes, signalements et indicateurs du pays, mis à jour toutes les 10 secondes.': 'Alerte lɛ, nǔ e è ɖɔ lɛ kpo chiffre tò ɔ tɔn lɛ kpo ; è nɔ ɖyɔ̌ yě seconde 10 ɖokpo ɖokpo.',
+  'Aucun carnet avec ce numéro (la démo est remise à zéro à chaque mise à jour). Créez-le en une minute.': 'Carnet ɖebǔ ma ɖè nɔ́mɛlɔ ɖé jí ǎ (è nɔ vɔ́ démo ɔ jlɔ́ ɖò hwenu e è ɖó nǔ yɔ̌yɔ́ lɛ é). Bló ɖě ɖò minúti ɖokpó mɛ.',
 };

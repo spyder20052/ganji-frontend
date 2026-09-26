@@ -377,4 +377,5 @@ export const compte: Messages = {
   "L’accès est limité dans le temps et le patient le voit dans son journal.": "Furoyaŋ gonda waati, patient g’a di nga journal ra.",
   "Plus bas : vos patients, la télé-expertise et vos demandes de sang.": "Cire : ni patient yaŋ, télé-expertise nda ni kuri haan yaŋ.",
   "Alertes, signalements et indicateurs du pays, mis à jour toutes les 10 secondes.": "Laabu alerte, baaru nda indicateur yaŋ ; i ga taji seconde 10 kulu.",
+  'Aucun carnet avec ce numéro (la démo est remise à zéro à chaque mise à jour). Créez-le en une minute.': 'Carnet kulu si numero woo ga (i ga démo tagandi alwaati kulu). Tagandi a minti folloku ra.',
 };

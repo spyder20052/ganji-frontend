@@ -377,4 +377,5 @@ export const compte: Messages = {
   'L’accès est limité dans le temps et le patient le voit dans son journal.': 'Access is time-limited and the patient sees it in their log.',
   'Plus bas : vos patients, la télé-expertise et vos demandes de sang.': 'Further down: your patients, tele-expertise and your blood requests.',
   'Alertes, signalements et indicateurs du pays, mis à jour toutes les 10 secondes.': 'National alerts, reports and indicators, updated every 10 seconds.',
+  'Aucun carnet avec ce numéro (la démo est remise à zéro à chaque mise à jour). Créez-le en une minute.': 'No health record with this number (the demo is reset at each update). Create it in a minute.',
 };

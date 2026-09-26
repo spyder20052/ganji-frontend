@@ -377,4 +377,5 @@ export const compte: Messages = {
   'L’accès est limité dans le temps et le patient le voit dans son journal.': 'A koo kpɛ̃ a mɛɛra sanam fiiko tɔna, kpa barɔ u ra ye wa win tireru sɔɔ.',
   'Plus bas : vos patients, la télé-expertise et vos demandes de sang.': 'Temɔ: wunɛn barɔbu, télé-expertise ka wunɛn yɛm kanaru.',
   'Alertes, signalements et indicateurs du pays, mis à jour toutes les 10 secondes.': 'Tem kpuron kari labaari, relais labaari ka indicateurs, ba ra ye gɔsia secondes 10 baayere.',
+  'Aucun carnet avec ce numéro (la démo est remise à zéro à chaque mise à jour). Créez-le en une minute.': 'Carnet sari mɔ nɔ́ba yeni sɔɔ (ba ra démo wee gɔsiammɛ baa ra kpaanu bɔ̃ɔ). A n tii kua minti teenu sɔɔ.',
 };
