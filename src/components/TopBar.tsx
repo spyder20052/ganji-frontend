@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { UserRound } from 'lucide-react';
 import { NavPills, TabBar, type NavLink } from './EspaceNav';
 import { Logo } from './Logo';
 import { NotificationBell } from './NotificationBell';
@@ -5,7 +7,7 @@ import { LogoutButton } from './LogoutButton';
 import { PrefsMenu } from './PrefsMenu';
 
 /** En-tête commun : logo, navigation (pilules sur ordinateur, onglets en bas sur téléphone), réglages. */
-export function TopBar({ home = '/', who, links = [] }: { home?: string; who?: string; links?: NavLink[] }) {
+export function TopBar({ home = '/', who, links = [], account }: { home?: string; who?: string; links?: NavLink[]; account?: { href: string; label: string } }) {
   return (
     <>
       <header className="sticky top-0 z-30 bg-[var(--bg)]/90 backdrop-blur">
@@ -19,6 +21,11 @@ export function TopBar({ home = '/', who, links = [] }: { home?: string; who?: s
           <div className="ml-auto flex items-center gap-2">
             {who && <span className="hidden max-w-[16rem] truncate text-base text-[var(--fg-muted)] xl:inline">{who}</span>}
             {who && <NotificationBell />}
+            {account && (
+              <Link href={account.href} prefetch={false} className="chip-round md:hidden" aria-label={account.label} title={account.label}>
+                <UserRound size={20} aria-hidden />
+              </Link>
+            )}
             <PrefsMenu />
             {who && <LogoutButton />}
           </div>

@@ -5,7 +5,7 @@ import { getLocale, getT } from '@/i18n/server';
 import type { Locale, T } from '@/i18n/translate';
 import { fmtDate } from '@/lib/format';
 import { Empty, ErrorNote, Notice, PageHead, Section } from '../../_components/ui';
-import { load } from '../../_lib/load';
+import { getMe, load } from '../../_lib/load';
 import { DangerSigns, type DangerSign } from './DangerSigns';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -42,14 +42,16 @@ const ORDINAL: Partial<Record<Locale, [string, string, string]>> = { fr: ['er', 
 export default async function GrossessePage() {
   const t = await getT();
   const locale = await getLocale();
-  const res = await load<Pregnancy | null>('/maternal/pregnancy');
-  const p = res.data;
+  // Aidant sans carnet à son nom : pas d'appel refusé, une explication.
+  const me = await getMe();
+  const res = me.patientId ? await load<Pregnancy | null>('/maternal/pregnancy') : null;
+  const p = res?.data ?? null;
 
   if (!p) {
     return (
       <I18nScope area="patient2">
         <PageHead icon="pregnant" title={t('Ma grossesse')} />
-        {res.error ? <ErrorNote error={res.error} /> : <Empty>{t('Aucun suivi de grossesse en cours. À la première consultation prénatale, la sage-femme l’ouvre dans votre carnet.')}</Empty>}
+        {!res ? <Empty>{t('Ce suivi est dans le carnet de la personne concernée. Ouvrez son carnet depuis l’accueil.')}</Empty> : res.error ? <ErrorNote error={res.error} /> : <Empty>{t('Aucun suivi de grossesse en cours. À la première consultation prénatale, la sage-femme l’ouvre dans votre carnet.')}</Empty>}
       </I18nScope>
     );
   }

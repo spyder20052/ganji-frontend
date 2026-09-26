@@ -14,6 +14,8 @@ export const SCOPE_LABEL: Record<string, string> = {
   sensitive: 'Données très sensibles',
   reminders: 'Rappels',
   blood: 'Demandes de sang',
+  appointments: 'Rendez-vous',
+  orders: 'Commandes de médicaments',
   all: 'Tout (sauf données très sensibles)',
 };
 

@@ -10,6 +10,8 @@ export interface NavLink {
   icon: string;
   /** Lien d'urgence : bouton rouge surélevé au centre de la barre du téléphone. */
   danger?: boolean;
+  /** Seulement dans les pilules de l'ordinateur (sur téléphone, le lien est dans l'en-tête). */
+  desktopOnly?: boolean;
 }
 
 /**
@@ -30,7 +32,7 @@ export function TabBar({ links }: { links: NavLink[] }) {
   return (
     <nav aria-label={t('Navigation principale')} className="tabbar fixed inset-x-0 bottom-0 z-40 px-[12px] pb-[max(12px,env(safe-area-inset-bottom))] md:hidden">
       <ul className="mx-auto flex max-w-[448px] items-center justify-around gap-[4px] rounded-full bg-[var(--card)] p-[6px] shadow-[var(--shadow-soft)]">
-        {links.map((l) => {
+        {links.filter((l) => !l.desktopOnly).map((l) => {
           if (l.danger) {
             return (
               <li key={l.href}>

@@ -10,6 +10,8 @@ export function middleware(req: NextRequest) {
     const url = req.nextUrl.clone();
     url.pathname = '/connexion';
     url.search = '';
+    // Après la connexion, on revient là où l'on allait (ex. commander depuis la recherche publique).
+    url.searchParams.set('suite', `${pathname}${req.nextUrl.search}`);
     return NextResponse.redirect(url);
   }
   return NextResponse.next();

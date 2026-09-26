@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
-import { ChevronRight, Phone, QrCode } from 'lucide-react';
+import { ChevronRight, Phone, QrCode, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getT } from '@/i18n/server';
 import { Empty, PageHead } from '../../_components/ui';
-import { getMe } from '../../_lib/load';
+import type { Summary } from '@/lib/types';
+import { getMe, load } from '../../_lib/load';
 import { SosButton } from './SosButton';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -15,6 +16,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function SosPage() {
   const t = await getT();
   const me = await getMe();
+  // Sans personne à prévenir, l'alerte ne part qu'au relais : on propose de l'ajouter (profil).
+  const sum = me.patientId ? await load<Summary>('/me/summary') : null;
+  const noContact = Boolean(sum?.data && !sum.data.emergencyContact);
   return (
     <I18nScope area="patient2">
       <PageHead
@@ -27,6 +31,18 @@ export default async function SosPage() {
       <section aria-label={t('Bouton SOS')} className="card p-6 sm:p-10">
         {me.patientId ? <SosButton /> : <Empty>{t('L’alerte SOS est rattachée au carnet du patient. En urgence, appelez le 118.')}</Empty>}
       </section>
+      {noContact && (
+        <Link href="/app/profil#contact" className="flex items-center gap-4 rounded-[var(--radius-card)] bg-[var(--color-leaf)] p-4 text-[var(--color-ink)]">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-brand-900)] text-white">
+            <UserPlus size={22} aria-hidden />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-lg font-semibold">{t('Ajouter une personne à prévenir')}</span>
+            <span className="block text-base">{t('Elle recevra l’alerte SOS.')}</span>
+          </span>
+          <ChevronRight size={20} aria-hidden />
+        </Link>
+      )}
       <nav aria-label={t('Autres gestes d’urgence')} className="grid gap-3">
         <a href="tel:118" className="flex items-center gap-4 rounded-[var(--radius-card)] bg-[var(--card)] p-4">
           <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-danger-50)] text-[var(--color-danger-600)]">

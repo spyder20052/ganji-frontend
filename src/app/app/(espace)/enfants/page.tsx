@@ -7,7 +7,7 @@ import { getLocale, getT } from '@/i18n/server';
 import type { T } from '@/i18n/translate';
 import { fmtDate } from '@/lib/format';
 import { Empty, ErrorNote, PageHead } from '../../_components/ui';
-import { load } from '../../_lib/load';
+import { getMe, load } from '../../_lib/load';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -47,7 +47,9 @@ function groupByAge(list: Imm[]) {
 export default async function EnfantsPage() {
   const t = await getT();
   const locale = await getLocale();
-  const res = await load<Child[]>('/maternal/children');
+  // Aidant sans carnet à son nom : pas d'appel refusé, une explication.
+  const me = await getMe();
+  const res = me.patientId ? await load<Child[]>('/maternal/children') : { data: null, error: null, status: 200 };
   const kids = res.data ?? [];
   const books = await Promise.all(kids.map((k) => load<ImmBook>(`/maternal/children/${k.id}/immunizations`)));
 
@@ -71,6 +73,7 @@ export default async function EnfantsPage() {
         listen={listen}
         audioKey="app.enfants"
       />
+      {!me.patientId && <Empty>{t('Ce suivi est dans le carnet de la personne concernée. Ouvrez son carnet depuis l’accueil.')}</Empty>}
       {res.error && <ErrorNote error={res.error} />}
       {res.data && kids.length === 0 && <Empty>{t('Aucun enfant rattaché à votre carnet. À la naissance, la maternité crée son carnet et le relie au vôtre.')}</Empty>}
 

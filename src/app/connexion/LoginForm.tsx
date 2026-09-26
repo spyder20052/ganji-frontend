@@ -2,19 +2,21 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useT } from '@/i18n/client';
+import { CommuneSelect } from '@/components/CommuneSelect';
+import { useLocale, useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { ROLE_HOME, type Me } from '@/lib/types';
 
 type Step = 'phone' | 'code' | 'register';
 
-export function LoginForm() {
+export function LoginForm({ suite }: { suite?: string }) {
   const t = useT();
+  const locale = useLocale();
   const router = useRouter();
   const [step, setStep] = useState<Step>('phone');
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState('');
-  const [reg, setReg] = useState({ npi: '', firstName: '', lastName: '', birthDate: '', sex: 'F' });
+  const [reg, setReg] = useState({ npi: '', firstName: '', lastName: '', birthDate: '', sex: 'F', commune: '' });
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -26,11 +28,18 @@ export function LoginForm() {
 
   const requestCode = () => run(async () => { await api('/auth/otp/request', { method: 'POST', json: { phone } }); setStep('code'); });
   const verify = () => run(async () => {
-    const me = await api<Me>('/auth/otp/verify', { method: 'POST', json: { phone, code } });
-    router.push(ROLE_HOME[me.role]);
+    const me = await api<Me & { profileDone?: boolean }>('/auth/otp/verify', { method: 'POST', json: { phone, code } });
+    const target = suite?.startsWith(ROLE_HOME[me.role]) ? suite : ROLE_HOME[me.role];
+    // Première connexion d'un carnet encore vide : l'accueil en cinq questions, puis la page visée.
+    const welcome = (me.role === 'PATIENT' || me.role === 'CAREGIVER') && me.profileDone === false;
+    router.push(welcome ? `/app/bienvenue${target !== '/app' ? `?suite=${encodeURIComponent(target)}` : ''}` : target);
     router.refresh();
   });
-  const register = () => run(async () => { await api('/auth/register', { method: 'POST', json: { ...reg, phone } }); setStep('code'); });
+  const register = () => run(async () => {
+    const { commune, ...rest } = reg;
+    await api('/auth/register', { method: 'POST', json: { ...rest, phone, lang: locale, ...(commune ? { commune } : {}) } });
+    setStep('code');
+  });
 
   return (
     <div className="card space-y-5 p-6">
@@ -48,18 +57,25 @@ export function LoginForm() {
       {step === 'register' && (
         <form onSubmit={(e) => { e.preventDefault(); void register(); }} className="space-y-3">
           <p className="text-base text-[var(--fg-muted)]">{t('Votre NPI (numéro personnel d’identification, 10 chiffres) relie votre carnet à votre identité. Il n’est jamais stocké en clair.')}</p>
-          <input className="input" aria-label="NPI" placeholder={t('NPI (10 chiffres)')} inputMode="numeric" maxLength={10} value={reg.npi} onChange={(e) => setReg({ ...reg, npi: e.target.value.replace(/\D/g, '') })} required />
-          <input className="input" aria-label={t('Téléphone')} placeholder={t('Téléphone')} inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+          <label className="block">
+            <span className="label mb-1.5 block">{t('NPI (10 chiffres)')}</span>
+            <input className="input num text-lg tracking-wider" inputMode="numeric" autoComplete="off" maxLength={10} value={reg.npi} onChange={(e) => setReg({ ...reg, npi: e.target.value.replace(/\D/g, '') })} required />
+          </label>
+          <label className="block">
+            <span className="label mb-1.5 block">{t('Téléphone')}</span>
+            <input className="input num text-lg tracking-wider" inputMode="tel" autoComplete="tel" placeholder="01 90 00 00 01" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+          </label>
           <div className="grid grid-cols-2 gap-2">
-            <input className="input" aria-label={t('Prénom')} placeholder={t('Prénom')} value={reg.firstName} onChange={(e) => setReg({ ...reg, firstName: e.target.value })} required />
-            <input className="input" aria-label={t('Nom')} placeholder={t('Nom')} value={reg.lastName} onChange={(e) => setReg({ ...reg, lastName: e.target.value })} required />
+            <label className="block"><span className="label mb-1.5 block">{t('Prénom')}</span><input className="input" autoComplete="given-name" value={reg.firstName} onChange={(e) => setReg({ ...reg, firstName: e.target.value })} required /></label>
+            <label className="block"><span className="label mb-1.5 block">{t('Nom')}</span><input className="input" autoComplete="family-name" value={reg.lastName} onChange={(e) => setReg({ ...reg, lastName: e.target.value })} required /></label>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <label className="block"><span className="label">{t('Date de naissance')}</span><input type="date" className="input" value={reg.birthDate} onChange={(e) => setReg({ ...reg, birthDate: e.target.value })} required /></label>
-            <label className="block"><span className="label">{t('Sexe')}</span>
+            <label className="block"><span className="label mb-1.5 block">{t('Date de naissance')}</span><input type="date" className="input" max={new Date().toISOString().slice(0, 10)} value={reg.birthDate} onChange={(e) => setReg({ ...reg, birthDate: e.target.value })} required /></label>
+            <label className="block"><span className="label mb-1.5 block">{t('Sexe')}</span>
               <select className="input" value={reg.sex} onChange={(e) => setReg({ ...reg, sex: e.target.value })}><option value="F">{t('Femme')}</option><option value="M">{t('Homme')}</option></select>
             </label>
           </div>
+          <CommuneSelect id="reg-commune" value={reg.commune} onChange={(name) => setReg({ ...reg, commune: name })} label={t('Ma commune')} />
           <p className="text-sm text-[var(--fg-muted)]">{t('Pas encore de NPI (nouveau-né, visiteur) ? Un relais ou un centre de santé peut créer un identifiant provisoire Ganji, rattaché au NPI plus tard sans perte de données.')}</p>
           <button className="btn btn-primary w-full" disabled={busy}>{t('Créer mon carnet')}</button>
           <button type="button" className="btn btn-ghost w-full" onClick={() => setStep('phone')}>{t('J’ai déjà un carnet')}</button>

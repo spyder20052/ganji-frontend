@@ -14,6 +14,7 @@ const LINKS: NavLink[] = [
   { href: '/app/sos', label: 'Urgence', icon: 'emergency', danger: true },
   { href: '/app/medicaments', label: 'Médicaments', icon: 'pill' },
   { href: '/app/sang', label: 'Sang', icon: 'blood' },
+  { href: '/app/profil', label: 'Profil', icon: 'adult', desktopOnly: true },
 ];
 
 /**
@@ -26,7 +27,7 @@ export default async function EspaceLayout({ children }: { children: ReactNode }
   const links = LINKS.map((l) => ({ ...l, label: t(l.label) }));
   return (
     <>
-      <TopBar home="/app" who={me.displayName} links={links} />
+      <TopBar home="/app" who={me.displayName} links={links} account={{ href: '/app/profil', label: t('Mon profil') }} />
       <I18nScope area="patient">
         <NetworkStatus />
         <main id="contenu" className="mx-auto max-w-6xl space-y-5 px-4 pb-6 pt-2">

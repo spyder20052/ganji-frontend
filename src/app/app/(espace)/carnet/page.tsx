@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { EyeOff, Phone } from 'lucide-react';
+import { EyeOff, Pencil, Phone, Plus, ShieldCheck } from 'lucide-react';
 import { LineChart } from '@/components/LineChart';
 import { Pictogram } from '@/components/Pictogram';
 import { getLocale, getT } from '@/i18n/server';
@@ -96,7 +96,18 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
       )}
 
       {/* Fiche vitale */}
-      <Section id="h-fiche" title={t('Fiche vitale')} icon="heart">
+      <Section
+        id="h-fiche"
+        title={t('Fiche vitale')}
+        icon="heart"
+        action={
+          own && s ? (
+            <Link href="/app/profil" className="btn btn-soft !min-h-12">
+              <Pencil size={18} aria-hidden /> {t('Modifier')}
+            </Link>
+          ) : undefined
+        }
+      >
         {sumRes.error && <ErrorNote error={sumRes.error} />}
         {s && (
           <div className="grid gap-4 md:grid-cols-[auto_1fr]">
@@ -104,6 +115,12 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
               <Pictogram name="blood" size={30} />
               <p className="display text-[4.5rem]">{s.bloodGroup ?? '?'}</p>
               <p className="mt-1 text-sm font-bold">{t('Groupe sanguin')}</p>
+              {(s as Summary & { bloodGroupSource?: string | null }).bloodGroupSource === 'VERIFIE' && (
+                <p className="mt-2 inline-flex items-center gap-1 text-sm">
+                  <ShieldCheck size={16} aria-hidden /> {t('Vérifié par un soignant')}
+                </p>
+              )}
+              {own && !s.bloodGroup && <Fill href="/app/profil#sang" label={t('Compléter')} danger />}
             </div>
             <dl className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-2xl bg-[var(--bg)] p-4">
@@ -118,11 +135,13 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
                   ) : (
                     <span>{t('Aucune connue')}</span>
                   )}
+                  {own && !s.allergies.length && <Fill href="/app/profil#allergies" label={t('Compléter')} />}
                 </dd>
               </div>
               <div className="rounded-2xl bg-[var(--bg)] p-4">
                 <dt className="label">{t('Traitement en cours')}</dt>
                 <dd className="mt-1 font-bold">{s.treatments ?? t('Aucun renseigné')}</dd>
+                {own && !s.treatments && <Fill href="/app/profil#traitements" label={t('Compléter')} />}
               </div>
               <div className="rounded-2xl bg-[var(--bg)] p-4">
                 <dt className="label">{t('Maladies suivies')}</dt>
@@ -160,7 +179,10 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
                       )}
                     </>
                   ) : (
-                    t('Non renseignée')
+                    <>
+                      {t('Non renseignée')}
+                      {own && <Fill href="/app/profil#contact" label={t('Compléter')} />}
+                    </>
                   )}
                 </dd>
               </div>
@@ -248,6 +270,18 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
         {!docRes.error && <DocumentUpload patientId={patientId} />}
       </Section>
     </>
+  );
+}
+
+/** Lien « Compléter » d'un champ vide de la fiche vitale : ouvre le bon bloc du profil. */
+function Fill({ href, label, danger = false }: { href: string; label: string; danger?: boolean }) {
+  return (
+    <Link
+      href={href}
+      className={`mt-2 inline-flex min-h-11 items-center gap-1 rounded-full px-4 text-base font-semibold ${danger ? 'bg-[var(--color-danger-600)] text-white' : 'bg-[var(--color-leaf)] text-[var(--color-ink)]'}`}
+    >
+      <Plus size={18} aria-hidden /> {label}
+    </Link>
   );
 }
 
