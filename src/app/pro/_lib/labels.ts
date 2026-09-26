@@ -36,6 +36,7 @@ export const BLOOD_STATUS: Record<string, { label: string; tone: Tone }> = {
   OUVERTE: { label: 'Demande créée', tone: 'muted' },
   DONNEURS_ALERTES: { label: 'Donneurs alertés', tone: 'ocre' },
   DONNEUR_TROUVE: { label: 'Donneur trouvé', tone: 'brand' },
+  POCHES_RESERVEES: { label: 'Poches réservées', tone: 'brand' },
   SERVIE: { label: 'Transfusion faite', tone: 'brand' },
   ANNULEE: { label: 'Annulée', tone: 'muted' },
 };

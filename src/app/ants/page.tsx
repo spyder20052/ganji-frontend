@@ -1,20 +1,21 @@
+import { I18nScope } from '@/i18n/I18nScope';
 import { getLocale, getT } from '@/i18n/server';
 import type { T } from '@/i18n/translate';
 import { fmtDateTime } from '@/lib/format';
 import { tryServerApi } from '@/lib/server-api';
-import type { BloodRequestView } from '@/lib/types';
 import { BLOOD_GROUPS, BLOOD_PRODUCTS } from '../pro/_lib/labels';
 import { getMe } from '../pro/_lib/me';
+import type { LiveRequest } from '../pro/sang/[id]/types';
 import { AntsRequests } from './AntsRequests';
 import { OwnStockGrid } from './OwnStockGrid';
 import { CRITICAL, LEVEL_CLASS, LOW, level, unitsOf, type StockSite } from './stock';
 
 export default async function AntsPage() {
   const [t, locale] = await Promise.all([getT(), getLocale()]);
-  const [me, sites, requests] = await Promise.all([getMe(), tryServerApi<StockSite[]>('/blood/stocks'), tryServerApi<BloodRequestView[]>('/blood/requests')]);
+  const [me, sites, requests] = await Promise.all([getMe(), tryServerApi<StockSite[]>('/blood/stocks'), tryServerApi<LiveRequest[]>('/blood/requests')]);
   const own = sites?.find((s) => s.id === me.facilityId) ?? null;
   const others = (sites ?? []).filter((s) => s.id !== own?.id);
-  const openCount = (requests ?? []).filter((r) => ['OUVERTE', 'DONNEURS_ALERTES', 'DONNEUR_TROUVE'].includes(r.status)).length;
+  const openCount = (requests ?? []).filter((r) => ['OUVERTE', 'DONNEURS_ALERTES', 'DONNEUR_TROUVE', 'POCHES_RESERVEES'].includes(r.status)).length;
   const vital = (requests ?? []).filter((r) => r.urgency === 'VITALE' && ['OUVERTE', 'DONNEURS_ALERTES'].includes(r.status)).length;
   const national = (sites ?? []).reduce((n, s) => n + s.total, 0);
   const criticalCells = (sites ?? []).reduce((n, s) => n + BLOOD_PRODUCTS.reduce((m, p) => m + BLOOD_GROUPS.filter((g) => unitsOf(s, p.value, g) < CRITICAL).length, 0), 0);
@@ -109,7 +110,11 @@ export default async function AntsPage() {
           </h2>
           {vital > 0 && <p className="text-sm font-bold text-[var(--color-danger-800)]">{t('{n} demande(s) vitale(s) sans donneur', { n: vital })}</p>}
         </div>
-        {requests === null ? <p className="mt-2 text-[var(--fg-muted)]">{t('Demandes indisponibles pour le moment.')}</p> : <AntsRequests initial={requests} />}
+        {requests === null ? <p className="mt-2 text-[var(--fg-muted)]">{t('Demandes indisponibles pour le moment.')}</p> : (
+          <I18nScope area="sangPartage">
+            <AntsRequests initial={requests} own={own} />
+          </I18nScope>
+        )}
       </section>
     </div>
   );

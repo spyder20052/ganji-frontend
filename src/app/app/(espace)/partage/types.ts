@@ -17,3 +17,9 @@ export interface ShareResult {
   hours: number;
   qrPayload: string;
 }
+
+/** Ce que le soignant recevra avec le partage : nombre de documents et d'ordonnances du carnet. */
+export interface SharePreview {
+  documents: number;
+  prescriptions: number;
+}

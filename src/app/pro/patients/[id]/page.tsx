@@ -12,8 +12,11 @@ import { serverApi, ServerApiError } from '@/lib/server-api';
 import type { Series, Summary, TimelineItem } from '@/lib/types';
 import { SPECIALTY_LABEL } from '../../_lib/labels';
 import { getMe } from '../../_lib/me';
+import { I18nScope } from '@/i18n/I18nScope';
 import { ActionBar } from './ActionBar';
 import { BreakGlassForm } from './BreakGlassForm';
+import { SharedRecords } from './SharedRecords';
+import { VitalsVerify } from './VitalsVerify';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -83,6 +86,9 @@ export default async function PatientPage({ params }: { params: Promise<{ id: st
       <AccessBanner access={summary.access} t={t} locale={locale} />
 
       <VitalCard s={summary} t={t} locale={locale} />
+      <I18nScope area="compte">
+        <VitalsVerify patientId={summary.id} bloodGroup={summary.bloodGroup} source={(summary as Summary & { bloodGroupSource?: string | null }).bloodGroupSource} allergies={summary.allergies} />
+      </I18nScope>
 
       <ActionBar patientId={summary.id} firstName={summary.firstName} bloodGroup={summary.bloodGroup} canPrescribe={me.role === 'PRACTITIONER'} />
 
@@ -146,6 +152,9 @@ export default async function PatientPage({ params }: { params: Promise<{ id: st
           )}
         </section>
       </div>
+
+      {/* Documents et ordonnances : chacun derrière son volet de partage (M1-M2). */}
+      <SharedRecords patientId={summary.id} />
     </div>
   );
 }

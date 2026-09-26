@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import { ShieldAlert, ShieldX } from 'lucide-react';
 import { Pictogram } from '@/components/Pictogram';
+import { I18nScope } from '@/i18n/I18nScope';
 import { getLocale, getT } from '@/i18n/server';
 import type { Locale, T } from '@/i18n/translate';
 import { fmtDate, fmtDateTime } from '@/lib/format';
 import { Empty, ErrorNote, PageHead, Section } from '../../_components/ui';
-import { logSentence, SCOPE_LABEL, type AccessLogEntry } from '../../_lib/labels';
+import { dayAndHour, logSentence, SCOPE_LABEL, type AccessLogEntry } from '../../_lib/labels';
 import { getMe, load } from '../../_lib/load';
 import { RevokeButton } from './RevokeButton';
 import { ShareFlow } from './ShareFlow';
@@ -28,7 +29,13 @@ export default async function PartagePage() {
       </>
     );
   }
-  const [consRes, logRes] = await Promise.all([load<ConsentView[]>('/me/consents'), load<AccessLogEntry[]>('/me/access-log')]);
+  const [consRes, logRes, docRes, rxRes] = await Promise.all([
+    load<ConsentView[]>('/me/consents'),
+    load<AccessLogEntry[]>('/me/access-log'),
+    load<{ id: string }[]>(`/patients/${me.patientId}/documents`),
+    load<{ id: string }[]>('/prescriptions/mine'),
+  ]);
+  const preview = { documents: docRes.data?.length ?? 0, prescriptions: rxRes.data?.length ?? 0 };
   const active = (consRes.data ?? []).filter((c) => c.active);
   const past = (consRes.data ?? []).filter((c) => !c.active);
   const log = logRes.data ?? [];
@@ -45,7 +52,9 @@ export default async function PartagePage() {
       />
 
       <Section id="h-qr" title={t('Nouveau partage')} icon="qr">
-        <ShareFlow />
+        <I18nScope area="sangPartage">
+          <ShareFlow preview={preview} />
+        </I18nScope>
       </Section>
 
       <Section id="h-actifs" title={active.length ? t('Qui a accès en ce moment ({n})', { n: active.length }) : t('Qui a accès en ce moment')} icon="people">
@@ -123,7 +132,7 @@ function LogList({ entries, me, t, locale }: { entries: AccessLogEntry[]; me: st
   return (
     <ol className="space-y-2">
       {entries.map((e) => {
-        const { text, tone } = logSentence(e, me, t, locale);
+        const { text, tone } = documentRead(e, t, locale) ?? logSentence(e, me, t, locale);
         const style =
           tone === 'breakglass'
             ? 'bg-[var(--color-danger-50)] text-[var(--color-danger-800)]'
@@ -142,4 +151,15 @@ function LogList({ entries, me, t, locale }: { entries: AccessLogEntry[]; me: st
       })}
     </ol>
   );
+}
+
+/** Ouverture d'un document précis par un soignant : « Dr X a ouvert votre document « Bilan » le … ». */
+function documentRead(e: AccessLogEntry, t: T, locale: Locale): { text: string; tone: 'normal' | 'breakglass' | 'denied' } | null {
+  const m = /^Document « (.+) »$/.exec(e.resource);
+  if (!m) return null;
+  const vars = { who: e.who, title: m[1], when: dayAndHour(e.at, t, locale) };
+  if (e.action === 'READ') return { text: t('{who} a ouvert votre document « {title} » le {when}.', vars), tone: 'normal' };
+  if (e.action === 'READ_BREAK_GLASS') return { text: t('{who} a ouvert votre document « {title} » le {when}, en accès d’urgence.', vars), tone: 'breakglass' };
+  if (e.action === 'DENIED') return { text: t('Tentative refusée : {who} a voulu ouvrir votre document « {title} » sans votre accord, le {when}.', vars), tone: 'denied' };
+  return null;
 }

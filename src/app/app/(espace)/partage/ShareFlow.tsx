@@ -1,5 +1,5 @@
 'use client';
-import { CheckCircle2, Clock, QrCode, ShieldAlert } from 'lucide-react';
+import { CheckCircle2, Clock, FileText, Pill, QrCode, ShieldAlert } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { QrClient } from '@/components/QrClient';
@@ -7,7 +7,7 @@ import { useLocale, useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { fmtDateTime } from '@/lib/format';
 import { hourOnly, SCOPE_LABEL } from '../../_lib/labels';
-import type { ConsentView, ShareResult } from './types';
+import type { ConsentView, SharePreview, ShareResult } from './types';
 
 const SCOPES = [
   { key: 'summary', hint: 'Groupe sanguin, allergies, traitement' },
@@ -20,7 +20,7 @@ const DURATIONS = [1, 24, 72] as const;
 
 type Phase = { kind: 'choose' } | { kind: 'waiting'; share: ShareResult } | { kind: 'granted'; share: ShareResult; consent: ConsentView } | { kind: 'expired' };
 
-export function ShareFlow() {
+export function ShareFlow({ preview }: { preview?: SharePreview }) {
   const t = useT();
   const locale = useLocale();
   const router = useRouter();
@@ -146,6 +146,25 @@ export function ShareFlow() {
           <span className="min-w-0">
             <span className="block text-sm text-[var(--fg-muted)]">{t('Le soignant verra')}</span>
             <span className="block font-semibold">{sensitive ? t('{part}, très sensible compris', { part: seen }) : t('{part}, sauf le très sensible', { part: seen })}</span>
+            {/* Ce qui part vraiment avec le partage : les documents et ordonnances du carnet, comptés. */}
+            {preview && (preview.documents > 0 || preview.prescriptions > 0) && (
+              <span className="mt-2 flex flex-wrap gap-2">
+                {preview.documents > 0 && (
+                  <span className={`pill whitespace-nowrap !text-base ${scopes.includes('documents') ? 'bg-[var(--card)] text-[var(--fg)]' : 'text-[var(--fg-muted)] line-through'}`}>
+                    <FileText size={16} aria-hidden />
+                    {preview.documents > 1 ? t('Vos {n} documents', { n: preview.documents }) : t('Votre document')}
+                    {!scopes.includes('documents') && <span className="sr-only">{t(' : non partagé')}</span>}
+                  </span>
+                )}
+                {preview.prescriptions > 0 && (
+                  <span className={`pill whitespace-nowrap !text-base ${scopes.includes('prescriptions') ? 'bg-[var(--card)] text-[var(--fg)]' : 'text-[var(--fg-muted)] line-through'}`}>
+                    <Pill size={16} aria-hidden />
+                    {preview.prescriptions > 1 ? t('Vos {n} ordonnances', { n: preview.prescriptions }) : t('Votre ordonnance')}
+                    {!scopes.includes('prescriptions') && <span className="sr-only">{t(' : non partagé')}</span>}
+                  </span>
+                )}
+              </span>
+            )}
           </span>
           <span className="pill shrink-0 bg-[var(--card)]">
             <span className="group-open:hidden">{t('Modifier')}</span>

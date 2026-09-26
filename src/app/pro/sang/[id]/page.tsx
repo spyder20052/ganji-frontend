@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { I18nScope } from '@/i18n/I18nScope';
 import { getT } from '@/i18n/server';
 import { serverApi, ServerApiError } from '@/lib/server-api';
-import type { BloodRequestView } from '@/lib/types';
 import { BloodLive } from './BloodLive';
+import type { LiveRequest } from './types';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -16,9 +17,9 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export default async function BloodRequestPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   if (!UUID.test(id)) notFound();
-  let initial: BloodRequestView;
+  let initial: LiveRequest;
   try {
-    initial = await serverApi<BloodRequestView>(`/blood/requests/${id}`);
+    initial = await serverApi<LiveRequest>(`/blood/requests/${id}`);
   } catch (e) {
     if (e instanceof ServerApiError && e.status === 404) notFound();
     if (e instanceof ServerApiError && e.status === 403) {
@@ -35,5 +36,9 @@ export default async function BloodRequestPage({ params }: { params: Promise<{ i
     }
     throw e;
   }
-  return <BloodLive id={id} initial={initial} />;
+  return (
+    <I18nScope area="sangPartage">
+      <BloodLive id={id} initial={initial} />
+    </I18nScope>
+  );
 }
