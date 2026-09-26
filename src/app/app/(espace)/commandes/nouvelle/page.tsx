@@ -33,15 +33,15 @@ export default async function NouvelleCommandePage({ searchParams }: { searchPar
   const mode: OrderMode | undefined = modeParam === 'LIVRAISON' || modeParam === 'RETRAIT' ? modeParam : undefined;
   const qty = Math.min(10, Math.max(1, Number(one(sp, 'qty')) || 1));
 
-  const head = <PageHead icon="pill" title={t('Commander')} />;
+  const head = <PageHead icon="delivery" title={t('Commander')} />;
   if ((!rx || !UUID.test(rx)) && (!med || !UUID.test(med))) {
     return (
       <>
         {head}
         <Empty>{t('Choisissez d’abord une ordonnance ou un médicament.')}</Empty>
         <div className="flex flex-wrap gap-2">
-          <Link href="/app/medicaments" className="btn btn-primary">{t('Mes ordonnances')}</Link>
-          <Link href="/medicaments" className="btn btn-ghost"><Search size={20} aria-hidden /> {t('Chercher un médicament')}</Link>
+          <Link href="/app/medicaments" className="btn btn-primary"><Pictogram name="pill" size={20} /> {t('Ordonnances')}</Link>
+          <Link href="/medicaments" className="btn btn-ghost"><Search size={20} aria-hidden /> {t('Chercher')}</Link>
         </div>
       </>
     );

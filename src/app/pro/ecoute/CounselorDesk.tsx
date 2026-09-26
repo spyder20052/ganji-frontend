@@ -1,9 +1,11 @@
 'use client';
 import { ArrowLeft, Check, EyeOff, Hand, Loader2, MessageCircle, Phone, PhoneCall, Send, Siren, X } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useLocale, useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { fmtDateTime, fmtPhone, fmtTime, relative } from '@/lib/format';
+import { DaySeparator } from '../../app/(espace)/ecoute/DaySeparator';
+import { dayStarts } from '../../app/(espace)/ecoute/time';
 import type { CounselorThread, ListenQueue, QueueItem } from '../../app/(espace)/ecoute/types';
 
 const POLL_MS = 5000;
@@ -27,7 +29,7 @@ function useVisiblePoll(fn: () => void, enabled = true) {
  * Poste de l'écoutante : la file (détresse d'abord, puis en attente, puis mes conversations) et la
  * conversation ouverte. Téléphone : une vue à la fois ; ordinateur : les deux côte à côte.
  */
-export function CounselorDesk({ initialQueue, initialThread }: { initialQueue: ListenQueue; initialThread: CounselorThread | null }) {
+export function CounselorDesk({ head, initialQueue, initialThread }: { head: ReactNode; initialQueue: ListenQueue; initialThread: CounselorThread | null }) {
   const t = useT();
   const [queue, setQueue] = useState(initialQueue);
   const [thread, setThread] = useState<CounselorThread | null>(initialThread);
@@ -56,50 +58,51 @@ export function CounselorDesk({ initialQueue, initialThread }: { initialQueue: L
   ];
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,24rem)_1fr]">
-      <section aria-labelledby="h-file" className={`card space-y-4 p-4 sm:p-5 ${thread ? 'hidden lg:block' : ''}`}>
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h1 id="h-file" className="text-2xl font-bold">{t('File d’écoute')}</h1>
-          <p className="text-sm text-[var(--fg-muted)]">{queue.counselor}</p>
-        </div>
-        {groups.map((g) => (
-          <div key={g.key} className="space-y-2">
-            <h2 className="flex items-center gap-2 text-base font-semibold">
-              {g.key === 'urgent' && <Siren size={16} aria-hidden className="text-[var(--color-danger-600)]" />}
-              {g.title} <span className="num text-[var(--fg-muted)]">({g.items.length})</span>
-            </h2>
-            {g.items.length === 0 ? (
-              <p className="rounded-2xl bg-[var(--bg)] p-3 text-base text-[var(--fg-muted)]">{g.key === 'urgent' ? t('Aucune détresse signalée.') : t('Rien ici pour le moment.')}</p>
-            ) : (
-              <ul className="space-y-2">
-                {g.items.map((i) => (
-                  <QueueRow key={i.id} item={i} active={thread?.id === i.id} onOpen={() => void open(i.id)} />
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
-      </section>
+    <>
+      {/* Téléphone : la conversation ouverte a son propre en-tête (retour à la file) ; le titre de page s'efface. */}
+      <div className={`mb-5 ${thread ? 'hidden lg:block' : ''}`}>{head}</div>
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,24rem)_1fr]">
+        <section aria-labelledby="h-file" className={`card space-y-4 p-4 sm:p-5 ${thread ? 'hidden lg:block' : ''}`}>
+          <h2 id="h-file" className="text-xl font-semibold">{t('File d’écoute')}</h2>
+          {groups.map((g) => (
+            <div key={g.key} className="space-y-2">
+              <h2 className="flex items-center gap-2 text-base font-semibold">
+                {g.key === 'urgent' && <Siren size={16} aria-hidden className="text-[var(--color-danger-600)]" />}
+                {g.title} <span className="num text-[var(--fg-muted)]">({g.items.length})</span>
+              </h2>
+              {g.items.length === 0 ? (
+                <p className="rounded-2xl bg-[var(--bg)] p-3 text-base text-[var(--fg-muted)]">{g.key === 'urgent' ? t('Aucune détresse signalée.') : t('Rien ici pour le moment.')}</p>
+              ) : (
+                <ul className="space-y-2">
+                  {g.items.map((i) => (
+                    <QueueRow key={i.id} item={i} active={thread?.id === i.id} onOpen={() => void open(i.id)} />
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </section>
 
-      <div className={thread ? '' : 'hidden lg:block'}>
-        {error && <p role="alert" className="mb-3 rounded-2xl bg-[var(--color-ocre-100)] p-3 font-bold text-[var(--color-ocre-700)]">{error}</p>}
-        {thread ? (
-          <ThreadView
-            key={thread.id}
-            thread={thread}
-            onChange={(x) => {
-              setThread(x);
-              refreshQueue();
-            }}
-            onBack={() => void open(null)}
-          />
-        ) : (
-          <div className="card grid min-h-64 place-items-center p-6 text-center text-[var(--fg-muted)]">
-            <p className="flex items-center gap-2"><MessageCircle size={20} aria-hidden /> {t('Choisissez une conversation dans la file.')}</p>
-          </div>
-        )}
+        <div className={thread ? '' : 'hidden lg:block'}>
+          {error && <p role="alert" className="mb-3 rounded-2xl bg-[var(--color-ocre-100)] p-3 font-bold text-[var(--color-ocre-700)]">{error}</p>}
+          {thread ? (
+            <ThreadView
+              key={thread.id}
+              thread={thread}
+              onChange={(x) => {
+                setThread(x);
+                refreshQueue();
+              }}
+              onBack={() => void open(null)}
+            />
+          ) : (
+            <div className="card grid min-h-64 place-items-center p-6 text-center text-[var(--fg-muted)]">
+              <p className="flex items-center gap-2"><MessageCircle size={20} aria-hidden /> {t('Choisissez une conversation dans la file.')}</p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -151,6 +154,7 @@ function ThreadView({ thread, onChange, onBack }: { thread: CounselorThread; onC
   const logRef = useRef<HTMLDivElement>(null);
   const closed = thread.status === 'CLOS';
   const free = !thread.mine && thread.status === 'OUVERT';
+  const starts = dayStarts(thread.messages);
 
   const refresh = useCallback(() => {
     api<CounselorThread>(`/listen/${thread.id}`).then(onChange).catch(() => undefined);
@@ -178,7 +182,7 @@ function ThreadView({ thread, onChange, onBack }: { thread: CounselorThread; onC
   }
 
   return (
-    <section aria-labelledby="h-fil" className="card overflow-hidden">
+    <section aria-labelledby="h-fil" className="card">
       <header className="space-y-3 border-b border-[var(--border)] p-4">
         <div className="flex items-center gap-3">
           <button type="button" onClick={onBack} className="chip-round shrink-0 lg:hidden" aria-label={t('Retour à la file')}>
@@ -202,60 +206,69 @@ function ThreadView({ thread, onChange, onBack }: { thread: CounselorThread; onC
         </div>
         {thread.anonymous && <p className="text-sm text-[var(--fg-muted)]">{t('Anonyme : ni nom, ni carnet, ni numéro (sauf rappel demandé).')}</p>}
         {thread.callback && (
-          <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-[var(--color-brand-100)] p-3 text-[var(--color-ink)]">
+          <div className="flex items-center gap-3 rounded-2xl bg-[var(--color-brand-100)] p-3 text-[var(--color-ink)]">
             <PhoneCall size={20} aria-hidden className="shrink-0" />
-            <p className="min-w-0 flex-1 font-semibold">
-              {t('Rappel demandé : {when}', { when: fmtDateTime(thread.callback.at, locale) })}
-              {thread.callback.phone && <span className="num"> · {fmtPhone(thread.callback.phone)}</span>}
+            <p className="min-w-0 flex-1 text-base font-semibold">
+              <span className="block">{t('Rappel {when}', { when: fmtDateTime(thread.callback.at, locale) })}</span>
+              {thread.callback.phone && <span className="num block whitespace-nowrap">{fmtPhone(thread.callback.phone)}</span>}
             </p>
             {thread.callback.phone && (
-              <a href={`tel:${thread.callback.phone}`} className="btn btn-primary !min-h-11 !px-4">
+              <a href={`tel:${thread.callback.phone}`} className="btn btn-primary !min-h-11 shrink-0 !px-4">
                 <Phone size={18} aria-hidden /> {t('Appeler')}
               </a>
             )}
           </div>
         )}
+        {free && (
+          <button type="button" className="btn btn-primary w-full" disabled={busy} onClick={() => void act('/take')}>
+            <Hand size={20} aria-hidden /> {t('Prendre la conversation')}
+          </button>
+        )}
       </header>
 
-      <div ref={logRef} role="log" aria-live="polite" aria-label={t('Conversation')} className="max-h-[60vh] min-h-48 space-y-3 overflow-y-auto p-4">
-        {thread.messages.map((m) => {
+      <div ref={logRef} role="log" aria-live="polite" aria-label={t('Conversation')} className="max-h-[32vh] min-h-40 space-y-3 overflow-y-auto p-4 sm:max-h-[60vh]">
+        {thread.messages.map((m, i) => {
+          const day = starts.has(i) ? <DaySeparator at={m.at} /> : null;
           if (m.author === 'SYSTEME') {
-            return m.system === 'safety' ? (
-              <p key={m.id} className="flex items-start gap-2 rounded-2xl bg-[var(--color-danger-50)] p-3 text-base text-[var(--color-danger-800)]">
-                <Siren size={18} aria-hidden className="mt-0.5 shrink-0" />
-                <span>
-                  <span className="font-bold">{t('Consigne de sécurité envoyée (118, urgences).')}</span> {fmtTime(m.at, locale)}
-                </span>
-              </p>
-            ) : (
-              <p key={m.id} className="text-center text-sm text-[var(--fg-muted)]">
-                {t(m.body)} · {fmtTime(m.at, locale)}
-              </p>
+            return (
+              <Fragment key={m.id}>
+                {day}
+                {m.system === 'safety' ? (
+                  <p className="flex items-start gap-2 rounded-2xl bg-[var(--color-danger-50)] p-3 text-base text-[var(--color-danger-800)]">
+                    <Siren size={18} aria-hidden className="mt-0.5 shrink-0" />
+                    <span>
+                      <span className="font-bold">{t('Consigne de sécurité envoyée (118, urgences).')}</span> {fmtTime(m.at, locale)}
+                    </span>
+                  </p>
+                ) : (
+                  <p className="text-center text-sm text-[var(--fg-muted)]">
+                    {t(m.body)} · {fmtTime(m.at, locale)}
+                  </p>
+                )}
+              </Fragment>
             );
           }
           const mine = m.author === 'ECOUTANT';
           return (
-            <div key={m.id} className={`max-w-[85%] space-y-1 ${mine ? 'ml-auto text-right' : ''}`}>
-              <p className={`inline-block rounded-3xl px-4 py-2.5 text-left whitespace-pre-line ${mine ? 'rounded-br-md bg-[var(--color-brand-900)] text-white' : 'rounded-bl-md bg-[var(--bg)] ring-1 ring-[var(--border)]'}`}>
-                <span className="sr-only">{mine ? t('Vous : ') : t('La personne : ')}</span>
-                {m.body}
-              </p>
-              <p className="px-2 text-xs text-[var(--fg-muted)]">{fmtDateTime(m.at, locale)}</p>
-            </div>
+            <Fragment key={m.id}>
+              {day}
+              <div className={`max-w-[85%] space-y-1 ${mine ? 'ml-auto text-right' : ''}`}>
+                <p className={`inline-block rounded-3xl px-4 py-2.5 text-left whitespace-pre-line ${mine ? 'rounded-br-md bg-[var(--color-brand-900)] text-white' : 'rounded-bl-md bg-[var(--bg)] ring-1 ring-[var(--border)]'}`}>
+                  <span className="sr-only">{mine ? t('Vous : ') : t('La personne : ')}</span>
+                  {m.body}
+                </p>
+                <p className="px-2 text-sm text-[var(--fg-muted)]">{fmtTime(m.at, locale)}</p>
+              </div>
+            </Fragment>
           );
         })}
       </div>
 
-      <div className="space-y-3 border-t border-[var(--border)] p-4">
-        {closed ? (
-          <p className="flex items-center gap-2 text-[var(--fg-muted)]"><Check size={18} aria-hidden /> {t('Conversation close.')}</p>
-        ) : (
-          <>
-            {free && (
-              <button type="button" className="btn btn-primary w-full" disabled={busy} onClick={() => void act('/take')}>
-                <Hand size={20} aria-hidden /> {t('Prendre la conversation')}
-              </button>
-            )}
+      {closed ? (
+        <p className="flex items-center gap-2 border-t border-[var(--border)] p-4 text-[var(--fg-muted)]"><Check size={18} aria-hidden /> {t('Conversation close.')}</p>
+      ) : (
+        <>
+          <div className="space-y-2 border-t border-[var(--border)] px-3 pt-3">
             <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" role="group" aria-label={t('Réponses toutes prêtes')}>
               {OPENERS.map((o) => (
                 <button key={o} type="button" className="btn btn-soft !min-h-10 shrink-0 !px-3 text-sm font-medium" onClick={() => setDraft((x) => (x.trim() ? `${x.trim()} ${t(o)}` : t(o)))}>
@@ -263,6 +276,9 @@ function ThreadView({ thread, onChange, onBack }: { thread: CounselorThread; onC
                 </button>
               ))}
             </div>
+          </div>
+          {/* Case de réponse : toujours visible au-dessus de la barre du bas du téléphone. */}
+          <div className="sticky bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-10 space-y-2 bg-[var(--card)] p-3 shadow-[0_-10px_18px_-16px_rgb(0_0_0/0.35)] md:bottom-4">
             <form
               className="flex items-end gap-2"
               onSubmit={(e) => {
@@ -274,9 +290,9 @@ function ThreadView({ thread, onChange, onBack }: { thread: CounselorThread; onC
               <label htmlFor="reponse" className="sr-only">{t('Votre réponse')}</label>
               <textarea
                 id="reponse"
-                rows={3}
+                rows={2}
                 maxLength={2000}
-                className="input flex-1 resize-y !py-3"
+                className="input !min-h-14 flex-1 resize-y !py-3"
                 placeholder={free ? t('Répondre prend la conversation.') : t('Votre réponse…')}
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
@@ -292,6 +308,8 @@ function ThreadView({ thread, onChange, onBack }: { thread: CounselorThread; onC
               </button>
             </form>
             {error && <p role="alert" className="rounded-2xl bg-[var(--color-ocre-100)] p-3 font-bold text-[var(--color-ocre-700)]">{error}</p>}
+          </div>
+          <div className="space-y-3 px-4 pb-4 pt-1">
             <p className="text-sm text-[var(--fg-muted)]">{t('La personne est prévenue dans l’application ; par SMS, un texte neutre seulement.')}</p>
             {confirmClose ? (
               <div className="flex flex-wrap items-center gap-2 rounded-2xl bg-[var(--bg)] p-3">
@@ -304,9 +322,9 @@ function ThreadView({ thread, onChange, onBack }: { thread: CounselorThread; onC
                 <X size={18} aria-hidden /> {t('Clore')}
               </button>
             )}
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </section>
   );
 }

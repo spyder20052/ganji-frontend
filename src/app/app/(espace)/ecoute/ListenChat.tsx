@@ -1,12 +1,14 @@
 'use client';
 import { Check, Eye, EyeOff, Loader2, MapPin, Phone, PhoneCall, Plus, Send, Siren, X } from 'lucide-react';
 import Link from 'next/link';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { ListenButton } from '@/components/ListenButton';
 import { Pictogram } from '@/components/Pictogram';
 import { useLocale, useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { fmtDateTime, fmtPhone, fmtTime } from '@/lib/format';
+import { DaySeparator } from './DaySeparator';
+import { dayStarts } from './time';
 import { callbackMoments, type ListenMessage, type ListenThread, type ListenThreadSummary } from './types';
 
 /** Phrases toutes prêtes : un toucher remplit la case, la personne n'a plus qu'à envoyer. */
@@ -206,10 +208,11 @@ function Conversation({ thread, onChange, onNew }: { thread: ListenThread; onCha
     if (await act('/messages', { body })) setDraft('');
   }
 
+  const starts = dayStarts(thread.messages);
   const status = closed ? t('Conversation close') : thread.status === 'EN_COURS' ? t('Vous répond ici') : t('Une écoutante va vous répondre ici');
 
   return (
-    <section aria-labelledby="h-conversation" className="card overflow-hidden">
+    <section aria-labelledby="h-conversation" className="card">
       <header className="flex items-center gap-3 border-b border-[var(--border)] p-4">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">
           <Pictogram name="listen" size={24} />
@@ -224,9 +227,12 @@ function Conversation({ thread, onChange, onNew }: { thread: ListenThread; onCha
         </span>
       </header>
 
-      <div ref={logRef} role="log" aria-live="polite" aria-label={t('Conversation')} className="max-h-[34vh] space-y-3 overflow-y-auto p-4 sm:max-h-[min(60vh,34rem)]">
-        {thread.messages.map((m) => (
-          <Message key={m.id} m={m} counselor={thread.counselorName} />
+      <div ref={logRef} role="log" aria-live="polite" aria-label={t('Conversation')} className="max-h-[32vh] min-h-40 space-y-3 overflow-y-auto p-4 sm:max-h-[min(60vh,34rem)]">
+        {thread.messages.map((m, i) => (
+          <Fragment key={m.id}>
+            {starts.has(i) && <DaySeparator at={m.at} />}
+            <Message m={m} counselor={thread.counselorName} />
+          </Fragment>
         ))}
       </div>
 
@@ -240,8 +246,8 @@ function Conversation({ thread, onChange, onNew }: { thread: ListenThread; onCha
         </p>
       )}
 
-      <div className="space-y-3 border-t border-[var(--border)] p-4">
-        {closed ? (
+      {closed ? (
+        <div className="border-t border-[var(--border)] p-4">
           <div className="space-y-3">
             <p className="flex items-center gap-2 text-base text-[var(--fg-muted)]">
               <Check size={18} aria-hidden /> {t('Conversation close. Vous pouvez en ouvrir une autre à tout moment.')}
@@ -250,8 +256,11 @@ function Conversation({ thread, onChange, onNew }: { thread: ListenThread; onCha
               <Plus size={22} aria-hidden /> {t('Nouvelle conversation')}
             </button>
           </div>
-        ) : (
-          <>
+        </div>
+      ) : (
+        <>
+          {/* Case d'écriture et phrases toutes prêtes : toujours visibles au-dessus de la barre du bas du téléphone. */}
+          <div className="sticky bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-10 space-y-2 rounded-b-3xl border-t border-[var(--border)] bg-[var(--card)] p-3 shadow-[0_-10px_18px_-16px_rgb(0_0_0/0.35)] md:bottom-4">
             <form
               className="flex items-end gap-2"
               onSubmit={(e) => {
@@ -262,9 +271,9 @@ function Conversation({ thread, onChange, onNew }: { thread: ListenThread; onCha
               <label htmlFor="ecoute-msg" className="sr-only">{t('Votre message')}</label>
               <textarea
                 id="ecoute-msg"
-                rows={2}
+                rows={1}
                 maxLength={2000}
-                className="input !min-h-16 flex-1 resize-none !py-3 text-lg"
+                className="input !min-h-14 flex-1 resize-none !py-3 text-lg"
                 placeholder={t('Écrivez ici…')}
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
@@ -275,12 +284,14 @@ function Conversation({ thread, onChange, onNew }: { thread: ListenThread; onCha
                   }
                 }}
               />
-              <button type="submit" className="btn btn-primary !h-16 !w-16 shrink-0 !px-0" aria-label={t('Envoyer')} disabled={busy || !draft.trim()}>
+              <button type="submit" className="btn btn-primary !h-14 !w-14 shrink-0 !px-0" aria-label={t('Envoyer')} disabled={busy || !draft.trim()}>
                 {busy ? <Loader2 size={24} className="animate-spin" aria-hidden /> : <Send size={24} aria-hidden />}
               </button>
             </form>
             {error && <p role="alert" className="rounded-2xl bg-[var(--color-ocre-100)] p-3 font-bold text-[var(--color-ocre-700)]">{error}</p>}
             <Phrases onPick={(p) => setDraft((x) => (x.trim() ? `${x.trim()} ${p}` : p))} />
+          </div>
+          <div className="space-y-3 px-4 pb-4 pt-1">
             <div className="flex flex-wrap gap-2">
               <button type="button" className="btn btn-ghost !min-h-12" aria-expanded={panel === 'callback'} onClick={() => setPanel((p) => (p === 'callback' ? 'none' : 'callback'))}>
                 <PhoneCall size={20} aria-hidden /> {t('Être rappelé')}
@@ -306,9 +317,9 @@ function Conversation({ thread, onChange, onNew }: { thread: ListenThread; onCha
                 <button type="button" className="btn btn-ghost !min-h-12" onClick={() => setPanel('none')}>{t('Annuler')}</button>
               </div>
             )}
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
     </section>
   );
 }

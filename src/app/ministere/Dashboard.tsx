@@ -104,11 +104,8 @@ export function Dashboard({ initial }: { initial: National | null }) {
 
   return (
     <>
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="label">{t('Ministère de la Santé · agrégats anonymisés')}</p>
-          <h1 className="mt-1 text-3xl font-bold">{t('Pilotage national')}</h1>
-        </div>
+      {/* Le titre (PageHead) est rendu par la page ; ici, l'état du direct. */}
+      <div className="flex flex-wrap items-center justify-end gap-3">
         <p className="flex items-center gap-2 text-base text-[var(--fg-muted)]" aria-live="off">
           <span className="relative flex h-3 w-3" aria-hidden>
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-brand-500)] opacity-60" />

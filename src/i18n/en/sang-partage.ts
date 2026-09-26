@@ -208,4 +208,24 @@ export const sangPartage: Messages = {
   '{who} a ouvert votre document « {title} » le {when}.': '{who} opened your document “{title}” on {when}.',
   '{who} a ouvert votre document « {title} » le {when}, en accès d’urgence.': '{who} opened your document “{title}” on {when}, with emergency access.',
   'Tentative refusée : {who} a voulu ouvrir votre document « {title} » sans votre accord, le {when}.': 'Attempt refused: {who} tried to open your document “{title}” without your consent, on {when}.',
+
+  // ─── Retouches d'ergonomie (banque de sang, partage) ───
+  'Stocks de sang': 'Blood stocks',
+  'Stocks bas': 'Low stocks',
+  'mis à jour {date}': 'updated {date}',
+  'Plaq.': 'Plat.',
+  CGR: 'RBC',
+  'Votre stock, groupe par groupe : globules rouges, plaquettes, plasma. Touchez un nombre, corrigez-le, puis quittez la case : c’est enregistré et les hôpitaux le voient tout de suite. Rouge : moins de {critical} poches. Orange : moins de {low}. Les autres sites du réseau sont en dessous.':
+    'Your stock, group by group: red cells, platelets, plasma. Tap a number, correct it, then leave the box: it is saved and hospitals see it at once. Red: fewer than {critical} units. Orange: fewer than {low}. The other sites of the network are below.',
+  'Les demandes des hôpitaux arrivent ici, les plus urgentes d’abord. Réservez des poches de votre stock, relancez les donneurs, appelez ceux qui ont dit oui. Quand la transfusion est faite, cochez les donneurs qui sont venus donner.':
+    'Hospital requests arrive here, most urgent first. Reserve units from your stock, call on donors again, phone those who said yes. When the transfusion is done, tick the donors who came to give.',
+  '{n} vitales sans donneur': '{n} life-threatening without a donor',
+  '{n} vitale sans donneur': '{n} life-threatening without a donor',
+  Partager: 'Share',
+  '1 h': '1 h',
+  '24 h': '24 h',
+  '3 j': '3 d',
+  'Montrer mon QR': 'Show my QR',
+  Modifier: 'Change',
+  Fermer: 'Close',
 };

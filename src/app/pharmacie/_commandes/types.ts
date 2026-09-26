@@ -37,15 +37,3 @@ export interface PharmacyOrders {
   counts: { new: number; inProgress: number };
   orders: PharmacyOrder[];
 }
-
-export const STATUS_LABEL: Record<PharmacyOrderStatus, string> = {
-  RECUE: 'Nouvelle',
-  ACCEPTEE: 'Acceptée',
-  PRETE: 'Prête',
-  EN_LIVRAISON: 'En route',
-  LIVREE: 'Livrée',
-  RETIREE: 'Retirée',
-  REFUSEE: 'Refusée',
-  ANNULEE: 'Annulée',
-  ECHEC: 'Non remise',
-};

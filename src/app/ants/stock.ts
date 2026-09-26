@@ -25,7 +25,8 @@ export function level(units: number): Level {
 export const LEVEL_CLASS: Record<Level, string> = {
   critical: 'bg-[var(--color-danger-50)] text-[var(--color-danger-800)] border-[var(--color-danger-600)]/40',
   low: 'bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)] border-[var(--color-ocre-500)]/40',
-  ok: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)] border-[var(--color-brand-500)]/30',
+  // Les teintes « marque » ne changent pas en sombre : on les assombrit ici pour garder le contraste.
+  ok: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)] border-[var(--color-brand-500)]/30 dark:bg-[var(--color-brand-900)]/50 dark:text-[var(--color-leaf)]',
 };
 
 export const LEVEL_LABEL: Record<Level, string> = { critical: 'critique', low: 'bas', ok: 'suffisant' };

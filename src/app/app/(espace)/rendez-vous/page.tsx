@@ -4,7 +4,6 @@ import { CalendarPlus, MessageSquareText } from 'lucide-react';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getLocale, getT } from '@/i18n/server';
 import type { Locale, T } from '@/i18n/translate';
-import { fmtDate } from '@/lib/format';
 import { ErrorNote, PageHead } from '../../_components/ui';
 import { getMe, load } from '../../_lib/load';
 import { CancelAppointment } from './CancelAppointment';
@@ -50,7 +49,7 @@ export default async function RendezVousPage() {
 
       {!res.error && list.length === 0 && (
         <section className="card flex flex-col items-center gap-3 p-8 text-center">
-          <span className="grid h-16 w-16 place-items-center rounded-full bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">
+          <span className="grid h-16 w-16 place-items-center rounded-full bg-[var(--color-brand-100)] text-[var(--color-brand-900)] dark:bg-[#16302a] dark:text-[var(--fg)]">
             <CalendarPlus size={30} aria-hidden />
           </span>
           <p className="text-xl font-semibold">{t('Aucun rendez-vous')}</p>
@@ -115,7 +114,7 @@ function Card({ a, t, locale }: { a: MyAppointment; t: T; locale: Locale }) {
             <span className={`pill ${st.tone}`}>
               <st.icon size={16} aria-hidden /> {t(st.label)}
             </span>
-            {!a.own && <span className="pill bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">{t('Pour {prenom}', { prenom: a.patient.firstName })}</span>}
+            {!a.own && <span className="pill bg-[var(--color-brand-100)] text-[var(--color-brand-900)] dark:bg-[#16302a] dark:text-[var(--fg)]">{t('Pour {prenom}', { prenom: a.patient.firstName })}</span>}
           </p>
           <p className="flex items-center gap-2 text-lg leading-snug font-semibold">
             <svc.icon size={20} aria-hidden className={svc.blood ? 'shrink-0 text-[var(--color-danger-600)]' : 'shrink-0 text-[var(--color-brand-700)] dark:text-[var(--color-leaf)]'} />
@@ -127,8 +126,8 @@ function Card({ a, t, locale }: { a: MyAppointment; t: T; locale: Locale }) {
               <span className="num font-semibold text-[var(--fg)]">{timeOf(a.scheduledAt!, locale)}</span>
             ) : (
               <>
-                {fmtDate(a.preferredAt, { weekday: 'long', day: 'numeric', month: 'long' }, locale)}
-                {part ? `, ${t(part.label).toLowerCase()}` : ''}
+                {t('Souhaité')}
+                {part ? ` · ${t(part.label).toLowerCase()}` : ''}
               </>
             )}
           </p>

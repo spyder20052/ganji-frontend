@@ -29,16 +29,13 @@ export function OpenRecord() {
 
   return (
     <section aria-labelledby="h-open" className="card space-y-4 p-5">
-      <div>
-        <h2 id="h-open" className="mb-1.5 text-xl font-bold">{t('Ouvrir un carnet')}</h2>
-        <p className="text-[var(--fg-muted)]">{t('Le patient montre son QR de partage (ou vous dicte son code). L’accès est limité dans le temps et il le voit dans son journal.')}</p>
-      </div>
+      {/* Les explications (QR, code dicté, accès limité) sont lues par le bouton Écouter de l'en-tête. */}
+      <h2 id="h-open" className="text-xl font-bold">{t('Ouvrir un carnet')}</h2>
       <QrScanner
         onValue={redeem}
         busy={busy}
         inputLabel={t('Saisir le code à 6 chiffres')}
         placeholder="482 913"
-        inputHint={t('Code affiché sous le QR du patient, valable 15 minutes. Vous pouvez aussi coller le contenu du QR.')}
         submitLabel={t('Ouvrir')}
       />
       <ErrorNote>{error}</ErrorNote>

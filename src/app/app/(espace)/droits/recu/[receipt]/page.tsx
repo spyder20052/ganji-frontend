@@ -103,7 +103,7 @@ export default async function RecuPage({ params }: { params: Promise<{ receipt: 
               <Qr value={p.receipt} size={168} label={t('QR du reçu {receipt}', { receipt: p.receipt })} />
               <p className="text-sm text-[#4b5a52]">{t('À montrer à la caisse')}</p>
             </div>
-            {p.sandbox && <p className="text-center text-sm text-[#4b5a52]">{t('Paiement bac à sable : aucun débit réel.')}</p>}
+            {p.sandbox && <p className="text-center text-sm text-[#4b5a52]">{t('Paiement de démonstration : aucun débit réel.')}</p>}
           </div>
         </article>
         <div className="flex flex-wrap gap-2 print:hidden">

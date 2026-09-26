@@ -69,7 +69,8 @@ export function OrderActions({
   }
 
   const spinner = busy ? <Loader2 size={20} aria-hidden className="animate-spin" /> : null;
-  const canRefuse = next.includes('REFUSEE');
+  // Retrait prêt : si le patient ne vient pas, c'est « Non retirée » (pas un refus) ; un seul bouton secondaire.
+  const canRefuse = next.includes('REFUSEE') && !(status === 'PRETE' && mode === 'RETRAIT');
   // Échec de remise : livreur revenu sans remettre, ou patient jamais venu au comptoir.
   const canFail = next.includes('ECHEC') && (status === 'EN_LIVRAISON' || (status === 'PRETE' && mode === 'RETRAIT'));
   const locked = attemptsLeft === 0;
@@ -79,32 +80,32 @@ export function OrderActions({
       {form === null && (
         <div className="flex flex-wrap gap-2">
           {status === 'RECUE' && (
-            <button type="button" className="btn btn-primary flex-1" disabled={busy} onClick={() => act('accept')}>
+            <button type="button" className="btn btn-primary flex-1 whitespace-nowrap" disabled={busy} onClick={() => act('accept')}>
               {spinner ?? <Check size={20} aria-hidden />} {t('Accepter')}
             </button>
           )}
           {status === 'ACCEPTEE' && (
-            <button type="button" className="btn btn-primary flex-1" disabled={busy} onClick={() => act('ready')}>
+            <button type="button" className="btn btn-primary flex-1 whitespace-nowrap" disabled={busy} onClick={() => act('ready')}>
               {spinner ?? <PackageCheck size={20} aria-hidden />} {t('Prête')}
             </button>
           )}
           {status === 'PRETE' && mode === 'LIVRAISON' && (
-            <button type="button" className="btn btn-primary flex-1" onClick={() => setForm('dispatch')}>
+            <button type="button" className="btn btn-primary flex-1 whitespace-nowrap" onClick={() => setForm('dispatch')}>
               <Bike size={20} aria-hidden /> {t('Confier au livreur')}
             </button>
           )}
           {((status === 'PRETE' && mode === 'RETRAIT') || status === 'EN_LIVRAISON') && (
-            <button type="button" className="btn btn-primary flex-1" onClick={() => setForm('deliver')} disabled={attemptsLeft === 0}>
-              <KeyRound size={20} aria-hidden /> {mode === 'LIVRAISON' ? t('Livrée : saisir le code') : t('Remise : saisir le code')}
+            <button type="button" className="btn btn-primary flex-1 whitespace-nowrap" onClick={() => setForm('deliver')} disabled={attemptsLeft === 0}>
+              <KeyRound size={20} aria-hidden /> {t('Saisir le code')}
             </button>
           )}
           {canRefuse && (
-            <button type="button" className="btn btn-ghost" onClick={() => setForm('refuse')}>
+            <button type="button" className="btn btn-ghost whitespace-nowrap" onClick={() => setForm('refuse')}>
               <X size={20} aria-hidden /> {t('Refuser')}
             </button>
           )}
           {canFail && (
-            <button type="button" className="btn btn-ghost" onClick={() => setForm('fail')}>
+            <button type="button" className="btn btn-ghost whitespace-nowrap" onClick={() => setForm('fail')}>
               <CircleX size={20} aria-hidden /> {mode === 'LIVRAISON' ? t('Échec de livraison') : t('Non retirée')}
             </button>
           )}
@@ -115,7 +116,7 @@ export function OrderActions({
         <div role="status" className="space-y-2 rounded-2xl bg-[var(--color-ocre-100)] p-3 text-[var(--color-ocre-700)]">
           <p className="font-bold">{t('Remise bloquée : 5 codes faux.')}</p>
           {newCodesLeft > 0 ? (
-            <button type="button" className="btn btn-ghost" disabled={busy} onClick={() => act('new-code')}>
+            <button type="button" className="btn btn-ghost whitespace-nowrap" disabled={busy} onClick={() => act('new-code')}>
               {spinner ?? <RefreshCw size={20} aria-hidden />} {t('Nouveau code')}
             </button>
           ) : (
@@ -146,8 +147,8 @@ export function OrderActions({
           </label>
           <p className="text-sm text-[var(--fg-muted)]">{t('Le stock revient, le mobile money est remboursé, le patient peut commander à nouveau.')}</p>
           <div className="flex flex-wrap gap-2">
-            <button type="submit" className="btn btn-primary flex-1" disabled={busy || reason.trim().length < 3}>{spinner} {t('Confirmer l’échec')}</button>
-            <button type="button" className="btn btn-ghost" onClick={() => setForm(null)}>{t('Retour')}</button>
+            <button type="submit" className="btn btn-primary flex-1 whitespace-nowrap" disabled={busy || reason.trim().length < 3}>{spinner} {t('Confirmer l’échec')}</button>
+            <button type="button" className="btn btn-ghost whitespace-nowrap" onClick={() => setForm(null)}>{t('Retour')}</button>
           </div>
         </form>
       )}
@@ -173,8 +174,8 @@ export function OrderActions({
             <input className="input" value={reason} onChange={(e) => setReason(e.target.value)} maxLength={200} required minLength={3} />
           </label>
           <div className="flex flex-wrap gap-2">
-            <button type="submit" className="btn btn-primary flex-1" disabled={busy || reason.trim().length < 3}>{spinner} {t('Refuser la commande')}</button>
-            <button type="button" className="btn btn-ghost" onClick={() => setForm(null)}>{t('Retour')}</button>
+            <button type="submit" className="btn btn-primary flex-1 whitespace-nowrap" disabled={busy || reason.trim().length < 3}>{spinner} {t('Refuser la commande')}</button>
+            <button type="button" className="btn btn-ghost whitespace-nowrap" onClick={() => setForm(null)}>{t('Retour')}</button>
           </div>
         </form>
       )}
@@ -199,8 +200,8 @@ export function OrderActions({
           </div>
           <p className="text-sm text-[var(--fg-muted)]">{t('Le patient reçoit ce nom et ce numéro par SMS.')}</p>
           <div className="flex flex-wrap gap-2">
-            <button type="submit" className="btn btn-primary flex-1" disabled={busy}>{spinner ?? <Bike size={20} aria-hidden />} {t('Confier au livreur')}</button>
-            <button type="button" className="btn btn-ghost" onClick={() => setForm(null)}>{t('Retour')}</button>
+            <button type="submit" className="btn btn-primary flex-1 whitespace-nowrap" disabled={busy}>{spinner ?? <Bike size={20} aria-hidden />} {t('Confier au livreur')}</button>
+            <button type="button" className="btn btn-ghost whitespace-nowrap" onClick={() => setForm(null)}>{t('Retour')}</button>
           </div>
         </form>
       )}
@@ -233,8 +234,8 @@ export function OrderActions({
             <p className="rounded-2xl bg-[var(--color-ocre-100)] p-3 font-bold text-[var(--color-ocre-700)]">{t('Encaisser {amount} en espèces.', { amount: fcfa(cash, locale) })}</p>
           )}
           <div className="flex flex-wrap gap-2">
-            <button type="submit" className="btn btn-primary flex-1" disabled={busy || code.length !== 4}>{spinner ?? <Check size={20} aria-hidden />} {t('Valider la remise')}</button>
-            <button type="button" className="btn btn-ghost" onClick={() => setForm(null)}>{t('Retour')}</button>
+            <button type="submit" className="btn btn-primary flex-1 whitespace-nowrap" disabled={busy || code.length !== 4}>{spinner ?? <Check size={20} aria-hidden />} {t('Valider la remise')}</button>
+            <button type="button" className="btn btn-ghost whitespace-nowrap" onClick={() => setForm(null)}>{t('Retour')}</button>
           </div>
         </form>
       )}

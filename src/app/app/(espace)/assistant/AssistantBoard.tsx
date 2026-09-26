@@ -91,14 +91,6 @@ function TodaySection({ today, q, who, onDose, pendingPlan }: { today: Today; q:
   const locale = useLocale();
   const [advice, setAdvice] = useState<Record<string, Advice>>({});
   const date = fmtDate(`${today.date}T12:00:00Z`, { weekday: 'long', day: 'numeric', month: 'long' }, locale);
-  const listen = today.doses.length
-    ? [
-        t('Aujourd’hui : {n} prises.', { n: today.doses.length }),
-        ...today.doses.map((d) => t('{time} : {medication}, {dose}.', { time: d.time, medication: d.masked ? t(d.medication) : d.medication, dose: d.dose ?? '' })),
-        t('Touchez « Pris » quand c’est fait.'),
-      ].join(' ')
-    : t('Pas de prise prévue aujourd’hui.');
-
   return (
     <section aria-labelledby="h-jour" className="card p-5 sm:p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
@@ -111,7 +103,6 @@ function TodaySection({ today, q, who, onDose, pendingPlan }: { today: Today; q:
             {today.done}/{today.doses.length}
           </span>
         )}
-        <ListenButton text={listen} compact />
       </div>
 
       {today.doses.length === 0 ? (
@@ -135,7 +126,7 @@ function TodaySection({ today, q, who, onDose, pendingPlan }: { today: Today; q:
       {today.tomorrow && today.doses.every((d) => d.status === 'PRISE' || d.status === 'OUBLIEE') && (
         <p className="mt-4 flex items-center gap-2 text-base text-[var(--fg-muted)]">
           <AlarmClock size={18} aria-hidden />
-          {t('Prochaine prise : demain à {time}, {medication}.', { time: today.tomorrow.time, medication: today.tomorrow.masked ? t(today.tomorrow.medication) : today.tomorrow.medication })}
+          {t('Prochaine prise : demain à {time}, {medication}.', { time: today.tomorrow.time, medication: today.tomorrow.masked ? t(today.tomorrow.medication).toLowerCase() : today.tomorrow.medication })}
         </p>
       )}
     </section>
@@ -154,7 +145,8 @@ function DoseCard({ dose: d, q, onDose, onAdvice, advice }: { dose: Dose; q: str
   const done = d.status === 'PRISE';
   const s = STATUS[d.status];
   const statusLabel = d.status === 'DECALEE' ? t('Reportée à {time}', { time: d.time }) : t(s.label);
-  const name = d.masked ? t(d.medication) : d.medication;
+  // Même intitulé que le carnet et le cercle : « Prise : <médicament> », ou « Prise de traitement » masqué.
+  const name = d.masked ? t(d.medication) : t('Prise : {medication}', { medication: d.medication });
 
   async function mark(status: 'PRISE' | 'OUBLIEE' | 'DECALEE') {
     setBusy(status);
@@ -187,7 +179,7 @@ function DoseCard({ dose: d, q, onDose, onAdvice, advice }: { dose: Dose; q: str
             </span>
           </div>
           <p className="mt-2 text-xl font-semibold leading-snug">
-            {name} {d.strength && <span className="font-normal">{d.strength}</span>}
+            {name} {d.strength && <span className="font-normal whitespace-nowrap">{d.strength}</span>}
           </p>
           <p className={`flex flex-wrap items-center gap-x-2 text-base ${done ? '' : 'text-[var(--fg-muted)]'}`}>
             {d.dose && <span>{d.dose}</span>}
@@ -247,16 +239,10 @@ function WeekSection({ adherence }: { adherence: Adherence }) {
   const R = 42;
   const C = 2 * Math.PI * R;
   const good = rate !== null && rate >= 80;
-  const listen =
-    rate === null
-      ? t('Pas encore de prise à compter cette semaine.')
-      : t('Cette semaine, {taken} prises sur {due} ont été faites : {rate} %.', { taken: adherence.last7.taken, due: adherence.last7.due, rate });
-
   return (
     <section aria-labelledby="h-semaine" className="card p-5 sm:p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 id="h-semaine" className="text-xl font-semibold">{t('Ma semaine')}</h2>
-        <ListenButton text={listen} compact />
       </div>
       <div className="flex items-center gap-5">
         <div className="relative h-28 w-28 shrink-0" role="img" aria-label={rate === null ? t('Pas encore de prise à compter') : t('{rate} % des prises faites sur 7 jours', { rate })}>

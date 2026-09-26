@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { CalendarPlus, ChevronRight, UserRound } from 'lucide-react';
 import type { Locale, T } from '@/i18n/translate';
-import { fmtDate, relative } from '@/lib/format';
+import { relative } from '@/lib/format';
 import type { Summary } from '@/lib/types';
 import { DateTile, PARTS, serviceOf, STATUS, timeOf, type MyAppointment } from './rendez-vous/shared';
 
@@ -50,7 +50,7 @@ export function NextAppointmentCard({ next, discreet, t, locale }: { next: MyApp
             {confirmed ? (
               <span className="num">{timeOf(next.scheduledAt!, locale)}</span>
             ) : (
-              `${fmtDate(next.preferredAt, { weekday: 'short', day: 'numeric', month: 'short' }, locale)}${part ? `, ${t(part.label).toLowerCase()}` : ''}`
+              `${t('Souhaité')}${part ? ` · ${t(part.label).toLowerCase()}` : ''}`
             )}
             {!discreet ? ` · ${next.facility.name}` : ''}
           </span>

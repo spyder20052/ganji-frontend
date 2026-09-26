@@ -80,10 +80,11 @@ export function StockTable({ initial }: { initial: StockItem[] }) {
   return (
     <section id="stock" aria-labelledby="h-stock" className="card scroll-mt-24 p-5">
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h2 id="h-stock" className="flex-1 text-xl font-bold">
+        {/* Le titre visible est celui de la page (« Stock ») : celui-ci reste pour les lecteurs d'écran. */}
+        <h2 id="h-stock" className="sr-only">
           {t('Mon stock')}
         </h2>
-        <p className="num text-sm text-[var(--fg-muted)]">
+        <p className="num flex-1 text-sm text-[var(--fg-muted)]">
           {t('{n} références', { n: rows.length })} · <span className="font-bold text-[var(--color-ocre-700)]">{t('{n} en rupture', { n: ruptures })}</span> · {lows > 1 ? t('{n} stocks faibles', { n: lows }) : t('{n} stock faible', { n: lows })}
         </p>
       </div>

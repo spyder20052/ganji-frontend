@@ -186,4 +186,15 @@ export const ecoute: Messages = {
   "Don de sang": "Ìtọrẹ ẹ̀jẹ̀",
   "Rappel": "Ìránnilétí",
   "Tous les droits": "Àṣẹ kíkún",
+  // Ajouts après la passe UX (libellés courts)
+  "Gérer mes aidants": "Ṣàkóso olùtọ́jú mi",
+  "Accueil": "Ilé",
+  "Signaler": "Fi tó wa létí",
+  "Visites à faire et signalements de votre commune.": "Ìbẹ̀wò láti ṣe àti ìfitónilétí ní ìjọba ìbílẹ̀ yín.",
+  "{n} visites à faire : {list}. Passez prendre des nouvelles, puis touchez « Fait ».": "Ìbẹ̀wò {n} láti ṣe: {list}. Ẹ lọ bẹ̀ wọ́n wò, lẹ́yìn náà ẹ tẹ « Ti ṣe ».",
+  "{n} visite à faire : {list}. Passez prendre des nouvelles, puis touchez « Fait ».": "Ìbẹ̀wò {n} láti ṣe: {list}. Ẹ lọ bẹ̀ ẹ́ wò, lẹ́yìn náà ẹ tẹ « Ti ṣe ».",
+  "Pour signaler une maladie : touchez ce que vous avez vu, dites combien de personnes sont malades, puis où.": "Láti fi àìsàn tó wa létí: ẹ tẹ ohun tí ẹ rí, ẹ sọ iye ènìyàn tó ń ṣàìsàn, lẹ́yìn náà ibi tí ó ti ṣẹlẹ̀.",
+  "File d’écoute : d’abord les personnes en détresse, puis celles qui attendent une réponse, puis vos conversations. Une personne anonyme ne montre ni son nom, ni son carnet, ni son numéro, sauf si elle demande à être rappelée.": "Ìlà ìgbọ́rọ̀: àwọn tó wà nínú ìdààmú ńlá ní àkọ́kọ́, lẹ́yìn náà àwọn tó ń dúró de ìdáhùn, lẹ́yìn náà ìjíròrò yín. Ẹni tí kò dárúkọ ara rẹ̀ kò ní fi orúkọ, ìwé ìlera tàbí nọ́ńbà rẹ̀ hàn, àyàfi tí ó bá béèrè ìpèpadà.",
+  "Aujourd’hui": "Lónìí",
+  "Hier": "Àná",
 };

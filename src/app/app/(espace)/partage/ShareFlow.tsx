@@ -1,5 +1,5 @@
 'use client';
-import { CheckCircle2, Clock, FileText, Pill, QrCode, ShieldAlert } from 'lucide-react';
+import { CheckCircle2, Clock, FileText, Pencil, Pill, QrCode, ShieldAlert, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { QrClient } from '@/components/QrClient';
@@ -166,9 +166,13 @@ export function ShareFlow({ preview }: { preview?: SharePreview }) {
               </span>
             )}
           </span>
-          <span className="pill shrink-0 bg-[var(--card)]">
-            <span className="group-open:hidden">{t('Modifier')}</span>
-            <span className="hidden group-open:inline">{t('Fermer')}</span>
+          <span className="btn btn-soft !min-h-11 shrink-0 !px-4 text-base">
+            <span className="flex items-center gap-2 group-open:hidden">
+              <Pencil size={18} aria-hidden /> {t('Modifier')}
+            </span>
+            <span className="hidden items-center gap-2 group-open:flex">
+              <X size={18} aria-hidden /> {t('Fermer')}
+            </span>
           </span>
         </summary>
       <fieldset className="mt-4">
@@ -200,8 +204,15 @@ export function ShareFlow({ preview }: { preview?: SharePreview }) {
         <legend className="mb-2 font-semibold">{t('Pendant combien de temps ?')}</legend>
         <div className="grid grid-cols-3 gap-2">
           {DURATIONS.map((h) => (
-            <button key={h} type="button" aria-pressed={hours === h} onClick={() => setHours(h)} className={`btn !min-h-14 text-lg ${hours === h ? 'btn-primary' : 'btn-ghost'}`}>
-              {h === 1 ? t('1 heure') : h === 24 ? t('24 heures') : t('3 jours')}
+            <button
+              key={h}
+              type="button"
+              aria-pressed={hours === h}
+              aria-label={h === 1 ? t('1 heure') : h === 24 ? t('24 heures') : t('3 jours')}
+              onClick={() => setHours(h)}
+              className={`btn num !min-h-14 whitespace-nowrap text-lg ${hours === h ? 'btn-primary' : 'btn-ghost'}`}
+            >
+              {h === 1 ? t('1 h') : h === 24 ? t('24 h') : t('3 j')}
             </button>
           ))}
         </div>
@@ -209,7 +220,7 @@ export function ShareFlow({ preview }: { preview?: SharePreview }) {
 
       {error && <p role="alert" className="rounded-2xl bg-[var(--color-ocre-100)] p-3 font-bold text-[var(--color-ocre-700)]">{error}</p>}
       <button type="submit" className="btn btn-primary w-full !min-h-14 text-lg" disabled={busy || scopes.length === 0}>
-        <QrCode size={22} aria-hidden /> {busy ? t('Préparation…') : t('Montrer mon QR au soignant')}
+        <QrCode size={22} aria-hidden /> {busy ? t('Préparation…') : t('Montrer mon QR')}
       </button>
       {scopes.length === 0 && <p className="text-base text-[var(--fg-muted)]">{t('Cochez au moins une partie du carnet.')}</p>}
     </form>

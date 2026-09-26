@@ -23,7 +23,7 @@ export default async function MinistereLayout({ children }: { children: ReactNod
         home="/ministere"
         who={me.displayName}
         links={[
-          { href: '/ministere', label: t('Tableau de bord'), icon: 'heart' },
+          { href: '/ministere', label: t('Accueil'), icon: 'heart' },
           { href: '/ministere#alertes', label: t('Alertes'), icon: 'warning' },
           { href: '/ministere#signalements', label: t('Signalements'), icon: 'people' },
           { href: '/carte', label: t('Lieux de soin'), icon: 'map' },

@@ -14,7 +14,7 @@ import type { ConsentView } from './types';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
-  return { title: t('Partager mon carnet') };
+  return { title: t('Partager') };
 }
 
 const SOURCE: Record<string, string> = { QR: 'QR scanné', CODE: 'code à 6 chiffres', TEAM: 'équipe de soins', BREAK_GLASS: 'accès d’urgence', TELE_EXPERTISE: 'avis de spécialiste' };
@@ -24,7 +24,7 @@ export default async function PartagePage() {
   if (!me.patientId) {
     return (
       <>
-        <PageHead icon="qr" title={t('Partager mon carnet')} />
+        <PageHead icon="qr" title={t('Partager')} />
         <Empty>{t('Le partage est réservé au titulaire du carnet. Les personnes que vous aidez partagent leur carnet depuis leur propre téléphone.')}</Empty>
       </>
     );
@@ -45,7 +45,7 @@ export default async function PartagePage() {
     <>
       <PageHead
         icon="qr"
-        title={t('Partager mon carnet')}
+        title={t('Partager')}
         intro={t('Vous choisissez qui voit quoi, et pour combien de temps. Personne ne lit votre carnet sans votre accord : chaque lecture est écrite dans votre journal.')}
         listen={t("Pour montrer votre carnet à un soignant, cochez ce qu'il peut voir, choisissez la durée, puis touchez le bouton vert. Il scanne le code. Vous pouvez retirer l'accès à tout moment.")}
         audioKey="app.partage"

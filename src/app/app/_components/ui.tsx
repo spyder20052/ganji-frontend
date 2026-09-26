@@ -33,7 +33,7 @@ export function PageHead({
         >
           <Pictogram name={icon} size={24} />
         </span>
-        <h1 className="min-w-0 flex-1 text-[1.9rem] leading-tight font-medium tracking-tight">{title}</h1>
+        <h1 className="min-w-0 flex-1 text-[1.7rem] leading-tight font-medium tracking-tight sm:text-[1.9rem]">{title}</h1>
         {listen && <ListenButton text={listen} audioKey={audioKey} compact />}
       </div>
       {intro && <p className="sr-only">{intro}</p>}

@@ -32,14 +32,26 @@ export default async function AssistantPage({ searchParams }: { searchParams: Pr
     load<PlanRx[]>(`/me/assistant/plans${q}`),
   ]);
   const canPrescriptions = !!plans.data;
-  const listen = t(
-    'Vos prises du jour : touchez « Pris » quand c’est fait, ou « Oublié ». Votre plan de prises se crée depuis l’ordonnance, avec des rappels par SMS. Posez vos questions sur vos médicaments : je réponds avec votre ordonnance, sans diagnostic.',
-  );
+  // Un seul bouton « Écouter » par écran (en-tête) : il lit l'essentiel, dont les prises du jour.
+  const doses = today.data?.doses ?? [];
+  const rate = adherence.data?.last7.rate ?? null;
+  const listen = [
+    doses.length
+      ? t('Aujourd’hui : {n} prises.', { n: doses.length }) +
+        ' ' +
+        doses.map((d) => t('{time} : {medication}, {dose}.', { time: d.time, medication: d.masked ? t(d.medication) : d.medication, dose: d.dose ?? '' })).join(' ')
+      : t('Pas de prise prévue aujourd’hui.'),
+    t('Touchez « Pris » quand c’est fait, ou « Oublié ».'),
+    rate !== null ? t('Cette semaine, {rate} % des prises ont été faites.', { rate }) : '',
+    canPrescriptions ? t('Votre plan de prises se crée depuis l’ordonnance, avec des rappels par SMS. Posez vos questions sur vos médicaments : je réponds avec votre ordonnance, sans diagnostic.') : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <I18nScope area="droits">
       <PageHead
-        icon="pill"
+        icon="chat"
         title={helped ? t('Traitement de {prenom}', { prenom: helped.patient.firstName }) : t('Assistant')}
         intro={t('Vos prises du jour, votre plan de prises et vos questions sur votre traitement.')}
         listen={listen}

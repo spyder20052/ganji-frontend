@@ -140,7 +140,7 @@ export function Welcome({ profile, suite }: { profile: Profile; suite: string })
     return (
       <StepShell
         {...common}
-        title={t('Bienvenue {prenom} ! C’est bien vous ?', { prenom: firstName || first || '' })}
+        title={t('Bienvenue {prenom}', { prenom: firstName || first || '' })}
         icon={<UserRound size={26} aria-hidden />}
         listen={t('Bienvenue sur Ganji. Cinq questions courtes pour remplir votre carnet et votre carte d’urgence. Vous pouvez passer chaque question. D’abord : votre nom est-il juste ?')}
       >
@@ -221,7 +221,7 @@ export function Welcome({ profile, suite }: { profile: Profile; suite: string })
 
   if (step === 'contact') {
     return (
-      <StepShell {...common} title={t('Qui prévenir en cas d’urgence ?')} icon={<Phone size={26} aria-hidden />} listen={t('Qui prévenir en cas d’urgence ? Un proche, pas vous. Il reçoit un SMS si vous touchez le bouton SOS, et son numéro figure sur votre carte d’urgence.')}>
+      <StepShell {...common} title={t('Qui prévenir ?')} icon={<Phone size={26} aria-hidden />} listen={t('Qui prévenir en cas d’urgence ? Un proche, pas vous. Il reçoit un SMS si vous touchez le bouton SOS, et son numéro figure sur votre carte d’urgence.')}>
         <div className="card space-y-3 p-4">
           <ContactFields name={contactName} phone={contactPhone} setName={setContactName} setPhone={setContactPhone} />
           {contactInvalid && <p className="text-base text-[var(--color-ocre-700)]">{t('Indiquez son nom et un numéro à 10 chiffres.')}</p>}

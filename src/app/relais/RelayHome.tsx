@@ -1,6 +1,6 @@
 'use client';
 import { ArrowLeft, CheckCircle2, CloudOff, Loader2, Minus, Plus, RefreshCw, Send, Siren } from 'lucide-react';
-import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AlertCard } from '@/components/AlertCard';
 import { CommuneSelect } from '@/components/CommuneSelect';
 import { ListenButton } from '@/components/ListenButton';
@@ -43,8 +43,7 @@ function useOnline() {
   return online;
 }
 
-/** top : bloc affiché avant le signalement (visites à faire du cercle de soins). */
-export function RelayHome({ top }: { top?: ReactNode } = {}) {
+export function RelayHome() {
   const t = useT();
   const locale = useLocale();
   const online = useOnline();
@@ -158,11 +157,13 @@ export function RelayHome({ top }: { top?: ReactNode } = {}) {
 
   return (
     <>
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="label">{t('Relais communautaire · surveillance')}</p>
-          <h1 className="mt-1 text-3xl font-bold">{t('Signaler en 3 gestes')}</h1>
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="h-signaler" className="flex items-center gap-3 text-2xl font-semibold">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">
+            <Pictogram name="warning" size={22} />
+          </span>
+          {t('Signaler')}
+        </h2>
         {pending.length > 0 && (
           <button type="button" onClick={() => void flush()} className="pill !py-2 bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]" disabled={!online}>
             <CloudOff size={16} aria-hidden /> {t('{n} en attente d’envoi', { n: pending.length })} {online && <RefreshCw size={14} aria-hidden />}
@@ -182,8 +183,6 @@ export function RelayHome({ top }: { top?: ReactNode } = {}) {
         </p>
       )}
 
-      {top}
-
       <section aria-labelledby="h-step" className="card space-y-5 p-5 sm:p-6">
         <ol className="grid grid-cols-3 gap-2" aria-label={t('Étapes')}>
           {[1, 2, 3].map((n) => (
@@ -196,7 +195,7 @@ export function RelayHome({ top }: { top?: ReactNode } = {}) {
         {step === 1 && (
           <>
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 id="h-step" className="text-2xl font-bold">{t('Qu’avez-vous vu ?')}</h2>
+              <h3 id="h-step" className="text-xl font-bold">{t('Qu’avez-vous vu ?')}</h3>
               <ListenButton text={`${t(STEP_TEXT[1])} ${SYNDROMES.map((s) => t(s.label)).join(', ')}.`} audioKey="relay.step1" />
             </div>
             <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -223,7 +222,7 @@ export function RelayHome({ top }: { top?: ReactNode } = {}) {
         {step === 2 && chosen && (
           <>
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 id="h-step" className="text-2xl font-bold">{t('Combien de personnes malades ?')}</h2>
+              <h3 id="h-step" className="text-xl font-bold">{t('Combien de personnes malades ?')}</h3>
               <ListenButton text={t(STEP_TEXT[2])} audioKey="relay.step2" />
             </div>
             <Chosen icon={chosen.icon} label={t(chosen.label)} />
@@ -251,7 +250,7 @@ export function RelayHome({ top }: { top?: ReactNode } = {}) {
         {step === 3 && chosen && (
           <>
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 id="h-step" className="text-2xl font-bold">{t('Où ?')}</h2>
+              <h3 id="h-step" className="text-xl font-bold">{t('Où ?')}</h3>
               <ListenButton text={t(STEP_TEXT[3])} audioKey="relay.step3" />
             </div>
             <Chosen icon={chosen.icon} label={`${t(chosen.label)} · ${cases > 1 ? t('{n} personnes', { n: cases }) : t('{n} personne', { n: cases })}`} />
@@ -277,7 +276,7 @@ export function RelayHome({ top }: { top?: ReactNode } = {}) {
 
         {step === 'done' && outcome && (
           <div className="space-y-4" aria-live="polite">
-            <h2 id="h-step" className="sr-only">{t('Résultat')}</h2>
+            <h3 id="h-step" className="sr-only">{t('Résultat')}</h3>
             {outcome.queued ? (
               <div className="flex items-start gap-3 rounded-2xl bg-[var(--color-ocre-100)] p-5 text-[var(--color-ocre-700)]">
                 <CloudOff size={30} className="shrink-0" aria-hidden />

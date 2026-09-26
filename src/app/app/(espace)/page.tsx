@@ -50,8 +50,8 @@ function tiles(contact: Summary['emergencyContact'] | undefined): Tile[] {
 }
 
 const TILE_TONE: Record<Tile['tone'], { card: string; chip: string }> = {
-  paper: { card: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]', chip: 'bg-[var(--color-brand-500)] text-white' },
-  leaf: { card: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]', chip: 'bg-[var(--color-brand-500)] text-white' },
+  paper: { card: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)] dark:bg-[#16302a] dark:text-[var(--fg)]', chip: 'bg-[var(--color-brand-500)] text-white' },
+  leaf: { card: 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)] dark:bg-[#16302a] dark:text-[var(--fg)]', chip: 'bg-[var(--color-brand-500)] text-white' },
   blood: { card: 'bg-[var(--color-danger-50)] text-[var(--color-danger-800)]', chip: 'bg-[var(--color-danger-600)] text-white' },
   danger: { card: 'bg-[var(--color-danger-600)] text-white', chip: 'bg-white text-[var(--color-danger-600)]' },
 };
@@ -100,19 +100,18 @@ export default async function AppHome() {
   ].join(' ');
 
   // Mes services : un pictogramme et un mot chacun ; grossesse et enfants seulement quand ils existent.
+  // Le profil est dans l'en-tête (avatar) et les aidants dans le cercle : pas de doublon ici.
   const services = [
     ...(s?.pregnancy ? [{ href: '/app/grossesse', icon: 'pregnant', title: 'Grossesse' }] : []),
     ...(s && s.children.length > 0 ? [{ href: '/app/enfants', icon: 'baby', title: s.children.length > 1 ? 'Enfants' : 'Enfant' }] : []),
     ...(canBook ? [{ href: '/app/rendez-vous', icon: 'calendar', title: 'Rendez-vous' }] : []),
-    { href: '/app/commandes', icon: 'delivery', title: 'Livraison' },
+    { href: '/app/commandes', icon: 'delivery', title: 'Commandes' },
     { href: '/app/assistant', icon: 'chat', title: 'Assistant' },
     { href: '/app/symptomes', icon: 'fever', title: 'Symptôme' },
     { href: '/app/partage', icon: 'qr', title: 'Partager' },
     { href: '/app/cercle', icon: 'people', title: 'Cercle' },
-    { href: '/app/aidants', icon: 'care', title: 'Proches' },
     { href: '/app/droits', icon: 'shield', title: 'Droits' },
     { href: '/app/ecoute', icon: 'listen', title: 'Écoute' },
-    { href: '/app/profil', icon: 'adult', title: 'Profil' },
   ];
 
   return (
@@ -150,11 +149,11 @@ export default async function AppHome() {
               <li key={tile.href} className={tile.only === 'standard' ? 'simple-hide' : tile.only === 'simple' ? 'simple-only' : undefined}>
                 <Link
                   href={tile.href}
-                  className={`flex aspect-[1/1.02] h-full flex-col justify-between rounded-[var(--radius-card)] p-4 transition-transform active:scale-[0.98] lg:aspect-[1.35/1] ${tone.card}`}
+                  className={`flex aspect-[1.35/1] h-full min-h-[7.5rem] flex-col justify-between rounded-[var(--radius-card)] p-4 transition-transform active:scale-[0.98] ${tone.card}`}
                 >
                   <span className="flex items-start justify-between">
-                    <span className={`grid h-14 w-14 place-items-center rounded-full ${tone.chip}`}>
-                      <Pictogram name={tile.icon} size={28} />
+                    <span className={`grid h-12 w-12 place-items-center rounded-full ${tone.chip}`}>
+                      <Pictogram name={tile.icon} size={26} />
                     </span>
                     <ArrowUpRight size={22} aria-hidden className="opacity-60" />
                   </span>

@@ -233,14 +233,7 @@ function Members({ circle, t }: { circle: Circle; t: T }) {
               <span className="text-base font-normal text-[var(--fg-muted)]">· {g.when}</span>
             </h3>
             {members.length === 0 ? (
-              g.type === 'CAREGIVER' && circle.canEdit ? (
-                <Empty>
-                  {t('Aucun aidant pour l’instant.')}{' '}
-                  <Link href="/app/aidants" className="font-bold underline">{t('Ajouter un aidant')}</Link>
-                </Empty>
-              ) : (
-                <Empty>{t('Personne pour l’instant.')}</Empty>
-              )
+              <Empty>{g.type === 'CAREGIVER' ? t('Aucun aidant pour l’instant.') : t('Personne pour l’instant.')}</Empty>
             ) : (
               <ul className="space-y-2">
                 {members.map((m) => (
@@ -265,6 +258,12 @@ function Members({ circle, t }: { circle: Circle; t: T }) {
                   </li>
                 ))}
               </ul>
+            )}
+            {/* Le cercle est l'entrée : ajouter, retirer ou régler un aidant se fait dans « Aidants ». */}
+            {g.type === 'CAREGIVER' && circle.canEdit && (
+              <Link href="/app/aidants" className="btn btn-soft !min-h-12 w-full sm:w-auto">
+                <Pictogram name="care" size={20} /> {t('Gérer mes aidants')}
+              </Link>
             )}
           </div>
         );

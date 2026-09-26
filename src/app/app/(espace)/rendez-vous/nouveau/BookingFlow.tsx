@@ -159,7 +159,7 @@ export function BookingFlow({
                 }}
                 className={`flex min-h-16 w-full items-center gap-4 rounded-[var(--radius-card)] p-4 text-left text-xl font-semibold ${person === p.id ? 'bg-[var(--color-leaf)] text-[var(--color-ink)]' : 'bg-[var(--card)]'}`}
               >
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-brand-100)] text-lg text-[var(--color-brand-900)]" aria-hidden>
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-brand-100)] text-lg text-[var(--color-brand-900)] dark:bg-[#16302a] dark:text-[var(--fg)]" aria-hidden>
                   {p.label.charAt(0)}
                 </span>
                 {p.label}
@@ -206,7 +206,7 @@ export function BookingFlow({
     return (
       <StepShell
         {...common}
-        title={t('Près de quelle commune ?')}
+        title={t('Quelle commune ?')}
         icon={<MapPin size={26} aria-hidden />}
         listen={t('Près de quelle commune cherchez-vous ? Votre commune est déjà choisie. Touchez Suivant.')}
         footer={
@@ -251,7 +251,7 @@ export function BookingFlow({
                   }}
                   className={`flex min-h-20 w-full items-center gap-4 rounded-[var(--radius-card)] p-4 text-left ${facility?.id === f.id ? 'bg-[var(--color-leaf)] text-[var(--color-ink)]' : 'bg-[var(--card)]'}`}
                 >
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-brand-100)] text-[var(--color-brand-900)] dark:bg-[#16302a] dark:text-[var(--fg)]">
                     <Hospital size={22} aria-hidden />
                   </span>
                   <span className="min-w-0 flex-1">
@@ -342,7 +342,7 @@ export function BookingFlow({
   return (
     <StepShell
       {...common}
-      title={t('On envoie la demande ?')}
+      title={t('Tout est juste ?')}
       icon={<CalendarCheck size={26} aria-hidden />}
       listen={t('Vérifiez puis touchez « Envoyer la demande ». {lieu}, {jour}, {moment}.', { lieu: facility?.shortName ?? facility?.name ?? '', jour: dayLabel, moment: partLabel })}
       footer={
@@ -371,7 +371,7 @@ function Row({ icon, label, value, onEdit }: { icon: React.ReactNode; label: str
   const t = useT();
   return (
     <div className="flex items-center gap-3 py-3">
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">{icon}</span>
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[var(--color-brand-100)] text-[var(--color-brand-900)] dark:bg-[#16302a] dark:text-[var(--fg)]">{icon}</span>
       <div className="min-w-0 flex-1">
         <dt className="text-sm text-[var(--fg-muted)]">{label}</dt>
         <dd className="text-lg leading-snug font-semibold first-letter:uppercase">{value}</dd>

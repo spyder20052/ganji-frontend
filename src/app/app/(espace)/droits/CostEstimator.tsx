@@ -2,7 +2,6 @@
 import { Check, Loader2, Minus, Pill, Plus, Search, Smartphone, Trash2, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ListenButton } from '@/components/ListenButton';
 import { useLocale, useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { fcfa } from '@/lib/format';
@@ -185,7 +184,6 @@ export function CostEstimator({ tariffs, coverage, phone }: { tariffs: Tariff[];
                   </span>
                   <span className="display num block text-[2.75rem] font-light">{fcfa(rest, locale)}</span>
                 </p>
-                <ListenButton text={summary} compact />
               </div>
               {estimate.unknownPrices > 0 && (
                 <p className="text-base text-[var(--color-ocre-700)]">{t('Prix inconnu pour un médicament : demandez-le au pharmacien.')}</p>
@@ -375,7 +373,7 @@ function PaySheet({ amount, token, phone, onClose, onExpired }: { amount: number
         {busy ? <Loader2 size={20} className="animate-spin" aria-hidden /> : <Smartphone size={20} aria-hidden />}
         {busy ? t('Confirmation…') : t('Payer {amount}', { amount: fcfa(amount, locale) })}
       </button>
-      <p className="text-sm text-[var(--fg-muted)]">{t('Bac à sable : rien n’est débité. Ganji ne demande jamais votre code secret.')}</p>
+      <p className="text-sm text-[var(--fg-muted)]">{t('Démonstration : rien n’est débité. Ganji ne demande jamais votre code secret.')}</p>
     </form>
   );
 }

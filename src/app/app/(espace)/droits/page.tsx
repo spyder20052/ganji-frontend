@@ -8,7 +8,7 @@ import { Empty, ErrorNote, PageHead, Section } from '../../_components/ui';
 import { getMe, load } from '../../_lib/load';
 import { CostEstimator } from './CostEstimator';
 import { CoverageCard } from './CoverageCard';
-import type { CoverageView, PaymentView, Tariff } from './_lib/rights';
+import { nextStepKey, SCHEME_LABEL, type CoverageView, type PaymentView, type Tariff } from './_lib/rights';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -31,10 +31,19 @@ export default async function DroitsPage() {
   }
 
   const [coverage, tariffs, payments] = await Promise.all([load<CoverageView>('/me/coverage'), load<Tariff[]>('/rights/tariffs'), load<PaymentView[]>('/me/payments')]);
+  // Un seul bouton « Écouter » par écran : il dit aussi où en est la couverture.
+  const c = coverage.data;
+  const step = c ? nextStepKey(c) : null;
+  const status = c
+    ? c.status === 'ACTIF'
+      ? t('Vous êtes couvert par {scheme} : {rate} % de vos soins sont pris en charge.', { scheme: t(SCHEME_LABEL[c.scheme ?? 'ARCH']), rate: c.rate })
+      : [t('Pas encore de prise en charge.'), step ? t(step) : ''].join(' ')
+    : '';
+  const listenAll = [status, listen].filter(Boolean).join(' ');
 
   return (
     <I18nScope area="droits">
-      <PageHead icon="shield" title={t('Mes droits')} intro={t('Couverture santé, prix des soins et paiement.')} listen={listen} audioKey="app.droits" />
+      <PageHead icon="shield" title={t('Mes droits')} intro={t('Couverture santé, prix des soins et paiement.')} listen={listenAll} audioKey="app.droits" />
 
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
         <div className="space-y-5">

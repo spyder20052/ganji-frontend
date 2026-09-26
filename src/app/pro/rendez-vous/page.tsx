@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { CalendarCheck, Hourglass, MessageSquareText, UserRound } from 'lucide-react';
+import { PageHead } from '@/app/app/_components/ui';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getLocale, getT } from '@/i18n/server';
 import type { Locale, T } from '@/i18n/translate';
@@ -51,10 +52,15 @@ export default async function ProRendezVous() {
   return (
     <I18nScope area="compte">
       <div className="space-y-6">
-        <header>
-          <h1 className="text-3xl font-bold">{t('Rendez-vous')}</h1>
-          {inbox?.facility && <p className="text-[var(--fg-muted)]">{inbox.facility.name}</p>}
-        </header>
+        <PageHead
+          icon="calendar"
+          title={t('Rendez-vous')}
+          listen={[
+            inbox?.facility ? t('Demandes de rendez-vous de {lieu}.', { lieu: inbox.facility.name }) : t('Demandes de rendez-vous de votre établissement.'),
+            inbox ? t('{n} à traiter, {m} confirmés à venir.', { n: inbox.pending.length, m: inbox.upcoming.length }) : '',
+            t('Confirmer envoie un SMS au patient et programme un rappel la veille.'),
+          ].join(' ')}
+        />
         {error && <ErrorNote>{t(error)}</ErrorNote>}
 
         {inbox && (
@@ -139,7 +145,7 @@ function RequestCard({ r, t, locale }: { r: Req; t: T; locale: Locale }) {
             {r.patient.commune ? ` · ${r.patient.commune}` : ''}
           </p>
           <p className="flex flex-wrap items-center gap-2">
-            <span className="pill bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">
+            <span className="pill bg-[var(--color-brand-100)] text-[var(--color-brand-900)] dark:bg-[#16302a] dark:text-[var(--fg)]">
               <svc.icon size={14} aria-hidden /> {t(svc.pro)}
             </span>
             <span className="font-semibold">
@@ -147,8 +153,8 @@ function RequestCard({ r, t, locale }: { r: Req; t: T; locale: Locale }) {
                 <span className="num">{timeOf(r.scheduledAt!, locale)}</span>
               ) : (
                 <>
-                  {t('Souhaité')} : {fmtDate(r.preferredAt, { weekday: 'long', day: 'numeric', month: 'long' }, locale)}
-                  {part ? `, ${t(part.label).toLowerCase()}` : ''}
+                  {t('Souhaité')}
+                  {part ? ` · ${t(part.label).toLowerCase()}` : ''}
                 </>
               )}
             </span>

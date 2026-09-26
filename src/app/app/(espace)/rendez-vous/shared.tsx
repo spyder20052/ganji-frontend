@@ -1,6 +1,7 @@
 import { Baby, CalendarCheck, CalendarX, Droplet, Hand, HeartPulse, Hourglass, Ribbon, Stethoscope, Sun, Sunrise, Venus, type LucideIcon } from 'lucide-react';
 import type { Locale } from '@/i18n/translate';
 import { fmtDate } from '@/lib/format';
+import { hourOnly } from '../../_lib/labels';
 
 /** Services proposés à la prise de rendez-vous : un mot et une image chacun (codes de l'API). */
 export type ServiceCode = 'GENERALE' | 'PEDIATRIE' | 'GYNECOLOGIE' | 'CARDIOLOGIE' | 'HEMATOLOGIE' | 'DERMATOLOGIE' | 'ONCOLOGIE';
@@ -11,7 +12,7 @@ export const SERVICES: { code: ServiceCode; label: string; pro: string; icon: Lu
   { code: 'PEDIATRIE', label: 'Enfant', pro: 'Pédiatrie', icon: Baby },
   { code: 'GYNECOLOGIE', label: 'Femme et grossesse', pro: 'Gynécologie, maternité', icon: Venus },
   { code: 'CARDIOLOGIE', label: 'Cœur', pro: 'Cardiologie', icon: HeartPulse },
-  { code: 'HEMATOLOGIE', label: 'Sang', pro: 'Hématologie', icon: Droplet, blood: true },
+  { code: 'HEMATOLOGIE', label: 'Maladies du sang', pro: 'Hématologie', icon: Droplet, blood: true },
   { code: 'DERMATOLOGIE', label: 'Peau', pro: 'Dermatologie', icon: Hand },
   { code: 'ONCOLOGIE', label: 'Cancer', pro: 'Oncologie', icon: Ribbon },
 ];
@@ -60,19 +61,14 @@ export function nextAppointment(list: MyAppointment[], now = Date.now()): MyAppo
   return waiting[0] ?? null;
 }
 
-/** Heure du Bénin, « 10 h 00 » (ou « 10:00 » en anglais). */
-export function timeOf(d: string, locale: Locale) {
-  const s = new Date(d).toLocaleTimeString(locale === 'en' ? 'en-GB' : 'fr-FR', { timeZone: 'Africa/Porto-Novo', hour: '2-digit', minute: '2-digit' });
-  if (locale === 'en') return s;
-  const [h, m] = s.split(':');
-  return `${Number(h)} h ${m}`;
-}
+/** Heure du Bénin, « 10 h 00 » (ou « 10:00 » en anglais) : helpers de src/lib/format.ts. */
+export const timeOf = (d: string, locale: Locale) => hourOnly(d, locale);
 
 /** Pavé de date : jour de la semaine, grand chiffre, mois. */
 export function DateTile({ date, locale, tone = 'brand', size = 'md' }: { date: string; locale: Locale; tone?: 'brand' | 'muted' | 'ocre'; size?: 'md' | 'lg' }) {
   const bg =
     tone === 'brand'
-      ? 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]'
+      ? 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)] dark:bg-[#16302a] dark:text-[var(--fg)]'
       : tone === 'ocre'
         ? 'bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]'
         : 'bg-[var(--bg)] text-[var(--fg-muted)]';

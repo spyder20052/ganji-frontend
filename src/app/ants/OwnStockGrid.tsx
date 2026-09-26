@@ -1,5 +1,5 @@
 'use client';
-import { Check } from 'lucide-react';
+import { AlertTriangle, ArrowDown, Check, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
@@ -8,16 +8,22 @@ import { LEVEL_CLASS, LEVEL_LABEL, level, unitsOf, type StockSite } from './stoc
 
 type CellState = { draft: string; saved: number; saving: boolean; ok: boolean; error: string | null };
 const key = (p: string, g: string) => `${p}:${g}`;
+/** En-têtes courts : trois colonnes tiennent sur un téléphone de 360 px. */
+const SHORT: Record<string, string> = { CGR: 'CGR', PLAQUETTES: 'Plaq.', PLASMA: 'Plasma' };
 
-/** Stock du site connecté, modifiable case par case (enregistré en quittant la case ou avec Entrée). */
+/**
+ * Stock du site connecté : une ligne par groupe, une case par produit (globules rouges, plaquettes,
+ * plasma), modifiable sur place. Enregistré en quittant la case ou avec Entrée ; Échap annule.
+ */
 export function OwnStockGrid({ site }: { site: StockSite }) {
   const t = useT();
   const [cells, setCells] = useState<Record<string, CellState>>(() => {
     const init: Record<string, CellState> = {};
-    for (const p of BLOOD_PRODUCTS) for (const g of BLOOD_GROUPS) {
-      const u = unitsOf(site, p.value, g);
-      init[key(p.value, g)] = { draft: String(u), saved: u, saving: false, ok: false, error: null };
-    }
+    for (const p of BLOOD_PRODUCTS)
+      for (const g of BLOOD_GROUPS) {
+        const u = unitsOf(site, p.value, g);
+        init[key(p.value, g)] = { draft: String(u), saved: u, saving: false, ok: false, error: null };
+      }
     return init;
   });
   const [lastError, setLastError] = useState<string | null>(null);
@@ -49,68 +55,70 @@ export function OwnStockGrid({ site }: { site: StockSite }) {
 
   return (
     <div>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[30rem] border-separate border-spacing-1.5">
-          <caption className="sr-only">{t('Stock de {name}, en poches, modifiable', { name: site.shortName ?? site.name })}</caption>
-          <thead>
-            <tr className="text-left text-sm text-[var(--fg-muted)]">
-              <th scope="col" className="w-16 font-bold">
-                {t('Groupe')}
+      <table className="w-full table-fixed border-separate border-spacing-x-1 border-spacing-y-1.5">
+        <caption className="sr-only">{t('Stock de {name}, en poches, modifiable', { name: site.shortName ?? site.name })}</caption>
+        <thead>
+          <tr className="text-sm text-[var(--fg-muted)]">
+            <th scope="col" className="w-11 text-left font-bold">
+              <span className="sr-only">{t('Groupe')}</span>
+            </th>
+            {BLOOD_PRODUCTS.map((p, i) => (
+              <th key={p.value} scope="col" className="text-center font-bold">
+                <abbr title={t(p.label)} className="no-underline">
+                  {t(SHORT[p.value] ?? p.short)}
+                </abbr>
+                <span className="sr-only"> ({t(p.label)})</span>
+                <span className="num block text-xs font-normal">{t('{n} poches', { n: totals[i] })}</span>
               </th>
-              {BLOOD_PRODUCTS.map((p, i) => (
-                <th key={p.value} scope="col" className="font-bold">
-                  {t(p.label)} <span className="num font-normal">· {t('{n} poches', { n: totals[i] })}</span>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {BLOOD_GROUPS.map((g) => (
-              <tr key={g}>
-                <th scope="row" className="num text-left text-lg font-bold">
-                  {g}
-                </th>
-                {BLOOD_PRODUCTS.map((p) => {
-                  const k = key(p.value, g);
-                  const c = cells[k];
-                  const lv = level(c.saved);
-                  return (
-                    <td key={k} className={`rounded-xl border p-1.5 ${LEVEL_CLASS[lv]}`}>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          min={0}
-                          max={5000}
-                          inputMode="numeric"
-                          value={c.draft}
-                          onChange={(e) => patch(k, { draft: e.target.value, ok: false })}
-                          onBlur={() => commit(p.value, g)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
-                            if (e.key === 'Escape') patch(k, { draft: String(c.saved) });
-                          }}
-                          aria-label={t('{product} {group} : poches en stock (niveau {level})', { product: t(p.label), group: g, level: t(LEVEL_LABEL[lv]) })}
-                          aria-invalid={c.error ? true : undefined}
-                          className="num min-h-11 w-20 rounded-lg border border-current/20 bg-[var(--card)] px-2 text-right text-lg font-bold text-[var(--fg)]"
-                        />
-                        <span className="text-sm font-bold" aria-hidden>
-                          {c.saving ? '…' : c.ok ? <Check size={16} /> : t(LEVEL_LABEL[lv])}
-                        </span>
-                      </div>
-                    </td>
-                  );
-                })}
-              </tr>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </tr>
+        </thead>
+        <tbody>
+          {BLOOD_GROUPS.map((g) => (
+            <tr key={g}>
+              <th scope="row" className="num text-left text-lg font-bold">
+                {g}
+              </th>
+              {BLOOD_PRODUCTS.map((p) => {
+                const k = key(p.value, g);
+                const c = cells[k];
+                const lv = level(c.saved);
+                const Mark = c.saving ? Loader2 : c.ok ? Check : lv === 'critical' ? AlertTriangle : lv === 'low' ? ArrowDown : null;
+                return (
+                  <td key={k} className={`rounded-xl border p-1 ${LEVEL_CLASS[lv]}`}>
+                    <div className="flex items-center gap-1">
+                      <span aria-hidden className="grid w-4 shrink-0 place-items-center">
+                        {Mark && <Mark size={14} className={c.saving ? 'animate-spin' : ''} />}
+                      </span>
+                      <input
+                        type="number"
+                        min={0}
+                        max={5000}
+                        inputMode="numeric"
+                        value={c.draft}
+                        onChange={(e) => patch(k, { draft: e.target.value, ok: false })}
+                        onBlur={() => commit(p.value, g)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
+                          if (e.key === 'Escape') patch(k, { draft: String(c.saved) });
+                        }}
+                        aria-label={t('{product} {group} : poches en stock (niveau {level})', { product: t(p.label), group: g, level: t(LEVEL_LABEL[lv]) })}
+                        aria-invalid={c.error ? true : undefined}
+                        className="num min-h-11 w-full min-w-0 rounded-lg border border-current/20 bg-[var(--card)] px-1.5 text-right text-lg font-bold text-[var(--fg)] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                      />
+                    </div>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
       {lastError && (
         <p role="alert" className="mt-2 text-sm font-bold text-[var(--color-ocre-700)]">
           {lastError}
         </p>
       )}
-      <p className="mt-2 text-sm text-[var(--fg-muted)]">{t('Modifiez une case puis quittez-la (ou Entrée) : l’enregistrement est immédiat et visible des hôpitaux. Échap annule.')}</p>
     </div>
   );
 }

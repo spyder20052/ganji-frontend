@@ -12,7 +12,7 @@ import { ErrorNote, Notice, PageHead } from '../../../_components/ui';
 import { load } from '../../../_lib/load';
 import { CancelOrder } from '../_components/CancelOrder';
 import { HandoverTicket, OrderSteps, StatusPill } from '../_components/OrderParts';
-import { ACTIVE, reorderHref, STATUS_ICON, STATUS_LABEL, type Order } from '../_lib/orders';
+import { ACTIVE, orderStatusLabel, reorderHref, STATUS_ICON, type Order } from '../_lib/orders';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -62,7 +62,7 @@ export default async function CommandePage({ params }: { params: Promise<{ id: s
   if (!res.data) {
     return (
       <>
-        <PageHead icon="pill" title={t('Ma commande')} />
+        <PageHead icon="delivery" title={t('Ma commande')} />
         <ErrorNote error={res.error} />
         <Link href="/app/commandes" className="btn btn-soft">{t('Mes commandes')}</Link>
       </>
@@ -77,9 +77,9 @@ export default async function CommandePage({ params }: { params: Promise<{ id: s
   return (
     <I18nScope area="livraison">
       {active && <AutoRefresh seconds={6} />}
-      <PageHead icon="pill" title={t('Ma commande')} listen={spoken(o, t, locale)} audioKey="app.commande">
+      <PageHead icon="delivery" title={t('Ma commande')} listen={spoken(o, t, locale)} audioKey="app.commande">
         <span className="num text-base text-[var(--fg-muted)]">{o.ref}</span>
-        <StatusPill status={o.status} />
+        <StatusPill status={o.status} mode={o.mode} />
       </PageHead>
 
       <div className="grid items-start gap-5 lg:grid-cols-[1.25fr_1fr]">
@@ -198,7 +198,7 @@ export default async function CommandePage({ params }: { params: Promise<{ id: s
               <ol className="mt-1 space-y-1 pl-8">
                 {o.events.map((e, n) => (
                   <li key={`${e.status}-${n}`} className="flex justify-between gap-3">
-                    <span>{t(STATUS_LABEL[e.status as keyof typeof STATUS_LABEL] ?? e.status)}</span>
+                    <span>{t(orderStatusLabel(e.status, o.mode))}</span>
                     <span className="num text-[var(--fg-muted)]">{n === 0 ? fmtDateTime(e.at, locale) : fmtTime(e.at, locale)}</span>
                   </li>
                 ))}

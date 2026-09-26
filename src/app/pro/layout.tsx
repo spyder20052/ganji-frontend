@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { ShieldCheck } from 'lucide-react';
 import { TopBar } from '@/components/TopBar';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getT } from '@/i18n/server';
 import { requireRole } from './_lib/me';
+import { SessionBanner } from './SessionBanner';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -26,10 +26,7 @@ export default async function ProLayout({ children }: { children: React.ReactNod
           ...(me.practitioner?.specialty === 'PSYCHOLOGIE' ? [{ href: '/pro/ecoute', label: t('Écoute'), icon: 'listen' }] : []),
         ]}
       />
-      <p className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-1.5 text-center text-sm text-[var(--fg-muted)]">
-        <ShieldCheck size={14} aria-hidden className="mr-1 inline align-[-2px]" />
-        {t('Session soignant : 30 min · chaque consultation est inscrite au journal du patient')}
-      </p>
+      <SessionBanner text={t('Session soignant : 30 min · chaque consultation est inscrite au journal du patient')} />
       <main id="contenu" className="mx-auto max-w-6xl px-4 py-6 text-base">
         <I18nScope area="pro">{children}</I18nScope>
       </main>

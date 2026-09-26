@@ -1,13 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ChevronRight, Search, Store, Truck } from 'lucide-react';
+import { ChevronRight, Search, Store, Bike } from 'lucide-react';
+import { Pictogram } from '@/components/Pictogram';
 import { getLocale, getT } from '@/i18n/server';
 import { fcfa, fmtDate, relative } from '@/lib/format';
 import { AutoRefresh } from '../../_components/AutoRefresh';
 import { Empty, ErrorNote, PageHead } from '../../_components/ui';
 import { load } from '../../_lib/load';
 import { OrderSteps, StatusPill } from './_components/OrderParts';
-import { ACTIVE, STATUS_LABEL, type Order } from './_lib/orders';
+import { ACTIVE, orderStatusLabel, type Order } from './_lib/orders';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -23,15 +24,15 @@ export default async function CommandesPage() {
   const past = list.filter((o) => !ACTIVE.includes(o.status));
 
   const listen = current.length
-    ? current.map((o) => t('Commande {ref} : {status}.', { ref: o.ref, status: t(STATUS_LABEL[o.status]) })).join(' ')
+    ? current.map((o) => t('Commande {ref} : {status}.', { ref: o.ref, status: t(orderStatusLabel(o.status, o.mode)) })).join(' ')
     : t('Aucune commande en cours. Pour commander, ouvrez Mes médicaments ou cherchez un médicament.');
 
   return (
     <>
       {current.length > 0 && <AutoRefresh seconds={8} />}
-      <PageHead icon="pill" title={t('Mes commandes')} listen={listen} audioKey="app.commandes">
-        <Link href="/app/medicaments" className="btn btn-soft">{t('Mes ordonnances')}</Link>
-        <Link href="/medicaments" className="btn btn-ghost"><Search size={20} aria-hidden /> {t('Chercher un médicament')}</Link>
+      <PageHead icon="delivery" title={t('Mes commandes')} listen={listen} audioKey="app.commandes">
+        <Link href="/app/medicaments" className="btn btn-soft"><Pictogram name="pill" size={20} /> {t('Ordonnances')}</Link>
+        <Link href="/medicaments" className="btn btn-soft"><Search size={20} aria-hidden /> {t('Chercher')}</Link>
       </PageHead>
 
       {res.error && <ErrorNote error={res.error} />}
@@ -46,7 +47,7 @@ export default async function CommandesPage() {
                 <Link href={`/app/commandes/${o.id}`} className="card block space-y-4 p-5 hover:ring-2 hover:ring-[var(--color-brand-900)]/20">
                   <span className="flex items-center gap-3">
                     <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">
-                      {o.mode === 'LIVRAISON' ? <Truck size={24} aria-hidden /> : <Store size={24} aria-hidden />}
+                      {o.mode === 'LIVRAISON' ? <Bike size={24} aria-hidden /> : <Store size={24} aria-hidden />}
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-lg font-bold">{o.pharmacy.name}</span>
@@ -58,7 +59,7 @@ export default async function CommandesPage() {
                   </span>
                   <OrderSteps order={o} />
                   <span className="flex items-center justify-between gap-3">
-                    <StatusPill status={o.status} />
+                    <StatusPill status={o.status} mode={o.mode} />
                     <span className="display text-2xl">{fcfa(o.totalFcfa, locale)}</span>
                   </span>
                 </Link>
@@ -81,7 +82,7 @@ export default async function CommandesPage() {
                       {fmtDate(o.createdAt, { day: 'numeric', month: 'long' }, locale)} · <span className="num whitespace-nowrap">{fcfa(o.totalFcfa, locale)}</span>
                     </span>
                   </span>
-                  <StatusPill status={o.status} />
+                  <StatusPill status={o.status} mode={o.mode} />
                   <ChevronRight size={20} aria-hidden className="shrink-0 text-[var(--fg-muted)]" />
                 </Link>
               </li>

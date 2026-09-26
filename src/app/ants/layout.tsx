@@ -19,8 +19,8 @@ export default async function AntsLayout({ children }: { children: React.ReactNo
         home="/ants"
         who={site ? `${me.displayName} · ${site}` : me.displayName}
         links={[
-          { href: '/ants#stocks', label: t('Stocks'), icon: 'blood' },
-          { href: '/ants#demandes', label: t('Demandes'), icon: 'hospital' },
+          { href: '/ants', label: t('Demandes'), icon: 'hospital' },
+          { href: '/ants/stocks', label: t('Stocks'), icon: 'blood' },
         ]}
       />
       <main id="contenu" className="mx-auto max-w-6xl px-4 py-6 text-base">

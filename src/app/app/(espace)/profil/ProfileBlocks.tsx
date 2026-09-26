@@ -135,7 +135,7 @@ export function ProfileBlocks({ profile: initial }: { profile: Profile }) {
               <div className="flex flex-wrap items-center gap-3">
                 <p className={`display text-[2.6rem] ${p.bloodGroup ? 'text-[var(--color-danger-800)]' : 'text-[var(--fg-muted)]'}`}>{p.bloodGroup ?? '?'}</p>
                 {p.bloodGroupSource === 'VERIFIE' ? (
-                  <span className="pill bg-[var(--color-brand-100)] text-[var(--color-brand-900)]">
+                  <span className="pill bg-[var(--color-brand-100)] text-[var(--color-brand-900)] dark:bg-[#16302a] dark:text-[var(--fg)]">
                     <ShieldCheck size={16} aria-hidden /> {t('Vérifié par un soignant')}
                   </span>
                 ) : p.bloodGroup ? (
@@ -293,29 +293,27 @@ function Block({
   const hid = `${id}-titre`;
   return (
     <section id={id} aria-labelledby={hid} className="card scroll-mt-24 p-4 sm:p-5">
-      <div className="flex items-start gap-3">
-        <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${blood ? 'bg-[var(--color-danger-50)] text-[var(--color-danger-600)]' : 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)]'}`}>
+      <div className="flex items-center gap-3">
+        <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${blood ? 'bg-[var(--color-danger-50)] text-[var(--color-danger-600)]' : 'bg-[var(--color-brand-100)] text-[var(--color-brand-900)] dark:bg-[#16302a] dark:text-[var(--fg)]'}`}>
           <Icon size={22} aria-hidden />
         </span>
-        <div className="min-w-0 flex-1">
-          <h2 id={hid} className="flex items-center gap-2 text-base font-medium text-[var(--fg-muted)]">
-            {title}
-            {saved && (
-              <span role="status" className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-brand-700)] dark:text-[var(--color-leaf)]">
-                <CheckCircle2 size={16} aria-hidden /> {t('Enregistré')}
-              </span>
-            )}
-          </h2>
-          {!open && <div className="mt-1">{view}</div>}
-        </div>
+        <h2 id={hid} className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 text-base font-medium text-[var(--fg-muted)]">
+          {title}
+          {saved && (
+            <span role="status" className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--color-brand-700)] dark:text-[var(--color-leaf)]">
+              <CheckCircle2 size={16} aria-hidden /> {t('Enregistré')}
+            </span>
+          )}
+        </h2>
         {!open && !locked && (
-          <button type="button" onClick={onEdit} className="btn btn-soft !min-h-12 shrink-0 !px-4">
-            <Pencil size={18} aria-hidden /> <span className="sr-only sm:not-sr-only">{t('Modifier')}</span>
+          <button type="button" onClick={onEdit} className="btn btn-soft !min-h-11 shrink-0 !px-4 text-base">
+            <Pencil size={18} aria-hidden /> {t('Modifier')}
             <span className="sr-only"> : {title}</span>
           </button>
         )}
       </div>
-      {locked && !open && <p className="mt-2 text-base text-[var(--fg-muted)]">{t('Seul un soignant peut le changer.')}</p>}
+      {!open && <div className="mt-2 pl-14">{view}</div>}
+      {locked && !open && <p className="mt-2 pl-14 text-base text-[var(--fg-muted)]">{t('Seul un soignant peut le changer.')}</p>}
       {open && (
         <div className="mt-4 space-y-4">
           {form}

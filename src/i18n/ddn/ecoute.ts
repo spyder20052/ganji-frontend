@@ -187,4 +187,16 @@ export const ecoute: Messages = {
   'Don de sang': 'Kuri no',
   'Rappel': 'Fongandi',
   'Tous les droits': 'Furoyaŋ kulu',
+
+  // Ajouts (titres et libellés courts)
+  'Gérer mes aidants': 'Ay gaakasinay borey',
+  'Accueil': 'Fu',
+  'Signaler': 'Baaru ne',
+  'Visites à faire et signalements de votre commune.': 'Visite kaŋ ni ga te nda ni commune baaru yaŋ.',
+  '{n} visites à faire : {list}. Passez prendre des nouvelles, puis touchez « Fait ».': 'Visite {n} : {list}. Koy ka i baani guna, woodin banda « A ban » suuba.',
+  '{n} visite à faire : {list}. Passez prendre des nouvelles, puis touchez « Fait ».': 'Visite {n} : {list}. Koy ka a baani guna, woodin banda « A ban » suuba.',
+  'Pour signaler une maladie : touchez ce que vous avez vu, dites combien de personnes sont malades, puis où.': 'Ka doori baaru ne : hay kaŋ ni di suuba, ne boro marje no ga doori, woodin banda man.',
+  'File d’écoute : d’abord les personnes en détresse, puis celles qui attendent une réponse, puis vos conversations. Une personne anonyme ne montre ni son nom, ni son carnet, ni son numéro, sauf si elle demande à être rappelée.': 'Salaŋ liste : jina borey kaŋ go taabi beeri ra, woodin banda borey kaŋ go ga tu hangan, woodin banda ni salaŋ yaŋ. Boro kaŋ maa si, a si nga maa, nga carnet wala nga nimero cabe, kala da a na ceeyaŋ haan.',
+  'Aujourd’hui': 'Hunkuna',
+  'Hier': 'Bi',
 };

@@ -41,9 +41,9 @@ export function AntsRequests({ initial, own }: { initial: LiveRequest[]; own: St
   return (
     <div>
       {sortedOpen.length === 0 ? (
-        <p className="mt-3 text-[var(--fg-muted)]">{t('Aucune demande en cours.')}</p>
+        <p className="text-[var(--fg-muted)]">{t('Aucune demande en cours.')}</p>
       ) : (
-        <ul className="mt-3 space-y-3">
+        <ul className="space-y-3">
           {sortedOpen.map((r) => (
             <RequestRow key={r.id} r={r} onUpdate={replace} stock={stock} onDrawn={drawn} />
           ))}

@@ -1,5 +1,5 @@
 'use client';
-import { ArrowLeft, ArrowRight, Banknote, Check, Loader2, MapPin, Minus, Phone, Plus, ShieldCheck, Smartphone, Store, Truck, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Banknote, Check, Loader2, MapPin, Minus, Phone, Plus, ShieldCheck, Smartphone, Store, Bike, type LucideIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CommuneSelect } from '@/components/CommuneSelect';
@@ -108,7 +108,7 @@ export function OrderFlow({ options, initialMode, initialPharmacyId }: { options
 
   const what = options.items.map((i) => `${i.dci} ${i.strength}`).join(', ');
   const QUESTION: Record<Step, { title: string; icon: LucideIcon; listen: string }> = {
-    mode: { title: t('Comment la recevoir ?'), icon: Truck, listen: t('Choisissez : livraison chez vous, ou retrait à la pharmacie.') },
+    mode: { title: t('Livrer ou retirer ?'), icon: Bike, listen: t('Choisissez : livraison chez vous, ou retrait à la pharmacie.') },
     pharmacy: {
       title: t('Quelle pharmacie ?'),
       icon: Store,
@@ -163,14 +163,14 @@ export function OrderFlow({ options, initialMode, initialPharmacyId }: { options
 
       <section aria-labelledby="h-question" className="card space-y-5 p-5 sm:p-6">
         <div className="flex items-center gap-3">
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--color-leaf)] text-[var(--color-ink)]"><q.icon size={24} aria-hidden /></span>
-          <h1 id="h-question" ref={heading} tabIndex={-1} className="min-w-0 flex-1 text-[1.7rem] font-medium leading-tight outline-none">{q.title}</h1>
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[var(--color-leaf)] text-[var(--color-ink)]"><q.icon size={20} aria-hidden /></span>
+          <h1 id="h-question" ref={heading} tabIndex={-1} className="min-w-0 flex-1 text-[1.4rem] font-medium leading-tight outline-none">{q.title}</h1>
           <ListenButton text={q.listen} compact />
         </div>
 
         {step === 'mode' && (
           <div role="radiogroup" aria-labelledby="h-question" className="grid grid-cols-2 gap-3">
-            <Tile name="mode" selected={mode === 'LIVRAISON'} onSelect={() => setMode('LIVRAISON')} icon={Truck} title={t('Livraison')} sub={t('chez moi · dès {fee}', { fee: fcfa(fees.sameCommune, locale) })} />
+            <Tile name="mode" selected={mode === 'LIVRAISON'} onSelect={() => setMode('LIVRAISON')} icon={Bike} title={t('Livraison')} sub={t('chez moi · dès {fee}', { fee: fcfa(fees.sameCommune, locale) })} />
             <Tile name="mode" selected={mode === 'RETRAIT'} onSelect={() => setMode('RETRAIT')} icon={Store} title={t('Retrait')} sub={t('à la pharmacie · gratuit')} />
           </div>
         )}
@@ -324,7 +324,7 @@ export function OrderFlow({ options, initialMode, initialPharmacyId }: { options
             </div>
 
             <ul className="space-y-2 text-base" aria-label={t('Récapitulatif')}>
-              <Recap icon={mode === 'LIVRAISON' ? Truck : Store} label={mode === 'LIVRAISON' ? t('Livraison') : t('Retrait')} value={pharmacy.name} onChange={() => go('pharmacy')} changeLabel={t('Changer la pharmacie')} />
+              <Recap icon={mode === 'LIVRAISON' ? Bike : Store} label={mode === 'LIVRAISON' ? t('Livraison') : t('Retrait')} value={pharmacy.name} onChange={() => go('pharmacy')} changeLabel={t('Changer la pharmacie')} />
               <Recap
                 icon={mode === 'LIVRAISON' ? MapPin : Phone}
                 label={mode === 'LIVRAISON' ? t('Adresse') : t('Téléphone')}

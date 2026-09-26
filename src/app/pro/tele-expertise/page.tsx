@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Paperclip } from 'lucide-react';
+import { PageHead } from '@/app/app/_components/ui';
 import { getLocale, getT } from '@/i18n/server';
 import type { Locale, T } from '@/i18n/translate';
 import { fmtDate } from '@/lib/format';
@@ -28,12 +29,11 @@ export default async function TeleInbox() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">{t('Télé-expertise')}</h1>
-        <p className="mt-1 max-w-3xl text-[var(--fg-muted)]">
-          {t('Avis asynchrones entre soignants, pensés pour le faible débit : une question écrite, jusqu’à 3 photos compressées, une réponse inscrite dans le carnet du patient.')}
-        </p>
-      </div>
+      <PageHead
+        icon="talk"
+        title={t('Télé-expertise')}
+        listen={t('Avis asynchrones entre soignants, pensés pour le faible débit : une question écrite, jusqu’à 3 photos compressées, une réponse inscrite dans le carnet du patient.')}
+      />
       {rows === null && <p className="text-[var(--fg-muted)]">{t('Boîte indisponible pour le moment. Réessayez dans un instant.')}</p>}
 
       <section aria-labelledby="h-answer" className="card p-5">

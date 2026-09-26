@@ -362,4 +362,21 @@ export const compte: Messages = {
   // Accueil : tous les services
   'Mes services': 'Àwọn iṣẹ́ mi',
   'Touchez une grande case : carnet, médicaments, sang, ou urgence. Plus bas, tous vos services.': 'Ẹ tẹ àpótí ńlá kan: ìwé ìlera, oògùn, ẹ̀jẹ̀, tàbí pàjáwìrì. Ní ìsàlẹ̀, gbogbo iṣẹ́ yín.',
+  // Ajouts après la passe UX (libellés courts)
+  "Quelle commune ?": "Ìjọba ìbílẹ̀ wo?",
+  "Tout est juste ?": "Ṣé gbogbo rẹ̀ tọ̀nà?",
+  "Maladies du sang": "Àìsàn ẹ̀jẹ̀",
+  "Bienvenue {prenom}": "Ẹ káàbọ̀ {prenom}",
+  "Qui prévenir ?": "Ta ni kí a pè?",
+  "Commandes": "Ìbéèrè oògùn",
+  "Demandes de rendez-vous de {lieu}.": "Ìbéèrè àdéhùn ní {lieu}.",
+  "Demandes de rendez-vous de votre établissement.": "Ìbéèrè àdéhùn ní ilé ìwòsàn yín.",
+  "{n} à traiter, {m} confirmés à venir.": "{n} láti bójú tó, {m} tí a ti jẹ́rìí sí tó ń bọ̀.",
+  "Confirmer envoie un SMS au patient et programme un rappel la veille.": "Tí ẹ bá jẹ́rìí sí i, aláìsàn yóò gba SMS, a ó sì ṣètò ìránnilétí ní ọjọ́ tó ṣáájú.",
+  "Groupe et allergies": "Irú ẹ̀jẹ̀ àti àlérjì",
+  "Commander mes médicaments et suivre les livraisons": "Béèrè oògùn mi, kí n sì tẹ̀lé bí wọ́n ṣe ń mú un wá",
+  "Pour ouvrir un carnet, le patient montre son QR de partage, ou vous dicte son code à 6 chiffres, valable 15 minutes.": "Láti ṣí ìwé ìlera, aláìsàn yóò fi QR pínpín rẹ̀ hàn, tàbí kí ó ka kóòdù òǹkà 6 rẹ̀ fún yín, tí ó wúlò fún ìṣẹ́jú 15.",
+  "L’accès est limité dans le temps et le patient le voit dans son journal.": "Ìwọlé ní àkókò tó lópin, aláìsàn sì ń rí i nínú àkọsílẹ̀ rẹ̀.",
+  "Plus bas : vos patients, la télé-expertise et vos demandes de sang.": "Ní ìsàlẹ̀: àwọn aláìsàn yín, ìmọ̀ràn amòye àti ìbéèrè ẹ̀jẹ̀ yín.",
+  "Alertes, signalements et indicateurs du pays, mis à jour toutes les 10 secondes.": "Ìkìlọ̀, ìfitónilétí àti àmì-ìṣirò orílẹ̀-èdè, tí a ń ṣàtúnṣe ní ìṣẹ́jú-àáyá 10 kọ̀ọ̀kan.",
 };

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { CheckCircle2, ChevronRight, Search, Store, Truck } from 'lucide-react';
+import { CheckCircle2, ChevronRight, Search, Store } from 'lucide-react';
 import { ListenButton } from '@/components/ListenButton';
 import { Pictogram } from '@/components/Pictogram';
 import { Qr } from '@/components/Qr';
@@ -10,7 +10,7 @@ import type { Locale, T } from '@/i18n/translate';
 import { fmtDate, fmtDateTime } from '@/lib/format';
 import { Empty, ErrorNote, PageHead } from '../../_components/ui';
 import { getMe, load } from '../../_lib/load';
-import { ACTIVE as ORDER_ACTIVE, STATUS_LABEL as ORDER_STATUS, type Order } from '../commandes/_lib/orders';
+import { ACTIVE as ORDER_ACTIVE, orderStatusLabel, type Order } from '../commandes/_lib/orders';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -69,8 +69,8 @@ export default async function MedicamentsPage() {
           <Search size={20} aria-hidden /> {t('Qui a mon médicament ?')}
         </Link>
         {me.patientId && (
-          <Link href="/app/commandes" className="btn btn-ghost">
-            <Truck size={20} aria-hidden /> {t('Mes commandes')}
+          <Link href="/app/commandes" className="btn btn-soft">
+            <Pictogram name="delivery" size={20} /> {t('Mes commandes')}
           </Link>
         )}
       </PageHead>
@@ -152,19 +152,19 @@ function RxOrder({ rxId, order, t }: { rxId: string; order: Order | undefined; t
   if (order) {
     return (
       <Link href={`/app/commandes/${order.id}`} className="flex min-h-14 items-center gap-3 rounded-3xl bg-[var(--color-leaf)] px-5 py-3 font-bold text-[var(--color-ink)] md:col-span-2">
-        {order.mode === 'LIVRAISON' ? <Truck size={22} aria-hidden /> : <Store size={22} aria-hidden />}
-        <span className="flex-1">{t('Commande en cours : {status}', { status: t(ORDER_STATUS[order.status]) })}</span>
+        {order.mode === 'LIVRAISON' ? <Pictogram name="delivery" size={22} /> : <Store size={22} aria-hidden />}
+        <span className="flex-1">{t('Commande en cours : {status}', { status: t(orderStatusLabel(order.status, order.mode)) })}</span>
         <span className="flex items-center gap-1">{t('Suivre')} <ChevronRight size={20} aria-hidden /></span>
       </Link>
     );
   }
   return (
-    <div className="grid gap-2 sm:grid-cols-2 md:col-span-2">
-      <Link href={`/app/commandes/nouvelle?rx=${rxId}&mode=LIVRAISON`} className="btn btn-primary !min-h-14 text-lg">
-        <Truck size={22} aria-hidden /> {t('Me faire livrer')}
+    <div className="grid grid-cols-[1fr_auto] gap-2 md:col-span-2">
+      <Link href={`/app/commandes/nouvelle?rx=${rxId}&mode=LIVRAISON`} className="btn btn-primary !min-h-14 !px-3">
+        <Pictogram name="delivery" size={22} /> {t('Me faire livrer')}
       </Link>
-      <Link href={`/app/commandes/nouvelle?rx=${rxId}&mode=RETRAIT`} className="btn btn-soft !min-h-14 text-lg">
-        <Store size={22} aria-hidden /> {t('Retirer en pharmacie')}
+      <Link href={`/app/commandes/nouvelle?rx=${rxId}&mode=RETRAIT`} className="btn btn-ghost !min-h-14 !px-3">
+        <Store size={22} aria-hidden /> {t('Retirer')}
       </Link>
     </div>
   );

@@ -1,6 +1,6 @@
 import { Check } from 'lucide-react';
 import { getT } from '@/i18n/server';
-import { STATUS_ICON, STATUS_LABEL, STATUS_TONE, stepsFor, type Order, type OrderStatus } from '../_lib/orders';
+import { orderStatusLabel, STATUS_ICON, STATUS_TONE, stepsFor, type Order, type OrderMode, type OrderStatus } from '../_lib/orders';
 
 /**
  * Code de remise : le « ticket » à montrer au livreur ou au comptoir. Quatre chiffres dans quatre
@@ -62,7 +62,7 @@ export async function OrderSteps({ order }: { order: Pick<Order, 'mode' | 'statu
               {done && i !== current ? <Check size={22} aria-hidden /> : <Icon size={22} aria-hidden />}
             </span>
             <span className={`text-sm leading-tight ${now ? 'font-bold' : done ? 'font-semibold' : 'text-[var(--fg-muted)]'}`}>
-              {t(STATUS_LABEL[s])}
+              {t(orderStatusLabel(s, order.mode))}
               <span className="sr-only">{done ? t(' : fait') : now ? t(' : en cours') : t(' : à venir')}</span>
             </span>
           </li>
@@ -72,12 +72,12 @@ export async function OrderSteps({ order }: { order: Pick<Order, 'mode' | 'statu
   );
 }
 
-export async function StatusPill({ status }: { status: OrderStatus }) {
+export async function StatusPill({ status, mode }: { status: OrderStatus; mode: OrderMode }) {
   const t = await getT();
   const Icon = STATUS_ICON[status];
   return (
     <span className={`pill whitespace-nowrap ${STATUS_TONE[status]}`}>
-      <Icon size={16} aria-hidden /> {t(STATUS_LABEL[status])}
+      <Icon size={16} aria-hidden /> {t(orderStatusLabel(status, mode))}
     </span>
   );
 }

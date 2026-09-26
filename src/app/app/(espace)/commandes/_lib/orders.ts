@@ -1,9 +1,11 @@
 import { Bike, CircleCheck, CircleX, House, PackageCheck, ReceiptText, Store, type LucideIcon } from 'lucide-react';
 
-/** Types et libellés des commandes (réponses de /me/orders), propres à cette fonction. */
-export type OrderMode = 'LIVRAISON' | 'RETRAIT';
+import type { OrderMode, OrderStatus } from './status';
+
+export { orderStatusLabel, STATUS_LABEL, type OrderMode, type OrderStatus } from './status';
+
+/** Types et pictogrammes des commandes (réponses de /me/orders), propres à cette fonction. */
 export type OrderPayment = 'ESPECES' | 'MOBILE_MONEY';
-export type OrderStatus = 'RECUE' | 'ACCEPTEE' | 'PRETE' | 'EN_LIVRAISON' | 'LIVREE' | 'RETIREE' | 'REFUSEE' | 'ANNULEE' | 'ECHEC';
 export type Operator = 'MTN' | 'MOOV' | 'CELTIIS';
 
 export interface OrderItem { medicationId: string; dci: string; form: string; strength: string; quantity: number; unitPriceFcfa: number }
@@ -70,18 +72,6 @@ export interface OrderOptions {
 }
 
 export const ACTIVE: OrderStatus[] = ['RECUE', 'ACCEPTEE', 'PRETE', 'EN_LIVRAISON'];
-
-export const STATUS_LABEL: Record<OrderStatus, string> = {
-  RECUE: 'Reçue',
-  ACCEPTEE: 'Acceptée',
-  PRETE: 'Prête',
-  EN_LIVRAISON: 'En route',
-  LIVREE: 'Livrée',
-  RETIREE: 'Retirée',
-  REFUSEE: 'Refusée',
-  ANNULEE: 'Annulée',
-  ECHEC: 'Non remise',
-};
 
 export const STATUS_ICON: Record<OrderStatus, LucideIcon> = {
   RECUE: ReceiptText,

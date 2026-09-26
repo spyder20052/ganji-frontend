@@ -3,6 +3,7 @@ import { ShieldAlert } from 'lucide-react';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getT } from '@/i18n/server';
 import { tryServerApi } from '@/lib/server-api';
+import { PageHead } from '../../app/_components/ui';
 import type { CounselorThread, ListenQueue } from '../../app/(espace)/ecoute/types';
 import { requireRole } from '../_lib/me';
 import { CounselorDesk } from './CounselorDesk';
@@ -18,14 +19,22 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export default async function ProEcoutePage({ searchParams }: { searchParams: Promise<{ c?: string }> }) {
   const [me, t, { c }] = await Promise.all([requireRole(['PRACTITIONER', 'NURSE']), getT(), searchParams]);
   const counselor = me.role === 'PRACTITIONER' && me.practitioner?.specialty === 'PSYCHOLOGIE';
+  const head = (
+    <PageHead
+      icon="listen"
+      title={t('Écoute')}
+      listen={t('File d’écoute : d’abord les personnes en détresse, puis celles qui attendent une réponse, puis vos conversations. Une personne anonyme ne montre ni son nom, ni son carnet, ni son numéro, sauf si elle demande à être rappelée.')}
+      audioKey="pro.ecoute"
+    />
+  );
   if (!counselor) {
     return (
-      <div className="card flex gap-3 p-5">
-        <ShieldAlert size={22} aria-hidden className="mt-0.5 shrink-0 text-[var(--color-ocre-700)]" />
-        <div>
-          <h1 className="text-xl font-bold">{t('File d’écoute')}</h1>
-          <p className="text-[var(--fg-muted)]">{t('Réservée à la cellule d’écoute (psychologues vérifiés).')}</p>
-        </div>
+      <div className="space-y-5">
+        {head}
+        <p className="card flex gap-3 p-5">
+          <ShieldAlert size={22} aria-hidden className="mt-0.5 shrink-0 text-[var(--color-ocre-700)]" />
+          {t('Réservée à la cellule d’écoute (psychologues vérifiés).')}
+        </p>
       </div>
     );
   }
@@ -36,9 +45,12 @@ export default async function ProEcoutePage({ searchParams }: { searchParams: Pr
   return (
     <I18nScope area="ecoute">
       {queue ? (
-        <CounselorDesk initialQueue={queue} initialThread={thread} />
+        <CounselorDesk head={head} initialQueue={queue} initialThread={thread} />
       ) : (
-        <p className="card p-5 text-[var(--fg-muted)]">{t('File indisponible pour le moment. Réessayez dans un instant.')}</p>
+        <div className="space-y-5">
+          {head}
+          <p className="card p-5 text-[var(--fg-muted)]">{t('File indisponible pour le moment. Réessayez dans un instant.')}</p>
+        </div>
       )}
     </I18nScope>
   );

@@ -1,8 +1,7 @@
 'use client';
-import { BadgeCheck, Hourglass, Loader2, RefreshCw, ShieldQuestion, ShieldCheck, Users, XCircle } from 'lucide-react';
+import { BadgeCheck, Hourglass, Loader2, Pencil, RefreshCw, ShieldQuestion, ShieldCheck, Users, XCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { ListenButton } from '@/components/ListenButton';
 import { useLocale, useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { fmtDate } from '@/lib/format';
@@ -16,7 +15,7 @@ const SCHEMES: { id: Scheme; label: string; Icon: typeof ShieldCheck }[] = [
 
 /**
  * Carte de couverture santé : à la manière d'une carte d'assuré (taux en grand, numéro, validité).
- * Déclarer puis vérifier auprès du registre (adaptateur d'interopérabilité ; bac à sable en démonstration).
+ * Déclarer puis vérifier auprès du registre (adaptateur d'interopérabilité ; registre de démonstration).
  */
 export function CoverageCard({ initial }: { initial: CoverageView }) {
   const t = useT();
@@ -112,10 +111,13 @@ export function CoverageCard({ initial }: { initial: CoverageView }) {
     );
   }
 
-  const listen =
-    c.status === 'ACTIF'
-      ? t('Vous êtes couvert par {scheme} : {rate} % de vos soins sont pris en charge.', { scheme: t(SCHEME_LABEL[c.scheme ?? 'ARCH']), rate: c.rate })
-      : [t('Pas encore de prise en charge.'), step ? t(step) : ''].join(' ');
+  // Vérification faite par le registre de démonstration : on le dit en petit, sans jargon.
+  const checked = verifiedOn ? t('Vérifié le {date} (démonstration)', { date: verifiedOn }) : t('Vérification (démonstration)');
+  const edit = (
+    <button type="button" onClick={() => setEditing(true)} className="btn btn-soft !min-h-11 !px-4 text-base">
+      <Pencil size={18} aria-hidden /> {t('Modifier')}
+    </button>
+  );
 
   // ── Couvert : la carte d'assuré ──
   if (c.status === 'ACTIF') {
@@ -139,18 +141,13 @@ export function CoverageCard({ initial }: { initial: CoverageView }) {
           {c.validUntil && <p className="text-base text-white/80">{t('jusqu’au {date}', { date: fmtDate(c.validUntil, { day: 'numeric', month: 'short', year: 'numeric' }, locale) })}</p>}
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2">
-          <ListenButton text={listen} compact />
-          <button type="button" onClick={verify} disabled={busy !== null} className="btn !min-h-12 bg-white/10 text-white hover:bg-white/20">
+          <button type="button" onClick={verify} disabled={busy !== null} className="btn !min-h-11 !px-4 bg-[var(--color-leaf)] text-base text-[var(--color-ink)] hover:bg-[var(--color-leaf-strong)]">
             {busy === 'verify' ? <Loader2 size={18} className="animate-spin" aria-hidden /> : <RefreshCw size={18} aria-hidden />}
             {t('Vérifier')}
           </button>
-          <button type="button" onClick={() => setEditing(true)} className="btn !min-h-12 text-white/85 underline-offset-4 hover:underline">
-            {t('Modifier')}
-          </button>
+          {edit}
         </div>
-        <p className="mt-2 text-sm text-white/70">
-          {verifiedOn ? t('Vérification (bac à sable) · {date}', { date: verifiedOn }) : t('Vérification (bac à sable)')}
-        </p>
+        <p className="mt-2 text-sm text-white/70">{checked}</p>
         {error && <p role="alert" className="mt-2 font-semibold text-[var(--color-leaf)]">{t(error)}</p>}
       </section>
     );
@@ -167,7 +164,6 @@ export function CoverageCard({ initial }: { initial: CoverageView }) {
         <h2 id="h-couverture" className="min-w-0 flex-1 text-xl font-semibold">
           {pending ? t('Couverture en attente') : t('Pas de couverture')}
         </h2>
-        <ListenButton text={listen} compact />
       </div>
       {c.number && (
         <p className="mt-3 font-sans text-lg tracking-wide break-all">
@@ -183,7 +179,7 @@ export function CoverageCard({ initial }: { initial: CoverageView }) {
               {busy === 'verify' ? <Loader2 size={20} className="animate-spin" aria-hidden /> : <RefreshCw size={20} aria-hidden />}
               {t('Vérifier')}
             </button>
-            <button type="button" onClick={() => setEditing(true)} className="btn btn-ghost">{t('Modifier')}</button>
+            {edit}
           </>
         ) : (
           <button type="button" onClick={() => setEditing(true)} className="btn btn-primary w-full sm:w-auto">
@@ -192,7 +188,7 @@ export function CoverageCard({ initial }: { initial: CoverageView }) {
         )}
       </div>
       {pending && c.source === 'VERIFIE' && (
-        <p className="mt-2 text-sm">{verifiedOn ? t('Vérification (bac à sable) · {date}', { date: verifiedOn }) : t('Vérification (bac à sable)')}</p>
+        <p className="mt-2 text-sm">{checked}</p>
       )}
     </section>
   );

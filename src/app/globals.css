@@ -144,7 +144,9 @@ h1, h2, h3, .font-display { font-family: var(--font-display); text-wrap: balance
   .display { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
 }
 
-:focus-visible { outline: 3px solid var(--color-brand-900); outline-offset: 2px; border-radius: 6px; }
+/* Anneau de focus à deux couleurs : blanc au contact de l'élément, puis Forêt (Pousse en sombre) : visible sur
+   fond clair, sombre ou rouge (tuiles d'urgence, en-têtes Forêt). */
+:focus-visible { outline: 3px solid var(--color-brand-900); outline-offset: 2px; border-radius: 6px; box-shadow: 0 0 0 2px #fff; }
 :root[data-theme='dark'] :focus-visible { outline-color: var(--color-leaf); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) :focus-visible { outline-color: var(--color-leaf); }

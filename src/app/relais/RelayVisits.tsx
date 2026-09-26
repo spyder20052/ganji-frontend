@@ -1,12 +1,11 @@
 'use client';
 import { Check, CheckCircle2, Home, Loader2, MapPin, RefreshCw } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
-import { ListenButton } from '@/components/ListenButton';
 import { useLocale, useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { fmtDateTime, fmtTime } from '@/lib/format';
 
-interface Visit {
+export interface Visit {
   id: string;
   firstName: string;
   commune: string | null;
@@ -35,47 +34,42 @@ function dueLabel(iso: string, t: ReturnType<typeof useT>, locale: ReturnType<ty
  * Visites demandées par le cercle de soins (rappel resté sans réponse) : prénom, quartier, motif.
  * Aucun détail médical. « Fait » (avec un mot facultatif) prévient le patient et ses aidants.
  */
-export function RelayVisits() {
+export interface VisitList {
+  todo: Visit[];
+  done: Visit[];
+}
+
+export function RelayVisits({ initial }: { initial: VisitList | null }) {
   const t = useT();
   const locale = useLocale();
-  const [data, setData] = useState<{ todo: Visit[]; done: Visit[] } | null>(null);
+  const [data, setData] = useState<VisitList | null>(initial);
   const [failed, setFailed] = useState(false);
 
   const load = useCallback(() => {
     setFailed(false);
-    api<{ todo: Visit[]; done: Visit[] }>('/relay/visits')
+    api<VisitList>('/relay/visits')
       .then(setData)
       .catch(() => setFailed(true));
   }, []);
-  useEffect(load, [load]);
+  // Chargées par le serveur ; rechargées ici seulement si le serveur n'a pas pu les lire.
+  useEffect(() => {
+    if (!initial) load();
+  }, [initial, load]);
 
   const todo = data?.todo ?? [];
   return (
     <section id="visites" aria-labelledby="h-visites" className="card scroll-mt-24 space-y-4 p-5 sm:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 id="h-visites" className="flex items-center gap-3 text-2xl font-bold">
-          <span className="grid h-11 w-11 place-items-center rounded-full bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">
+      <div className="flex items-center justify-between gap-3">
+        <h2 id="h-visites" className="flex min-w-0 items-center gap-3 text-2xl font-semibold">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">
             <Home size={22} aria-hidden />
           </span>
           {t('Visites à faire')}
           {data && <span className="num text-lg font-normal text-[var(--fg-muted)]">({todo.length})</span>}
         </h2>
-        <div className="flex items-center gap-2">
-          {data && (
-            <ListenButton
-              text={
-                todo.length
-                  ? `${t('Visites à faire')} : ${todo.map((v) => `${v.firstName}, ${v.address ?? v.commune ?? ''}, ${dueLabel(v.dueAt, t, locale)}`).join('. ')}. ${t('Passez prendre des nouvelles, puis touchez « Fait ».')}`
-                  : t('Aucune visite à faire.')
-              }
-              audioKey="relay.visits"
-              compact
-            />
-          )}
-          <button type="button" className="chip-round" onClick={load} aria-label={t('Actualiser')}>
-            <RefreshCw size={18} aria-hidden />
-          </button>
-        </div>
+        <button type="button" className="chip-round shrink-0" onClick={load} aria-label={t('Actualiser')}>
+          <RefreshCw size={18} aria-hidden />
+        </button>
       </div>
 
       {failed && <p className="text-[var(--fg-muted)]">{t('Visites indisponibles pour le moment.')}</p>}

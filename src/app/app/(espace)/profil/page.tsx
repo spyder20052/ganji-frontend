@@ -50,8 +50,8 @@ export default async function ProfilPage() {
             {name.charAt(0)}
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-base text-white/80">{t('Mon profil')}</p>
-            <h1 className="text-[2rem] leading-tight font-medium tracking-tight [overflow-wrap:anywhere]">{name}</h1>
+            <h1 className="text-[1.7rem] leading-tight font-medium tracking-tight">{t('Mon profil')}</h1>
+            <p className="text-lg leading-snug font-semibold [overflow-wrap:anywhere] text-white/90">{name}</p>
           </div>
           <ListenButton text={listen} audioKey="app.profil" compact />
         </div>

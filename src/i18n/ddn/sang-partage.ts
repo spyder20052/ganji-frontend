@@ -208,4 +208,22 @@ export const sangPartage: Messages = {
   'Réservé au prescripteur, aux soignants de son établissement et à la banque de sang': 'Lokotoro kaŋ na haan te, a établissement lokotoro yaŋ nda kuri banque se hinne',
   'Une autre opération est en cours sur cette demande. Réessayez.': 'Goy fo go ga te haan woo boŋ. Te koyne.',
   'La demande vient de changer. Réessayez.': 'Haan barmay sohon. Te koyne.',
+
+  // Ajouts (titres et libellés courts)
+  'Stocks de sang': 'Kuri stock',
+  'Stocks bas': 'Stock kayna',
+  'mis à jour {date}': 'taji {date}',
+  'Plaq.': 'Plaq.',
+  'CGR': 'CGR',
+  'Votre stock, groupe par groupe : globules rouges, plaquettes, plasma. Touchez un nombre, corrigez-le, puis quittez la case : c’est enregistré et les hôpitaux le voient tout de suite. Rouge : moins de {critical} poches. Orange : moins de {low}. Les autres sites du réseau sont en dessous.': 'Ni stock, groupe kulu : globules rouges, plaquettes, plasma. Nimero fo suuba, a hanse, woodin banda fatta case ra : a ga gaay, hôpital yaŋ g’a di sohon. Ciray : poche mana to {critical}. Orange : a mana to {low}. Kuri nungu fo yaŋ go cire.',
+  'Les demandes des hôpitaux arrivent ici, les plus urgentes d’abord. Réservez des poches de votre stock, relancez les donneurs, appelez ceux qui ont dit oui. Quand la transfusion est faite, cochez les donneurs qui sont venus donner.': 'Hôpital yaŋ haan ga kaa ne ; urgence beeri yaŋ jina. Poche jisi ni stock ra, kuri no borey ce koyne, borey kaŋ ne « oho » ce. Da transfusion ban, kuri no borey kaŋ kaa ka kuri no suuba.',
+  '{n} vitales sans donneur': 'Urgence beeri {n}, kuri no boro si',
+  '{n} vitale sans donneur': 'Urgence beeri {n}, kuri no boro si',
+  'Partager': 'Fay',
+  '1 h': '1 h',
+  '24 h': '24 h',
+  '3 j': '3 j',
+  'Montrer mon QR': 'Ay QR cabe',
+  'Modifier': 'Barmay',
+  'Fermer': 'Daabu',
 };

@@ -24,7 +24,7 @@ export default async function RelaisLayout({ children }: { children: ReactNode }
         who={me.displayName}
         links={[
           { href: '/relais', label: t('Signaler'), icon: 'warning' },
-          { href: '/relais#activite', label: t('Mes signalements'), icon: 'calendar' },
+          { href: '/relais#activite', label: t('Historique'), icon: 'calendar' },
           { href: '/orientation', label: t('Orientation'), icon: 'stethoscope' },
           { href: '/urgence', label: t('Urgence'), icon: 'emergency', danger: true },
         ]}

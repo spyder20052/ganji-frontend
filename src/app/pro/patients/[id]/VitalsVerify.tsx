@@ -44,7 +44,7 @@ export function VitalsVerify({ patientId, bloodGroup, source, allergies }: { pat
     <details className="card group p-5">
       <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3">
         <ShieldCheck size={22} aria-hidden className="shrink-0 text-[var(--color-brand-700)] dark:text-[var(--color-leaf)]" />
-        <span className="flex-1 text-lg font-bold">{t('Vérifier le groupe sanguin et les allergies')}</span>
+        <span className="flex-1 text-lg font-bold">{t('Groupe et allergies')}</span>
         <span className="pill bg-[var(--bg)] text-[var(--fg-muted)]">
           {source === 'VERIFIE' ? t('Groupe vérifié') : bloodGroup ? t('Groupe déclaré par le patient') : t('Groupe inconnu')}
         </span>

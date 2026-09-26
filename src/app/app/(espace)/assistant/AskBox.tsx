@@ -48,21 +48,7 @@ export function AskBox({ patientId }: { patientId?: string }) {
 
   return (
     <section aria-labelledby="h-question" className="card space-y-4 p-5 sm:p-6">
-      <div className="flex items-center justify-between gap-3">
-        <h2 id="h-question" className="text-xl font-semibold">{t('Une question ?')}</h2>
-        <ListenButton
-          text={t('Posez une question sur vos médicaments : l’heure, un oubli, le repas, les effets, la durée. Je réponds seulement avec votre ordonnance et les fiches des médicaments. Je ne fais pas de diagnostic.')}
-          compact
-        />
-      </div>
-
-      <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible">
-        {SUGGESTIONS.map((s) => (
-          <button key={s} type="button" className="btn btn-soft !min-h-12 shrink-0 !px-4 text-base" onClick={() => ask(t(s))} disabled={busy}>
-            {t(s)}
-          </button>
-        ))}
-      </div>
+      <h2 id="h-question" className="text-xl font-semibold">{t('Une question ?')}</h2>
 
       {turns.length > 0 && (
         <ol className="space-y-4" aria-live="polite">
@@ -87,19 +73,29 @@ export function AskBox({ patientId }: { patientId?: string }) {
       )}
       <div ref={endRef} />
 
-      <form
-        className="flex gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          void ask(q);
-        }}
-      >
-        <label htmlFor="assist-q" className="sr-only">{t('Votre question')}</label>
-        <input id="assist-q" className="input min-w-0 flex-1" placeholder={t('Votre question…')} value={q} onChange={(e) => setQ(e.target.value)} autoComplete="off" maxLength={300} />
-        <button type="submit" className="btn btn-primary !px-4" aria-label={t('Envoyer')} disabled={!q.trim() || busy}>
-          <Send size={20} aria-hidden />
-        </button>
-      </form>
+      {/* Questions proposées et zone de saisie : toujours visibles au-dessus de la barre d'onglets du téléphone. */}
+      <div className="sticky bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-10 -mx-2 space-y-2 rounded-[1.75rem] bg-[var(--card)] p-2 shadow-[var(--shadow-soft)] md:bottom-4">
+        <div className="flex gap-2 overflow-x-auto sm:flex-wrap sm:overflow-visible">
+          {SUGGESTIONS.map((s) => (
+            <button key={s} type="button" className="btn btn-soft !min-h-12 shrink-0 !px-4 text-base" onClick={() => ask(t(s))} disabled={busy}>
+              {t(s)}
+            </button>
+          ))}
+        </div>
+        <form
+          className="flex gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void ask(q);
+          }}
+        >
+          <label htmlFor="assist-q" className="sr-only">{t('Votre question')}</label>
+          <input id="assist-q" className="input min-w-0 flex-1" placeholder={t('Votre question…')} value={q} onChange={(e) => setQ(e.target.value)} autoComplete="off" maxLength={300} />
+          <button type="submit" className="btn btn-primary !px-4" aria-label={t('Envoyer')} disabled={!q.trim() || busy}>
+            <Send size={20} aria-hidden />
+          </button>
+        </form>
+      </div>
     </section>
   );
 }

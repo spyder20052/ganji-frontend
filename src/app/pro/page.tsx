@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { ArrowRight, Droplet, MessagesSquare } from 'lucide-react';
+import { ChevronRight, Droplet, MessagesSquare } from 'lucide-react';
+import { PageHead } from '@/app/app/_components/ui';
 import { getLocale, getT } from '@/i18n/server';
 import type { Locale, T } from '@/i18n/translate';
 import { tryServerApi } from '@/lib/server-api';
@@ -33,7 +34,15 @@ export default async function ProHome() {
 
   return (
     <div className="space-y-6">
-      <h1 className="sr-only">{t('Espace soignant')}</h1>
+      <PageHead
+        icon="people"
+        title={t('Patients')}
+        listen={[
+          t('Pour ouvrir un carnet, le patient montre son QR de partage, ou vous dicte son code à 6 chiffres, valable 15 minutes.'),
+          t('L’accès est limité dans le temps et le patient le voit dans son journal.'),
+          t('Plus bas : vos patients, la télé-expertise et vos demandes de sang.'),
+        ].join(' ')}
+      />
       <div className="grid gap-4 lg:grid-cols-[1fr_1.4fr]">
         <OpenRecord />
 
@@ -52,11 +61,12 @@ export default async function ProHome() {
             <ul className="mt-3 divide-y divide-[var(--border)]">
               {sorted.map((p) => (
                 <li key={p.id}>
-                  <Link href={`/pro/patients/${p.id}`} className="flex min-h-14 flex-wrap items-center gap-x-3 gap-y-1 rounded-xl px-2 py-2 hover:bg-[var(--bg)]">
+                  {/* Une ligne = un lien : groupe, nom, détails et accès à gauche, flèche collée à droite. */}
+                  <Link href={`/pro/patients/${p.id}`} className="flex min-h-14 items-center gap-3 rounded-xl px-2 py-2 hover:bg-[var(--bg)]">
                     <span className="grid h-10 w-12 shrink-0 place-items-center rounded-xl bg-[var(--color-danger-50)] text-sm font-bold text-[var(--color-danger-800)]" title={t('Groupe sanguin')}>
                       {p.bloodGroup ?? '?'}
                     </span>
-                    <span className="min-w-0 flex-1">
+                    <span className="min-w-0 flex-1 space-y-1">
                       <span className="block font-bold">
                         {p.firstName} {p.lastName}
                       </span>
@@ -64,9 +74,9 @@ export default async function ProHome() {
                         {t('{age} ans', { age: p.age })} · {p.sex === 'F' ? t('femme') : t('homme')}
                         {p.commune ? ` · ${p.commune}` : ''}
                       </span>
+                      <Pill tone={ACCESS_VIA[p.via]?.tone ?? 'muted'}>{accessText(p, t, locale)}</Pill>
                     </span>
-                    <Pill tone={ACCESS_VIA[p.via]?.tone ?? 'muted'}>{accessText(p, t, locale)}</Pill>
-                    <ArrowRight size={18} aria-hidden className="text-[var(--fg-muted)]" />
+                    <ChevronRight size={20} aria-hidden className="shrink-0 text-[var(--fg-muted)]" />
                   </Link>
                 </li>
               ))}

@@ -102,7 +102,7 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
         icon="heart"
         action={
           own && s ? (
-            <Link href="/app/profil" className="btn btn-soft !min-h-12">
+            <Link href="/app/profil" className="btn btn-soft !min-h-11 !px-4 text-base">
               <Pencil size={18} aria-hidden /> {t('Modifier')}
             </Link>
           ) : undefined

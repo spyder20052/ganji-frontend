@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { Pictogram } from '@/components/Pictogram';
 import { getLocale, getT } from '@/i18n/server';
@@ -33,7 +34,12 @@ export default async function AidantsPage() {
         intro={t('Choisissez les proches qui peuvent vous aider, et protégez votre carnet sur ce téléphone.')}
         listen={t('Ici, vous pouvez ajouter un proche comme aidant avec son numéro de téléphone. Il pourra voir ce que vous choisissez, jamais vos données très sensibles. Vous pouvez aussi activer le mode discret et protéger votre carnet par un code PIN.')}
         audioKey="app.aidants"
-      />
+      >
+        {/* Retour au cercle de soins (point d'entrée des aidants depuis l'accueil). */}
+        <Link href="/app/cercle" className="btn btn-soft !min-h-11 !px-4 text-base">
+          <ArrowLeft size={18} aria-hidden /> {t('Cercle de soins')}
+        </Link>
+      </PageHead>
 
       {me.delegations.length > 0 && (
         <Section id="h-jaide" title={t('Les personnes que j’aide')} icon="people">

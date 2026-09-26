@@ -12,6 +12,7 @@ import { serverApi, ServerApiError } from '@/lib/server-api';
 import type { Series, Summary, TimelineItem } from '@/lib/types';
 import { SPECIALTY_LABEL } from '../../_lib/labels';
 import { getMe } from '../../_lib/me';
+import { PageHead } from '@/app/app/_components/ui';
 import { I18nScope } from '@/i18n/I18nScope';
 import { ActionBar } from './ActionBar';
 import { BreakGlassForm } from './BreakGlassForm';
@@ -71,18 +72,22 @@ export default async function PatientPage({ params }: { params: Promise<{ id: st
         {t('← Mes patients')}
       </Link>
 
-      <header className="flex flex-wrap items-end gap-x-4 gap-y-2">
-        <div className="min-w-0 flex-1">
-          <h1 className="text-3xl font-bold">
-            {summary.firstName} {summary.lastName}
-          </h1>
-          <p className="text-[var(--fg-muted)]">
-            {t('{age} ans', { age: summary.age })} · {summary.sex === 'F' ? t('femme') : t('homme')} ·{' '}
-            {summary.sex === 'F' ? t('née le {date}', { date: fmtDate(summary.birthDate, undefined, locale) }) : t('né le {date}', { date: fmtDate(summary.birthDate, undefined, locale) })}
-            {summary.commune ? ` · ${summary.commune}` : ''}
-          </p>
-        </div>
-      </header>
+      {/* Titre commun aux écrans soignant ; l'identité (âge, sexe, naissance, commune) reste visible : indispensable. */}
+      <PageHead
+        icon="adult"
+        title={`${summary.firstName} ${summary.lastName}`}
+        listen={[
+          `${summary.firstName} ${summary.lastName}, ${t('{age} ans', { age: summary.age })}.`,
+          summary.bloodGroup ? t('Groupe sanguin {group}.', { group: summary.bloodGroup }) : '',
+          summary.allergies.length ? t('Allergies : {list}.', { list: summary.allergies.join(', ') }) : '',
+        ].join(' ')}
+      >
+        <p className="text-[var(--fg-muted)]">
+          {t('{age} ans', { age: summary.age })} · {summary.sex === 'F' ? t('femme') : t('homme')} ·{' '}
+          {summary.sex === 'F' ? t('née le {date}', { date: fmtDate(summary.birthDate, undefined, locale) }) : t('né le {date}', { date: fmtDate(summary.birthDate, undefined, locale) })}
+          {summary.commune ? ` · ${summary.commune}` : ''}
+        </p>
+      </PageHead>
       <AccessBanner access={summary.access} t={t} locale={locale} />
 
       <VitalCard s={summary} t={t} locale={locale} />
@@ -196,7 +201,7 @@ function AccessBanner({ access, t, locale }: { access: Summary['access']; t: T; 
           : t('Accès : consentement du patient.')
         : t('Accès : {via}.', { via: access.via.toLowerCase() });
   return (
-    <p role="note" className="flex items-start gap-3 rounded-2xl bg-[var(--color-brand-100)] p-3 text-[var(--color-brand-900)]">
+    <p role="note" className="flex items-start gap-3 rounded-2xl bg-[var(--color-brand-100)] p-3 text-[var(--color-brand-900)] dark:bg-[#16302a] dark:text-[var(--fg)]">
       <ShieldCheck size={22} aria-hidden className="mt-0.5 shrink-0" />
       <span>
         <strong>{text}</strong> {t('Le patient voit cette consultation dans son journal d’accès.')}
