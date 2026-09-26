@@ -13,7 +13,7 @@ export function fmtTime(d: string | Date, locale: Locale = 'fr') {
 }
 export function relative(d: string | Date, locale: Locale = 'fr') {
   const diff = (new Date(d).getTime() - Date.now()) / 60_000;
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+  const rtf = new Intl.RelativeTimeFormat(INTL[locale], { numeric: 'auto' });
   const abs = Math.abs(diff);
   if (abs < 60) return rtf.format(Math.round(diff), 'minute');
   if (abs < 60 * 24) return rtf.format(Math.round(diff / 60), 'hour');

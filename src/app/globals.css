@@ -46,8 +46,10 @@
   --color-fg: var(--fg);
   --color-fg-muted: var(--fg-muted);
   --color-border: var(--border);
-  --font-sans: var(--font-atkinson), var(--font-afrique), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-bricolage), var(--font-afrique), var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+  /* Lettres des langues nationales en premier : leur police ne couvre qu'elles (unicode-range), et passerait
+     sinon après la police de repli locale (Arial) que next/font ajoute à chaque famille. */
+  --font-sans: var(--font-afrique), var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-afrique), var(--font-bricolage), var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
   /* Graisses allégées : « gras » = demi-gras. */
   --font-weight-bold: 600;
 }
@@ -412,8 +414,8 @@ body {
 /* Accueil : texte courant en Poppins Regular (charte) ; titres, liens, boutons, étiquettes et tout ce qui
    est en gras en Bricolage Grotesque, avec Poppins en secours (jamais Atkinson : 2 fichiers de plus). */
 .landing-text {
-  --font-display: var(--font-bricolage), var(--font-afrique), var(--font-poppins-text), ui-sans-serif, system-ui, sans-serif;
-  font-family: var(--font-poppins-text), var(--font-afrique), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-afrique), var(--font-bricolage), var(--font-poppins-text), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-afrique), var(--font-poppins-text), ui-sans-serif, system-ui, sans-serif;
 }
 .landing-text :where(.font-medium, .font-semibold, .font-bold, .btn, .eyebrow, .pill, b, strong):not(.hero-title) { font-family: var(--font-display); }
 
