@@ -66,11 +66,20 @@ les notifications gardent l'orthographe complète (`src/common/gsm.ts`).
 grossesse (`maternal.danger`), l'appel au don de sang (`blood.donor.call`), le code de connexion (`auth.otp`) et les
 menus USSD.
 
-## Messages vocaux
+## Voix (bouton « Écouter »)
 
-Les messages vocaux enregistrés (`public/audio/<langue>/<clé>.mp3`) existent en yoruba (34) et en fon (12), en voix
-de synthèse à valider (voir `docs/ENREGISTREMENTS.md`). Sans enregistrement, le bouton « Écouter » lit le texte avec
-la synthèse vocale du téléphone.
+Interface en fon, yoruba, bariba ou dendi : le bouton lit **le texte de la page dans cette langue**, avec une voix
+de synthèse produite par l'API (`POST /tts`, modèles MMS-TTS de Meta convertis en ONNX, un par langue ; le téléphone
+n'a pas de voix pour ces langues). Les chiffres sont dits un par un avec les mots de la langue (118 → « ɖokpó ɖokpó
+tantɔn » en fon). Premier usage d'une langue : quelques secondes (chargement du modèle) ; un texte déjà lu revient
+aussitôt (cache). Français et anglais : voix du téléphone.
+
+À valider par des locuteurs natifs : la prononciation (voix de synthèse), les mots des chiffres (`ganji-backend/src/
+tts/tts.text.ts`) et, pour le zéro, l'emprunt retenu dans chaque langue. Licence des modèles : CC-BY-NC 4.0 (usage
+non commercial) ; reconversion : `ganji-backend/scripts/tts/export_onnx.py`.
+
+Messages vocaux enregistrés (`public/audio/<langue>/<clé>.mp3`, yoruba 34, fon 12) : utilisés quand la voix est
+réglée sur une langue nationale alors que l'interface reste en français (voir `docs/ENREGISTREMENTS.md`).
 
 ## Ajouter ou corriger une traduction
 
