@@ -8,6 +8,7 @@ import { Empty, ErrorNote, PageHead, Section } from '../../_components/ui';
 import { SCOPE_LABEL } from '../../_lib/labels';
 import { getMe, load } from '../../_lib/load';
 import { RevokeButton } from '../partage/RevokeButton';
+import { I18nScope } from '@/i18n/I18nScope';
 import { AddDelegation, DiscreetToggle } from './Delegations';
 import { OfflinePin } from './OfflinePin';
 
@@ -68,7 +69,11 @@ export default async function AidantsPage() {
               ))}
             </ul>
           )}
-          <AddDelegation />
+          <I18nScope area="compte">
+            <I18nScope area="livraison">
+              <AddDelegation />
+            </I18nScope>
+          </I18nScope>
         </Section>
       )}
 

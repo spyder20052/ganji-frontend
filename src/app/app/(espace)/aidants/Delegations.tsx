@@ -11,6 +11,8 @@ const SCOPES = [
   { key: 'reminders', hint: 'Recevoir mes rappels de rendez-vous' },
   { key: 'timeline', hint: 'Mes consultations et soins' },
   { key: 'blood', hint: 'Être prévenu quand un donneur est trouvé' },
+  { key: 'appointments', hint: 'Prendre et suivre mes rendez-vous' },
+  { key: 'orders', hint: 'Commander mes médicaments et suivre les livraisons' },
 ] as const;
 
 /** Suggestions pour « Qui est-ce pour vous ? » (proposées dans la langue de l'écran). */

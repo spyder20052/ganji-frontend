@@ -1,5 +1,6 @@
 import { getT } from '@/i18n/server';
 import { tryServerApi } from '@/lib/server-api';
+import { PharmacyOrders } from './_commandes/PharmacyOrders';
 import { DispenseDesk } from './DispenseDesk';
 import { OnDutyToggle } from './OnDutyToggle';
 import { StockTable } from './StockTable';
@@ -13,6 +14,7 @@ export default async function PharmaciePage() {
   return (
     <div className="space-y-5">
       <h1 className="text-3xl font-bold">{stock?.pharmacy.name ?? t('Ma pharmacie')}</h1>
+      <PharmacyOrders />
       <div className="grid items-start gap-5 lg:grid-cols-[1.6fr_1fr]">
         <DispenseDesk />
         <div className="space-y-5">

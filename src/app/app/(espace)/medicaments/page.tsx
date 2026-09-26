@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { CheckCircle2, Search } from 'lucide-react';
+import { CheckCircle2, ChevronRight, Search, Store, Truck } from 'lucide-react';
 import { ListenButton } from '@/components/ListenButton';
 import { Pictogram } from '@/components/Pictogram';
 import { Qr } from '@/components/Qr';
@@ -10,6 +10,7 @@ import type { Locale, T } from '@/i18n/translate';
 import { fmtDate, fmtDateTime } from '@/lib/format';
 import { Empty, ErrorNote, PageHead } from '../../_components/ui';
 import { getMe, load } from '../../_lib/load';
+import { ACTIVE as ORDER_ACTIVE, STATUS_LABEL as ORDER_STATUS, type Order } from '../commandes/_lib/orders';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -46,8 +47,10 @@ export default async function MedicamentsPage() {
   const t = await getT();
   const locale = await getLocale();
   const me = await getMe();
-  const res = me.patientId ? await load<Rx[]>('/prescriptions/mine') : null;
+  const [res, ordersRes] = me.patientId ? await Promise.all([load<Rx[]>('/prescriptions/mine'), load<Order[]>('/me/orders')]) : [null, null];
   const list = res?.data ?? [];
+  // Commande en cours par ordonnance (livraison ou retrait) : on propose de la suivre au lieu d'en passer une autre.
+  const orderOf = (rxId: string) => ordersRes?.data?.find((o) => o.prescriptionId === rxId && ORDER_ACTIVE.includes(o.status));
   const active = list.filter((r) => r.status === 'ACTIVE');
   const others = list.filter((r) => r.status !== 'ACTIVE');
 
@@ -65,6 +68,11 @@ export default async function MedicamentsPage() {
         <Link href="/medicaments" className="btn btn-soft">
           <Search size={20} aria-hidden /> {t('Qui a mon médicament ?')}
         </Link>
+        {me.patientId && (
+          <Link href="/app/commandes" className="btn btn-ghost">
+            <Truck size={20} aria-hidden /> {t('Mes commandes')}
+          </Link>
+        )}
       </PageHead>
 
       {!me.patientId && <Empty>{t('Les ordonnances sont rattachées au carnet du patient.')}</Empty>}
@@ -84,6 +92,7 @@ export default async function MedicamentsPage() {
                   <p className="text-sm">{t('Valable jusqu’au {date}', { date: fmtDate(rx.expiresAt, { day: 'numeric', month: 'long' }, locale) })}</p>
                 </div>
               )}
+              <RxOrder rxId={rx.id} order={orderOf(rx.id)} t={t} />
             </article>
           ))}
         </section>
@@ -134,6 +143,29 @@ function RxBody({ rx, t, locale }: { rx: Rx; t: T; locale: Locale }) {
         ))}
       </ul>
       <ListenButton text={spoken(rx, t, locale)} label={t('Écouter l’ordonnance')} />
+    </div>
+  );
+}
+
+/** Se faire livrer l'ordonnance, ou la réserver pour la retirer ; si une commande est en cours, la suivre. */
+function RxOrder({ rxId, order, t }: { rxId: string; order: Order | undefined; t: T }) {
+  if (order) {
+    return (
+      <Link href={`/app/commandes/${order.id}`} className="flex min-h-14 items-center gap-3 rounded-3xl bg-[var(--color-leaf)] px-5 py-3 font-bold text-[var(--color-ink)] md:col-span-2">
+        {order.mode === 'LIVRAISON' ? <Truck size={22} aria-hidden /> : <Store size={22} aria-hidden />}
+        <span className="flex-1">{t('Commande en cours : {status}', { status: t(ORDER_STATUS[order.status]) })}</span>
+        <span className="flex items-center gap-1">{t('Suivre')} <ChevronRight size={20} aria-hidden /></span>
+      </Link>
+    );
+  }
+  return (
+    <div className="grid gap-2 sm:grid-cols-2 md:col-span-2">
+      <Link href={`/app/commandes/nouvelle?rx=${rxId}&mode=LIVRAISON`} className="btn btn-primary !min-h-14 text-lg">
+        <Truck size={22} aria-hidden /> {t('Me faire livrer')}
+      </Link>
+      <Link href={`/app/commandes/nouvelle?rx=${rxId}&mode=RETRAIT`} className="btn btn-soft !min-h-14 text-lg">
+        <Store size={22} aria-hidden /> {t('Retirer en pharmacie')}
+      </Link>
     </div>
   );
 }

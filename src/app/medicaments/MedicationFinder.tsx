@@ -1,5 +1,5 @@
 'use client';
-import { ArrowLeft, Loader2, Search, X } from 'lucide-react';
+import { ArrowLeft, Loader2, Search, ShoppingBag, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { ListenButton } from '@/components/ListenButton';
@@ -11,6 +11,7 @@ import { api } from '@/lib/api';
 import { fcfa, relative } from '@/lib/format';
 import { fmtKm, type Place } from '@/lib/places';
 import { useGeolocation } from '@/lib/use-geolocation';
+import { requiresPrescription } from '../app/(espace)/commandes/_lib/rules';
 
 interface MedResult {
   id: string;
@@ -207,6 +208,7 @@ export function MedicationFinder() {
             <div className="min-w-0 flex-1">
               <h2 id="h-med" ref={detailRef} tabIndex={-1} className="text-2xl font-bold outline-none">{med.dci}</h2>
               <p className="text-[var(--fg-muted)]">{med.form} · {med.strength}</p>
+              {requiresPrescription(med) && <p className="mt-1 pill bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">{t('Sur ordonnance')}</p>}
             </div>
             {avail && (
               <ListenButton
@@ -251,6 +253,12 @@ export function MedicationFinder() {
                     </span>
                     {s.priceFcfa != null && <span className="pill num border border-[var(--border)]">{fcfa(s.priceFcfa, locale)}</span>}
                     {s.updatedAt && <span className="text-sm text-[var(--fg-muted)]">{t('stock mis à jour {when}', { when: relative(s.updatedAt, locale) })}</span>}
+                    {/* Commander (livraison ou retrait) : sans compte, la connexion ramène ici. */}
+                    {s.priceFcfa != null && !requiresPrescription(med) && (
+                      <Link href={`/app/commandes/nouvelle?med=${med.id}&pharmacy=${s.id}`} className="btn btn-primary mt-2 basis-full sm:basis-auto" aria-label={t('Commander à {pharmacy}', { pharmacy: s.name })}>
+                        <ShoppingBag size={20} aria-hidden /> {t('Commander')}
+                      </Link>
+                    )}
                   </>
                 );
               }}

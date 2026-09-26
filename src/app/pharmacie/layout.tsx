@@ -20,6 +20,7 @@ export default async function PharmacieLayout({ children }: { children: React.Re
         home="/pharmacie"
         who={site ? `${me.displayName} · ${site}` : me.displayName}
         links={[
+          { href: '/pharmacie#commandes', label: t('Commandes'), icon: 'document' },
           { href: '/pharmacie#delivrer', label: t('Délivrer'), icon: 'qr' },
           { href: '/pharmacie#stock', label: t('Mon stock'), icon: 'pill' },
         ]}

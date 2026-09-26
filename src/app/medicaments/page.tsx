@@ -32,7 +32,9 @@ export default async function MedicamentsPage() {
           />
         </div>
 
-        <MedicationFinder />
+        <I18nScope area="livraison">
+          <MedicationFinder />
+        </I18nScope>
 
         <aside className="card flex items-start gap-4 p-5">
           <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[var(--color-brand-100)] text-[var(--color-brand-900)]"><ShieldCheck size={26} aria-hidden /></span>
