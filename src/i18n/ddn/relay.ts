@@ -174,4 +174,6 @@ export const relay: Messages = {
   'Critères d’acceptation': 'Critères d’acceptation',
   'Journal': 'Journal',
   'Mis à jour le {date}. Source : {file} du dépôt frontend (page générée au déploiement).': 'Taji {date}. A fun {file} ra, frontend dépôt (page, i n’a te déploiement waati).',
+  // Onglets courts
+  Visites: 'Visite',
 };

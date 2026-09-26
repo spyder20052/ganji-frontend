@@ -88,7 +88,7 @@ export function CostEstimator({ tariffs, coverage, phone }: { tariffs: Tariff[];
   return (
     <div className="space-y-5">
       {/* Catégories : un pictogramme, un mot. */}
-      <div role="group" aria-label={t('Type de soin')} className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:flex-wrap sm:overflow-visible">
+      <div role="group" aria-label={t('Type de soin')} className="flex flex-wrap gap-2">
         {CATEGORIES.map(({ id, label: l, Icon }) => {
           const n = tariffs.filter((x) => x.category === id && acts[x.code]).length;
           return (

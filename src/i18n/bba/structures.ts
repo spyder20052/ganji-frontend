@@ -264,4 +264,5 @@ export const structures: Messages = {
   'Paralysie soudaine': 'Nɔma ǹ kun mɛ naasu dam sari suaru sɔɔ',
   'Fièvre avec saignements': 'Wasi sundu ka yɛm yaribu',
   'Décès inexpliqué': 'Gɔɔ ye ba ǹ yen sɔ̃na yɛ̃',
+  SMS: 'SMS',
 };

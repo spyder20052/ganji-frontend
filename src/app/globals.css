@@ -104,6 +104,8 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 h1, h2, h3, .font-display { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; letter-spacing: -0.01em; }
+/* Paragraphes : pas de mot (ni d'année) seul sur la dernière ligne. */
+p, li, dd { text-wrap: pretty; }
 
 @layer components {
   /* Cartes plates, sans bordure : c'est la différence de teinte avec le fond qui les dessine. */

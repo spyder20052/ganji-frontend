@@ -264,4 +264,5 @@ export const structures: Messages = {
   'Paralysie soudaine': 'Sudden paralysis',
   'Fièvre avec saignements': 'Fever with bleeding',
   'Décès inexpliqué': 'Unexplained death',
+  SMS: 'SMS',
 };

@@ -1,3 +1,4 @@
+import { nobr } from '@/components/NoBreak';
 import Link from 'next/link';
 import { CalendarPlus, ChevronRight, UserRound } from 'lucide-react';
 import type { Locale, T } from '@/i18n/translate';
@@ -16,7 +17,7 @@ export function NextAppointmentCard({ next, discreet, t, locale }: { next: MyApp
       <section aria-labelledby="h-rdv" className={`${shell} space-y-3`}>
         <div>
           <h2 id="h-rdv" className="text-sm font-normal text-[var(--fg-muted)]">
-            {t('Prochain rendez-vous')}
+            {nobr(t('Prochain rendez-vous'))}
           </h2>
           <p className="text-lg">{t('Aucun rendez-vous')}</p>
         </div>
@@ -39,7 +40,7 @@ export function NextAppointmentCard({ next, discreet, t, locale }: { next: MyApp
         <DateTile date={date} locale={locale} size="lg" tone={confirmed ? 'brand' : 'ocre'} />
         <div className="min-w-0 flex-1">
           <h2 id="h-rdv" className="text-sm font-normal text-[var(--fg-muted)]">
-            {confirmed ? t('Prochain rendez-vous · {when}', { when: relative(date, locale) }) : t('Demande de rendez-vous')}
+            {nobr(confirmed ? t('Prochain rendez-vous · {when}', { when: relative(date, locale) }) : t('Demande de rendez-vous'))}
             {who}
           </h2>
           <span className="flex items-center gap-2 font-display text-lg leading-snug font-semibold text-[var(--color-brand-900)] dark:text-[var(--fg)]">
@@ -52,7 +53,7 @@ export function NextAppointmentCard({ next, discreet, t, locale }: { next: MyApp
             ) : (
               `${t('Souhaité')}${part ? ` · ${t(part.label).toLowerCase()}` : ''}`
             )}
-            {!discreet ? ` · ${next.facility.name}` : ''}
+            {!discreet ? nobr(` · ${next.facility.name}`) : ''}
           </span>
           {!confirmed && (
             <span className={`pill mt-1 ${STATUS.DEMANDE.tone}`}>

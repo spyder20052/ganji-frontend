@@ -267,4 +267,5 @@ export const structures: Messages = {
   'Paralysie soudaine': 'Gaaham fo si goy koyne, sohon-sohon (paralysie)',
   'Fièvre avec saignements': 'Gaaham koron nda kuri fattayaŋ',
   'Décès inexpliqué': 'Buyaŋ kaŋ i si a sabaabu bay',
+  SMS: 'SMS',
 };

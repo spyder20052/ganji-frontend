@@ -23,6 +23,7 @@ export default async function RelaisLayout({ children }: { children: ReactNode }
         home="/relais"
         who={me.displayName}
         links={[
+          { href: '/relais#visites', label: t('Visites'), icon: 'home' },
           { href: '/relais', label: t('Signaler'), icon: 'warning' },
           { href: '/relais#activite', label: t('Historique'), icon: 'calendar' },
           { href: '/orientation', label: t('Orientation'), icon: 'stethoscope' },

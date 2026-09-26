@@ -73,8 +73,9 @@ export function AskBox({ patientId }: { patientId?: string }) {
       )}
       <div ref={endRef} />
 
-      {/* Questions proposées et zone de saisie : toujours visibles au-dessus de la barre d'onglets du téléphone. */}
-      <div className="sticky bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-10 -mx-2 space-y-2 rounded-[1.75rem] bg-[var(--card)] p-2 shadow-[var(--shadow-soft)] md:bottom-4">
+      {/* Questions proposées et zone de saisie : dans la carte au départ ; une fois la conversation commencée,
+          collées au-dessus de la barre d'onglets du téléphone pour rester visibles pendant la lecture. */}
+      <div className={`z-10 -mx-2 space-y-2 rounded-[1.75rem] bg-[var(--card)] p-2 ${turns.length > 0 ? 'sticky bottom-[calc(5.5rem+env(safe-area-inset-bottom))] shadow-[var(--shadow-soft)] md:bottom-4' : ''}`}>
         <div className="flex gap-2 overflow-x-auto sm:flex-wrap sm:overflow-visible">
           {SUGGESTIONS.map((s) => (
             <button key={s} type="button" className="btn btn-soft !min-h-12 shrink-0 !px-4 text-base" onClick={() => ask(t(s))} disabled={busy}>

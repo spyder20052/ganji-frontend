@@ -27,7 +27,7 @@ export default async function MinistereLayout({ children }: { children: ReactNod
           { href: '/ministere#alertes', label: t('Alertes'), icon: 'warning' },
           { href: '/ministere#signalements', label: t('Signalements'), icon: 'people' },
           { href: '/carte', label: t('Lieux de soin'), icon: 'map' },
-          { href: '/simulateur', label: t('Simulateur SMS'), icon: 'phone' },
+          { href: '/simulateur', label: t('SMS'), icon: 'phone' },
         ]}
       />
       <I18nScope area="structures">{children}</I18nScope>

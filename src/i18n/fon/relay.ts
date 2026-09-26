@@ -174,4 +174,6 @@ export const relay: Messages = {
   'Critères d’acceptation': 'Nǔ e è ɖó na gbéjé kpɔ́n lɛ',
   'Journal': 'Nǔ e è wlán lɛ',
   'Mis à jour le {date}. Source : {file} du dépôt frontend (page générée au déploiement).': 'È ɖyɔ̌ ɖò {date}. Fí e é gosin é : {file} ɖò dépôt frontend mɛ (è bló wěma ɔ hwenu e è sɔ́ ɛ dó é).',
+  // Onglets courts
+  Visites: 'Xwé e mi na yi lɛ',
 };

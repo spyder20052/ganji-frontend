@@ -69,7 +69,7 @@ export function TabBar({ links }: { links: NavLink[] }) {
                 <span className={`grid h-[32px] w-[52px] place-items-center rounded-full transition-colors ${active ? 'bg-[var(--color-leaf)] text-[var(--color-ink)]' : ''}`}>
                   <Pictogram name={l.icon} size={22} />
                 </span>
-                <span aria-hidden className={`tabbar-label max-w-full truncate text-[min(0.72rem,2.8vw)] leading-tight tracking-[-0.01em] ${active ? 'font-bold' : 'font-medium'}`}>
+                <span aria-hidden className={`tabbar-label max-w-full truncate text-[min(0.72rem,2.8vw)] leading-tight font-semibold tracking-[-0.01em]`}>
                   {l.label}
                 </span>
               </Link>
