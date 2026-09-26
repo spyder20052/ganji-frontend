@@ -5,12 +5,14 @@ import { ListenButton } from '@/components/ListenButton';
 import { Pictogram } from '@/components/Pictogram';
 import { getLocale, getT } from '@/i18n/server';
 import type { T } from '@/i18n/translate';
-import { fmtDate, relative } from '@/lib/format';
+import { fmtDate } from '@/lib/format';
 import type { Summary } from '@/lib/types';
 import { ErrorNote } from '../_components/ui';
 import { cardFromSummary } from '../_lib/emergency-card';
 import { hourOnly } from '../_lib/labels';
 import { getMe, load } from '../_lib/load';
+import { missingVitals, NextAppointmentCard, ProfileBanner } from './NextAppointmentCard';
+import { nextAppointment, serviceOf, type MyAppointment } from './rendez-vous/shared';
 import { SaveEmergencyCard } from './SaveEmergencyCard';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -54,14 +56,6 @@ const TILE_TONE: Record<Tile['tone'], { card: string; chip: string }> = {
   danger: { card: 'bg-[var(--color-danger-600)] text-white', chip: 'bg-white text-[var(--color-danger-600)]' },
 };
 
-/** Aperçus (maquettes cliquables) : un mot chacun, regroupés dans une seule carte. */
-const PREVIEWS = [
-  { href: '/app/ecoute', icon: 'listen', title: 'Écoute' },
-  { href: '/app/droits', icon: 'shield', title: 'Droits' },
-  { href: '/app/assistant', icon: 'chat', title: 'Assistant' },
-  { href: '/app/cercle', icon: 'people', title: 'Cercle' },
-];
-
 /** « Bonjour Koffi » ou « Bonsoir Koffi », selon l'heure du Bénin. */
 function greeting(firstName: string, t: T) {
   const part = new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Porto-Novo', hour: 'numeric', hourCycle: 'h23' }).formatToParts(new Date()).find((x) => x.type === 'hour');
@@ -80,27 +74,46 @@ export default async function AppHome() {
   const alert = (alertsRes?.data ?? [])[0] ?? null;
 
   const firstName = s?.firstName ?? me.displayName.split(' ')[0];
-  const next = s?.nextReminders[0] ?? null;
-  const nextTitle = next ? (s?.discreetMode ? t('Rendez-vous de santé') : next.title) : null;
-  const nextVars = next ? { title: nextTitle ?? '', date: fmtDate(next.dueAt, { weekday: 'long', day: 'numeric', month: 'long' }, locale), time: hourOnly(next.dueAt, locale), place: next.place ?? '' } : null;
+  // Prochain rendez-vous : un vrai rendez-vous (confirmé, sinon demandé), jamais un rappel de médicament.
+  const canBook = Boolean(me.patientId) || me.delegations.some((d) => d.scopes.includes('appointments') || d.scopes.includes('all'));
+  const apptRes = canBook ? await load<MyAppointment[]>('/me/appointments') : null;
+  // Carte du haut : ses propres rendez-vous (ceux des personnes aidées sont dans leur carte, plus bas).
+  const next = nextAppointment((apptRes?.data ?? []).filter((a) => a.own || !me.patientId));
+  const nextFor = (patientId: string) => nextAppointment((apptRes?.data ?? []).filter((a) => a.patient.id === patientId));
+  const nextDate = next ? (next.status === 'CONFIRME' && next.scheduledAt ? next.scheduledAt : next.preferredAt) : null;
+  const nextVars = next && nextDate
+    ? { title: s?.discreetMode ? t('Rendez-vous de santé') : t(serviceOf(next.specialty).label), date: fmtDate(nextDate, { weekday: 'long', day: 'numeric', month: 'long' }, locale), time: hourOnly(nextDate, locale), place: next.facility.name }
+    : null;
+  const missing = missingVitals(s);
+  const showProfileBanner = Boolean(me.patientId) && ((me as { profileDone?: boolean }).profileDone === false || missing.length > 0);
   const listen = [
     `${greeting(firstName, t)}.`,
     next && nextVars
-      ? next.place
-        ? t('Prochain rendez-vous : {title}, le {date} à {time}, à {place}.', nextVars)
-        : t('Prochain rendez-vous : {title}, le {date} à {time}.', nextVars)
+      ? next.status === 'CONFIRME'
+        ? s?.discreetMode
+          ? t('Prochain rendez-vous : {title}, le {date} à {time}.', nextVars)
+          : t('Prochain rendez-vous : {title}, le {date} à {time}, à {place}.', nextVars)
+        : t('Demande de rendez-vous en attente de réponse : {title}, à {place}.', nextVars)
       : t('Aucun rendez-vous prévu pour le moment.'),
-    t('Touchez une grande case : carnet, médicaments, sang, ou urgence.'),
+    showProfileBanner ? t('Complétez votre profil : il remplit votre carte d’urgence.') : '',
+    t('Touchez une grande case : carnet, médicaments, sang, ou urgence. Plus bas, tous vos services.'),
   ].join(' ');
 
-  // Raccourcis : un mot sous chaque icône ; grossesse et enfants seulement quand ils existent.
-  const shortcuts = [
+  // Mes services : un pictogramme et un mot chacun ; grossesse et enfants seulement quand ils existent.
+  const services = [
     ...(s?.pregnancy ? [{ href: '/app/grossesse', icon: 'pregnant', title: 'Grossesse' }] : []),
     ...(s && s.children.length > 0 ? [{ href: '/app/enfants', icon: 'baby', title: s.children.length > 1 ? 'Enfants' : 'Enfant' }] : []),
+    ...(canBook ? [{ href: '/app/rendez-vous', icon: 'calendar', title: 'Rendez-vous' }] : []),
+    { href: '/app/commandes', icon: 'delivery', title: 'Livraison' },
+    { href: '/app/assistant', icon: 'chat', title: 'Assistant' },
     { href: '/app/symptomes', icon: 'fever', title: 'Symptôme' },
     { href: '/app/partage', icon: 'qr', title: 'Partager' },
+    { href: '/app/cercle', icon: 'people', title: 'Cercle' },
     { href: '/app/aidants', icon: 'care', title: 'Proches' },
-  ].slice(0, 4);
+    { href: '/app/droits', icon: 'shield', title: 'Droits' },
+    { href: '/app/ecoute', icon: 'listen', title: 'Écoute' },
+    { href: '/app/profil', icon: 'adult', title: 'Profil' },
+  ];
 
   return (
     <>
@@ -124,35 +137,9 @@ export default async function AppHome() {
         {summaryRes?.error && <ErrorNote what={t('Votre carnet')} error={summaryRes.error} />}
       </header>
 
-      {me.patientId && (
-        <section aria-labelledby="h-rdv" className="relative -mt-20 rounded-[var(--radius-card)] bg-[var(--card)] p-4 shadow-[var(--shadow-soft)]">
-          {next ? (
-            <div className="flex items-center gap-4">
-              <p className="grid h-20 w-20 shrink-0 place-items-center rounded-2xl bg-[var(--color-brand-100)] text-center">
-                <span>
-                  <span className="block text-sm font-semibold text-[var(--color-brand-900)] uppercase">{fmtDate(next.dueAt, { weekday: 'short' }, locale).replace('.', '')}</span>
-                  <span className="display block text-[2rem] font-semibold text-[var(--color-brand-900)]">{fmtDate(next.dueAt, { day: 'numeric' }, locale)}</span>
-                </span>
-              </p>
-              <div className="min-w-0 flex-1">
-                <h2 id="h-rdv" className="text-sm font-normal text-[var(--fg-muted)]">
-                  {t('Prochain rendez-vous · {when}', { when: relative(next.dueAt, locale) })}
-                </h2>
-                <p className="font-display text-lg leading-snug font-semibold text-[var(--color-brand-900)] dark:text-[var(--fg)]">{nextTitle}</p>
-                <p className="num text-base text-[var(--fg-muted)]">
-                  {hourOnly(next.dueAt, locale)}
-                  {next.place && !s?.discreetMode ? ` · ${next.place}` : ''}
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <h2 id="h-rdv" className="text-sm font-normal text-[var(--fg-muted)]">{t('Prochain rendez-vous')}</h2>
-              <p className="text-lg">{t('Rien de prévu. Vos rappels arrivent aussi par SMS.')}</p>
-            </div>
-          )}
-        </section>
-      )}
+      {canBook && <NextAppointmentCard next={next} discreet={Boolean(s?.discreetMode)} t={t} locale={locale} />}
+      {apptRes?.error && <ErrorNote what={t('Mes rendez-vous')} error={apptRes.error} />}
+      {showProfileBanner && <ProfileBanner missing={missing} t={t} />}
 
       <nav aria-label={t('Actions principales')}>
         {/* Deux colonnes sur téléphone, une seule quand le texte est agrandi (largeur minimale en rem). */}
@@ -181,7 +168,11 @@ export default async function AppHome() {
 
       {helped.map(({ d, res }) => {
         const p = res.data;
-        const r = p?.nextReminders[0];
+        // Un rendez-vous (confirmé ou demandé), sinon un rappel de soin : jamais une prise de médicament.
+        const appt = nextFor(d.patient.id);
+        const r = appt
+          ? { dueAt: appt.status === 'CONFIRME' && appt.scheduledAt ? appt.scheduledAt : appt.preferredAt }
+          : p?.nextReminders.find((x) => x.kind !== 'MEDICATION');
         return (
           <section key={d.patient.id} aria-label={t('{prenom}, que vous aidez', { prenom: d.patient.firstName })} className="card space-y-4 p-5">
             <div className="flex items-center gap-3">
@@ -229,12 +220,14 @@ export default async function AppHome() {
       )}
       {alertsRes?.error && <div className="simple-hide"><ErrorNote what={t('Alertes santé')} error={alertsRes.error} /></div>}
 
-      <nav aria-label={t('Raccourcis')} className="simple-hide">
-        <ul className="flex flex-wrap justify-around gap-2">
-          {shortcuts.map((x) => (
+      <nav aria-labelledby="h-services" className="simple-hide card p-4">
+        <h2 id="h-services" className="mb-3 text-xl font-semibold">{t('Mes services')}</h2>
+        {/* Quatre par ligne sur téléphone, six sur ordinateur ; un seul mot sous chaque pictogramme. */}
+        <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,4.75rem),1fr))] gap-x-2 gap-y-4 sm:grid-cols-6">
+          {services.map((x) => (
             <li key={x.href}>
-              <Link href={x.href} className="flex flex-col items-center gap-2 rounded-3xl py-2 text-center">
-                <span className="grid h-14 w-14 place-items-center rounded-full bg-[var(--card)] text-[var(--color-brand-900)] dark:text-[var(--color-leaf)]">
+              <Link href={x.href} className="group flex flex-col items-center gap-2 rounded-3xl py-1 text-center">
+                <span className="grid h-14 w-14 place-items-center rounded-full bg-[var(--color-brand-100)] text-[var(--color-brand-900)] transition-transform group-hover:-translate-y-0.5 group-active:scale-95 dark:bg-[var(--bg)] dark:text-[var(--color-leaf)]">
                   <Pictogram name={x.icon} size={24} />
                 </span>
                 <span className="text-base leading-tight font-medium">{t(x.title)}</span>
@@ -243,25 +236,6 @@ export default async function AppHome() {
           ))}
         </ul>
       </nav>
-
-      <section aria-labelledby="h-bientot" className="simple-hide card p-4">
-        <div className="mb-3 flex items-center justify-between gap-2">
-          <h2 id="h-bientot" className="text-xl font-semibold">{t('Bientôt')}</h2>
-          <span className="pill bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">{t('Aperçus')}</span>
-        </div>
-        <ul className="grid grid-cols-4 gap-2">
-          {PREVIEWS.map((x) => (
-            <li key={x.href}>
-              <Link href={x.href} className="flex flex-col items-center gap-2 text-center">
-                <span className="grid h-12 w-12 place-items-center rounded-full bg-[var(--bg)] text-[var(--fg-muted)]">
-                  <Pictogram name={x.icon} size={22} />
-                </span>
-                <span className="text-sm font-medium">{t(x.title)}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
     </>
   );
 }

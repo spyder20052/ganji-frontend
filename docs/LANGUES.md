@@ -29,6 +29,24 @@ les consignes d'urgence et de premiers secours, les signes de danger (grossesse,
 | Dendi | complète | moyenne : vocabulaire proche du zarma (songhay), pas du dendi du Bénin | premiers secours et signes de danger (« funsu », « zinji », « jeeri », « gaaham koron »), ordre des mots (« 118 ce »), pluriels (-ey, yaŋ), « Oho / Aa’a », donneur (« kuri no boro ») |
 | Bariba | complète | faible à moyenne : vocabulaire tiré surtout de la Bible bariba (1996) et de la Déclaration universelle des droits de l'homme en bariba | gestes de premiers secours (public), signes de danger (orientation, grossesse), textes de crise et de suicide (patient3, orientation), mots formés : « faaba » (urgence), « yɛm kɛ̃o » (donneur), « yaayasiabu » (rappel), « wurabu » (consentement), « wɛ̃siara » (respiration), « wasi diiribu » (convulsions), accords et salutations |
 
+### Nouveaux écrans (livraison, écoute, cercle de soins, droits, assistant, don de sang, profil, rendez-vous)
+
+Traduits dans les quatre langues avec les mêmes termes que le reste de l'interface. À relire en premier, dans
+toutes les langues :
+
+1. **Écoute** (`ecoute.ts`) : les phrases de crise (« Vous comptez », « En danger maintenant ? Appelez le 118 »,
+   « Êtes-vous en sécurité en ce moment ? »), les phrases rapides (« Je me sens seul·e », « J'ai peur ») et le nom
+   donné à l'écoutant. La chaleur du ton compte autant que le sens exact.
+2. **Assistant de traitement** (`droits.ts`) : les boutons de prise (« Pris », « Oublié »), les conseils en cas
+   d'oubli, « à jeun », « avec ou sans repas ».
+3. **Cercle de soins** : les messages de relance (2 h, puis 6 h).
+4. **Mots créés pour les nouvelles fonctions** : commande, livreur, code de remise, reçu, assurance / mutuelle
+   (souvent gardés en français).
+
+La détection des mots de détresse de l'écoute (`ganji-backend/src/data/distress.ts`) couvre le français, l'anglais
+et le yoruba ; le fon n'a qu'une expression et les listes bariba et dendi sont vides : **à compléter en priorité**
+par des locuteurs natifs (un message de détresse non reconnu ne déclenche pas la consigne d'appeler le 118).
+
 Termes médicaux sans équivalent courant : les traductions gardent souvent l'emprunt français tel qu'il se dit au
 Bénin (ordonnance, pharmacie, vaccin, maternité, relais…), surtout sur les écrans des soignants.
 

@@ -2,7 +2,7 @@ import {
   Activity, AlertTriangle, Baby, BadgeCheck, Bandage, Bed, Brain, CalendarDays, Droplet, Droplets, Ear, FileText, Flame, Frown,
   HandHeart, HeartPulse, Home, Hospital, MapPin, MessageCircle, Phone, Pill, QrCode, Siren, Stethoscope, Syringe, Thermometer,
   User, Users, Wind, Zap, type LucideIcon, Eye, Accessibility, Heart, ShieldCheck, Waves, Milk, CircleHelp, Footprints,
-  Bone, Bug, CupSoda, HeartCrack, LifeBuoy, MessagesSquare, Sun, FlaskConical, Cross, WifiOff, UserX,
+  Bone, Bug, CupSoda, HeartCrack, LifeBuoy, MessagesSquare, Sun, FlaskConical, Cross, WifiOff, UserX, Bike, ReceiptText,
 } from 'lucide-react';
 
 /** Pictogrammes testés : un sens par icône (goutte = sang, pilule = médicament, carnet = dossier, téléphone = appeler). */
@@ -21,7 +21,7 @@ const MAP: Record<string, LucideIcon> = {
   breathing: Wind, urine: FlaskConical, 'stiff-neck': Activity, ors: CupSoda, stroke: Brain, burn: Flame, crisis: LifeBuoy,
   bandage: Bandage, bite: Bug, 'blood-cough': Droplets, 'blood-stool': Droplets, 'blood-vomit': Droplets, 'chest-pain': HeartCrack,
   dehydration: CupSoda, fracture: Bone, jaundice: Sun, nose: Wind, question: CircleHelp, 'sickle-cell': Cross, talk: MessagesSquare,
-  offline: WifiOff, 'no-account': UserX,
+  offline: WifiOff, 'no-account': UserX, delivery: Bike, order: Bike, receipt: ReceiptText,
   swelling: Flame, 'no-movement': Baby, 'water-loss': Droplets, 'abdominal-pain': Zap, diarrhea: Waves, other: CircleHelp,
 };
 

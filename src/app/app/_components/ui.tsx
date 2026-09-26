@@ -1,4 +1,4 @@
-import { AlertTriangle, Info, ShieldAlert, Sparkles } from 'lucide-react';
+import { AlertTriangle, Info, ShieldAlert } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { ListenButton } from '@/components/ListenButton';
 import { Pictogram } from '@/components/Pictogram';
@@ -91,25 +91,6 @@ export async function ErrorNote({ error, what }: { error: string; what?: string 
   return (
     <Notice tone="warn" role="status" title={what ? t('{what} : indisponible', { what }) : undefined}>
       {t(error)}
-    </Notice>
-  );
-}
-
-export async function PreviewBadge() {
-  const t = await getT();
-  return (
-    <span className="pill bg-[var(--color-ocre-100)] text-[var(--color-ocre-700)]">
-      <Sparkles size={16} aria-hidden /> {t('Aperçu · maquette cliquable')}
-    </span>
-  );
-}
-
-/** Bandeau honnête pour les écrans M8, M12, M14, M15. */
-export async function PreviewNotice({ children }: { children: ReactNode }) {
-  const t = await getT();
-  return (
-    <Notice tone="warn" title={t('Aperçu : ce parcours n’est pas encore branché')}>
-      {children}
     </Notice>
   );
 }
