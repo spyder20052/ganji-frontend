@@ -5,9 +5,10 @@ import { useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { ROLE_HOME, type Me } from '@/lib/types';
 
-export interface PersonaCard { persona: string; name: string; role: string; story: string; shows: string }
+/** home : page d'arrivée propre au profil (ex. la file d'écoute pour la psychologue), sinon l'accueil du rôle. */
+export interface PersonaCard { persona: string; name: string; role: string; story: string; shows: string; home?: string }
 
-export function DemoPicker({ personas }: { personas: PersonaCard[] }) {
+export function DemoPicker({ personas, suite }: { personas: PersonaCard[]; suite?: string }) {
   const t = useT();
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
@@ -30,7 +31,7 @@ export function DemoPicker({ personas }: { personas: PersonaCard[] }) {
                 setError(null);
                 try {
                   const me = await api<Me>(`/auth/demo/${p.persona}`, { method: 'POST' });
-                  router.push(ROLE_HOME[me.role]);
+                  router.push(suite?.startsWith(ROLE_HOME[me.role]) ? suite : (p.home ?? ROLE_HOME[me.role]));
                   router.refresh();
                 } catch (e) {
                   setError(e instanceof ApiError ? e.message : 'Connexion impossible');
@@ -38,7 +39,7 @@ export function DemoPicker({ personas }: { personas: PersonaCard[] }) {
                 }
               }}
             >
-              {busy === p.persona ? t('Connexion…') : t('Entrer en tant que {name}', { name: p.name.split(' ')[0] === 'Dr' ? p.name.replace('Dr ', 'Dr\u00a0') : p.name.split(' ')[0] })}
+              {busy === p.persona ? t('Connexion…') : t('Entrer en tant que {name}', { name: ['Dr', 'Mme', 'Mrs'].includes(p.name.split(' ')[0]) ? p.name.replace(' ', '\u00a0') : p.name.split(' ')[0] })}
             </button>
           </li>
         ))}

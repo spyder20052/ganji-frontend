@@ -1,50 +1,45 @@
 import type { Metadata } from 'next';
-import { EyeOff, Clock, ShieldCheck } from 'lucide-react';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getT } from '@/i18n/server';
-import { PageHead, PreviewBadge, PreviewNotice } from '../../_components/ui';
+import { ErrorNote, PageHead } from '../../_components/ui';
+import { load } from '../../_lib/load';
 import { ListenChat } from './ListenChat';
+import type { ListenThread, ListenThreadSummary } from './types';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
-  return { title: t('Écoute anonyme') };
+  return { title: t('Écoute') };
 }
 
-export default async function EcoutePage() {
-  const t = await getT();
+/**
+ * Écoute : écrire à la cellule d'écoute (psychologues), anonymement par défaut. La conversation en cours
+ * s'ouvre directement ; sinon, une case pour écrire. ?c=<id> rouvre une conversation passée.
+ */
+export default async function EcoutePage({ searchParams }: { searchParams: Promise<{ c?: string }> }) {
+  const [t, { c }] = await Promise.all([getT(), searchParams]);
+  const list = await load<ListenThreadSummary[]>('/me/listen');
+  const threads = list.data ?? [];
+  const chosen = (c && threads.find((x) => x.id === c)) || threads.find((x) => x.status !== 'CLOS') || null;
+  const detail = chosen ? await load<ListenThread>(`/me/listen/${chosen.id}`) : null;
+  const current = detail?.data ?? null;
+  const past = threads.filter((x) => x.status === 'CLOS' && x.id !== current?.id).slice(0, 5);
+
   return (
-    <I18nScope area="patient3">
+    <>
       <PageHead
         icon="listen"
-        title={t('Écoute anonyme')}
-        intro={t('Quand ça va mal dans la tête ou dans le cœur : écrire à quelqu’un de formé, sans donner son nom.')}
-        listen={t("Ici, vous pouvez écrire ce qui vous pèse, sans donner votre nom. Une écoutante formée vous répond sous vingt-quatre heures. Si vous êtes en danger, un bouton vous met tout de suite en contact avec quelqu'un.")}
+        title={t('Écoute')}
+        intro={t('Écrire à une écoutante formée, sans donner son nom si on le souhaite.')}
+        listen={t(
+          'Ici, vous pouvez écrire à une écoutante formée, sans donner votre nom si vous le souhaitez. Elle vous répond ici et vous êtes prévenu par une notification. Vous pouvez aussi demander à être rappelé. Si vous êtes en danger, appelez le 118.',
+        )}
         audioKey="app.ecoute"
-      >
-        <PreviewBadge />
-      </PageHead>
-
-      <PreviewNotice>
-        {t('Maquette cliquable (module M12). Les messages restent dans cette page : rien n’est envoyé ni enregistré. Essayez d’écrire « je veux en finir » pour voir l’aide de crise.')}
-      </PreviewNotice>
-
-      <ul className="grid gap-3 sm:grid-cols-3">
-        {[
-          { Icon: EyeOff, t: 'Sans nom', d: 'Aucune identité, aucun lien avec votre carnet.' },
-          { Icon: Clock, t: 'Réponse sous 24 h', d: 'Par une écoutante formée (psychologue, pair aidant).' },
-          { Icon: ShieldCheck, t: 'Crise : tout de suite', d: 'Certains mots ouvrent l’aide immédiate.' },
-        ].map(({ Icon, t: title, d }) => (
-          <li key={title} className="card flex gap-3 p-4">
-            <Icon size={24} aria-hidden className="shrink-0 text-[var(--color-brand-700)]" />
-            <span>
-              <span className="block font-bold">{t(title)}</span>
-              <span className="block text-base text-[var(--fg-muted)]">{t(d)}</span>
-            </span>
-          </li>
-        ))}
-      </ul>
-
-      <ListenChat />
-    </I18nScope>
+      />
+      {list.error && <ErrorNote error={list.error} />}
+      {detail?.error && <ErrorNote error={detail.error} />}
+      <I18nScope area="ecoute">
+        <ListenChat key={current?.id ?? 'nouvelle'} initial={current} past={past} />
+      </I18nScope>
+    </>
   );
 }

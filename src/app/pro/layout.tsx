@@ -21,6 +21,9 @@ export default async function ProLayout({ children }: { children: React.ReactNod
         links={[
           { href: '/pro', label: t('Patients'), icon: 'people' },
           { href: '/pro/tele-expertise', label: t('Télé-expertise'), icon: 'talk' },
+          { href: '/pro/rendez-vous', label: t('Rendez-vous'), icon: 'calendar' },
+          // Cellule d'écoute : psychologues seulement.
+          ...(me.practitioner?.specialty === 'PSYCHOLOGIE' ? [{ href: '/pro/ecoute', label: t('Écoute'), icon: 'listen' }] : []),
         ]}
       />
       <p className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-1.5 text-center text-sm text-[var(--fg-muted)]">

@@ -1,6 +1,6 @@
 'use client';
 import { ArrowLeft, CheckCircle2, CloudOff, Loader2, Minus, Plus, RefreshCw, Send, Siren } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { AlertCard } from '@/components/AlertCard';
 import { CommuneSelect } from '@/components/CommuneSelect';
 import { ListenButton } from '@/components/ListenButton';
@@ -43,7 +43,8 @@ function useOnline() {
   return online;
 }
 
-export function RelayHome() {
+/** top : bloc affiché avant le signalement (visites à faire du cercle de soins). */
+export function RelayHome({ top }: { top?: ReactNode } = {}) {
   const t = useT();
   const locale = useLocale();
   const online = useOnline();
@@ -180,6 +181,8 @@ export function RelayHome() {
           <CheckCircle2 size={22} aria-hidden /> {flushed > 1 ? t('Réseau revenu : {n} signalements envoyés.', { n: flushed }) : t('Réseau revenu : {n} signalement envoyé.', { n: flushed })}
         </p>
       )}
+
+      {top}
 
       <section aria-labelledby="h-step" className="card space-y-5 p-5 sm:p-6">
         <ol className="grid grid-cols-3 gap-2" aria-label={t('Étapes')}>

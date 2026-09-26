@@ -19,13 +19,17 @@ const PERSONAS: PersonaCard[] = [
   { persona: 'ants', name: 'ANTS · site de Cotonou', role: 'Banque de sang', story: 'Publie ses stocks, lance des appels aux donneurs.', shows: 'stocks par site et par groupe, demandes en cours' },
   { persona: 'rachidatou', name: 'Rachidatou Salifou', role: 'Infirmière · CSC Djougou', story: 'Loin des spécialistes, demande un avis en faible débit.', shows: 'télé-expertise asynchrone, orientation' },
   { persona: 'mathieu', name: 'Mathieu Gounou', role: 'Relais communautaire · Djougou', story: 'Suit les familles de son village, même hors ligne.', shows: 'signalement en 3 gestes, alerte épidémique' },
+  { persona: 'ecoutante', name: 'Mme Hounkpè', role: 'Psychologue · cellule d’écoute, CNHU-HKM', story: 'Répond aux personnes qui écrivent à l’écoute, d’abord à celles en détresse.', shows: 'file d’écoute, anonymat, détresse détectée, demande de rappel', home: '/pro/ecoute' },
   { persona: 'rafiatou', name: 'Rafiatou Yessoufou', role: 'Patiente · 1re grossesse, Kandi, parle bariba', story: 'Suit ses consultations prénatales, reconnaît les signes de danger.', shows: 'suivi de grossesse, rappel SMS et voix' },
   { persona: 'serge', name: 'Serge Dossou', role: 'Parent · jumeaux, Porto-Novo', story: 'Carnet de vaccination des jumeaux.', shows: 'calendrier PEV, preuve de vaccination QR' },
   { persona: 'bio', name: 'Bio Orou', role: 'Patient · 61 ans, diabétique, Natitingou, téléphone simple', story: 'Pas de smartphone : tout passe par SMS, USSD et appel vocal.', shows: 'rappels SMS et voix, carte QR imprimée' },
   { persona: 'ministere', name: 'Direction de la santé publique', role: 'Ministère', story: 'Voit ruptures, besoins en sang et alertes par département.', shows: 'tableau de bord national, alertes géolocalisées' },
 ];
 
-export default async function DemoPage() {
+export default async function DemoPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const raw = (await searchParams).suite;
+  // Retour après connexion (chemin interne seulement).
+  const suite = typeof raw === 'string' && raw.startsWith('/') && !raw.startsWith('//') && !raw.startsWith('/\\') ? raw : undefined;
   const t = await getT();
   // Les noms sont des données (non traduits), sauf les mentions génériques entre parenthèses.
   const personas = PERSONAS.map((p) => ({ ...p, name: t(p.name), role: t(p.role), story: t(p.story), shows: t(p.shows) }));
@@ -39,7 +43,7 @@ export default async function DemoPage() {
             {t('Chaque profil a son espace et ses droits. Toutes les personnes sont fictives ; les établissements, communes, médicaments et le calendrier vaccinal sont réels. Les soignants ont une session de 30 minutes.')}
           </p>
         </div>
-        <DemoPicker personas={personas} />
+        <DemoPicker personas={personas} suite={suite} />
       </main>
     </I18nScope>
   );
