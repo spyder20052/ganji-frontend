@@ -4,8 +4,6 @@ import type { Messages } from '../translate';
 export const sangPartage: Messages = {
   // ─── Espace patient et aidant : don de sang ───
   'Vous êtes donneur {group}. Vous pouvez donner. Touchez « Je peux donner » sur une demande proche.': 'Olùfẹ̀jẹ̀ṣètọrẹ {group} ni yín. Ẹ lè fi ẹ̀jẹ̀ ṣètọrẹ. Ẹ tẹ « Mo lè fi ẹ̀jẹ̀ ṣètọrẹ » lórí ìbéèrè kan tó wà nítòsí.',
-  'Vous êtes donneur {group}. Votre corps se repose : trois mois après un don pour un homme, quatre mois pour une femme.':
-    'Olùfẹ̀jẹ̀ṣètọrẹ {group} ni yín. Ara yín ń sinmi: oṣù mẹ́ta lẹ́yìn ìtọrẹ fún ọkùnrin, oṣù mẹ́rin fún obìnrin.',
   'Devenez donneur : votre groupe, votre commune, votre téléphone. On vous appelle seulement quand un hôpital proche a besoin de vous.':
     'Ẹ di olùfẹ̀jẹ̀ṣètọrẹ: irú ẹ̀jẹ̀ yín, ìjọba ìbílẹ̀ yín, fóònù yín. A ó pè yín nígbà tí ilé ìwòsàn tó wà nítòsí bá nílò yín nìkan.',
   'Demandes en cours': 'Ìbéèrè tó ń lọ lọ́wọ́',
@@ -194,4 +192,19 @@ export const sangPartage: Messages = {
   '{who} a ouvert votre document « {title} » le {when}.': '{who} ṣí ìwé yín « {title} » ní {when}.',
   '{who} a ouvert votre document « {title} » le {when}, en accès d’urgence.': '{who} ṣí ìwé yín « {title} » ní {when}, pẹ̀lú ìwọlé pàjáwìrì.',
   'Tentative refusée : {who} a voulu ouvrir votre document « {title} » sans votre accord, le {when}.': 'A kọ ìgbìyànjú: {who} fẹ́ ṣí ìwé yín « {title} » láìsí àṣẹ yín, ní {when}.',
+  // Ajouts après les correctifs de sécurité
+  "Vous êtes donneur {group}. Votre corps se repose : huit semaines après un don pour un homme, douze semaines pour une femme.": "Olùfẹ̀jẹ̀ṣètọrẹ {group} ni yín. Ara yín ń sinmi: ọ̀sẹ̀ mẹ́jọ lẹ́yìn ìtọrẹ fún ọkùnrin, ọ̀sẹ̀ méjìlá fún obìnrin.",
+  "La transfusion est faite ?": "Ṣé a ti fa ẹ̀jẹ̀ sí i lára?",
+  "Cochez les donneurs qui sont venus donner. Les autres restent disponibles.": "Ẹ sàmì sí àwọn olùfẹ̀jẹ̀ṣètọrẹ tó wá fi ẹ̀jẹ̀ ṣètọrẹ. Àwọn yòókù ṣì wà fún ìpè mìíràn.",
+  "Oui, confirmer": "Bẹ́ẹ̀ni, jẹ́rìí sí i",
+  "Enregistrement…": "À ń fi pamọ́…",
+  "Enregistrement impossible. Réessayez.": "A kò lè fi pamọ́. Ẹ tún gbìyànjú.",
+  "Transfusion inscrite dans le carnet de {name}.": "A ti kọ ìfàjẹ̀sínilára sínú ìwé ìlera {name}.",
+  "{n} dons inscrits.": "A ti kọ ìtọrẹ {n} sílẹ̀.",
+  "{n} don inscrit.": "A ti kọ ìtọrẹ {n} sílẹ̀.",
+  "Transfusion faite : demande clôturée.": "A ti fa ẹ̀jẹ̀ sí i lára: a ti pa ìbéèrè dé.",
+  "Seuls les donneurs qui ont dit oui peuvent être inscrits comme ayant donné.": "Àwọn olùfẹ̀jẹ̀ṣètọrẹ tó sọ pé bẹ́ẹ̀ni nìkan ni a lè kọ sílẹ̀ pé wọ́n ti fi ẹ̀jẹ̀ ṣètọrẹ.",
+  "Réservé au prescripteur, aux soignants de son établissement et à la banque de sang": "Fún ẹni tó kọ ìbéèrè, àwọn òṣìṣẹ́ ìlera ilé ìwòsàn rẹ̀ àti ibi ìpamọ́ ẹ̀jẹ̀ nìkan",
+  "Une autre opération est en cours sur cette demande. Réessayez.": "Iṣẹ́ mìíràn ń lọ lọ́wọ́ lórí ìbéèrè yìí. Ẹ tún gbìyànjú.",
+  "La demande vient de changer. Réessayez.": "Ìbéèrè náà ṣẹ̀ṣẹ̀ yí padà. Ẹ tún gbìyànjú.",
 };

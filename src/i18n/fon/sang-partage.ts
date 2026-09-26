@@ -4,8 +4,8 @@ import type { Messages } from '../translate';
 export const sangPartage: Messages = {
   // ─── Espace patient et aidant : don de sang ───
   'Vous êtes donneur {group}. Vous pouvez donner. Touchez « Je peux donner » sur une demande proche.': 'Mi nɔ na hun {group}. Mi sixu na hun. Mi zín « Un sixu na hun » ɖò byɔ̌ e sɛkpɔ́ mi é jí.',
-  'Vous êtes donneur {group}. Votre corps se repose : trois mois après un don pour un homme, quatre mois pour une femme.':
-    'Mi nɔ na hun {group}. Lanmɛ̀ mitɔn ɖò gbɔ̀jɛ wɛ : sun atɔn ɖò hun nina gudo nú sunnu, sun ɛnɛ nú nyɔ̀nu.',
+  'Vous êtes donneur {group}. Votre corps se repose : huit semaines après un don pour un homme, douze semaines pour une femme.':
+    'Mi nɔ na hun {group}. Lanmɛ̀ mitɔn ɖò gbɔ̀jɛ wɛ : kɔ́sínɖé 8 ɖò hun nina gudo nú sunnu, kɔ́sínɖé 12 nú nyɔ̀nu.',
   'Devenez donneur : votre groupe, votre commune, votre téléphone. On vous appelle seulement quand un hôpital proche a besoin de vous.':
     'Mi nyí mɛ e nɔ na hun é : groupe sanguin mitɔn, toxo mitɔn, alokan mitɔn. È na ylɔ́ mi hwenu e dotóoxwé e sɛkpɔ́ mi é ɖó hudo mitɔn é kɛ́ɖɛ́.',
   'Demandes en cours': 'Byɔ̌ e ɖò te lɛ',
@@ -147,6 +147,19 @@ export const sangPartage: Messages = {
   'Sites de transfusion ayant du stock compatible': 'Fí e è nɔ na hun bo ɖó hun e sɔgbe é lɛ',
   Poches: 'Poche lɛ',
   'Demande de {n} poches.': 'Byɔ̌ poche {n}.',
+  'La transfusion est faite ?': 'È na hun ɔ ko à ?',
+  'Cochez les donneurs qui sont venus donner. Les autres restent disponibles.': 'Mi zín mɛ e wá na hun lɛ. Mɛ ɖevo lɛ na nɔ te bo sixu na hun ɖò gudo.',
+  'Oui, confirmer': 'Ɛɛn, é ko vɔ',
+  'Enregistrement…': 'Ðò ɖiɖó ɖó wɛ…',
+  'Enregistrement impossible. Réessayez.': 'Mǐ sixu ɖó ɛ ɖó ǎ. Mi vɔ́ tè kpɔ́n.',
+  'Transfusion inscrite dans le carnet de {name}.': 'È wlán hun nina ɔ dó {name} sín wěma azɔ̌n mɛ.',
+  '{n} dons inscrits.': 'È wlán hun nina {n} dó.',
+  '{n} don inscrit.': 'È wlán hun nina {n} dó.',
+  'Transfusion faite : demande clôturée.': 'È na hun ɔ : byɔ̌ ɔ vɔ.',
+  'Seuls les donneurs qui ont dit oui peuvent être inscrits comme ayant donné.': 'Mɛ e ɖɔ ɛɛn lɛ ɖeɖé wɛ è sixu wlán ɖɔ yě na hun.',
+  'Réservé au prescripteur, aux soignants de son établissement et à la banque de sang': 'Nú dotóo e byɔ́ é, dotóo e ɖò dotóoxwé tɔn mɛ lɛ kpo fí e è nɔ ɖó hun ɖó é kpo kɛ́ɖɛ́',
+  'Une autre opération est en cours sur cette demande. Réessayez.': 'Nǔ ɖevo ɖò wiwà wɛ ɖò byɔ̌ elɔ jí. Mi vɔ́ tè kpɔ́n.',
+  'La demande vient de changer. Réessayez.': 'Byɔ̌ ɔ ɖyɔ̌ dìn. Mi vɔ́ tè kpɔ́n.',
 
   // ─── Banque de sang ───
   'Aucun autre donneur compatible disponible, même à 150 km.': 'Mɛ ɖevo e ɖó hun e sɔgbe é ɖè ǎ, ɖò 150 km mɛ ɖésú.',

@@ -4,8 +4,6 @@ import type { Messages } from '../translate';
 export const sangPartage: Messages = {
   // ─── Espace patient et aidant : don de sang ───
   'Vous êtes donneur {group}. Vous pouvez donner. Touchez « Je peux donner » sur une demande proche.': 'Ni ti kuri no boro, {group}. Ni ga hin ka kuri no. « Ay ga hin ka kuri no » suuba kuri haan kaŋ ga maan ni boŋ.',
-  'Vous êtes donneur {group}. Votre corps se repose : trois mois après un don pour un homme, quatre mois pour une femme.':
-    'Ni ti kuri no boro, {group}. Ni gaaham go ga fulanzam : kuri no banda, alboro ma fulanzam handu 3, wayboro handu 4.',
   'Devenez donneur : votre groupe, votre commune, votre téléphone. On vous appelle seulement quand un hôpital proche a besoin de vous.':
     'Ciya kuri no boro : ni kuri groupe, ni commune, ni telefɔn. I ga ni ce hinne da hôpital kaŋ ga maan ni ga ba ni.',
   'Demandes en cours': 'Kuri haan kaŋ go no',
@@ -194,4 +192,20 @@ export const sangPartage: Messages = {
   '{who} a ouvert votre document « {title} » le {when}.': '{who} na ni tira « {title} » feeri {when}.',
   '{who} a ouvert votre document « {title} » le {when}, en accès d’urgence.': '{who} na ni tira « {title} » feeri {when}, urgence furoyaŋ ra.',
   'Tentative refusée : {who} a voulu ouvrir votre document « {title} » sans votre accord, le {when}.': 'I wangu : {who} ba ka ni tira « {title} » feeri, ni yadda si, {when}.',
+
+  // Ajouts (correctifs de sécurité)
+  'Vous êtes donneur {group}. Votre corps se repose : huit semaines après un don pour un homme, douze semaines pour une femme.': 'Ni ti kuri no boro, {group}. Ni gaaham go ga fulanzam : kuri no banda, alboro ma fulanzam semaine 8, wayboro semaine 12.',
+  'La transfusion est faite ?': 'Transfusion ban ?',
+  'Cochez les donneurs qui sont venus donner. Les autres restent disponibles.': 'Kuri no borey kaŋ kaa ka kuri no suuba. Kaŋ cindi yaŋ ga goro soola.',
+  'Oui, confirmer': 'Oho, tabbatandi',
+  'Enregistrement…': 'A go ga gaay…',
+  'Enregistrement impossible. Réessayez.': 'I si hin k’a gaay. Te koyne.',
+  'Transfusion inscrite dans le carnet de {name}.': 'I na transfusion hantum {name} carnet ra.',
+  '{n} dons inscrits.': 'I na kuri no {n} hantum.',
+  '{n} don inscrit.': 'I na kuri no {n} hantum.',
+  'Transfusion faite : demande clôturée.': 'Transfusion ban : haan daabu.',
+  'Seuls les donneurs qui ont dit oui peuvent être inscrits comme ayant donné.': 'Kuri no borey kaŋ ne « oho » hinne no i ga hin ka hantum sanda i na kuri no.',
+  'Réservé au prescripteur, aux soignants de son établissement et à la banque de sang': 'Lokotoro kaŋ na haan te, a établissement lokotoro yaŋ nda kuri banque se hinne',
+  'Une autre opération est en cours sur cette demande. Réessayez.': 'Goy fo go ga te haan woo boŋ. Te koyne.',
+  'La demande vient de changer. Réessayez.': 'Haan barmay sohon. Te koyne.',
 };

@@ -141,7 +141,6 @@ export const droits: Messages = {
   'Prévue': 'A ti ṣètò rẹ̀',
   'Maintenant': 'Nísinsìnyí',
   'En retard': 'Ó ti pẹ́',
-  'Rappel dans 30 min': 'Ìránnilétí ní ìṣẹ́jú 30',
   'Oubliée': 'A gbàgbé rẹ̀',
   'Déclarez votre couverture pour connaître la part prise en charge.': 'Ẹ kéde ìbánigbófò yín láti mọ apá tí wọ́n ń san.',
   'Renseignez-vous au guichet ARCH de votre mairie ou auprès d’une mutuelle de santé.': 'Ẹ béèrè ní ọ́fíìsì ARCH ní gbọ̀ngàn ìjọba ìbílẹ̀ yín tàbí lọ́dọ̀ àjọ ìbánigbófò ìlera.',
@@ -188,4 +187,13 @@ export const droits: Messages = {
   'Choisissez au moins un soin ou un médicament': 'Ẹ yan ìtọ́jú kan tàbí oògùn kan ó kéré tán',
   'Reçu introuvable': 'A kò rí ìwé ẹ̀rí ìsanwó náà',
   'Cette ordonnance n’est plus en cours : pas de plan de prises.': 'Ìwé oògùn yìí kò ṣiṣẹ́ mọ́: kò sí ètò lílo oògùn.',
+  // Ajouts après les correctifs de sécurité
+  "Reportée": "A ti sún un síwájú",
+  "Reportée à {time}": "A ti sún un sí {time}",
+  "Prise de traitement": "Lílo oògùn",
+  "Estimation expirée : le montant a été recalculé, vérifiez-le puis payez.": "Ìṣirò ti parí: a ti tún owó náà ṣírò, ẹ ṣàyẹ̀wò rẹ̀ kí ẹ tó sanwó.",
+  "Estimation invalide : recalculez le montant avant de payer.": "Ìṣirò kò tọ̀nà: ẹ tún owó náà ṣírò kí ẹ tó sanwó.",
+  "Rien à payer pour cette estimation.": "Kò sí owó láti san fún ìṣirò yìí.",
+  "Cette estimation a été faite pour un autre compte.": "A ṣe ìṣirò yìí fún àkáǹtì mìíràn.",
+  "Cette prise est déjà confirmée.": "A ti jẹ́rìí sí lílo oògùn yìí tẹ́lẹ̀.",
 };

@@ -141,7 +141,6 @@ export const droits: Messages = {
   'Prévue': 'A ga kaa',
   'Maintenant': 'Sohon',
   'En retard': 'A waati bisa',
-  'Rappel dans 30 min': 'Fongandi minti 30 banda',
   'Oubliée': 'I n’a dinya',
   'Déclarez votre couverture pour connaître la part prise en charge.': 'Ni assurance hantum ka bay nooru kaŋ a ga bana.',
   'Renseignez-vous au guichet ARCH de votre mairie ou auprès d’une mutuelle de santé.': 'Koy ARCH guichet do ni mairie ra, wala mutuelle de santé do, ka haan.',
@@ -188,4 +187,14 @@ export const droits: Messages = {
   'Choisissez au moins un soin ou un médicament': 'Lokotoro goy wala safari suuba, baa afo',
   'Reçu introuvable': 'I mana reçu gar',
   'Cette ordonnance n’est plus en cours : pas de plan de prises.': 'Ordonnance woo si goy koyne : safari haŋ plan si.',
+
+  // Ajouts (correctifs de sécurité)
+  'Reportée': 'A waati barmay',
+  'Reportée à {time}': 'A waati barmay : {time}',
+  'Prise de traitement': 'Safari haŋ',
+  'Estimation expirée : le montant a été recalculé, vérifiez-le puis payez.': 'Lasaabu waati ban : i na nooru lasaabu koyne ; a guna, woodin banda bana.',
+  'Estimation invalide : recalculez le montant avant de payer.': 'Lasaabu manti cimi : nooru lasaabu koyne, jina ni ma bana.',
+  'Rien à payer pour cette estimation.': 'Hay kulu si ni ma bana lasaabu woo se.',
+  'Cette estimation a été faite pour un autre compte.': 'I na lasaabu woo te compte fo se.',
+  'Cette prise est déjà confirmée.': 'I na safari haŋ woo tabbatandi jina.',
 };

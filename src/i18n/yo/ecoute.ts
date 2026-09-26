@@ -177,4 +177,13 @@ export const ecoute: Messages = {
   'Psychologue · cellule d’écoute, CNHU-HKM': 'Onímọ̀ ìlera ọpọlọ · ẹgbẹ́ olùgbọ́, CNHU-HKM',
   'Répond aux personnes qui écrivent à l’écoute, d’abord à celles en détresse.': 'Ó ń dá àwọn tó kọ̀wé sí Ìgbọ́rọ̀ lóhùn, àwọn tó wà nínú ìdààmú ńlá ní àkọ́kọ́.',
   'file d’écoute, anonymat, détresse détectée, demande de rappel': 'ìlà ìgbọ́rọ̀, àìdárúkọ, ìdààmú ńlá tí a rí, ìbéèrè ìpèpadà',
+  // Ajouts après les correctifs de sécurité
+  "Prise de traitement": "Lílo oògùn",
+  "Rendez-vous de soins": "Àdéhùn ìtọ́jú",
+  "Analyse": "Àyẹ̀wò",
+  "Consultation prénatale": "Àyẹ̀wò oyún",
+  "Vaccin": "Àjẹsára",
+  "Don de sang": "Ìtọrẹ ẹ̀jẹ̀",
+  "Rappel": "Ìránnilétí",
+  "Tous les droits": "Àṣẹ kíkún",
 };

@@ -4,7 +4,7 @@ import type { Messages } from '../translate';
 export const sangPartage: Messages = {
   // ─── Espace patient et aidant : don de sang ───
   'Vous êtes donneur {group}. Vous pouvez donner. Touchez « Je peux donner » sur une demande proche.': 'A sãa yɛm kɛ̃o {group}. A koo kpɛ̃ a kɛ̃. A « N koo kpɛ̃ n kɛ̃ » baba kanaru ye ya bɔku sɔɔ.',
-  'Vous êtes donneur {group}. Votre corps se repose : trois mois après un don pour un homme, quatre mois pour une femme.': 'A sãa yɛm kɛ̃o {group}. Wunɛn wasi ya wɛramɔ: suru ita yɛm kɛ̃run biru tɔn durɔn sɔ̃, suru nnɛ tɔn kurɔn sɔ̃.',
+  'Vous êtes donneur {group}. Votre corps se repose : huit semaines après un don pour un homme, douze semaines pour une femme.': 'A sãa yɛm kɛ̃o {group}. Wunɛn wasi ya wɛramɔ: alusuma 8 yɛm kɛ̃run biru tɔn durɔn sɔ̃, alusuma 12 tɔn kurɔn sɔ̃.',
   'Devenez donneur : votre groupe, votre commune, votre téléphone. On vous appelle seulement quand un hôpital proche a besoin de vous.': 'A ko yɛm kɛ̃o: wunɛn yɛm bweseru, wunɛn wuu, wunɛn téléphone. Ba koo nun soku sanam mɛ hôpital ye ya bɔku ya nun bukata mɔ tɔna.',
   'Demandes en cours': 'Kanaru ye ya wãa',
   'Demandes pour moi': 'Kanaru nɛn sɔ̃',
@@ -135,6 +135,19 @@ export const sangPartage: Messages = {
   'Sites de transfusion ayant du stock compatible': 'Yɛm yenu ye ya stock mɔ ye ya weenɛ',
   'Poches': 'Poches',
   'Demande de {n} poches.': 'Poches {n} kanaru.',
+  'La transfusion est faite ?': 'Ba transfusion kua?',
+  'Cochez les donneurs qui sont venus donner. Les autres restent disponibles.': 'A yĩreru doke yɛm kɛ̃obu be ba na ba kɛ̃ sɔɔ. Be ba tie ba maa wãa.',
+  'Oui, confirmer': 'Mɛya, na wura',
+  'Enregistrement…': 'Sa berumɔ…',
+  'Enregistrement impossible. Réessayez.': 'Sa ǹ kpɛ̃ sa beru. A kpam ko.',
+  'Transfusion inscrite dans le carnet de {name}.': 'Transfusion ya dua {name} tireru sɔɔ.',
+  '{n} dons inscrits.': 'Ba yɛm kɛ̃ru {n} yorua.',
+  '{n} don inscrit.': 'Ba yɛm kɛ̃ru {n} yorua.',
+  'Transfusion faite : demande clôturée.': 'Ba transfusion kua: kanaru ya kpa.',
+  'Seuls les donneurs qui ont dit oui peuvent être inscrits comme ayant donné.': 'Yɛm kɛ̃obu be ba mɛya gerua tɔna ba koo kpɛ̃ bu ben yĩsiru yore nge be ba kɛ̃.',
+  'Réservé au prescripteur, aux soignants de son établissement et à la banque de sang': 'Dokotoro wi u kana, win hôpital sɔm kowobu ka yɛm beru yeru sɔ̃ tɔna',
+  'Une autre opération est en cours sur cette demande. Réessayez.': 'Gãa gam ba mɔ̀ kanaru yeni sɔɔ tɛ̃. A kpam ko.',
+  'La demande vient de changer. Réessayez.': 'Kanaru ya gɔsira tɛ̃. A kpam ko.',
   // ─── Banque de sang ───
   'Aucun autre donneur compatible disponible, même à 150 km.': 'Yɛm kɛ̃o gam wi u weenɛ sari, baa km 150 sɔɔ.',
   '{covered}/{n} poches couvertes': 'Poches {covered}/{n} ya wãa',

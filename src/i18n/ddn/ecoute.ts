@@ -177,4 +177,14 @@ export const ecoute: Messages = {
   'Psychologue · cellule d’écoute, CNHU-HKM': 'Psychologue · salaŋ borey, CNHU-HKM',
   'Répond aux personnes qui écrivent à l’écoute, d’abord à celles en détresse.': 'A ga borey kaŋ ga hantum tu ; borey kaŋ go taabi beeri ra jina.',
   'file d’écoute, anonymat, détresse détectée, demande de rappel': 'salaŋ liste, maa si, taabi beeri alaama, ceeyaŋ haan',
+
+  // Ajouts (correctifs de sécurité)
+  'Prise de traitement': 'Safari haŋ',
+  'Rendez-vous de soins': 'Lokotoro rendez-vous',
+  'Analyse': 'Analyse',
+  'Consultation prénatale': 'CPN (consultation prénatale)',
+  'Vaccin': 'Vaccin',
+  'Don de sang': 'Kuri no',
+  'Rappel': 'Fongandi',
+  'Tous les droits': 'Furoyaŋ kulu',
 };
