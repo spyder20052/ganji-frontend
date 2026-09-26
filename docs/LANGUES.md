@@ -50,6 +50,22 @@ par des locuteurs natifs (un message de détresse non reconnu ne déclenche pas 
 Termes médicaux sans équivalent courant : les traductions gardent souvent l'emprunt français tel qu'il se dit au
 Bénin (ordonnance, pharmacie, vaccin, maternité, relais…), surtout sur les écrans des soignants.
 
+## SMS, messages vocaux lus et notifications
+
+Tout ce que l'API envoie (SMS, voix, notifications de la cloche, menus USSD `*229*25#`, réponses automatiques) vient
+d'un seul catalogue de 214 textes (`ganji-backend/src/common/i18n/catalog/`), traduit dans les quatre langues
+nationales (`src/common/i18n/fon.ts`, `yoruba.ts`, `bariba.ts`, `dendi.ts`). Chacun reçoit le texte dans la langue
+choisie dans l'application ; repli en français. Vérification : `npm run i18n:verify` (dans `ganji-backend`).
+
+**SMS et USSD en langue nationale : sans lettres spéciales ni tons** (ɔ → o, ɛ → e, ɖ → d, ŋ → ng, tons retirés),
+comme on écrit ces langues par SMS au Bénin : une seule lettre hors de l'alphabet GSM ferait passer le SMS en Unicode
+(70 caractères par partie au lieu de 160) et beaucoup de téléphones simples ne l'afficheraient pas. L'application et
+les notifications gardent l'orthographe complète (`src/common/gsm.ts`).
+
+À relire en premier : les réponses attendues (« Répondez 1 pour confirmer » et ses équivalents), l'alerte de danger de
+grossesse (`maternal.danger`), l'appel au don de sang (`blood.donor.call`), le code de connexion (`auth.otp`) et les
+menus USSD.
+
 ## Messages vocaux
 
 Les messages vocaux enregistrés (`public/audio/<langue>/<clé>.mp3`) existent en yoruba (34) et en fon (12), en voix
