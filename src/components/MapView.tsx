@@ -77,8 +77,12 @@ export function MapView({
         if (cancelled || !el.current || mapRef.current) return;
         LRef.current = L;
         const map = L.map(el.current, { center, zoom, scrollWheelZoom: false, zoomControl: true, attributionControl: true });
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 18,
+        // Tuiles OpenStreetMap, avec l'origine du site en référent (seulement l'origine, jamais le chemin de la
+        // page) : la politique d'usage d'OSM l'exige, et sans référent ses serveurs renvoient « Access blocked »
+        // (403) ; or le site n'en envoie aucun par défaut (Referrer-Policy: no-referrer). Adresse unique officielle.
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          referrerPolicy: 'strict-origin',
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a>',
         }).addTo(map);
         layerRef.current = L.layerGroup().addTo(map);
