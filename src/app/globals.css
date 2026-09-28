@@ -281,35 +281,38 @@ body {
 /* ── Hero et chargement ──────────────────────────────────────────────────
    Tout entre une fois puis reste immobile : aucun mouvement en boucle.
    --intro : durée du rideau de chargement ; le hero démarre après lui (0 s s'il a déjà été vu). */
-:root { --intro: 2.75s; }
+:root { --intro: 2.6s; }
 .intro-vue { --intro: 0s; }
 
-/* Rideau : sur fond Papier, les quatre feuilles du symbole (Vert Ganji) arrivent une à une des coins de l'écran,
-   chacune suivie d'une traînée, et se posent avec un rebond : on voit le logo se construire. Le symbole se
-   verrouille, l'onde de la charte (carrés en escalier) s'ouvre, puis le rideau clair se lève sur le hero Forêt.
-   Chronologie : feuilles 0,1–1,75 s · verrou 1,75 s · onde 1,85–3 s · rideau 2,4–3,3 s ; le hero entre à 2,75 s. */
-.intro { animation: intro-up 0.9s cubic-bezier(0.7, 0, 0.2, 1) 2.4s both; pointer-events: none; }
+/* Chargement : sur fond Papier, les quatre feuilles du symbole arrivent une à une des coins de l'écran, avec une
+   traînée, et se posent avec un rebond : on voit le logo se construire. Le symbole se verrouille, puis l'onde de la
+   charte sort de lui : cinq carrés en escalier pleins, du Vert Ganji à la Forêt du hero, qui recouvrent tout l'écran.
+   Les feuilles prennent au passage le vert clair du hero ; le rideau, devenu Forêt, s'efface sur le hero qui ouvre
+   sa propre onde : la transition est une seule vague. Chronologie : feuilles 0,1–1,75 s · verrou 1,75 s ·
+   onde 1,85–2,6 s · symbole effacé à 2,75 s · fondu 2,7–3,1 s ; le hero entre à 2,6 s. */
+.intro { animation: intro-out 0.4s ease-out 2.7s both; pointer-events: none; }
 .intro-vue .intro { display: none; }
-@keyframes intro-up { to { translate: 0 -105%; border-radius: 0 0 50% 50% / 0 0 22% 22%; } }
-/* Le translate est en unités du SVG (520 pour ≈ 125 à 155 px) : 260vw y vaut plus d'une demi-largeur d'écran. */
+@keyframes intro-out { to { opacity: 0; visibility: hidden; } }
+/* Le translate est en unités du SVG (520 pour ≈ 110 à 130 px) : 320vw y vaut plus d'une demi-largeur d'écran. */
 .intro-leaf, .intro-ghost { transform-box: fill-box; transform-origin: center; animation: leaf-in 0.75s cubic-bezier(0.2, 1.15, 0.35, 1) both; }
 .intro-ghost { animation-name: ghost-in; }
-.leaf-0 { --dx: -260vw; --dy: -260vh; --d: 0.1s; }
-.leaf-3 { --dx: 260vw; --dy: -260vh; --d: 0.4s; }
-.leaf-2 { --dx: 260vw; --dy: 260vh; --d: 0.7s; }
-.leaf-1 { --dx: -260vw; --dy: 260vh; --d: 1s; }
-.intro-leaf { animation-delay: var(--d); }
+.leaf-0 { --dx: -320vw; --dy: -320vh; --d: 0.1s; }
+.leaf-3 { --dx: 320vw; --dy: -320vh; --d: 0.4s; }
+.leaf-2 { --dx: 320vw; --dy: 320vh; --d: 0.7s; }
+.leaf-1 { --dx: -320vw; --dy: 320vh; --d: 1s; }
+.intro-leaf { animation: leaf-in 0.75s cubic-bezier(0.2, 1.15, 0.35, 1) var(--d) both, leaf-tint 0.35s ease 1.8s forwards; }
 .intro-ghost { animation-delay: calc(var(--d) + 70ms); }
 @keyframes leaf-in { from { translate: var(--dx) var(--dy); rotate: -150deg; scale: 2.2; } }
+@keyframes leaf-tint { to { fill: #5fd08f; } }
 @keyframes ghost-in { from { opacity: 0.4; translate: var(--dx) var(--dy); rotate: -150deg; scale: 2.2; } 30% { opacity: 0.2; } 45%, to { opacity: 0; } }
-/* Le symbole s'efface pendant que le rideau monte (sur téléphone, celui du hero est plus bas). */
-.intro-stage { animation: stage-out 0.45s ease-in 2.45s both; }
-@keyframes stage-out { to { opacity: 0; scale: 0.9; } }
-/* Le symbole se « verrouille » : il gonfle puis s'écrase, et l'onde part. */
+/* Le symbole se verrouille (il gonfle puis se tasse), puis s'efface avant le fondu : le hero a déjà le sien. */
 .intro-mark { animation: mark-lock 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) 1.75s both; }
 @keyframes mark-lock { 35% { scale: 1.14; } 70% { scale: 0.95; } }
-.intro-wave { transform-box: fill-box; transform-origin: center; opacity: 0; animation: wave-out 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: calc(1.85s + var(--w) * 0.12s); }
-@keyframes wave-out { from { opacity: 1; scale: 0.8; } to { opacity: 0; scale: 3.6; } }
+.intro-stage { animation: stage-out 0.4s ease-in-out 2.35s both; }
+@keyframes stage-out { to { opacity: 0; scale: 0.6; } }
+/* L'onde : chaque carré part de sous le symbole et grandit jusqu'à couvrir l'écran (lent au départ, puis vite). */
+.intro-wave { transform-box: fill-box; transform-origin: center; scale: 0; animation: wave-fill 0.85s cubic-bezier(0.7, 0, 0.25, 1) forwards; animation-delay: calc(1.85s + var(--w) * 0.11s); }
+@keyframes wave-fill { from { scale: 0; } to { scale: 28; } }
 
 /* L'onde de la charte s'ouvre du centre vers l'extérieur, une seule fois. */
 .onde-layer { transform-box: fill-box; transform-origin: center; animation: layer-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--intro) + var(--i, 0) * 110ms); }
