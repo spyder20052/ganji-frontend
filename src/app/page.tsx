@@ -11,7 +11,7 @@ import { Pictogram } from '@/components/Pictogram';
 import { PrefsMenu } from '@/components/PrefsMenu';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getT } from '@/i18n/server';
-import { hasIllustration, Illustration } from './_landing/Illustration';
+import { hasIllustration, Illustration, placeholderOf } from './_landing/Illustration';
 import { DeferredImages } from './_landing/DeferredImages';
 import { KoffiStory } from './_landing/KoffiStory';
 import { HeroOnde } from './_landing/HeroOnde';
@@ -431,7 +431,7 @@ export default async function Home() {
             </div>
             <Illustration name="hero-communaute" icon="people" alt="" sizes="(min-width: 768px) 36vw, 90vw" className="mx-auto max-w-[440px]" />
           </div>
-          <PersonaTabs personas={PERSONAS.map((x) => ({ ...x, name: t(x.name), role: t(x.role), need: t(x.need), benefits: x.benefits.map((b) => t(b)) }))} available={Object.fromEntries(PERSONAS.map((p) => [p.key, hasIllustration(`persona-${p.key}`)]))} />
+          <PersonaTabs personas={PERSONAS.map((x) => ({ ...x, name: t(x.name), role: t(x.role), need: t(x.need), benefits: x.benefits.map((b) => t(b)) }))} available={Object.fromEntries(PERSONAS.map((p) => [p.key, hasIllustration(`persona-${p.key}`)]))} placeholders={Object.fromEntries(PERSONAS.map((p) => [p.key, placeholderOf(`persona-${p.key}`)]))} />
           </div>
         </section>
 

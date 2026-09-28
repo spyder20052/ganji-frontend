@@ -1,0 +1,119 @@
+{
+  "confiance-journal": {
+    "w": 1254,
+    "h": 1254,
+    "lqip": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADwAQCdASoKAAoAA4BaJQBOgB8wmZH2jAAA/pvxHZvyphnED90sxdOwlMpS+uhj0SEuOCQRqhwLZ5ngHAV3W2RLtTs4iunMZ9ZcdIDPfaBgAA=="
+  },
+  "cta-ensemble": {
+    "w": 1672,
+    "h": 941,
+    "lqip": "data:image/webp;base64,UklGRkoAAABXRUJQVlA4ID4AAADQAQCdASoKAAYAA4BaJQBWACKSiBycAAD+7bNh4lwQ1rOyqQiBNCIFAV6RGUNxEAwcfhJrYavUQwpaDcAAAA=="
+  },
+  "hero-communaute": {
+    "w": 1330,
+    "h": 1183
+  },
+  "persona-afiavi": {
+    "w": 1254,
+    "h": 1254,
+    "lqip": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAAAQAgCdASoKAAoAA4BaJbACdAELMp0gsCAAAP5tIBE0ulO6XV/UtNv/3+6yHv6huH5U/Q8g8rnW2viPyiKYf3dKHwj4Tj4I35QA8ZciAZuJE2KOAFjhQYRwoAAAAA=="
+  },
+  "persona-houngbedji": {
+    "w": 1254,
+    "h": 1254,
+    "lqip": "data:image/webp;base64,UklGRlwAAABXRUJQVlA4IFAAAADQAQCdASoKAAoAA4BaJQBOgBszV03GAAD+88Nbj6Wosbdahgf33a2dn4LP81F342sRvhVqGxW+vNAu/P1eXM4XUL2/HAqN47oTIEMKHlAAAA=="
+  },
+  "persona-koffi": {
+    "w": 1254,
+    "h": 1254,
+    "lqip": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADQAQCdASoKAAoAA4BaJZACdADbZ6K64AD+88P+w4B/4RLwYJMda6pnoQWheeKLQQ5SxA6rsSoeAxej4NxKMxcZueo7flmP6IEl1ukAAAA="
+  },
+  "persona-mathieu": {
+    "w": 1254,
+    "h": 1254,
+    "lqip": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAAAQAgCdASoKAAoAA4BaJZACdADbpCatS9GAAP7zw1uP76899fy2q8HnAc3jGXtg9dHYd8nlzHIj6b8TNwyHogSDefRmHxWe/8Xa05l50BV/NkhWCUVO7ETs/AAAAA=="
+  },
+  "persona-ministere": {
+    "w": 1254,
+    "h": 1254,
+    "lqip": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAAAQAgCdASoKAAoAA4BaJQBOgBu1U+YJ5T0AAP7ilJ+08vxo/HeuczHOqBVZtYwqGvbgI/4xILDTAuUtsjlbMFZwHCfgUYoAKynmWRX7eTKJ8PTViKAijdZYJyRf7k9kH4AAAA=="
+  },
+  "persona-pharmacienne": {
+    "w": 1254,
+    "h": 1254,
+    "lqip": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAADQAQCdASoKAAoAA4BaJQBOgB6IZc9GwAD+4pSR+sMrPUzbAwYkvk/lUDFB/AFuZgNXu8Vo4BOFzjGFiUOMNndBlaPDbkKS+EeH/9JTe4RIeItiaH+8cfuQJaAAAA=="
+  },
+  "persona-rachidatou": {
+    "w": 1254,
+    "h": 1254,
+    "lqip": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAAAwAgCdASoKAAoAA4BaJYgCdAERH9YO2cacYAD+67wXIxyzvXvgLOsORh+xsj7PVifa9Sf9mxrEA1zxqmLYk2Xc5DlZmNClPXPGkpYlRH9bjB5V3Cf3AopwW7u9dbarILYDgMXf+TJAAA=="
+  },
+  "persona-rafiatou": {
+    "w": 1254,
+    "h": 1254,
+    "lqip": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAAAQAgCdASoKAAoAA4BaJZACdADdQe6zykAAAP7rxA7vEE6MhVS72u9eV7FqQVe+KAhkCOZFe61/bxepaI50friRrrUyjOHwzdZCi2BYquw/gAAA"
+  },
+  "probleme-course": {
+    "w": 1448,
+    "h": 1086,
+    "lqip": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADQAQCdASoKAAcAA4BaJYgCdADc+O2B4AD7/9lLsVpIqpMQCTxjAK6yuXCponE59/MO+mNyl1Hi2nU0iXitTCN1zTW51iUCAAA="
+  },
+  "service-carnet": {
+    "w": 1448,
+    "h": 1086
+  },
+  "service-medicaments": {
+    "w": 1448,
+    "h": 1086,
+    "lqip": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAADQAQCdASoKAAcAA4BaJaACdADcNvNdKAD+BznygxIpkhjPsM7s0H0iWL97Mov3r7IHZnjx7suU13p5IVlAcAyy63cRUDoQAAA="
+  },
+  "service-mere-enfant": {
+    "w": 1448,
+    "h": 1086,
+    "lqip": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAADQAQCdASoKAAcAA4BaJZACdADdcZuoQAD+W1osQ0zS/8WszxbHLIL9sFVZVNF3Q4/6QaWQqYeDM0eRBE2jTy0ZeJXBALjdsgP5jSxijZKxAd7/mVIAAA=="
+  },
+  "service-orientation": {
+    "w": 1448,
+    "h": 1086,
+    "lqip": "data:image/webp;base64,UklGRlQAAABXRUJQVlA4IEgAAAAQAgCdASoKAAcAA4BaJYgCdIDZFcd2PFLgAP7xH79oO4GQ7Gf8PMpzTK/VPVnkLfsmIOngCc2HXRhOart0GavBRQDA8Z6mAAA="
+  },
+  "service-pilotage": {
+    "w": 1448,
+    "h": 1086,
+    "lqip": "data:image/webp;base64,UklGRlgAAABXRUJQVlA4IEwAAADwAQCdASoKAAcAA4BaJYwCw7EDe8j7aQAA/fvavtdXzH498jo4ggtUkUufjJCpAoJl2Nw9UQgluzzubFwV77LLDaESjCH/YClgAAAA"
+  },
+  "service-relais": {
+    "w": 1448,
+    "h": 1086,
+    "lqip": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADwAQCdASoKAAcAA4BaJbACdAEegcWEMYAA+u/BvgaZsBLGVwYDSBHcs2vfHiDIEzuvdSQiAvBUHN3PFTRn/IT2ImvM+gA/G8ZP6ZqxCOOgAAAA"
+  },
+  "service-sang": {
+    "w": 1448,
+    "h": 1086
+  },
+  "service-teleexpertise": {
+    "w": 1448,
+    "h": 1086,
+    "lqip": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADwAQCdASoKAAcAA4BaJZACdADcSxvZPZAA/C6TK0XGxe1wHcX/j+wTW+y9m5SyufTm9Q4PyMs3bH/ZC6gSJOTpFmu2cbleKLSYzw2gSN6J2AAA"
+  },
+  "service-urgence": {
+    "w": 1448,
+    "h": 1086,
+    "lqip": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAACwAQCdASoKAAcAA4BaJQBOgB4/fsKgAP6mtaZpapiJVoQ00PvHiVDULM8wWXXmsPNjL1pHaOCyQUv5nz8lwTuYKto3IulnMS3aLnjC8AA="
+  },
+  "tuto-carnet": {
+    "w": 1254,
+    "h": 1254,
+    "lqip": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADwAQCdASoKAAoAA4BaJZgCdAELT0X5z5gA/vPIeuuXYrdRp0Vjb/h3QCHzEvGyZd/s0OHJHhdSaUK9PfUu7QRPhlJUnCEsqWBWeMP6FkYpNwA6d6E7r+TJAAA="
+  },
+  "tuto-partage": {
+    "w": 1254,
+    "h": 1254,
+    "lqip": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAACQAgCdASoKAAoAA4BaJYgCdEf/i1m87IdE3ZohAAD+mF9RhC03+VkECRwP/1b5tzDmtk/ftz6r9i/47UrKu/SYZ/ics67T2KNnjreIP6p1V+QgHnqT2qrrikBIDQ1J+fbc+jmgIf+a0AAA"
+  },
+  "tuto-rappels": {
+    "w": 1254,
+    "h": 1254,
+    "lqip": "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAAAwAgCdASoKAAoAA4BaJbACdAED/5J7zP/qQAD+yqwkmdsLEKlslza1lUF65pBms80ltkGCKgaPu3qmYJU4KrCNd8h0OpZhx+hE4yoenyaOrib9x2AAAA=="
+  }
+}

@@ -20,8 +20,6 @@ const csp = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  // Illustrations de la landing : AVIF d'abord (le plus léger en 2G), WebP sinon.
-  images: { formats: ['image/avif', 'image/webp'] },
   reactStrictMode: true,
   async rewrites() {
     // Même origine pour l'API : cookies de session first-party, aucun CORS à ouvrir.
@@ -29,6 +27,8 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // Illustrations préparées d'avance (scripts/illustrations.mjs) : gardées une semaine, puis revalidées en arrière-plan.
+      { source: '/illustrations/:file*', headers: [{ key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=2592000' }] },
       {
         source: '/:path*',
         headers: [

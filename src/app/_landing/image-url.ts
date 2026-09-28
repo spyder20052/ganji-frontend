@@ -1,7 +1,9 @@
-/** Largeurs proposées au navigateur, de la vignette ronde (96) à la bannière (1920). */
-export const WIDTHS = [96, 128, 256, 384, 640, 828, 1080, 1200, 1920];
+/** Largeurs générées par scripts/illustrations.mjs, de la vignette ronde (160) à la pleine largeur (1250). */
+export const WIDTHS = [160, 384, 640, 960, 1250];
 
-/** URL du service d'optimisation d'images de Next (AVIF ou WebP selon le navigateur). */
-export const optimized = (name: string, w: number) => `/_next/image?url=${encodeURIComponent(`/illustrations/${name}.png`)}&w=${w}&q=75`;
+export type ImageFormat = 'avif' | 'webp';
 
-export const srcSetFor = (name: string) => WIDTHS.map((w) => `${optimized(name, w)} ${w}w`).join(', ');
+/** Fichier statique préparé d'avance (servi par le CDN, sans conversion à la volée). */
+export const srcFor = (name: string, format: ImageFormat, w: number) => `/illustrations/${name}-${w}.${format}`;
+
+export const srcSetFor = (name: string, format: ImageFormat) => WIDTHS.map((w) => `${srcFor(name, format, w)} ${w}w`).join(', ');

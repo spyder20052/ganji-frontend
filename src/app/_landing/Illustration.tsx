@@ -1,26 +1,28 @@
-import { closeSync, existsSync, openSync, readSync } from 'node:fs';
-import path from 'node:path';
 import type { ComponentProps } from 'react';
 import { Pictogram } from '@/components/Pictogram';
 import { IllustrationView } from './IllustrationView';
+import manifest from './illustrations.json';
 
-const file = (name: string) => path.join(process.cwd(), 'public', 'illustrations', `${name}.png`);
+type Art = { w: number; h: number; lqip?: string };
+const ART: Record<string, Art | undefined> = manifest;
 
-/** Le fichier public/illustrations/<nom>.png a-t-il été déposé ? (vérifié au rendu, côté serveur) */
-export const hasIllustration = (name: string) => existsSync(file(name));
+/** L'illustration a-t-elle été déposée dans illustrations/ puis préparée (`npm run illustrations`) ? */
+export const hasIllustration = (name: string) => Boolean(ART[name]);
 
-/** Largeur et hauteur lues dans l'en-tête PNG : la place est réservée avant le chargement. */
-function pngSize(name: string): [number, number] | undefined {
-  if (!hasIllustration(name)) return undefined;
-  const head = Buffer.alloc(24);
-  const fd = openSync(file(name), 'r');
-  readSync(fd, head, 0, 24, 0);
-  closeSync(fd);
-  return [head.readUInt32BE(16), head.readUInt32BE(20)];
-}
+/** Aperçu flou (10 px) affiché pendant le chargement ; absent pour les images transparentes. */
+export const placeholderOf = (name: string) => ART[name]?.lqip;
 
 /** Illustration de la landing (voir docs/ILLUSTRATIONS.md pour les prompts et les noms de fichiers). */
-export function Illustration({ icon, ...props }: Omit<ComponentProps<typeof IllustrationView>, 'available' | 'fallbackIcon' | 'size'> & { icon: string }) {
-  const size = pngSize(props.name);
-  return <IllustrationView defer {...props} available={!!size} size={size} fallbackIcon={<Pictogram name={icon} size={36} />} />;
+export function Illustration({ icon, ...props }: Omit<ComponentProps<typeof IllustrationView>, 'available' | 'fallbackIcon' | 'size' | 'placeholder'> & { icon: string }) {
+  const art = ART[props.name];
+  return (
+    <IllustrationView
+      defer
+      {...props}
+      available={!!art}
+      size={art ? [art.w, art.h] : undefined}
+      placeholder={art?.lqip}
+      fallbackIcon={<Pictogram name={icon} size={36} />}
+    />
+  );
 }

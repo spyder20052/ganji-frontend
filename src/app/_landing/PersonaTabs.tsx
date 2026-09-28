@@ -17,8 +17,16 @@ export interface PersonaView {
   benefits: string[];
 }
 
-/** Un profil par onglet. `available` : portraits déjà déposés dans public/illustrations. */
-export function PersonaTabs({ personas, available }: { personas: PersonaView[]; available: Record<string, boolean> }) {
+/** Un profil par onglet. `available` : portraits déjà préparés ; `placeholders` : leurs aperçus flous. */
+export function PersonaTabs({
+  personas,
+  available,
+  placeholders,
+}: {
+  personas: PersonaView[];
+  available: Record<string, boolean>;
+  placeholders: Record<string, string | undefined>;
+}) {
   const router = useRouter();
   const t = useT();
   const [current, setCurrent] = useState(personas[0].key);
@@ -102,6 +110,7 @@ export function PersonaTabs({ personas, available }: { personas: PersonaView[]; 
             sizes="(min-width: 768px) 40vw, 90vw"
             defer={!touched}
             available={available[p.key]}
+            placeholder={placeholders[p.key]}
             fallbackIcon={<span className="font-display text-3xl font-medium">{p.name.replace(/^(Dr|La|Le|The) /, '')[0]}</span>}
           />
         </div>

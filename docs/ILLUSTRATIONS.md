@@ -4,7 +4,7 @@
 
 **Chargement.** Aucune illustration n'est téléchargée à l'ouverture de la page : chacune part quand elle arrive à 400 px de l'écran (`DeferredImages`), ce qui garde la première page sous 200 Ko, même en 2G.
 
-**Livraison.** Exporter en PNG, fond transparent (sauf mention contraire), au format indiqué, puis déposer le fichier dans `public/illustrations/` avec **exactement** le nom donné. La page le détecte au prochain déploiement ; tant qu'il manque, elle affiche un visuel de marque à la place. Poids conseillé : moins de 400 Ko par PNG (Vercel les convertit ensuite en AVIF/WebP).
+**Livraison.** Exporter en PNG, fond transparent (sauf mention contraire), au format indiqué, puis déposer le fichier dans `illustrations/` (à la racine du dépôt) avec **exactement** le nom donné, et lancer `npm run illustrations` : le script produit dans `public/illustrations/` les versions AVIF et WebP en cinq largeurs (160 à 1250 px) et un aperçu flou, servis tels quels par le CDN. Committer les deux dossiers. Tant qu'une illustration manque, la page affiche un visuel de marque à la place.
 
 **Contrôle avant dépôt.** Aucun texte ni chiffre dans l'image (les libellés sont dans la page, donc traduisibles et lus par les lecteurs d'écran), pas de rouge hors sang et urgence, mêmes visages d'une image à l'autre pour un même personnage.
 

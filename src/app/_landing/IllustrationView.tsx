@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react';
 
-import { optimized, srcSetFor } from './image-url';
+import { srcFor, srcSetFor } from './image-url';
 
 /**
- * Illustration sur mesure, en simple balise <img> servie par l'optimiseur d'images : pas de
- * JavaScript de plus sur la première page. Sans fichier, visuel de marque (symbole Ganji en Sauge
+ * Illustration sur mesure : <picture> sur les fichiers AVIF et WebP préparés d'avance (scripts/illustrations.mjs),
+ * sans JavaScript de plus sur la première page. Un aperçu flou de 10 px occupe la place pendant le chargement. Sans fichier, visuel de marque (symbole Ganji en Sauge
  * et pictogramme sur pastille Vert). Utilisable côté serveur comme côté client.
  *
  * `defer` : seul le nom part dans la page (data-img) ; <DeferredImages> construit les adresses à l'approche
- * de l'écran. La page reste légère : pas neuf variantes d'URL par image, deux fois.
+ * de l'écran. La page reste légère : pas dix variantes d'URL par image, deux fois.
  * Le chargement paresseux natif ne suffit pas : en 2G, Chrome précharge jusqu'à 6 000 px plus bas.
  */
 export function IllustrationView({
@@ -19,6 +19,7 @@ export function IllustrationView({
   size = [4, 3],
   frame,
   position,
+  placeholder,
   defer = false,
   sizes = '(min-width: 1024px) 40vw, 100vw',
   className = '',
@@ -33,6 +34,8 @@ export function IllustrationView({
   frame?: string;
   /** Point de l'image gardé visible quand le cadre la rogne (object-position). */
   position?: string;
+  /** Aperçu flou en data URI (images opaques seulement), posé en fond de l'image. */
+  placeholder?: string;
   defer?: boolean;
   sizes?: string;
   className?: string;
@@ -50,21 +53,24 @@ export function IllustrationView({
       </div>
     );
   }
-  const src = optimized(name, 1080);
-  const srcSet = srcSetFor(name);
   const img = (
-    // eslint-disable-next-line @next/next/no-img-element -- srcset de l'optimiseur, sans le JS de next/image
-    <img
-      {...(defer ? { 'data-img': name } : { src, srcSet })}
-      sizes={sizes}
-      alt={alt}
-      width={w}
-      height={h}
-      loading="lazy"
-      decoding="async"
-      className={frame ? 'absolute inset-0 size-full object-cover' : `h-auto w-full ${className}`}
-      style={position ? { objectPosition: position } : undefined}
-    />
+    <picture className="contents">
+      <source type="image/avif" sizes={sizes} {...(defer ? {} : { srcSet: srcSetFor(name, 'avif') })} />
+      <img
+        {...(defer ? { 'data-img': name } : { src: srcFor(name, 'webp', 960), srcSet: srcSetFor(name, 'webp') })}
+        sizes={sizes}
+        alt={alt}
+        width={w}
+        height={h}
+        loading="lazy"
+        decoding="async"
+        className={frame ? 'absolute inset-0 size-full object-cover' : `h-auto w-full ${className}`}
+        style={{
+          objectPosition: position,
+          ...(placeholder && { backgroundImage: `url(${placeholder})`, backgroundSize: 'cover', backgroundPosition: position ?? 'center' }),
+        }}
+      />
+    </picture>
   );
   // Fond blanc sous le cadre : certaines scènes s'estompent en brume sur leurs bords.
   return frame ? <div className={`relative w-full overflow-hidden bg-white ${frame} ${className}`}>{img}</div> : img;
