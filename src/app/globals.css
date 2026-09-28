@@ -281,45 +281,25 @@ body {
 /* ── Hero et chargement ──────────────────────────────────────────────────
    Tout entre une fois puis reste immobile : aucun mouvement en boucle.
    --intro : durée du rideau de chargement ; le hero démarre après lui (0 s s'il a déjà été vu). */
-:root { --intro: 2.55s; }
+:root { --intro: 2s; }
 .intro-vue { --intro: 0s; }
 
-/* Rideau de première entrée : Papier, symbole et nom en Vert Ganji, puis ouverture Forêt depuis le symbole.
-   Chronologie : feuilles 0,05–1,15 s · battement et onde 1 s · nom 1,1 s · barre 0,3–1,9 s · ouverture depuis le
-   symbole 1,9–2,6 s (feuilles en Pousse, nom en blanc dès que le disque les atteint) · logo qui s'efface
-   2,45 s · rideau fondu 2,65–2,9 s, puis le hero entre. Les feuilles viennent des coins de l'écran : dans le
-   SVG (520 unités pour ≈ 112 px), un déplacement de 195vw vaut ≈ 42vw à l'écran. */
-.intro { pointer-events: none; animation: intro-out 0.25s ease-out 2.65s both; }
+/* Rideau : sur fond Papier, les quatre feuilles du symbole (Vert Ganji) arrivent des coins, le symbole bat, une
+   onde part, puis le rideau clair se lève sur le hero Forêt, bord arrondi et ombre : le passage du clair au
+   sombre se voit. Chronologie : feuilles 0,1–1,35 s · battement 1,3 s · onde 1,35 s · rideau 1,85–2,75 s. */
+.intro { animation: intro-up 0.9s cubic-bezier(0.7, 0, 0.2, 1) 1.85s both; pointer-events: none; }
 .intro-vue .intro { display: none; }
-@keyframes intro-out { to { opacity: 0; visibility: hidden; } }
-/* Le logo s'efface avant le rideau (pas de double exposition sur le titre du hero) ; le disque, lui, reste. */
-.intro-word { animation: group-out 0.2s ease-in 2.45s forwards; }
-@keyframes group-out { to { opacity: 0; scale: 0.96; } }
-.intro-iris { scale: 0; animation: iris-open 0.7s cubic-bezier(0.65, 0, 0.35, 1) 1.9s forwards; }
-@keyframes iris-open { to { scale: 1; } }
-.intro-leaf {
-  fill: #168a56;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: leaf-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both, leaf-glow 0.25s ease 1.95s forwards;
-}
-.intro-leaf-0 { --dx: -195vw; --dy: -195vh; animation-delay: 0.05s, 1.95s; }
-.intro-leaf-1 { --dx: -195vw; --dy: 195vh; animation-delay: 0.15s, 1.95s; }
-.intro-leaf-2 { --dx: 195vw; --dy: 195vh; animation-delay: 0.25s, 1.95s; }
-.intro-leaf-3 { --dx: 195vw; --dy: -195vh; animation-delay: 0.35s, 1.95s; }
-@keyframes leaf-in { from { opacity: 0; translate: var(--dx) var(--dy); rotate: -90deg; scale: 0.6; } }
-@keyframes leaf-glow { to { fill: #5fd08f; } }
-.intro-mark { animation: mark-beat 0.5s ease-in-out 0.95s both, group-out 0.2s ease-in 2.45s forwards; }
-@keyframes mark-beat { 40% { scale: 1.16; } 70% { scale: 0.96; } }
-.intro-ring { box-shadow: 0 0 0 2px #168a56; opacity: 0; animation: ring-out 0.9s cubic-bezier(0.16, 1, 0.3, 1) 1s forwards; }
-@keyframes ring-out { from { opacity: 0.9; scale: 0.5; } to { opacity: 0; scale: 2.6; } }
-.intro-name { fill: #0b3d2c; animation: name-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 1.1s both, name-white 0.25s ease 2s forwards; }
-@keyframes name-up { from { translate: 0 110%; } }
-@keyframes name-white { to { fill: #ffffff; } }
-.intro-bar { background: rgb(22 138 86 / 0.18); animation: bar-fade 0.2s ease 1.95s forwards; }
-.intro-bar > span { background: #168a56; transform-origin: 0 50%; animation: bar-fill 1.55s cubic-bezier(0.4, 0, 0.2, 1) 0.3s both; }
-@keyframes bar-fill { from { scale: 0 1; } }
-@keyframes bar-fade { to { opacity: 0; } }
+@keyframes intro-up { to { translate: 0 -105%; border-radius: 0 0 50% 50% / 0 0 22% 22%; } }
+.intro-leaf { transform-box: fill-box; transform-origin: center; animation: leaf-in 1.1s cubic-bezier(0.33, 1, 0.68, 1) both; }
+.intro-leaf-0 { --dx: -260px; --dy: -260px; animation-delay: 0.1s; }
+.intro-leaf-1 { --dx: -260px; --dy: 260px; animation-delay: 0.2s; }
+.intro-leaf-2 { --dx: 260px; --dy: 260px; animation-delay: 0.3s; }
+.intro-leaf-3 { --dx: 260px; --dy: -260px; animation-delay: 0.4s; }
+@keyframes leaf-in { from { opacity: 0; translate: var(--dx) var(--dy); rotate: -30deg; } }
+.intro-mark { animation: mark-beat 0.55s ease-in-out 1.3s both; }
+@keyframes mark-beat { 50% { scale: 1.16; } }
+.intro-ring { box-shadow: 0 0 0 3px #168a56; opacity: 0; animation: ring-out 1s cubic-bezier(0.16, 1, 0.3, 1) 1.35s forwards; }
+@keyframes ring-out { from { opacity: 1; scale: 0.5; } 40% { opacity: 0.7; } to { opacity: 0; scale: 3.2; } }
 
 /* L'onde de la charte s'ouvre du centre vers l'extérieur, une seule fois. */
 .onde-layer { transform-box: fill-box; transform-origin: center; animation: layer-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--intro) + var(--i, 0) * 110ms); }
