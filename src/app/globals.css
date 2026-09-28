@@ -281,25 +281,35 @@ body {
 /* ── Hero et chargement ──────────────────────────────────────────────────
    Tout entre une fois puis reste immobile : aucun mouvement en boucle.
    --intro : durée du rideau de chargement ; le hero démarre après lui (0 s s'il a déjà été vu). */
-:root { --intro: 2s; }
+:root { --intro: 2.75s; }
 .intro-vue { --intro: 0s; }
 
-/* Rideau : sur fond Papier, les quatre feuilles du symbole (Vert Ganji) arrivent des coins, le symbole bat, une
-   onde part, puis le rideau clair se lève sur le hero Forêt, bord arrondi et ombre : le passage du clair au
-   sombre se voit. Chronologie : feuilles 0,1–1,35 s · battement 1,3 s · onde 1,35 s · rideau 1,85–2,75 s. */
-.intro { animation: intro-up 0.9s cubic-bezier(0.7, 0, 0.2, 1) 1.85s both; pointer-events: none; }
+/* Rideau : sur fond Papier, les quatre feuilles du symbole (Vert Ganji) arrivent une à une des coins de l'écran,
+   chacune suivie d'une traînée, et se posent avec un rebond : on voit le logo se construire. Le symbole se
+   verrouille, l'onde de la charte (carrés en escalier) s'ouvre, puis le rideau clair se lève sur le hero Forêt.
+   Chronologie : feuilles 0,1–1,75 s · verrou 1,75 s · onde 1,85–3 s · rideau 2,4–3,3 s ; le hero entre à 2,75 s. */
+.intro { animation: intro-up 0.9s cubic-bezier(0.7, 0, 0.2, 1) 2.4s both; pointer-events: none; }
 .intro-vue .intro { display: none; }
 @keyframes intro-up { to { translate: 0 -105%; border-radius: 0 0 50% 50% / 0 0 22% 22%; } }
-.intro-leaf { transform-box: fill-box; transform-origin: center; animation: leaf-in 1.1s cubic-bezier(0.33, 1, 0.68, 1) both; }
-.intro-leaf-0 { --dx: -260px; --dy: -260px; animation-delay: 0.1s; }
-.intro-leaf-1 { --dx: -260px; --dy: 260px; animation-delay: 0.2s; }
-.intro-leaf-2 { --dx: 260px; --dy: 260px; animation-delay: 0.3s; }
-.intro-leaf-3 { --dx: 260px; --dy: -260px; animation-delay: 0.4s; }
-@keyframes leaf-in { from { opacity: 0; translate: var(--dx) var(--dy); rotate: -30deg; } }
-.intro-mark { animation: mark-beat 0.55s ease-in-out 1.3s both; }
-@keyframes mark-beat { 50% { scale: 1.16; } }
-.intro-ring { box-shadow: 0 0 0 3px #168a56; opacity: 0; animation: ring-out 1s cubic-bezier(0.16, 1, 0.3, 1) 1.35s forwards; }
-@keyframes ring-out { from { opacity: 1; scale: 0.5; } 40% { opacity: 0.7; } to { opacity: 0; scale: 3.2; } }
+/* Le translate est en unités du SVG (520 pour ≈ 125 à 155 px) : 260vw y vaut plus d'une demi-largeur d'écran. */
+.intro-leaf, .intro-ghost { transform-box: fill-box; transform-origin: center; animation: leaf-in 0.75s cubic-bezier(0.2, 1.15, 0.35, 1) both; }
+.intro-ghost { animation-name: ghost-in; }
+.leaf-0 { --dx: -260vw; --dy: -260vh; --d: 0.1s; }
+.leaf-3 { --dx: 260vw; --dy: -260vh; --d: 0.4s; }
+.leaf-2 { --dx: 260vw; --dy: 260vh; --d: 0.7s; }
+.leaf-1 { --dx: -260vw; --dy: 260vh; --d: 1s; }
+.intro-leaf { animation-delay: var(--d); }
+.intro-ghost { animation-delay: calc(var(--d) + 70ms); }
+@keyframes leaf-in { from { translate: var(--dx) var(--dy); rotate: -150deg; scale: 2.2; } }
+@keyframes ghost-in { from { opacity: 0.4; translate: var(--dx) var(--dy); rotate: -150deg; scale: 2.2; } 30% { opacity: 0.2; } 45%, to { opacity: 0; } }
+/* Le symbole s'efface pendant que le rideau monte (sur téléphone, celui du hero est plus bas). */
+.intro-stage { animation: stage-out 0.45s ease-in 2.45s both; }
+@keyframes stage-out { to { opacity: 0; scale: 0.9; } }
+/* Le symbole se « verrouille » : il gonfle puis s'écrase, et l'onde part. */
+.intro-mark { animation: mark-lock 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) 1.75s both; }
+@keyframes mark-lock { 35% { scale: 1.14; } 70% { scale: 0.95; } }
+.intro-wave { transform-box: fill-box; transform-origin: center; opacity: 0; animation: wave-out 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: calc(1.85s + var(--w) * 0.12s); }
+@keyframes wave-out { from { opacity: 1; scale: 0.8; } to { opacity: 0; scale: 3.6; } }
 
 /* L'onde de la charte s'ouvre du centre vers l'extérieur, une seule fois. */
 .onde-layer { transform-box: fill-box; transform-origin: center; animation: layer-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--intro) + var(--i, 0) * 110ms); }
