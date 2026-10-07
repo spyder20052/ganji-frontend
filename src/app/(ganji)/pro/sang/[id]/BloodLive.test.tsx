@@ -137,7 +137,7 @@ describe('annulation', () => {
     const user = userEvent.setup();
     render(<BloodLive id={ID} initial={REQUEST} />);
     await user.click(screen.getByRole('button', { name: 'Annuler la demande' }));
-    const confirm = within(screen.getByRole('group', { name: 'Confirmer l’annulation' }));
+    const confirm = within(screen.getByRole('form', { name: 'Confirmer l’annulation' }));
     expect(confirm.getByText(/Les donneurs qui ont dit oui seront prévenus/)).toBeInTheDocument();
     await user.click(confirm.getByRole('button', { name: 'Oui, annuler' }));
     expect(await screen.findByText('Demande annulée. 1 donneur prévenu qu’il n’a plus à venir.')).toBeInTheDocument();
@@ -150,14 +150,36 @@ describe('annulation', () => {
     expect(screen.getByRole('button', { name: 'Relancer d’autres donneurs' })).toBeDisabled();
   });
 
-  it('« Garder la demande » referme la confirmation sans rien envoyer', async () => {
+  it('envoie le motif choisi d’un appui, complété au clavier, et le valide avec Entrée', async () => {
     const user = userEvent.setup();
     render(<BloodLive id={ID} initial={REQUEST} />);
     await user.click(screen.getByRole('button', { name: 'Annuler la demande' }));
+    const form = within(screen.getByRole('form', { name: 'Confirmer l’annulation' }));
+    const chips = within(form.getByRole('group', { name: 'Motifs fréquents' }));
+    await user.click(chips.getByRole('button', { name: 'Patient transféré' }));
+    expect(chips.getByRole('button', { name: 'Patient transféré' })).toHaveAttribute('aria-pressed', 'true');
+    const field = form.getByRole('textbox', { name: /Motif \(facultatif\)/ });
+    expect(field).toHaveValue('Patient transféré');
+    expect(field).toHaveAttribute('maxlength', '200');
+    await user.type(field, ' au CNHU{Enter}');
+    // Le texte édité n'est plus celui de la puce : elle se relâche, le motif libre part tel quel.
+    expect(chips.getByRole('button', { name: 'Patient transféré' })).toHaveAttribute('aria-pressed', 'false');
+    await screen.findByText('Demande annulée. 1 donneur prévenu qu’il n’a plus à venir.');
+    const cancel = calls().find((c) => c.key === `POST /api/blood/requests/${ID}/cancel`);
+    expect(JSON.parse(String(cancel?.init?.body))).toEqual({ reason: 'Patient transféré au CNHU' });
+  });
+
+  it('« Garder la demande » referme la confirmation et oublie le motif commencé', async () => {
+    const user = userEvent.setup();
+    render(<BloodLive id={ID} initial={REQUEST} />);
+    await user.click(screen.getByRole('button', { name: 'Annuler la demande' }));
+    await user.type(screen.getByRole('textbox', { name: /Motif \(facultatif\)/ }), 'Erreur');
     await user.click(screen.getByRole('button', { name: 'Garder la demande' }));
-    expect(screen.queryByRole('group', { name: 'Confirmer l’annulation' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('form', { name: 'Confirmer l’annulation' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Annuler la demande' })).toBeInTheDocument();
     expect(calls().some((c) => c.key.startsWith('POST'))).toBe(false);
+    await user.click(screen.getByRole('button', { name: 'Annuler la demande' }));
+    expect(screen.getByRole('textbox', { name: /Motif \(facultatif\)/ })).toHaveValue('');
   });
 
   it('en cas de refus de l’API, annonce le motif et laisse la confirmation ouverte', async () => {
@@ -167,7 +189,7 @@ describe('annulation', () => {
     await user.click(screen.getByRole('button', { name: 'Annuler la demande' }));
     await user.click(screen.getByRole('button', { name: 'Oui, annuler' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('Demande déjà clôturée.');
-    expect(screen.getByRole('group', { name: 'Confirmer l’annulation' })).toBeInTheDocument();
+    expect(screen.getByRole('form', { name: 'Confirmer l’annulation' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Oui, annuler' })).toBeEnabled();
   });
 });

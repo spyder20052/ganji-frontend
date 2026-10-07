@@ -20,6 +20,10 @@ const FINAL = new Set(['SERVIE', 'ANNULEE']);
 const NEEDS_BLOOD = new Set(['OUVERTE', 'DONNEURS_ALERTES', 'DONNEUR_TROUVE']);
 const CHANNEL_ICON: Record<string, LucideIcon> = { APP: Smartphone, SMS: MessageSquareText, VOICE: PhoneCall };
 const DONOR_ORDER: Record<string, number> = { ACCEPTEE: 0, ENVOYEE: 1, REFUSEE: 2, EXPIREE: 3 };
+/** Motifs d'annulation les plus fréquents, proposés d'un appui ; le motif reste libre et facultatif. */
+const CANCEL_REASONS = ['Besoin disparu', 'Patient transféré', 'Erreur de saisie'];
+/** Même limite que l'API (CancelRequestDto). */
+const REASON_MAX = 200;
 
 export function BloodLive({ id, initial }: { id: string; initial: LiveRequest }) {
   const t = useT();
@@ -31,6 +35,7 @@ export function BloodLive({ id, initial }: { id: string; initial: LiveRequest })
   const [busy, setBusy] = useState<'alert' | 'cancel' | null>(null);
   const [confirmServed, setConfirmServed] = useState(false);
   const [confirmCancel, setConfirmCancel] = useState(false);
+  const [reason, setReason] = useState('');
   const [note, setNote] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const final = FINAL.has(data.status);
@@ -98,14 +103,23 @@ export function BloodLive({ id, initial }: { id: string; initial: LiveRequest })
     }
   }
 
-  /** Annulation (erreur, patient transféré, besoin disparu) : les donneurs attendus sont prévenus, les poches réservées rendues. */
+  function closeCancel() {
+    setConfirmCancel(false);
+    setReason('');
+  }
+
+  /**
+   * Annulation (erreur, patient transféré, besoin disparu) : les donneurs attendus sont prévenus, les poches réservées
+   * rendues. Le motif, facultatif, est inscrit au journal du patient par l'API.
+   */
   async function cancelRequest() {
     setBusy('cancel');
     setError(null);
     setNote(null);
+    const why = reason.trim().slice(0, REASON_MAX);
     try {
-      const r = await api<{ ok: boolean; donorsInformed?: number; reservedReturned?: number }>(`/blood/requests/${id}/cancel`, { method: 'POST', json: {} });
-      setConfirmCancel(false);
+      const r = await api<{ ok: boolean; donorsInformed?: number; reservedReturned?: number }>(`/blood/requests/${id}/cancel`, { method: 'POST', json: why ? { reason: why } : {} });
+      closeCancel();
       await refresh();
       setNote(
         [
@@ -341,17 +355,52 @@ export function BloodLive({ id, initial }: { id: string; initial: LiveRequest })
             )}
           </div>
           {confirmCancel && !final && (
-            <div role="group" aria-label={t('Confirmer l’annulation')} className="mt-3 flex flex-wrap items-center gap-2 rounded-2xl border border-[var(--border)] p-4">
-              <p className="min-w-0 flex-1 text-base">
+            <form
+              aria-label={t('Confirmer l’annulation')}
+              className="mt-3 space-y-3 rounded-2xl border border-[var(--border)] p-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                void cancelRequest();
+              }}
+            >
+              <p className="text-base">
                 {t('Annuler cette demande ? Les donneurs qui ont dit oui seront prévenus qu’ils n’ont plus à venir, et les poches réservées reviendront au stock.')}
               </p>
-              <button type="button" className="btn btn-danger" onClick={cancelRequest} disabled={busy !== null}>
-                {busy === 'cancel' ? t('Annulation…') : t('Oui, annuler')}
-              </button>
-              <button type="button" className="btn btn-ghost" onClick={() => setConfirmCancel(false)} disabled={busy !== null}>
-                {t('Garder la demande')}
-              </button>
-            </div>
+              <div>
+                <label htmlFor="cancel-reason" className="label block">
+                  {t('Motif (facultatif)')} <span className="font-normal">· {t('inscrit au journal de {name}', { name: data.patient })}</span>
+                </label>
+                <div role="group" aria-label={t('Motifs fréquents')} className="mt-2 flex flex-wrap gap-2">
+                  {CANCEL_REASONS.map((r) => {
+                    const label = t(r);
+                    const on = reason === label;
+                    return (
+                      <button key={r} type="button" aria-pressed={on} onClick={() => setReason(on ? '' : label)} className={`btn !min-h-12 text-base ${on ? 'btn-primary' : 'btn-ghost'}`}>
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <input
+                  id="cancel-reason"
+                  className="input mt-2"
+                  value={reason}
+                  maxLength={REASON_MAX}
+                  autoComplete="off"
+                  placeholder={t('Ou écrivez le motif')}
+                  onChange={(e) => setReason(e.target.value)}
+                  disabled={busy !== null}
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button type="submit" className="btn btn-danger" disabled={busy !== null}>
+                  {busy === 'cancel' ? t('Annulation…') : t('Oui, annuler')}
+                </button>
+                <button type="button" className="btn btn-ghost" onClick={closeCancel} disabled={busy !== null}>
+                  {t('Garder la demande')}
+                </button>
+              </div>
+            </form>
           )}
           <div className="mt-3 space-y-2">
             <OkNote>{note}</OkNote>

@@ -389,6 +389,13 @@ export const pro: Messages = {
   'Annulation…': 'Cancelling…',
   'Oui, annuler': 'Yes, cancel',
   'Garder la demande': 'Keep the request',
+  'Motif (facultatif)': 'Reason (optional)',
+  'inscrit au journal de {name}': 'recorded in {name}’s access log',
+  'Motifs fréquents': 'Common reasons',
+  'Besoin disparu': 'No longer needed',
+  'Patient transféré': 'Patient transferred',
+  'Erreur de saisie': 'Entered by mistake',
+  'Ou écrivez le motif': 'Or type the reason',
   'Chronologie indisponible pour le moment : {error}': 'Timeline unavailable right now: {error}',
   'Analyses indisponibles pour le moment : {error}': 'Lab results unavailable right now: {error}',
 };
