@@ -12,7 +12,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, '..', '..', 'public', 'audio')
 VOICES = {'yoruba': 'facebook/mms-tts-yor', 'fon': 'facebook/mms-tts-fon'}
 manifest = {'generatedAt': datetime.date.today().isoformat(), 'synthetic': True,
-  'method': 'Traductions rédigées par une IA (Claude) à partir du texte français, voix de synthèse Meta MMS-TTS. À faire valider par un locuteur natif avant tout usage réel.',
+  'method': 'Traductions rédigées par une IA à partir du texte français, voix de synthèse Meta MMS-TTS. À faire valider par un locuteur natif avant tout usage réel.',
   'rejected': 'La traduction automatique NLLB-200 (600M) a été écartée : sens faux sur les messages de santé (fon et yoruba).',
   'license': 'Voix : modèles Meta MMS-TTS, licence CC-BY-NC 4.0 (usage non commercial).',
   'languages': {}}

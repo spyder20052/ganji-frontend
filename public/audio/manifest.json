@@ -1,7 +1,7 @@
 {
  "generatedAt": "2026-09-25",
  "synthetic": true,
- "method": "Traductions rédigées par une IA (Claude) à partir du texte français, voix de synthèse Meta MMS-TTS. À faire valider par un locuteur natif avant tout usage réel.",
+ "method": "Traductions rédigées par une IA à partir du texte français, voix de synthèse Meta MMS-TTS. À faire valider par un locuteur natif avant tout usage réel.",
  "rejected": "La traduction automatique NLLB-200 (600M) a été écartée : sens faux sur les messages de santé (fon et yoruba).",
  "license": "Voix : modèles Meta MMS-TTS, licence CC-BY-NC 4.0 (usage non commercial).",
  "languages": {
