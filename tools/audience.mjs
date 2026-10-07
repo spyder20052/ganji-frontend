@@ -8,8 +8,9 @@
  *   npm run audience -- --demo              tableau de bord sur des données d'exemple (sans accès à la base)
  *
  * Les compteurs sont écrits par src/app/audience/route.ts dans la base Redis Upstash reliée au projet Vercel
- * (clés « ganji:* »). Cet outil ne fait que lire, avec les accès de .env.audience (ignoré par git) ; s'il manque,
- * il le crée avec « vercel env pull ». Le dossier tools/ n'est jamais déployé (.vercelignore). */
+ * (clés « ganji:* »). Cet outil ne fait que lire, avec les accès de .env.audience (ignoré par git) ; s'il manque
+ * ou s'il est antérieur à l'ajout des variables, il le (re)crée avec « vercel env pull ». Le dossier tools/ n'est
+ * jamais déployé (.vercelignore). */
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
@@ -28,19 +29,46 @@ const args = process.argv.slice(2);
 const flag = (name) => args.includes(name);
 const value = (name) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : undefined; };
 
-function loadEnv() {
-  if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) return;
-  if (!fs.existsSync(ENV_FILE)) {
-    console.log('Récupération des accès avec « vercel env pull .env.audience »…');
-    execSync('npx --yes vercel@latest env pull .env.audience --environment=production --yes', { cwd: ROOT, stdio: 'ignore' });
-  }
+const PULL = 'npx --yes vercel@latest env pull .env.audience --environment=production --yes';
+const SANS_ACCES = `
+Les accès à la base d'audience manquent : le projet Vercel « ganji-sante » n'a pas (encore) les variables
+KV_REST_API_URL et KV_REST_API_TOKEN en Production. Tant qu'elles n'y sont pas, le site ne compte rien.
+
+Pour les poser (mêmes valeurs que Curious et le portfolio), depuis ce dossier :
+  npx vercel env add KV_REST_API_URL production
+  npx vercel env add KV_REST_API_TOKEN production
+  npx vercel redeploy ganji-sante.vercel.app      # les variables s'appliquent au déploiement suivant
+puis relancez « npm run audience » : les accès sont récupérés automatiquement.
+
+Pour voir le tableau de bord sans la base : npm run audience -- --demo
+`;
+
+function hasAccess() {
+  return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+}
+
+function readEnvFile() {
+  if (!fs.existsSync(ENV_FILE)) return false;
   for (const line of fs.readFileSync(ENV_FILE, 'utf8').split('\n')) {
     const m = line.match(/^([A-Z0-9_]+)=(.*)$/);
     if (m) process.env[m[1]] = m[2].replace(/^"|"$/g, '');
   }
-  if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
-    throw new Error('KV_REST_API_URL et KV_REST_API_TOKEN manquent dans .env.audience (variables du projet Vercel ganji-sante).');
+  return hasAccess();
+}
+
+function loadEnv() {
+  if (hasAccess() || readEnvFile()) return;
+  // Fichier absent, ou créé avant que les variables existent sur Vercel : on le (re)crée.
+  console.log('Récupération des accès avec « vercel env pull .env.audience »…');
+  try {
+    execSync(PULL, { cwd: ROOT, stdio: 'ignore' });
+  } catch {
+    console.error('« vercel env pull » a échoué : connectez-vous (npx vercel login) et reliez ce dossier au projet ganji-sante (npx vercel link).');
+    process.exit(1);
   }
+  if (readEnvFile()) return;
+  console.error(SANS_ACCES);
+  process.exit(1);
 }
 
 /* ---------- Lecture ---------- */

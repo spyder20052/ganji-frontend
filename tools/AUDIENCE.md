@@ -23,6 +23,6 @@ Conservation : agrégats 13 mois, parcours détaillés 90 jours (durée de vie p
 
 ## Accès
 
-Les accès à la base sont les variables `KV_REST_API_URL` et `KV_REST_API_TOKEN` du projet Vercel `ganji-sante` (environnement Production). L'outil les lit dans `.env.audience`, qu'il crée au premier lancement avec `npx vercel env pull .env.audience --environment=production`. Ce fichier est ignoré par git (`.env.*`) et jamais déployé (`.vercelignore`), comme tout le dossier `tools/`.
+Les accès à la base sont les variables `KV_REST_API_URL` et `KV_REST_API_TOKEN` du projet Vercel `ganji-sante` (environnement Production). L'outil les lit dans `.env.audience`, qu'il crée au premier lancement avec `npx vercel env pull .env.audience --environment=production`, et qu'il recrée tant que ces deux variables n'y figurent pas (fichier antérieur à leur ajout). S'il ne les trouve toujours pas, il affiche les commandes à lancer et s'arrête. Ce fichier est ignoré par git (`.env.*`) et jamais déployé (`.vercelignore`), comme tout le dossier `tools/`.
 
 La base est partagée avec d'autres sites : pour effacer des données d'essai de Ganji, supprimer uniquement les clés `ganji:*`, jamais la base entière.
