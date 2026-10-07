@@ -448,7 +448,7 @@ function SmsPanel({ phone, inbox, sent, onReply, hidden }: { phone: string; inbo
         })}
       </div>
       <div className="space-y-2 border-t border-[#d5e0da] bg-white p-3">
-        <div className="flex gap-2" aria-label={t('Réponses rapides')}>
+        <div className="flex gap-2" role="group" aria-label={t('Réponses rapides')}>
           {['1', '2', 'RDV'].map((q) => (
             <button key={q} type="button" disabled={!phone} onClick={() => send(q)} className="min-h-11 flex-1 rounded-full border border-[#d5e0da] text-base font-bold disabled:opacity-50">
               {q}
