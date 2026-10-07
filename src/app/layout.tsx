@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Atkinson_Hyperlegible } from 'next/font/google';
 import localFont from 'next/font/local';
+import { Audience } from '@/components/Audience';
 import { DemoBanner } from '@/components/DemoBanner';
 import { SwRegister } from '@/components/SwRegister';
 import { I18nScope } from '@/i18n/I18nScope';
@@ -65,6 +66,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <DemoBanner />
           {children}
           <SwRegister />
+          <Audience />
         </I18nScope>
       </body>
     </html>

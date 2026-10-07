@@ -15,9 +15,11 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "illustrations": "node scripts/illustrations.mjs"
+    "illustrations": "node scripts/illustrations.mjs",
+    "audience": "node tools/audience.mjs"
   },
   "dependencies": {
+    "@upstash/redis": "^1.39.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.544.0",
     "next": "^15.5.3",
@@ -27,6 +29,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
+    "@eslint/eslintrc": "^3.3.1",
     "@playwright/test": "^1.55.0",
     "@tailwindcss/postcss": "^4.1.13",
     "@types/leaflet": "^1.9.20",
@@ -38,8 +41,7 @@
     "eslint-config-next": "^15.5.3",
     "tailwindcss": "^4.1.13",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4",
-    "@eslint/eslintrc": "^3.3.1"
+    "vitest": "^3.2.4"
   },
   "overrides": {
     "next": {

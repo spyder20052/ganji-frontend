@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ganji · Audience</title>
+<style>
+  /* Jetons de la charte Ganji (src/app/globals.css) : Papier, Brume, Sauge, Vert, Pousse, Forêt, Encre. */
+  @font-face { font-family: 'Bricolage Titres'; src: url('/fonts/titres.woff2') format('woff2'); font-weight: 500 700; font-display: swap; }
+  :root {
+    --surface: #f5f4ee; --panel: #ffffff; --soft: #e6f0e9; --ink: #0a1a14; --ink-2: #4b5a52; --ink-3: #7a8a81;
+    --line: #d8e3db; --mark: #168a56; --mark-strong: #0b3d2c; --accent: #5fd08f; --accent-ink: #0b3d2c; --focus: #0b3d2c; --warn: #8a5d06; --warn-bg: #fbf0d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface: #0c1512; --panel: #14201c; --soft: #1d2d26; --ink: #e6efeb; --ink-2: #9db0a7; --ink-3: #74867d;
+      --line: #25352f; --mark: #5fd08f; --mark-strong: #b7d3c1; --accent: #5fd08f; --accent-ink: #062418; --focus: #5fd08f; --warn: #f0c56a; --warn-bg: #3a2d0f;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--surface); color: var(--ink); font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+  h1, h2, .tile-value, .big { font-family: 'Bricolage Titres', ui-sans-serif, system-ui, sans-serif; letter-spacing: -0.01em; }
+  main { max-width: 1080px; margin: 0 auto; padding: 28px 16px 64px; }
+  header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+  h1 { margin: 0; font-size: 1.9rem; font-weight: 600; line-height: 1.1; }
+  h1 span { color: var(--mark); }
+  .sub { margin: 6px 0 0; color: var(--ink-2); font-size: 0.92rem; }
+  .filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--panel); border: 1px solid var(--line); }
+  .seg button { font: inherit; font-size: 0.86rem; border: 0; background: none; color: var(--ink-2); padding: 7px 13px; border-radius: 999px; cursor: pointer; white-space: nowrap; min-height: 36px; }
+  .seg button[aria-pressed="true"] { background: var(--mark-strong); color: var(--surface); }
+  @media (prefers-color-scheme: dark) { .seg button[aria-pressed="true"] { color: var(--surface); } }
+  .range { display: none; align-items: center; gap: 6px; font-size: 0.86rem; color: var(--ink-2); }
+  .range.is-on { display: inline-flex; flex-wrap: wrap; }
+  input[type="date"] { font: inherit; font-size: 0.86rem; color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 6px 8px; min-height: 36px; }
+  .refresh { font: inherit; font-size: 0.86rem; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 7px 14px; cursor: pointer; min-height: 36px; }
+  button:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 12px; }
+  .tile { background: var(--panel); border-radius: 20px; padding: 16px 18px; box-shadow: 0 1px 2px rgb(25 32 29 / 0.04); }
+  .tile-label { font-size: 0.84rem; color: var(--ink-2); }
+  .tile-value { font-size: 2.3rem; font-weight: 600; line-height: 1.05; margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .tile-note { font-size: 0.8rem; color: var(--ink-3); margin-top: 4px; }
+  .card { background: var(--panel); border-radius: 20px; padding: 18px; margin-bottom: 12px; box-shadow: 0 1px 2px rgb(25 32 29 / 0.04); }
+  .card h2 { margin: 0 0 12px; font-size: 1.05rem; font-weight: 600; }
+  .card h2 span { font-weight: 400; color: var(--ink-2); font-size: 0.85rem; margin-left: 6px; font-family: inherit; }
+  .chart { position: relative; }
+  .chart svg { display: block; width: 100%; height: 230px; overflow: visible; }
+  .axis text { fill: var(--ink-3); font-size: 11px; }
+  .grid line { stroke: var(--line); }
+  .bar { fill: var(--mark); pointer-events: none; }
+  .hit { fill: transparent; }
+  .hit:hover + .bar, .bar.is-hot { opacity: 0.75; }
+  .tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 0.8rem; padding: 6px 10px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, calc(-100% - 8px)); opacity: 0; transition: opacity 120ms; }
+  .tip.is-on { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .tip { transition: none; } }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .rank { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+  .rank li { display: grid; grid-template-columns: minmax(110px, 42%) 1fr auto; align-items: center; gap: 10px; font-size: 0.88rem; }
+  .rank .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.82rem; }
+  .rank .name.plain { font-family: inherit; font-size: 0.88rem; }
+  .rank .bar-h { height: 10px; border-radius: 0 4px 4px 0; background: var(--mark); min-width: 2px; }
+  .rank .n { font-variant-numeric: tabular-nums; color: var(--ink-2); min-width: 3ch; text-align: right; }
+  details { margin-top: 12px; }
+  summary { cursor: pointer; color: var(--ink-2); font-size: 0.86rem; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.86rem; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); }
+  th { color: var(--ink-2); font-weight: 500; }
+  td + td, th + th { text-align: right; }
+  .empty, .error { color: var(--ink-2); padding: 24px 0; text-align: center; }
+  .error { color: var(--warn); background: var(--warn-bg); border-radius: 14px; padding: 14px 16px; text-align: left; }
+  .foot { color: var(--ink-3); font-size: 0.8rem; margin-top: 18px; }
+  /* Parcours : l'élément signature. Chaque visite est une chaîne de pages, la page d'arrivée en Pousse,
+     et entre deux pages le temps passé. */
+  .journeys { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .journey { display: grid; grid-template-columns: 190px 1fr; gap: 14px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .journey:first-child { border-top: 0; padding-top: 0; }
+  .meta { display: grid; gap: 2px; font-size: 0.82rem; color: var(--ink-2); align-content: start; }
+  .meta time { color: var(--ink); font-weight: 600; font-size: 0.88rem; }
+  .chain { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 0; }
+  .step { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8rem; background: var(--soft); color: var(--ink); padding: 4px 9px; border-radius: 8px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .step.entry { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+  .gap { display: inline-flex; align-items: center; gap: 4px; color: var(--ink-3); font-size: 0.72rem; padding: 0 4px; white-space: nowrap; }
+  .gap::before, .gap::after { content: ''; display: block; width: 8px; height: 1px; background: var(--line); }
+  .more { font: inherit; font-size: 0.86rem; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 7px 14px; cursor: pointer; margin-top: 14px; min-height: 36px; }
+  .big { font-size: 1.1rem; font-weight: 600; }
+  @media (max-width: 760px) {
+    .tiles { grid-template-columns: 1fr 1fr; } .two, .three { grid-template-columns: 1fr; } .tile-value { font-size: 1.9rem; }
+    .journey { grid-template-columns: 1fr; gap: 8px; } .filters { width: 100%; } .seg { flex-wrap: wrap; border-radius: 18px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Audience de <span>Ganji</span></h1>
+      <p class="sub" id="period-label">Chargement…</p>
+    </div>
+    <div class="filters">
+      <div class="seg" role="group" aria-label="Période">
+        <button type="button" data-days="1">Aujourd’hui</button>
+        <button type="button" data-days="7">7 jours</button>
+        <button type="button" data-days="30" aria-pressed="true">30 jours</button>
+        <button type="button" data-days="90">90 jours</button>
+        <button type="button" data-days="all">Tout</button>
+        <button type="button" data-days="custom">Dates</button>
+      </div>
+      <span class="range" id="range"><label>du <input type="date" id="from"></label><label>au <input type="date" id="to"></label></span>
+      <button type="button" class="refresh" id="refresh">Actualiser</button>
+    </div>
+  </header>
+
+  <div id="error" class="error" hidden></div>
+
+  <section class="tiles" aria-label="Chiffres clés">
+    <div class="tile"><div class="tile-label">Pages vues</div><div class="tile-value" id="t-views">0</div><div class="tile-note">chaque page ouverte compte</div></div>
+    <div class="tile"><div class="tile-label">Visites</div><div class="tile-value" id="t-visits">0</div><div class="tile-note">une par session de navigateur</div></div>
+    <div class="tile"><div class="tile-label">Visiteurs uniques</div><div class="tile-value" id="t-unique">0</div><div class="tile-note">navigateurs différents</div></div>
+    <div class="tile"><div class="tile-label">Pages par visite</div><div class="tile-value" id="t-depth">0</div><div class="tile-note" id="t-depth-note">profondeur moyenne</div></div>
+  </section>
+
+  <section class="card">
+    <h2>Pages vues par jour<span id="chart-note"></span></h2>
+    <div class="chart" id="chart"></div>
+    <details>
+      <summary>Voir le tableau</summary>
+      <table><thead><tr><th>Jour</th><th>Pages vues</th><th>Visites</th><th>Visiteurs uniques</th></tr></thead><tbody id="table"></tbody></table>
+    </details>
+  </section>
+
+  <div class="two">
+    <section class="card"><h2>Pages les plus vues</h2><ul class="rank" id="pages"></ul></section>
+    <section class="card"><h2>Pages d’arrivée</h2><ul class="rank" id="entries"></ul></section>
+  </div>
+  <div class="three">
+    <section class="card"><h2>Appareils</h2><ul class="rank" id="devices"></ul></section>
+    <section class="card"><h2>Provenance</h2><ul class="rank" id="sources"></ul></section>
+    <section class="card"><h2>Langue de l’interface</h2><ul class="rank" id="langs"></ul></section>
+  </div>
+
+  <section class="card" aria-labelledby="h-parcours">
+    <h2 id="h-parcours">Parcours<span id="journeys-note"></span></h2>
+    <p class="sub" style="margin:0 0 12px">Chaque visite, page après page, de la plus récente à la plus ancienne. La page d’arrivée est en vert clair ; entre deux pages, le temps resté sur la précédente.</p>
+    <ol class="journeys" id="journeys"></ol>
+    <button type="button" class="more" id="more" hidden>Voir plus de parcours</button>
+  </section>
+
+  <p class="foot" id="foot">__SOURCE__</p>
+</main>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  const nf = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 });
+  const TZ = 'Africa/Porto-Novo';
+  const fromKey = (k) => new Date(k + 'T12:00:00Z');
+  const fmtDay = (k, opts = { weekday: 'short', day: 'numeric', month: 'short' }) => fromKey(k).toLocaleDateString('fr-FR', { ...opts, timeZone: 'UTC' });
+  const fmtWhen = (ms) => new Date(ms).toLocaleString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: TZ });
+  const gap = (ms) => (ms < 60_000 ? `${Math.round(ms / 1000)} s` : ms < 3_600_000 ? `${Math.round(ms / 60_000)} min` : `${(ms / 3_600_000).toFixed(1)} h`);
+  const DEVICE = { mobile: 'téléphone', tablette: 'tablette', ordinateur: 'ordinateur' };
+  const LANG = { fr: 'français', en: 'anglais', fon: 'fon', yo: 'yoruba', bba: 'bariba', ddn: 'dendi', autre: 'autre' };
+
+  let days = [];
+  let firstVisit = null;
+  let period = '30';
+  let req = 0;
+  let sessions = [];
+  let shown = 0;
+  const PAGE_SIZE = 40;
+
+  const todayKey = () => new Date().toISOString().slice(0, 10);
+  function range() {
+    const today = todayKey();
+    if (period === 'custom') return [$('from').value || today, $('to').value || today];
+    if (period === 'all') return [days.length ? days[0].day : today, today];
+    const d = new Date(); d.setUTCDate(d.getUTCDate() - (Number(period) - 1));
+    return [d.toISOString().slice(0, 10), today];
+  }
+  function daysBetween(a, b) {
+    const out = []; const d = fromKey(a); const end = fromKey(b);
+    while (d <= end && out.length < 800) { out.push(d.toISOString().slice(0, 10)); d.setUTCDate(d.getUTCDate() + 1); }
+    return out;
+  }
+  const merge = (list, key) => Object.entries(list.reduce((m, d) => { for (const [k, v] of Object.entries(d[key] || {})) m[k] = (m[k] || 0) + Number(v); return m; }, {})).sort((a, b) => b[1] - a[1]);
+
+  function rank(id, rows, { mono = true, names = null, max = 12 } = {}) {
+    const el = $(id);
+    if (!rows.length) { el.innerHTML = '<li class="empty" style="display:block">Rien sur cette période.</li>'; return; }
+    const top = rows[0][1] || 1;
+    el.innerHTML = rows.slice(0, max).map(([k, n]) => `<li><span class="name ${mono ? '' : 'plain'}" title="${esc(k)}">${esc(names ? names[k] || k : k)}</span><span class="bar-h" style="width:${Math.max(2, (n / top) * 100)}%"></span><span class="n">${nf.format(n)}</span></li>`).join('');
+  }
+
+  function chart(keys, per) {
+    const W = 1000, H = 230, padL = 36, padB = 26, padT = 12;
+    const vals = keys.map((k) => per[k].views);
+    const max = Math.max(1, ...vals);
+    const step = (W - padL) / keys.length;
+    const bw = Math.max(2, Math.min(28, step - 2));
+    const ticks = [0, Math.ceil(max / 2), max];
+    const y = (v) => padT + (H - padT - padB) * (1 - v / max);
+    let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Pages vues par jour, ${keys.length} jours">`;
+    svg += '<g class="grid">' + ticks.map((t) => `<line x1="${padL}" x2="${W}" y1="${y(t)}" y2="${y(t)}" />`).join('') + '</g>';
+    svg += '<g class="axis">' + ticks.map((t) => `<text x="${padL - 6}" y="${y(t) + 4}" text-anchor="end">${t}</text>`).join('');
+    const every = Math.ceil(keys.length / 10);
+    svg += keys.map((k, i) => (i % every === 0 || i === keys.length - 1) ? `<text x="${padL + i * step + step / 2}" y="${H - 8}" text-anchor="middle">${fmtDay(k, { day: 'numeric', month: 'short' })}</text>` : '').join('') + '</g>';
+    svg += keys.map((k, i) => {
+      const x = padL + i * step + (step - bw) / 2; const v = per[k].views; const top = y(v); const h = Math.max(v ? 2 : 0, H - padB - top);
+      return `<rect class="hit" data-i="${i}" x="${padL + i * step}" y="${padT}" width="${step}" height="${H - padT - padB}" /><rect class="bar" x="${x}" y="${H - padB - h}" width="${bw}" height="${h}" rx="4" />`;
+    }).join('');
+    svg += '</svg><div class="tip" id="tip"></div>';
+    const el = $('chart'); el.innerHTML = svg;
+    const tip = $('tip');
+    el.querySelectorAll('.hit').forEach((r) => {
+      r.addEventListener('mousemove', (e) => {
+        const k = keys[Number(r.dataset.i)]; const d = per[k];
+        tip.innerHTML = `<strong>${esc(fmtDay(k, { weekday: 'long', day: 'numeric', month: 'long' }))}</strong><br>${nf.format(d.views)} pages vues · ${nf.format(d.visits)} visites · ${nf.format(d.uniq)} uniques`;
+        const box = el.getBoundingClientRect(); tip.style.left = `${e.clientX - box.left}px`; tip.style.top = `${e.clientY - box.top}px`; tip.classList.add('is-on');
+      });
+      r.addEventListener('mouseleave', () => tip.classList.remove('is-on'));
+    });
+  }
+
+  function renderJourneys(reset) {
+    if (reset) { shown = 0; $('journeys').innerHTML = ''; }
+    const slice = sessions.slice(shown, shown + PAGE_SIZE);
+    shown += slice.length;
+    if (!sessions.length) { $('journeys').innerHTML = '<li class="empty">Aucun parcours sur cette période.</li>'; $('more').hidden = true; return; }
+    $('journeys').insertAdjacentHTML('beforeend', slice.map((s) => {
+      const chain = s.steps.map((st, i) => (i ? `<li class="gap">${esc(gap(st.at - s.steps[i - 1].at))}</li>` : '') + `<li class="step ${i ? '' : 'entry'}" title="${esc(st.page)}">${esc(st.page)}</li>`).join('');
+      const dur = s.steps.length > 1 ? gap(s.steps[s.steps.length - 1].at - s.steps[0].at) : null;
+      return `<li class="journey"><div class="meta"><time datetime="${new Date(s.start).toISOString()}">${esc(fmtWhen(s.start))}</time><span>${esc(DEVICE[s.dev] || s.dev)} · ${esc(s.src)} · ${esc(LANG[s.lang] || s.lang)}</span><span>${s.steps.length} page${s.steps.length > 1 ? 's' : ''}${dur ? ` · ${esc(dur)}` : ''}</span></div><ol class="chain">${chain}</ol></li>`;
+    }).join(''));
+    $('more').hidden = shown >= sessions.length;
+    $('more').textContent = `Voir plus de parcours (${sessions.length - shown} restants)`;
+  }
+
+  function render() {
+    const [from, to] = range();
+    const sel = days.filter((d) => d.day >= from && d.day <= to);
+    const keys = daysBetween(from, to);
+    const per = Object.fromEntries(keys.map((k) => [k, { views: 0, visits: 0, uniq: 0 }]));
+    sel.forEach((d) => { if (per[d.day]) per[d.day] = d; });
+    const views = sel.reduce((s, d) => s + d.views, 0);
+    const visits = sel.reduce((s, d) => s + d.visits, 0);
+    const mine = ++req;
+    $('t-unique').textContent = '…';
+    fetch(`/unique?from=${from}&to=${to}`).then((r) => r.json()).then((d) => { if (mine === req) $('t-unique').textContent = nf.format(Number(d.unique || 0)); }).catch(() => { if (mine === req) $('t-unique').textContent = '?'; });
+    $('journeys-note').textContent = 'chargement…';
+    fetch(`/sessions?from=${from}&to=${to}&limit=400`).then((r) => r.json()).then((d) => {
+      if (mine !== req) return;
+      sessions = d.sessions || [];
+      $('journeys-note').textContent = sessions.length ? `${sessions.length} visite${sessions.length > 1 ? 's' : ''}${sessions.length >= 400 ? ' (les 400 dernières)' : ''}` : '';
+      renderJourneys(true);
+    }).catch(() => { if (mine === req) $('journeys-note').textContent = 'parcours indisponibles'; });
+
+    $('period-label').textContent = from === to
+      ? `Le ${fmtDay(from, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}`
+      : `Du ${fmtDay(from, { day: 'numeric', month: 'long', year: 'numeric' })} au ${fmtDay(to, { day: 'numeric', month: 'long', year: 'numeric' })}`;
+    $('t-views').textContent = nf.format(views);
+    $('t-visits').textContent = nf.format(visits);
+    $('t-depth').textContent = visits ? nf.format(views / visits) : '0';
+    $('t-depth-note').textContent = visits ? `sur ${nf.format(visits)} visite${visits > 1 ? 's' : ''}` : 'profondeur moyenne';
+    $('chart-note').textContent = keys.length > 1 ? `${keys.length} jours` : '';
+    chart(keys, per);
+    $('table').innerHTML = keys.filter((k) => per[k].views).reverse().map((k) => `<tr><td>${esc(fmtDay(k, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }))}</td><td>${nf.format(per[k].views)}</td><td>${nf.format(per[k].visits)}</td><td>${nf.format(per[k].uniq)}</td></tr>`).join('') || '<tr><td colspan="4" class="empty">Aucune page vue sur cette période.</td></tr>';
+    rank('pages', merge(sel, 'page'), { max: 15 });
+    rank('entries', merge(sel, 'entry'));
+    rank('devices', merge(sel, 'dev'), { mono: false, names: DEVICE });
+    rank('sources', merge(sel, 'src'), { mono: false });
+    rank('langs', merge(sel, 'lang'), { mono: false, names: LANG });
+  }
+
+  async function load() {
+    $('error').hidden = true;
+    try {
+      const r = await fetch('/data'); const d = await r.json();
+      if (d.error) throw new Error(d.error);
+      days = d.days || []; firstVisit = d.firstVisit;
+      $('foot').textContent = `${$('foot').textContent.split(' · ')[0]} · lu le ${new Date(d.readAt).toLocaleString('fr-FR', { timeZone: TZ })}${firstVisit ? ` · première visite le ${new Date(firstVisit).toLocaleString('fr-FR', { timeZone: TZ })}` : ''} · jours comptés en temps universel · les essais en local ne sont pas comptés`;
+      render();
+    } catch (e) {
+      $('error').hidden = false;
+      $('error').innerHTML = `<span class="big">Lecture impossible.</span><br>${esc(e.message || e)}<br><br>Vérifiez <code>.env.audience</code> (créé par <code>npx vercel env pull .env.audience --environment=production</code>) : il doit contenir KV_REST_API_URL et KV_REST_API_TOKEN.`;
+    }
+  }
+
+  document.querySelectorAll('.seg button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.seg button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    period = b.dataset.days;
+    $('range').classList.toggle('is-on', period === 'custom');
+    if (period === 'custom') { if (!$('from').value) { const d = new Date(); d.setUTCDate(d.getUTCDate() - 6); $('from').value = d.toISOString().slice(0, 10); } if (!$('to').value) $('to').value = todayKey(); }
+    render();
+  }));
+  $('from').addEventListener('change', render);
+  $('to').addEventListener('change', render);
+  $('refresh').addEventListener('click', load);
+  $('more').addEventListener('click', () => renderJourneys(false));
+  load();
+})();
+</script>
+</body>
+</html>
