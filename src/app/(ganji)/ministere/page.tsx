@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { PageHead } from '@/app/app/_components/ui';
+import { PageHead } from '@/app/(ganji)/app/_components/ui';
 import { getT } from '@/i18n/server';
 import { tryServerApi } from '@/lib/server-api';
 import { Dashboard, type National } from './Dashboard';

@@ -1,0 +1,17 @@
+/* Feuille de style de l'accueil : Tailwind limité à la première page et aux composants qu'elle montre, jetons et
+   composants partagés (theme.css), animations de l'accueil (landing.css). Budget : première page < 200 Ko. */
+@import 'tailwindcss' source(none);
+@source './page.tsx';
+@source './layout.tsx';
+@source './_landing';
+@source '../components/Logo.tsx';
+@source '../components/Logotype.tsx';
+@source '../components/GanjiSymbol.tsx';
+@source '../components/Pictogram.tsx';
+@source '../components/PrefsMenu.tsx';
+@source '../components/ListenButton.tsx';
+@source '../components/SvgSprite.tsx';
+@source '../components/DemoBanner.tsx';
+@source '../components/ErrorFallback.tsx';
+@import './_styles/theme.css';
+@import './_styles/landing.css';

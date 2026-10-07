@@ -2,21 +2,8 @@ import type { NextConfig } from 'next';
 
 const backend = process.env.BACKEND_URL ?? 'http://localhost:4000';
 
-/** CSP stricte : aucune ressource tierce hormis les tuiles OpenStreetMap. */
-const csp = [
-  "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'" + (process.env.NODE_ENV === 'development' ? " 'unsafe-eval'" : ''),
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://tile.openstreetmap.org",
-  "font-src 'self'",
-  "connect-src 'self'",
-  "media-src 'self' blob:",
-  "worker-src 'self'",
-  "manifest-src 'self'",
-  "frame-ancestors 'none'",
-  "base-uri 'self'",
-  "form-action 'self'",
-].join('; ');
+// La politique de sécurité du contenu (CSP) est posée par le middleware, avec un nonce par requête
+// (src/middleware.ts) ; ici, les en-têtes qui ne varient pas.
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -32,7 +19,6 @@ const nextConfig: NextConfig = {
       {
         source: '/:path*',
         headers: [
-          { key: 'Content-Security-Policy', value: csp },
           { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'no-referrer' },

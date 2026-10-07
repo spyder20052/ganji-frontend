@@ -102,4 +102,18 @@ export const common: Messages = {
   'Traduction faite par IA, à faire valider par des locuteurs natifs.': 'AI translation, to be checked by native speakers.',
   'Préparation de la voix…': 'Preparing the voice…',
   'Voix en {langue} indisponible pour le moment. Réessayez dans un instant.': '{langue} voice unavailable for now. Try again in a moment.',
+  // Ajouts du durcissement d'octobre 2026
+  'Arrêter la caméra': 'Stop the camera',
+  'Placez le QR code dans le cadre. Lecture automatique.': 'Place the QR code inside the frame. It is read automatically.',
+  'Aucune mesure.': 'No measurement.',
+  '{label} : dernière valeur {value} {unit}': '{label}: last value {value} {unit}',
+  'Zone verte : valeurs de référence': 'Green band: reference values',
+  'Dernière : {value} {unit}': 'Last: {value} {unit}',
+  '· basse': '· low',
+  '· haute': '· high',
+  'Page introuvable': 'Page not found',
+  'Cette adresse ne mène nulle part : le lien est peut-être ancien, ou le dossier n’existe plus.': 'This address leads nowhere: the link may be old, or the record no longer exists.',
+  'Retour à l’accueil': 'Back to home',
+  'Non enregistré : {label}.': 'Not saved: {label}.',
+  'Fermer ce message': 'Close this message',
 };

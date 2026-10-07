@@ -1,6 +1,6 @@
 {
   "project": "Ganji",
-  "updatedAt": "2026-09-26T02:02:37+01:00",
+  "updatedAt": "2026-10-07T01:00:00+01:00",
   "deadline": "2026-09-24T23:45:00+01:00",
   "links": {
     "frontendRepo": "https://github.com/spyder20052/ganji-frontend",
@@ -12,14 +12,14 @@
     {
       "id": "npm",
       "title": "Registre npm bloqué par les réglages réseau",
-      "detail": "Ajouter registry.npmjs.org aux domaines autorisés (Admin settings → Capabilities). Sans lui, pas d'installation de Next.js ni de NestJS.",
+      "detail": "Ajouter registry.npmjs.org aux domaines autorisés de l’environnement de travail. Sans lui, pas d’installation de Next.js ni de NestJS.",
       "owner": "Hub",
       "open": false
     },
     {
       "id": "github",
       "title": "Compte GitHub non relié",
-      "detail": "Connecter GitHub à Claude et autoriser github.com dans les domaines. Nécessaire pour le push initial et les pushs sur develop.",
+      "detail": "Relier le compte GitHub à l’environnement de travail et autoriser github.com dans les domaines. Nécessaire pour le push initial et les pushs sur develop.",
       "owner": "Hub",
       "open": false
     },
@@ -885,6 +885,10 @@
     {
       "at": "2026-09-26T02:02:37+01:00",
       "text": "Retours d’usage traités : profil et accueil après inscription, rendez-vous, don de sang qui parvient aux donneurs, à l’ANTS et au médecin, documents partagés, livraison de médicaments, écoute, cercle de soins, droits et assistant réels, interface en six langues. Revue de sécurité et correctifs. Démo remise à jour automatiquement au déploiement."
+    },
+    {
+      "at": "2026-10-07T01:00:00+01:00",
+      "text": "Revue complète du code (sécurité, logique métier, frontend) et correctifs : simulateur SMS réservé aux téléphones de démo et au navigateur qui a créé le carnet, durée de partage choisie par le patient seul, bris de glace borné, accès de télé-expertise au seul spécialiste qui ouvre la demande, code de remise aux seuls titulaires, CSP par nonce, purge complète à la déconnexion, rappels sautés comptés, annulation d’une demande de sang, mesure d’audience anonyme. 276 tests API, 9 tests front, CI verte."
     }
   ]
 }

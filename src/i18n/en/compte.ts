@@ -378,4 +378,6 @@ export const compte: Messages = {
   'Plus bas : vos patients, la télé-expertise et vos demandes de sang.': 'Further down: your patients, tele-expertise and your blood requests.',
   'Alertes, signalements et indicateurs du pays, mis à jour toutes les 10 secondes.': 'National alerts, reports and indicators, updated every 10 seconds.',
   'Aucun carnet avec ce numéro (la démo est remise à zéro à chaque mise à jour). Créez-le en une minute.': 'No health record with this number (the demo is reset at each update). Create it in a minute.',
+  // Ajouts du durcissement d'octobre 2026
+  'Le code d’un carnet créé dans la démo n’est visible que depuis le navigateur qui l’a créé.': 'The code for a record created in the demo is only visible from the browser that created it.',
 };

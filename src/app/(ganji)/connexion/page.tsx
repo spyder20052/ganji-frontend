@@ -3,16 +3,12 @@ import Link from 'next/link';
 import { Logo } from '@/components/Logo';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getT } from '@/i18n/server';
+import { safeSuite } from '@/lib/validate';
 import { LoginForm } from './LoginForm';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
   return { title: t('Connexion') };
-}
-
-/** Page où revenir après la connexion : un chemin interne seulement (pas de redirection ouverte). */
-function safeSuite(v: string | string[] | undefined): string | undefined {
-  return typeof v === 'string' && v.startsWith('/') && !v.startsWith('//') && !v.startsWith('/\\') ? v : undefined;
 }
 
 export default async function ConnexionPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {

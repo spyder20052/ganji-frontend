@@ -37,6 +37,7 @@ export function ListenButton({
   const locale = useLocale();
   const name = label ?? t('Écouter');
 
+  // À la disparition du bouton, la lecture en cours s'arrête (fonction stable : elle ne lit que des refs).
   useEffect(() => () => stop(), []);
 
   function stop() {
@@ -45,10 +46,13 @@ export function ListenButton({
     setPlaying(false);
   }
 
-  function playUrl(src: string) {
+  function playUrl(src: string, revoke = false) {
     const a = new Audio(src);
     audioRef.current = a;
-    a.onended = () => setPlaying(false);
+    a.onended = () => {
+      setPlaying(false);
+      if (revoke) URL.revokeObjectURL(src);
+    };
     setPlaying(true);
     return a.play().then(() => true).catch(() => (setPlaying(false), false));
   }
@@ -66,7 +70,8 @@ export function ListenButton({
           const url = URL.createObjectURL(await res.blob());
           setLoading(false);
           setNote(t('Voix de synthèse en {langue}, traduction faite par IA : à faire valider par un locuteur natif.', { langue: t(LANG_LABEL[VOICE_OF[locale]]) }));
-          if (await playUrl(url)) return;
+          if (await playUrl(url, true)) return;
+          URL.revokeObjectURL(url);
         }
       } catch {
         /* réseau : repli ci-dessous */

@@ -1,13 +1,16 @@
+import type { T } from '@/i18n/translate';
 import { fmtDate } from '@/lib/format';
 import type { Series } from '@/lib/types';
 
-/** Courbe d'évolution avec zone de référence (normale) : SVG pur, aucun script. */
-export function LineChart({ series, height = 180 }: { series: Series; height?: number }) {
+const FR: T = (s) => s;
+
+/** Courbe d'évolution avec zone de référence (normale) : SVG pur, aucun script. `t` : traducteur de la page. */
+export function LineChart({ series, height = 180, t = FR }: { series: Series; height?: number; t?: T }) {
   const W = 640;
   const H = height;
   const P = { t: 16, r: 16, b: 28, l: 44 };
   const pts = series.points;
-  if (!pts.length) return <p className="text-[var(--fg-muted)]">Aucune mesure.</p>;
+  if (!pts.length) return <p className="text-[var(--fg-muted)]">{t('Aucune mesure.')}</p>;
   const xs = pts.map((p) => new Date(p.date).getTime());
   const vals = pts.map((p) => p.value);
   const lo = Math.min(...vals, series.refLow ?? Infinity);
@@ -26,7 +29,7 @@ export function LineChart({ series, height = 180 }: { series: Series; height?: n
 
   return (
     <figure className="w-full">
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label={`${series.label} : dernière valeur ${last.value} ${series.unit}`}>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label={t('{label} : dernière valeur {value} {unit}', { label: series.label, value: last.value, unit: series.unit })}>
         {series.refLow != null && series.refHigh != null && (
           <rect x={P.l} width={W - P.l - P.r} y={y(Math.min(series.refHigh, yMax))} height={Math.max(0, y(Math.max(series.refLow, yMin)) - y(Math.min(series.refHigh, yMax)))} fill="var(--color-brand-100)" opacity="0.7" />
         )}
@@ -44,9 +47,9 @@ export function LineChart({ series, height = 180 }: { series: Series; height?: n
         <text x={W - P.r} y={H - 6} textAnchor="end" fontSize="12" fill="var(--fg-muted)">{fmtDate(last.date, { day: 'numeric', month: 'short' })}</text>
       </svg>
       <figcaption className="flex flex-wrap items-baseline justify-between gap-2 text-sm text-[var(--fg-muted)]">
-        <span>Zone verte : valeurs de référence {series.refLow != null ? `(${series.refLow}–${series.refHigh} ${series.unit})` : ''}</span>
+        <span>{t('Zone verte : valeurs de référence')} {series.refLow != null ? `(${series.refLow}–${series.refHigh} ${series.unit})` : ''}</span>
         <span className={`num font-bold ${lastLow || lastHigh ? 'text-[var(--color-danger-600)]' : 'text-[var(--fg)]'}`}>
-          Dernière : {last.value} {series.unit} {lastLow ? '· basse' : lastHigh ? '· haute' : ''}
+          {t('Dernière : {value} {unit}', { value: last.value, unit: series.unit })} {lastLow ? t('· basse') : lastHigh ? t('· haute') : ''}
         </span>
       </figcaption>
     </figure>

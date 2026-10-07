@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { Logo } from '@/components/Logo';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getT } from '@/i18n/server';
+import { safeSuite } from '@/lib/validate';
 import { ROLE_HOME } from '@/lib/types';
 import { getMe, load } from '../_lib/load';
 import type { Profile } from '../_lib/profile';
@@ -11,11 +12,6 @@ import { Welcome } from './Welcome';
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
   return { title: t('Bienvenue') };
-}
-
-/** Chemin interne seulement (pas de redirection ouverte). */
-function safeSuite(v: string | undefined) {
-  return v && v.startsWith('/') && !v.startsWith('//') && !v.startsWith('/\\') ? v : '/app';
 }
 
 /**
@@ -34,7 +30,7 @@ export default async function BienvenuePage({ searchParams }: { searchParams: Pr
           <Logo href="/app" />
         </header>
         <main id="contenu" className="px-4 pt-4 pb-10">
-          <Welcome profile={res.data} suite={safeSuite(suite)} />
+          <Welcome profile={res.data} suite={(safeSuite(suite) ?? '/app')} />
         </main>
       </I18nScope>
     </I18nScope>

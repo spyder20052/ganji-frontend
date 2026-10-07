@@ -25,7 +25,21 @@ const MAP: Record<string, LucideIcon> = {
   swelling: Flame, 'no-movement': Baby, 'water-loss': Droplets, 'abdominal-pain': Zap, diarrhea: Waves, other: CircleHelp,
 };
 
-export function Pictogram({ name, size = 28, className }: { name: string; size?: number; className?: string }) {
+export const PICTOGRAMS = MAP;
+export const pictogramId = (name: string) => `pictogramme-${name}`;
+
+/**
+ * `sprite` : référence le pictogramme défini une fois dans la page par <SvgSprite pictograms=[…]> (accueil, où
+ * une trentaine de pictogrammes se répètent) ; sinon l'icône est en ligne, autonome.
+ */
+export function Pictogram({ name, size = 28, className, sprite = false }: { name: string; size?: number; className?: string; sprite?: boolean }) {
+  if (sprite) {
+    return (
+      <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" className={className}>
+        <use href={`#${pictogramId(name in MAP ? name : 'question')}`} />
+      </svg>
+    );
+  }
   const Icon = MAP[name] ?? CircleHelp;
   return <Icon aria-hidden="true" size={size} strokeWidth={2} className={className} />;
 }

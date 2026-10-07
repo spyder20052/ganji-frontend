@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import {
-  BadgeCheck, Building2, Check, Droplet, ExternalLink, HandHeart, MessageSquareText, PhoneCall, RefreshCw, Smartphone, Users, Warehouse, WifiOff, type LucideIcon,
+  BadgeCheck, Building2, Check, Droplet, ExternalLink, HandHeart, MessageSquareText, PhoneCall, RefreshCw, Smartphone, Users, Warehouse, WifiOff, X, type LucideIcon,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useLocale, useT } from '@/i18n/client';
@@ -28,8 +28,9 @@ export function BloodLive({ id, initial }: { id: string; initial: LiveRequest })
   const [memo, setMemo] = useState<BloodCreateMemo | null>(null);
   const [updatedAt, setUpdatedAt] = useState<Date>(() => new Date());
   const [online, setOnline] = useState(true);
-  const [busy, setBusy] = useState<'alert' | null>(null);
+  const [busy, setBusy] = useState<'alert' | 'cancel' | null>(null);
   const [confirmServed, setConfirmServed] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const final = FINAL.has(data.status);
@@ -92,6 +93,31 @@ export function BloodLive({ id, initial }: { id: string; initial: LiveRequest })
       await refresh();
     } catch (e) {
       setError(e instanceof ApiError ? t(e.message) : t('Relance impossible. Réessayez.'));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  /** Annulation (erreur, patient transféré, besoin disparu) : les donneurs attendus sont prévenus, les poches réservées rendues. */
+  async function cancelRequest() {
+    setBusy('cancel');
+    setError(null);
+    setNote(null);
+    try {
+      const r = await api<{ ok: boolean; donorsInformed?: number; reservedReturned?: number }>(`/blood/requests/${id}/cancel`, { method: 'POST', json: {} });
+      setConfirmCancel(false);
+      await refresh();
+      setNote(
+        [
+          t('Demande annulée.'),
+          r.donorsInformed ? t(r.donorsInformed > 1 ? '{n} donneurs prévenus qu’ils n’ont plus à venir.' : '{n} donneur prévenu qu’il n’a plus à venir.', { n: r.donorsInformed }) : '',
+          r.reservedReturned ? t(r.reservedReturned > 1 ? '{n} poches rendues au stock.' : '{n} poche rendue au stock.', { n: r.reservedReturned }) : '',
+        ]
+          .filter(Boolean)
+          .join(' '),
+      );
+    } catch (e) {
+      setError(e instanceof ApiError ? t(e.message) : t('Annulation impossible. Réessayez.'));
     } finally {
       setBusy(null);
     }
@@ -208,6 +234,12 @@ export function BloodLive({ id, initial }: { id: string; initial: LiveRequest })
           <p className="text-lg font-bold">{t('Transfusion faite et inscrite dans le carnet de {name}. Demande clôturée.', { name: data.patient })}</p>
         </section>
       )}
+      {data.status === 'ANNULEE' && (
+        <section role="status" className="card flex items-center gap-4 bg-[var(--bg)] p-5 text-[var(--fg-muted)]">
+          <X size={28} aria-hidden />
+          <p className="text-lg font-bold">{t('Demande annulée. Les donneurs attendus ont été prévenus ; les poches réservées sont revenues au stock.')}</p>
+        </section>
+      )}
 
       {/* Compteurs en direct */}
       <section aria-labelledby="h-live" className="card p-5">
@@ -302,7 +334,25 @@ export function BloodLive({ id, initial }: { id: string; initial: LiveRequest })
                   <Check size={18} aria-hidden /> {t('Transfusion faite')}
                 </button>
               ))}
+            {!final && !confirmServed && !confirmCancel && (
+              <button type="button" className="btn btn-ghost" onClick={() => setConfirmCancel(true)} disabled={busy !== null}>
+                <X size={18} aria-hidden /> {t('Annuler la demande')}
+              </button>
+            )}
           </div>
+          {confirmCancel && !final && (
+            <div role="group" aria-label={t('Confirmer l’annulation')} className="mt-3 flex flex-wrap items-center gap-2 rounded-2xl border border-[var(--border)] p-4">
+              <p className="min-w-0 flex-1 text-base">
+                {t('Annuler cette demande ? Les donneurs qui ont dit oui seront prévenus qu’ils n’ont plus à venir, et les poches réservées reviendront au stock.')}
+              </p>
+              <button type="button" className="btn btn-danger" onClick={cancelRequest} disabled={busy !== null}>
+                {busy === 'cancel' ? t('Annulation…') : t('Oui, annuler')}
+              </button>
+              <button type="button" className="btn btn-ghost" onClick={() => setConfirmCancel(false)} disabled={busy !== null}>
+                {t('Garder la demande')}
+              </button>
+            </div>
+          )}
           <div className="mt-3 space-y-2">
             <OkNote>{note}</OkNote>
             <ErrorNote>{error}</ErrorNote>

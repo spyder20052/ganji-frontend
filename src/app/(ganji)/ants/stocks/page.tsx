@@ -145,6 +145,7 @@ function ReadOnlyGrid({ site, t }: { site: StockSite; t: T }) {
               return (
                 <td key={p.value} className={`num rounded-md border py-0.5 text-center font-bold ${LEVEL_CLASS[level(u)]}`}>
                   {u}
+                  <span className="sr-only">{level(u) === 'ok' ? t(' (suffisant)') : level(u) === 'low' ? t(' (bas)') : t(' (rupture)')}</span>
                 </td>
               );
             })}

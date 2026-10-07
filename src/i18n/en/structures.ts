@@ -265,4 +265,8 @@ export const structures: Messages = {
   'Fièvre avec saignements': 'Fever with bleeding',
   'Décès inexpliqué': 'Unexplained death',
   SMS: 'SMS',
+  // Ajouts du durcissement d'octobre 2026
+  ' (suffisant)': ' (sufficient)',
+  ' (bas)': ' (low)',
+  ' (rupture)': ' (out of stock)',
 };

@@ -12,8 +12,12 @@ export const hasIllustration = (name: string) => Boolean(ART[name]);
 /** Aperçu flou (10 px) affiché pendant le chargement ; absent pour les images transparentes. */
 export const placeholderOf = (name: string) => ART[name]?.lqip;
 
-/** Illustration de la landing (voir docs/ILLUSTRATIONS.md pour les prompts et les noms de fichiers). */
-export function Illustration({ icon, ...props }: Omit<ComponentProps<typeof IllustrationView>, 'available' | 'fallbackIcon' | 'size' | 'placeholder'> & { icon: string }) {
+/**
+ * Illustration de la landing (voir docs/ILLUSTRATIONS.md pour les prompts et les noms de fichiers).
+ * `blur` : aperçu flou pendant le chargement ; retiré sur les rails et onglets dont la plupart des images
+ * sont hors écran (chaque aperçu pèse deux fois dans la page, en HTML et dans la charge React).
+ */
+export function Illustration({ icon, blur = true, ...props }: Omit<ComponentProps<typeof IllustrationView>, 'available' | 'fallbackIcon' | 'size' | 'placeholder'> & { icon: string; blur?: boolean }) {
   const art = ART[props.name];
   return (
     <IllustrationView
@@ -21,7 +25,7 @@ export function Illustration({ icon, ...props }: Omit<ComponentProps<typeof Illu
       {...props}
       available={!!art}
       size={art ? [art.w, art.h] : undefined}
-      placeholder={art?.lqip}
+      placeholder={blur ? art?.lqip : undefined}
       fallbackIcon={<Pictogram name={icon} size={36} />}
     />
   );

@@ -19,7 +19,7 @@ Le patient au long cours (leucémie, drépanocytose, diabète, VIH) vit chaque m
 
 Ganji reste utile **sans réseau** (PWA hors ligne, carte d'urgence), **sans smartphone** (SMS, USSD, appel vocal, relais communautaire), **sans savoir lire** (pictogrammes, bouton « écouter », voix en langue nationale), **sans argent immédiat** (urgence vitale, droits ARCH) et **sans compte** (orientation anonyme, carte QR).
 
-L'interface existe **en français et en anglais** (Réglages → Langue · Language). Voix : français et anglais par la synthèse du téléphone, **yoruba et fon** en voix de synthèse à faire valider par un locuteur natif ; bariba et dendi à enregistrer (voir `docs/ENREGISTREMENTS.md`).
+L'interface existe en **six langues** : français, anglais, fon, yoruba, bariba et dendi (Réglages → Langue · Language ; les quatre langues nationales sont des traductions automatiques, à faire valider par des locuteurs natifs, voir `docs/LANGUES.md`). Voix : français et anglais par la synthèse du téléphone ; fon, yoruba, bariba et dendi par la voix de synthèse de l'API (modèles MMS), en plus des messages enregistrés quand ils existent (`docs/ENREGISTREMENTS.md`).
 
 ## Parcours à essayer (comptes de démo en un clic sur `/demo`)
 
@@ -49,11 +49,22 @@ cp .env.example .env.local   # BACKEND_URL=http://localhost:4000
 npm install && npm run dev   # http://localhost:3000
 ```
 
-Tests : `npm test` (unitaires), `npm run test:e2e` (Playwright : parcours héros, consentement, orientation, axe-core).
+Tests : `npm test` (unitaires, Vitest). `npm run test:e2e` (Playwright : parcours héros, consentement, orientation, langue, axe-core) suppose l'API lancée sur `:4000` et l'application sur `:3000` (`npm run build && npm start`, ou `npm run dev`).
+
+## Audience
+
+Le site compte chaque page ouverte et relie les pages d'une même visite, sans cookie, sans adresse IP et sans donnée personnelle (chemins sans identifiant, voir `src/lib/audience.ts`). Les chiffres se lisent uniquement en local, avec les accès du projet Vercel :
+
+```bash
+npm run audience                 # tableau de bord : pages, parcours de chaque visite, appareils, provenance, langues
+npm run audience -- --texte      # résumé des 30 derniers jours dans le terminal
+```
+
+Détails et conservation des données : [`tools/AUDIENCE.md`](tools/AUDIENCE.md).
 
 ## Architecture
 
-Next.js 15 (App Router, Server Components) + Tailwind CSS 4, PWA avec service worker écrit à la main, stockage local chiffré par PIN (WebCrypto). Le navigateur ne parle qu'à son propre domaine : `/api/*` est réécrit vers l'API NestJS, donc les cookies de session restent first-party. Détails : [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md). Sécurité : [`SECURITY.md`](SECURITY.md).
+Next.js 15 (App Router, Server Components) + Tailwind CSS 4, PWA avec service worker écrit à la main, stockage local chiffré par PIN (WebCrypto). Le navigateur ne parle qu'à son propre domaine : `/api/*` est réécrit vers l'API NestJS, donc les cookies de session restent first-party ; la politique de sécurité du contenu porte un nonce par requête (`src/middleware.ts`). Détails : [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md). Sécurité : [`SECURITY.md`](SECURITY.md).
 
 ## Déploiement
 

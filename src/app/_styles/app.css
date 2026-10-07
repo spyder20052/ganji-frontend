@@ -1,0 +1,66 @@
+/* Réglages propres aux écrans de l'application (espaces patient, soignant, officine, ministère, relais, pages
+   publiques) : carte, mode simple, grand texte, barre d'onglets. Jamais chargé sur l'accueil. */
+.leaflet-container { font: inherit; border-radius: var(--radius-card); }
+
+/* Mode simple (réglages) : seulement l'essentiel, en plus gros. */
+[data-simple] .simple-hide { display: none !important; }
+.simple-only { display: none; }
+[data-simple] .simple-only { display: revert; }
+[data-simple] .simple-big { font-size: 1.4rem; }
+
+/* Rangée qui passe à la ligne (texte + bouton) : la colonne de texte garde une largeur
+   lisible, c'est le bouton qui descend. Sans cela, `flex-1` (base 0 %) écrase le texte
+   à un mot par ligne sur un écran de 360 px. Hors couche : l'emporte sur les utilitaires. */
+.flex-wrap > .min-w-0.flex-1:not([class*='basis-']) {
+  flex-basis: 12rem;
+}
+
+/* Les champs de recherche ont leur propre bouton « effacer » : on masque celui du navigateur. */
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Texte agrandi jusqu'à 200 % sur un écran de 360 px : une case de grille peut rétrécir sous la
+   largeur de son plus long mot au lieu de pousser la page hors de l'écran, et les mots longs se
+   coupent (césure française). La césure reste réservée aux grandes tailles : à taille normale,
+   un mot coupé gêne les personnes qui lisent difficilement. */
+body {
+  overflow-wrap: break-word;
+}
+:root[style*='--text-scale: 1.5'] body,
+:root[style*='--text-scale: 2'] body {
+  hyphens: auto;
+}
+.grid > * {
+  min-width: 0;
+}
+
+/* Barre d'onglets flottante (téléphone) : le bas de page reste lisible au-dessus d'elle. */
+@media (max-width: 767px) {
+  body:has(.tabbar) {
+    padding-bottom: 104px;
+  }
+}
+/* Barre en pixels (chrome, pas du texte) : à 150 % et 200 %, l'onglet actif ne garde que son icône,
+   le titre de la page dit déjà où l'on est. */
+:root[style*='--text-scale: 1.5'] .tabbar-label,
+:root[style*='--text-scale: 2'] .tabbar-label {
+  display: none;
+}
+/* En-têtes collants : en grand texte, ils occuperaient près de la moitié de l'écran et
+   masqueraient l'élément qui a le focus (WCAG 2.4.11). Ils défilent alors avec la page. */
+:root[style*='--text-scale: 1.5'] header.sticky,
+:root[style*='--text-scale: 2'] header.sticky {
+  position: static;
+}
+
+/* Grands chiffres (indicateurs, compteurs) et grandes phrases en gras (statuts) : police des titres,
+   chiffres alignés, partout la même voix. Les codes à recopier gardent Atkinson (zéro barré, pas de
+   confusion avec la lettre O) : classe font-sans. */
+:is(.text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl, .text-7xl, .text-8xl):is(.num, .font-bold, .font-semibold):not(.font-sans) {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+.num:is(.text-4xl, .text-5xl, .text-6xl, .text-7xl, .text-8xl):not(.font-sans) { font-weight: 500; letter-spacing: -0.02em; }
+

@@ -213,7 +213,7 @@ function RequestRow({
                   <tr className="border-b border-[var(--border)] text-left text-sm text-[var(--fg-muted)]">
                     <th scope="col" className="py-1.5 pr-2 font-bold">{t('Prénom')}</th>
                     <th scope="col" className="py-1.5 pr-2 font-bold">{t('Groupe')}</th>
-                    <th scope="col" className="py-1.5 pr-2 text-right font-bold">Distance</th>
+                    <th scope="col" className="py-1.5 pr-2 text-right font-bold">{t('Distance')}</th>
                     <th scope="col" className="py-1.5 pr-2 font-bold">{t('Canal')}</th>
                     <th scope="col" className="py-1.5 font-bold">{t('Réponse')}</th>
                     <th scope="col" className="py-1.5 font-bold">

@@ -116,14 +116,14 @@ export function QrScanner({ onValue, busy = false, inputLabel, inputHint, placeh
           </div>
           {scanning ? (
             <button type="button" onClick={stop} className="btn btn-ghost w-full">
-              <CameraOff size={20} aria-hidden /> Arrêter la caméra
+              <CameraOff size={20} aria-hidden /> {t('Arrêter la caméra')}
             </button>
           ) : (
             <button type="button" onClick={start} disabled={busy} className="btn btn-primary w-full">
               <Camera size={20} aria-hidden /> {scanLabel ?? t('Scanner le QR code')}
             </button>
           )}
-          {scanning && <p role="status" className="text-sm text-[var(--fg-muted)]">Placez le QR code dans le cadre. Lecture automatique.</p>}
+          {scanning && <p role="status" className="text-sm text-[var(--fg-muted)]">{t('Placez le QR code dans le cadre. Lecture automatique.')}</p>}
         </div>
       )}
       {camError && <p role="alert" className="text-sm font-bold text-[var(--color-ocre-700)]">{camError}</p>}

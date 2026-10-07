@@ -394,4 +394,6 @@ export const patient: Messages = {
   'aucune connue': 'none known',
   'Urgence : pompiers 118': 'Emergency: fire and rescue 118',
   'QR de la carte d’urgence': 'Emergency card QR code',
+  // Ajouts du durcissement d'octobre 2026
+  'Pas de réseau : l’ajout d’un document attend le retour du réseau (il n’est pas gardé sur le téléphone).': 'No network: adding a document waits for the network to come back (it is not kept on the phone).',
 };

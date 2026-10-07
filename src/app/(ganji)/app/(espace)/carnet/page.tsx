@@ -12,6 +12,7 @@ import { TIMELINE_ICON } from '../../_lib/labels';
 import { getMe, load, type Loaded } from '../../_lib/load';
 import { DocumentOpen, DocumentUpload } from './Documents';
 import { SPECIALTY_LABEL } from '../../../pro/_lib/labels';
+import { isUuid } from '@/lib/validate';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -22,11 +23,10 @@ interface DocRef { id: string; kind: string; title: string; mime: string; size: 
 
 const DOC_KIND: Record<string, string> = { RESULTAT: 'Résultat', ORDONNANCE: 'Ordonnance', COMPTE_RENDU: 'Compte rendu', IMAGERIE: 'Imagerie', AUTRE: 'Autre' };
 const VIA: Record<string, string> = { DELEGATION: 'en tant qu’aidant', PARENT: 'en tant que parent', CARE_TEAM: 'équipe de soins', CONSENT: 'avec son accord', BREAK_GLASS: 'accès d’urgence' };
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default async function CarnetPage({ searchParams }: { searchParams: Promise<{ patient?: string }> }) {
   const [{ patient }, me, t, locale] = await Promise.all([searchParams, getMe(), getT(), getLocale()]);
-  const patientId = patient && UUID.test(patient) ? patient : me.patientId;
+  const patientId = patient && isUuid(patient) ? patient : me.patientId;
 
   if (!patientId) {
     return (
@@ -115,7 +115,7 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
               <Pictogram name="blood" size={30} />
               <p className="display text-[4.5rem]">{s.bloodGroup ?? '?'}</p>
               <p className="mt-1 text-sm font-bold">{t('Groupe sanguin')}</p>
-              {(s as Summary & { bloodGroupSource?: string | null }).bloodGroupSource === 'VERIFIE' && (
+              {s.bloodGroupSource === 'VERIFIE' && (
                 <p className="mt-2 inline-flex items-center gap-1 text-sm">
                   <ShieldCheck size={16} aria-hidden /> {t('Vérifié par un soignant')}
                 </p>
@@ -240,7 +240,7 @@ export default async function CarnetPage({ searchParams }: { searchParams: Promi
                 <h3 className="mb-2 text-lg font-bold">
                   {series.label} <span className="text-base font-normal text-[var(--fg-muted)]">({series.unit})</span>
                 </h3>
-                <LineChart series={series} />
+                <LineChart series={series} t={t} />
               </div>
             ))}
           </div>

@@ -1,0 +1,11 @@
+/* Feuille de style de l'application : Tailwind limité aux sources des écrans de l'application et des composants
+   partagés (l'accueil a la sienne, accueil.css, pour tenir le budget de la première page). */
+@import 'tailwindcss' source(none);
+@source '.';
+@source '../layout.tsx';
+@source '../error.tsx';
+@source '../not-found.tsx';
+@source '../../components';
+@source '../../i18n';
+@import '../_styles/theme.css';
+@import '../_styles/app.css';

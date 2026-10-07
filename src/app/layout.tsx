@@ -1,13 +1,13 @@
 import type { Metadata, Viewport } from 'next';
 import { Atkinson_Hyperlegible } from 'next/font/google';
 import localFont from 'next/font/local';
+import { headers } from 'next/headers';
 import { Audience } from '@/components/Audience';
 import { DemoBanner } from '@/components/DemoBanner';
 import { SwRegister } from '@/components/SwRegister';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getLocale, getT } from '@/i18n/server';
 import { HTML_LANG } from '@/i18n/translate';
-import './globals.css';
 
 // Atkinson Hyperlegible (conçue pour les malvoyants, exigence du cahier) : texte courant des espaces
 // patients. Pas de préchargement : l'accueil, en Poppins, ne la télécharge pas (budget de 200 Ko).
@@ -48,15 +48,23 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 };
 
-/** Préférences appliquées avant le premier rendu (taille du texte, thème, mode simple). */
-const PREFS = `try{var p=JSON.parse(localStorage.getItem('ganji-prefs')||'{}');var d=document.documentElement;if(p.scale)d.style.setProperty('--text-scale',p.scale);if(p.theme)d.dataset.theme=p.theme;if(p.voice)d.dataset.voice=p.voice;if(p.simple)d.dataset.simple='1'}catch(e){}`;
+/**
+ * Avant le premier rendu : préférences (taille du texte, thème, mode simple) et, sur l'accueil seulement, la
+ * marque « rideau d'entrée déjà vu » pour cette session (voir _landing/Intro.tsx). Un seul script en ligne pour
+ * toute l'application, porteur du nonce de la politique de sécurité du contenu.
+ */
+const PREFS =
+  `try{var p=JSON.parse(localStorage.getItem('ganji-prefs')||'{}');var d=document.documentElement;if(p.scale)d.style.setProperty('--text-scale',p.scale);if(p.theme)d.dataset.theme=p.theme;if(p.voice)d.dataset.voice=p.voice;if(p.simple)d.dataset.simple='1'}catch(e){}` +
+  `try{if(location.pathname==='/'){if(sessionStorage.getItem('ganji-intro'))document.documentElement.classList.add('intro-vue');else sessionStorage.setItem('ganji-intro','1')}}catch(e){}`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const t = await getT();
+  // Nonce de la politique de sécurité du contenu, posé par le middleware pour cette requête.
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
   return (
     <html lang={HTML_LANG[await getLocale()]} className={`${atkinson.variable} ${bricolage.variable} ${afrique.variable}`} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: PREFS }} />
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: PREFS }} />
       </head>
       <body className="min-h-dvh">
         <a href="#contenu" className="font-display sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 btn btn-primary">

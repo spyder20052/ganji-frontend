@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { blobToB64, compress } from '@/lib/image';
-import { sendOrQueue } from '@/lib/offline-queue';
+import { OfflineError, sendOrQueue } from '@/lib/offline-queue';
 
 export function DocumentUpload({ patientId }: { patientId: string }) {
   const t = useT();
@@ -40,14 +40,15 @@ export function DocumentUpload({ patientId }: { patientId: string }) {
     setMsg(null);
     try {
       const dataB64 = await blobToB64(ready.blob);
-      const r = await sendOrQueue({ path: `/patients/${patientId}/documents`, method: 'POST', body: { title: title.trim().slice(0, 80), kind, mime: ready.mime, dataB64 }, label: t('Document « {title} »', { title: title.trim() }) });
-      setMsg({ tone: 'ok', text: r.queued ? t('Pas de réseau : le document est gardé sur le téléphone et partira au retour du réseau.') : t('Document ajouté à votre carnet.') });
+      // Jamais en file hors ligne : un document médical ne reste pas en clair sur le téléphone.
+      await sendOrQueue({ path: `/patients/${patientId}/documents`, method: 'POST', body: { title: title.trim().slice(0, 80), kind, mime: ready.mime, dataB64 }, label: t('Document « {title} »', { title: title.trim() }) }, { queueable: false });
+      setMsg({ tone: 'ok', text: t('Document ajouté à votre carnet.') });
       setReady(null);
       setTitle('');
       if (inputRef.current) inputRef.current.value = '';
-      if (!r.queued) router.refresh();
+      router.refresh();
     } catch (e) {
-      setMsg({ tone: 'err', text: e instanceof ApiError ? e.message : t('Envoi impossible. Réessayez.') });
+      setMsg({ tone: 'err', text: e instanceof OfflineError ? t('Pas de réseau : l’ajout d’un document attend le retour du réseau (il n’est pas gardé sur le téléphone).') : e instanceof ApiError ? e.message : t('Envoi impossible. Réessayez.') });
     } finally {
       setBusy(null);
     }

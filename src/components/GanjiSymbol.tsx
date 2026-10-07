@@ -5,10 +5,18 @@ export const SYMBOL_PATH =
 /** Les quatre feuilles du symbole, séparées pour les animer une à une (chargement, hero). */
 export const SYMBOL_LEAVES = SYMBOL_PATH.split(/(?=M)/);
 
-export function GanjiSymbol({ size = 30, className, color = '#168A56' }: { size?: number | string; className?: string; color?: string }) {
+/** Identifiants des définitions partagées (voir <SvgSprite>) : le tracé n'est écrit qu'une fois dans la page. */
+export const SYMBOL_ID = 'ganji-symbole';
+export const LOGOTYPE_ID = 'ganji-logotype';
+
+/**
+ * `sprite` : référence le tracé défini une fois par <SvgSprite> (pages qui montrent le symbole plusieurs fois,
+ * comme l'accueil) ; sinon le tracé est en ligne, autonome.
+ */
+export function GanjiSymbol({ size = 30, className, color = '#168A56', sprite = false }: { size?: number | string; className?: string; color?: string; sprite?: boolean }) {
   return (
     <svg width={size} height={size} viewBox="0 0 520 520" aria-hidden="true" className={className}>
-      <path d={SYMBOL_PATH} fill={color} />
+      {sprite ? <use href={`#${SYMBOL_ID}`} fill={color} /> : <path d={SYMBOL_PATH} fill={color} />}
     </svg>
   );
 }

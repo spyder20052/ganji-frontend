@@ -1,0 +1,366 @@
+/* Accueil : chargement, hero, rails, cartes, histoire de Koffi. Chargé sur la première page seulement. */
+/* Notifications décoratives du hero : sans place autour de l'onde en grand texte. */
+:root[style*='--text-scale: 1.5'] .hero-chip,
+:root[style*='--text-scale: 2'] .hero-chip,
+:root[style*='--text-scale: 1.5'] .hero-link,
+:root[style*='--text-scale: 2'] .hero-link {
+  display: none;
+}
+
+/* ── Landing ───────────────────────────────────────────────────────────────
+   Toutes ces animations sont coupées par la règle « mouvement réduit » plus haut. */
+
+
+/* ── Hero et chargement ──────────────────────────────────────────────────
+   Tout entre une fois puis reste immobile : aucun mouvement en boucle.
+   --intro : durée du rideau de chargement ; le hero démarre après lui (0 s s'il a déjà été vu). */
+:root { --intro: 2.6s; }
+.intro-vue { --intro: 0s; }
+
+/* Chargement : sur fond Papier, les quatre feuilles du symbole arrivent une à une des coins de l'écran, avec une
+   traînée, et se posent avec un rebond : on voit le logo se construire. Le symbole se verrouille, puis l'onde de la
+   charte sort de lui : cinq carrés en escalier pleins, du Vert Ganji à la Forêt du hero, qui recouvrent tout l'écran.
+   Les feuilles prennent au passage le vert clair du hero ; le rideau, devenu Forêt, s'efface sur le hero qui ouvre
+   sa propre onde : la transition est une seule vague. Chronologie : feuilles 0,1–1,75 s · verrou 1,75 s ·
+   onde 1,85–2,6 s · symbole effacé à 2,75 s · fondu 2,7–3,1 s ; le hero entre à 2,6 s. */
+.intro { animation: intro-out 0.4s ease-out 2.7s both; pointer-events: none; }
+.intro-vue .intro { display: none; }
+@keyframes intro-out { to { opacity: 0; visibility: hidden; } }
+/* Le translate est en unités du SVG (520 pour ≈ 110 à 130 px) : 320vw y vaut plus d'une demi-largeur d'écran. */
+.intro-leaf, .intro-ghost { transform-box: fill-box; transform-origin: center; animation: leaf-in 0.75s cubic-bezier(0.2, 1.15, 0.35, 1) both; }
+.intro-ghost { animation-name: ghost-in; }
+.leaf-0 { --dx: -320vw; --dy: -320vh; --d: 0.1s; }
+.leaf-3 { --dx: 320vw; --dy: -320vh; --d: 0.4s; }
+.leaf-2 { --dx: 320vw; --dy: 320vh; --d: 0.7s; }
+.leaf-1 { --dx: -320vw; --dy: 320vh; --d: 1s; }
+.intro-leaf { animation: leaf-in 0.75s cubic-bezier(0.2, 1.15, 0.35, 1) var(--d) both, leaf-tint 0.35s ease 1.8s forwards; }
+.intro-ghost { animation-delay: calc(var(--d) + 70ms); }
+@keyframes leaf-in { from { translate: var(--dx) var(--dy); rotate: -150deg; scale: 2.2; } }
+@keyframes leaf-tint { to { fill: #5fd08f; } }
+@keyframes ghost-in { from { opacity: 0.4; translate: var(--dx) var(--dy); rotate: -150deg; scale: 2.2; } 30% { opacity: 0.2; } 45%, to { opacity: 0; } }
+/* Le symbole se verrouille (il gonfle puis se tasse), puis s'efface avant le fondu : le hero a déjà le sien. */
+.intro-mark { animation: mark-lock 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) 1.75s both; }
+@keyframes mark-lock { 35% { scale: 1.14; } 70% { scale: 0.95; } }
+.intro-stage { animation: stage-out 0.4s ease-in-out 2.35s both; }
+@keyframes stage-out { to { opacity: 0; scale: 0.6; } }
+/* L'onde : chaque carré part de sous le symbole et grandit jusqu'à couvrir l'écran (lent au départ, puis vite). */
+.intro-wave { transform-box: fill-box; transform-origin: center; scale: 0; animation: wave-fill 0.85s cubic-bezier(0.7, 0, 0.25, 1) forwards; animation-delay: calc(1.85s + var(--w) * 0.11s); }
+@keyframes wave-fill { from { scale: 0; } to { scale: 28; } }
+
+/* L'onde de la charte s'ouvre du centre vers l'extérieur, une seule fois. */
+.onde-layer { transform-box: fill-box; transform-origin: center; animation: layer-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--intro) + var(--i, 0) * 110ms); }
+@keyframes layer-in { from { opacity: 0; scale: 0.72; } }
+.hero-mark { transform-box: fill-box; transform-origin: center; animation: mark-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--intro) + 0.1s); }
+@keyframes mark-in { from { opacity: 0; scale: 0.4; rotate: -45deg; } }
+/* Orbite : un fil part du symbole vers chaque notification, la notification apparaît, puis l'ensemble
+   tourne lentement (70 s par tour). Chaque bras est tourné de son angle ; la notification, au bout,
+   tourne en sens inverse pour que le texte reste droit. Les fils passent sous le symbole, les
+   notifications au-dessus. --r : rayon de l'orbite, en largeur du hero (plus court sur téléphone). */
+.hero-onde { container-type: inline-size; --r: 31.5cqw; --chip-w: 9.5rem; --orbit: 70s; --orbit-start: calc(var(--intro) + 2.1s); }
+@media (max-width: 639px) { .hero-onde > svg { scale: 0.8; } }
+@media (max-width: 379px) { .hero-onde { --r: 32.5cqw; --chip-w: 8.6rem; } .hero-onde > svg { scale: 0.74; } }
+@media (min-width: 640px) { .hero-onde { --r: 36cqw; --chip-w: 11.5rem; } }
+@media (min-width: 1024px) { .hero-onde { --r: 32cqw; } .hero-onde > svg { scale: 0.9; } }
+@media (min-width: 1280px) { .hero-onde { --r: 38cqw; --chip-w: 16.5rem; } .hero-onde > svg { scale: none; } }
+.hero-orbit { animation: orbit-spin var(--orbit) linear var(--orbit-start) infinite; }
+@keyframes orbit-spin { to { rotate: 360deg; } }
+.orbit-arm { position: absolute; left: 50%; top: 50%; width: var(--r); height: 0; transform-origin: 0 0; rotate: var(--a); }
+.hero-link {
+  position: absolute; left: 0; right: 0; top: -0.75px; height: 1.5px; border-radius: 1px;
+  background: linear-gradient(90deg, #5fd08f 40%, rgb(95 208 143 / 0.55));
+  transform-origin: 0 50%;
+  animation: link-draw 0.55s ease-out both; animation-delay: calc(var(--intro) + 0.6s + var(--i, 0) * 0.25s);
+}
+@keyframes link-draw { from { scale: 0 1; } }
+.orbit-chip {
+  position: absolute; left: 100%; top: 0; translate: -50% -50%;
+  transform: rotate(calc(-1 * var(--a)));
+  animation: orbit-counter var(--orbit) linear var(--orbit-start) infinite;
+}
+@keyframes orbit-counter { to { rotate: -360deg; } }
+.hero-chip {
+  max-width: var(--chip-w);
+  text-wrap: balance;
+  transition: translate 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s;
+  animation: chip-pop 0.6s cubic-bezier(0.34, 1.4, 0.64, 1) both; animation-delay: calc(var(--intro) + 0.95s + var(--i, 0) * 0.25s);
+}
+.hero-chip:hover { translate: 0 -4px; box-shadow: 0 22px 36px -16px rgb(0 0 0 / 0.6); }
+@keyframes chip-pop { from { opacity: 0; scale: 0.6; } }
+
+/* Survol du symbole : ses quatre feuilles s'écartent, la plaque s'éclaire, l'onde se propage du centre
+   vers l'extérieur, et la ronde s'arrête (pour lire, on s'arrête aussi en survolant une notification). */
+.hero-core { pointer-events: auto; }
+.core-plate, .mark-leaf, .onde-ripple { transform-box: fill-box; transform-origin: center; transition: translate 0.6s cubic-bezier(0.34, 1.5, 0.64, 1), rotate 0.6s cubic-bezier(0.34, 1.5, 0.64, 1), scale 0.6s cubic-bezier(0.34, 1.5, 0.64, 1), filter 0.4s; }
+.onde-ripple { transition-delay: calc(var(--k) * 45ms); }
+.hero-core:hover .core-plate { scale: 1.07; filter: brightness(1.35); }
+.hero-core:hover .mark-leaf { rotate: -12deg; }
+.hero-core:hover .mark-leaf-0 { translate: -44px -44px; }
+.hero-core:hover .mark-leaf-1 { translate: -44px 44px; }
+.hero-core:hover .mark-leaf-2 { translate: 44px 44px; }
+.hero-core:hover .mark-leaf-3 { translate: 44px -44px; }
+.hero-onde:has(.hero-core:hover) .onde-ripple { scale: calc(1 + var(--k) * 0.012); filter: brightness(1.12); }
+.hero-onde:has(.hero-core:hover, .hero-chip:hover) :is(.hero-orbit, .orbit-chip) { animation-play-state: paused; }
+
+/* Boutons du hero. Principal : le rond de la flèche s'étend et remplit le bouton, la flèche avance.
+   Secondaire : le blanc balaie le bouton de gauche à droite. Au clavier, même effet qu'au survol. */
+.cta-fill, .cta-sweep { position: relative; isolation: isolate; overflow: hidden; transition: color 0.35s ease, transform 0.15s ease; }
+.cta-fill::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  right: 0.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-top: -1.25rem;
+  border-radius: 999px;
+  background: var(--color-brand-950);
+  transition: scale 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cta-fill:hover, .cta-fill:focus-visible { color: var(--color-leaf); }
+.cta-fill:hover::before, .cta-fill:focus-visible::before { scale: 13; }
+.cta-arrow { transition: translate 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+.cta-fill:hover .cta-arrow, .cta-fill:focus-visible .cta-arrow { translate: 4px 0; }
+.cta-sweep::before { content: ''; position: absolute; z-index: -1; inset: 0; background: #fff; scale: 0 1; transform-origin: 0 50%; transition: scale 0.45s cubic-bezier(0.16, 1, 0.3, 1); }
+.cta-sweep:hover, .cta-sweep:focus-visible { color: var(--color-brand-900); }
+.cta-sweep:hover::before, .cta-sweep:focus-visible::before { scale: 1 1; }
+.cta-fill:active, .cta-sweep:active { transform: scale(0.97); }
+
+/* Titre du hero en Bricolage Grotesque Bold, taille optique 96 (sous-ensemble du titre ; sinon, la police des titres). */
+.hero-title { font-family: var(--font-titre), var(--font-display); line-height: 1; letter-spacing: -0.004em; }
+/* Titre : chaque mot monte de derrière un masque (assez haut pour les accents et les jambages). */
+.hw { display: inline-block; overflow: hidden; vertical-align: bottom; padding-block: 0.1em 0.2em; margin-block: -0.1em -0.2em; }
+.hw > span { display: inline-block; animation: word-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--intro) + var(--i, 0) * 80ms); }
+@keyframes word-up { from { translate: 0 110%; } }
+.hw-accent { color: var(--color-leaf); }
+.rise-in { animation: rise-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--intro) + var(--i, 0) * 90ms); }
+
+
+
+/* Entrée du hero : titre, texte puis boutons, en cascade. */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Apparition au défilement, en CSS natif (sans JavaScript). Sans support : contenu visible d'emblée. */
+@keyframes reveal-in {
+  from { opacity: 0; translate: 0 28px; }
+  to { opacity: 1; translate: 0 0; }
+}
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal-in both cubic-bezier(0.16, 1, 0.3, 1);
+    animation-timeline: view();
+    animation-range: entry 0% cover 25%;
+  }
+}
+
+/* Sections sous la ligne de flottaison : rendues (et leurs fonds chargés) à l'approche seulement.
+   Premier affichage plus léger en 2G et sur les téléphones modestes. */
+.below-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+/* Accueil : texte courant en Poppins Regular (charte) ; titres, liens, boutons, étiquettes et tout ce qui
+   est en gras en Bricolage Grotesque, avec Poppins en secours (jamais Atkinson : 2 fichiers de plus). */
+.landing-text {
+  --font-display: var(--font-afrique), var(--font-bricolage), var(--font-poppins-text), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-afrique), var(--font-poppins-text), ui-sans-serif, system-ui, sans-serif;
+}
+.landing-text :where(.font-medium, .font-semibold, .font-bold, .btn, .eyebrow, .pill, b, strong):not(.hero-title) { font-family: var(--font-display); }
+
+/* Étiquette de section (« Services », « Parcours »…) : le nom de la section, comme dans la navigation. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  background: var(--card);
+  padding: 0.35rem 0.95rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+/* Sections en « feuilles » : coins arrondis qui glissent sur la section précédente. */
+.sheet {
+  position: relative;
+  z-index: 1;
+  margin-top: -2rem;
+  border-radius: 2rem 2rem 0 0;
+}
+@media (min-width: 768px) {
+  .sheet { margin-top: -3rem; border-radius: 3rem 3rem 0 0; }
+}
+
+/* Progression de lecture : fine barre Pousse sous l'en-tête, pilotée par le défilement. */
+.scroll-progress { transform-origin: 0 50%; scale: 0 1; }
+
+/* Services : deux rails d'illustrations (référence : galerie de cas clients). Téléphone : cartes ouvertes
+   qui défilent au doigt. Ordinateur : une grande carte et des vignettes d'environ 140 px ; la carte
+   survolée ou atteinte au clavier s'ouvre et le reste quand la souris part. */
+.svc-rail {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.svc-item { flex: 0 0 82%; height: 24rem; scroll-snap-align: start; list-style: none; }
+.svc-mini { display: none; }
+.svc-scrim { background: linear-gradient(to top, rgb(6 36 24 / 0.9) 0%, rgb(6 36 24 / 0.45) 38%, rgb(6 36 24 / 0) 65%); }
+.svc-img img { transition: scale 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.svc-link:hover .svc-img img, .svc-link:focus-visible .svc-img img { scale: 1.05; }
+@media (min-width: 768px) {
+  .svc-rail { overflow: visible; height: 21rem; gap: 0.75rem; }
+  .svc-item { flex: 1 1 0; min-width: 0; height: auto; transition: flex-grow 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+  .svc-item[data-open] { flex-grow: 3.4; }
+  .svc-mini { display: flex; transition: opacity 0.25s; }
+  .svc-item[data-open] .svc-mini { opacity: 0; }
+  .svc-full { width: 24rem; max-width: none; opacity: 0; translate: 0 14px; transition: opacity 0.25s, translate 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+  .svc-more { opacity: 0; transition: opacity 0.25s; }
+  .svc-item[data-open] .svc-full, .svc-item[data-open] .svc-more { opacity: 1; translate: 0 0; transition-delay: 0.22s; }
+}
+
+/* Parcours : un tube de transfusion descend entre les étapes. Au défilement, le sang y monte (il atteint
+   toujours le milieu de l'écran), des globules y circulent et chaque étape s'allume quand il l'atteint. */
+.flow { view-timeline: --flow block; }
+.flow-tube {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e3ece6, #ffffff 42%, #dce7e0);
+  box-shadow: inset 0 0 0 2px var(--color-line), 0 1px 10px -4px rgb(11 61 44 / 0.25);
+}
+.flow-blood {
+  container-type: size;
+  overflow: hidden;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #7f1616, #c62828 42%, #e5463f 58%, #a11d1d);
+}
+/* Reflet qui descend dans le sang : il coule. */
+.flow-blood::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(180deg, transparent 0 20px, rgb(255 255 255 / 0.2) 20px 26px);
+  animation: flow-stream 0.9s linear infinite;
+}
+@keyframes flow-stream { to { background-position: 0 26px; } }
+.flow-cell {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: var(--s, 8px);
+  height: var(--s, 8px);
+  margin-left: calc(var(--s, 8px) / -2 + var(--x, 0px));
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff9b92, #b71c1c 70%);
+  animation: cell-down var(--dur, 5s) linear infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes cell-down { to { translate: 0 calc(100cqh + 24px); } }
+.flow-node { background: var(--color-danger-600); color: #fff; box-shadow: 0 0 0 6px rgb(198 40 40 / 0.14); }
+@keyframes node-on { from { background: var(--card); color: var(--fg); box-shadow: inset 0 0 0 2px var(--color-line); } }
+@keyframes blood-fill { from { clip-path: inset(0 0 100% 0 round 999px); } to { clip-path: inset(0 0 0 0 round 999px); } }
+@keyframes heart-on { from { background: var(--card); color: var(--fg-muted); scale: 0.85; } 60% { scale: 1.12; } }
+:root[data-theme='dark'] .flow-tube { background: linear-gradient(90deg, #1b2a24, #26372f 42%, #18251f); box-shadow: inset 0 0 0 2px #2e4038; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .flow-tube { background: linear-gradient(90deg, #1b2a24, #26372f 42%, #18251f); box-shadow: inset 0 0 0 2px #2e4038; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-cell, .intro { display: none; }
+}
+
+
+/* Le jeu de cartes (référence : cartes de couleur inclinées, en quinconce). Téléphone et tablette : on les
+   fait défiler au doigt, légèrement inclinées. Grand écran : les cinq côte à côte, inclinaison et décalage
+   complets. Pastille (pictogramme) et flèche découpées dans l'illustration, de la couleur de la carte. */
+.sans-deck {
+  display: flex;
+  gap: 1.25rem;
+  margin-inline: -1rem;
+  padding: 2rem 1rem 2.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(95 208 143 / 0.35) transparent;
+}
+.sans-card { --t: calc(var(--tilt, 0deg) * 0.4); flex: 0 0 min(19rem, 80%); scroll-snap-align: start; rotate: var(--t); }
+@media (min-width: 1280px) {
+  .sans-deck { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: start; gap: 1.25rem; margin: 0; padding: 0 0 2rem; overflow: visible; }
+  .sans-card { --t: var(--tilt, 0deg); translate: 0 var(--lift, 0rem); }
+}
+.sans-face {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 1.75rem;
+  padding: 0.75rem;
+  background: var(--sc-bg);
+  color: var(--sc-fg);
+  transition: rotate 0.55s cubic-bezier(0.34, 1.4, 0.64, 1), translate 0.55s cubic-bezier(0.34, 1.4, 0.64, 1), scale 0.55s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.4s, opacity 0.4s, filter 0.4s;
+}
+.sans-art { position: relative; display: block; }
+.sans-art > div { border-radius: 1.15rem; }
+.sans-art img { scale: var(--z, 1); transform-origin: var(--o, 50% 50%); transition: scale 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+.sans-badge, .sans-arrow {
+  position: absolute;
+  top: -0.2rem;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  background: var(--sc-bg);
+  color: var(--sc-fg);
+  box-shadow: 0 0 0 0.4rem var(--sc-bg);
+  transition: rotate 0.45s cubic-bezier(0.34, 1.4, 0.64, 1), background-color 0.3s, color 0.3s, scale 0.45s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+.sans-badge { left: -0.2rem; }
+.sans-arrow { right: -0.2rem; }
+/* Survol ou clavier : la carte se redresse, monte et grandit un peu, l'illustration s'avance, la pastille
+   rebondit, la flèche tourne vers l'avant ; les autres cartes s'effacent. */
+.sans-card:has(.sans-face:hover, .sans-face:focus-visible) { position: relative; z-index: 2; }
+.sans-face:hover, .sans-face:focus-visible { rotate: calc(var(--t) * -1); translate: 0 -14px; scale: 1.04; box-shadow: 0 32px 60px -18px rgb(0 0 0 / 0.7), 0 0 48px -8px rgb(95 208 143 / 0.35); }
+.sans-face:hover .sans-art img, .sans-face:focus-visible .sans-art img { scale: calc(var(--z, 1) * 1.14); }
+.sans-face:hover .sans-badge, .sans-face:focus-visible .sans-badge { scale: 1.12; rotate: -10deg; }
+.sans-face:hover .sans-arrow, .sans-face:focus-visible .sans-arrow { rotate: 45deg; background: #fff; color: #0b3d2c; }
+@media (hover: hover) {
+  .sans-deck:has(.sans-face:hover) .sans-face:not(:hover) { opacity: 0.7; }
+}
+@keyframes card-deal { from { opacity: 0; translate: 0 110px; rotate: 0deg; } }
+@keyframes card-slide { from { scale: 0.92; } }
+
+/* Le problème barré, puis la réponse qui glisse en place. */
+.strike { background: linear-gradient(currentColor, currentColor) no-repeat 0 58% / 100% 1.5px; }
+@keyframes strike-in { from { background-size: 0% 1.5px; } }
+@keyframes slide-in { from { opacity: 0; translate: 18px 0; } }
+
+/* Illustrations : léger recul à l'entrée. Hero : l'onde s'efface doucement quand on descend. */
+@keyframes zoom-in { from { scale: 1.08; } }
+@keyframes grow-x { to { scale: 1 1; } }
+
+/* Journal d'accès : la tentative refusée appelle l'œil (anneau qui pulse). */
+@keyframes ring-pulse { 0% { box-shadow: 0 0 0 0 rgb(217 154 30 / 0.55); } 70%, 100% { box-shadow: 0 0 0 10px rgb(217 154 30 / 0); } }
+.pulse-ring { border-radius: 999px; animation: ring-pulse 2.4s ease-out 3; }
+
+/* Profils : le panneau change en fondu à chaque onglet. */
+@keyframes panel-in { from { opacity: 0; translate: 0 10px; } }
+.panel-in { animation: panel-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@supports (animation-timeline: view()) {
+  .scroll-progress { animation: grow-x linear both; animation-timeline: scroll(root); }
+  .flow-blood { animation: blood-fill linear both; animation-timeline: --flow; animation-range: cover 50vh cover calc(100% - 50vh); }
+  .flow-node, .flow-end { animation: node-on linear both; animation-timeline: view(); animation-range: cover calc(50vh - 24px) cover calc(50vh + 12px); }
+  .flow-end { animation-name: heart-on; }
+  /* Rail : chaque carte grandit en entrant par le côté. Grand écran : elles tombent en place, l'une après l'autre. */
+  .sans-card { animation: card-slide linear both; animation-timeline: view(inline); animation-range: entry 0% entry 100%; }
+  @media (min-width: 1280px) {
+    .sans-card { animation: card-deal both cubic-bezier(0.16, 1, 0.3, 1); animation-timeline: view(); animation-range: entry 0% cover calc(24% + var(--i) * 5%); }
+  }
+  .strike { animation: strike-in linear both; animation-timeline: view(); animation-range: entry 60% cover 40%; }
+  .slide-in { animation: slide-in both cubic-bezier(0.16, 1, 0.3, 1); animation-timeline: view(); animation-range: entry 70% cover 40%; }
+  .zoom-in img { animation: zoom-in both linear; animation-timeline: view(); animation-range: entry 0% cover 50%; }
+}

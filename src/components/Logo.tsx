@@ -8,12 +8,12 @@ import { Logotype } from './Logotype';
  * Hauteur du symbole ≥ 24 px à l'écran (taille minimale de la charte). Sur fond Forêt (`light`) :
  * logotype blanc et symbole en Pousse.
  */
-export async function Logo({ href = '/', light = false }: { href?: string; light?: boolean }) {
+export async function Logo({ href = '/', light = false, sprite = false }: { href?: string; light?: boolean; sprite?: boolean }) {
   const t = await getT();
   return (
     <Link href={href} prefetch={false} className="inline-flex items-center gap-2.5" aria-label={t('Ganji, accueil')}>
-      <GanjiSymbol size={30} color={light ? '#5FD08F' : undefined} />
-      <Logotype className={`text-[1.45rem] ${light ? 'text-white' : 'text-[var(--color-brand-900)] dark:text-[var(--fg)]'}`} />
+      <GanjiSymbol size={30} color={light ? '#5FD08F' : undefined} sprite={sprite} />
+      <Logotype className={`text-[1.45rem] ${light ? 'text-white' : 'text-[var(--color-brand-900)] dark:text-[var(--fg)]'}`} sprite={sprite} />
     </Link>
   );
 }

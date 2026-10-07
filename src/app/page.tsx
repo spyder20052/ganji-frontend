@@ -9,8 +9,10 @@ import { Logo } from '@/components/Logo';
 import { Logotype } from '@/components/Logotype';
 import { Pictogram } from '@/components/Pictogram';
 import { PrefsMenu } from '@/components/PrefsMenu';
+import { SpriteIcon, SvgSprite } from '@/components/SvgSprite';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getT } from '@/i18n/server';
+import './accueil.css';
 import { hasIllustration, Illustration, placeholderOf } from './_landing/Illustration';
 import { DeferredImages } from './_landing/DeferredImages';
 import { KoffiStory } from './_landing/KoffiStory';
@@ -214,13 +216,17 @@ export default async function Home() {
   const t = await getT();
   return (
     <div className={`${poppinsText.variable} ${titleFont.variable} landing-text`}>
+      <SvgSprite
+        pictograms={[...NO_ACCOUNT, ...PROBLEMS, ...SERVICE_GROUPS.flatMap((g) => g.items), ...FIVE_WITHOUT, ...STEPS].map((x) => x.icon)}
+        icons={{ check: Check, x: X, 'fleche-droite': ArrowRight, 'fleche-haut-droite': ArrowUpRight }}
+      />
       <Intro />
       {/* En-tête fondu dans le hero : même Forêt, rien ne le sépare du titre ; il garde ce fond en
           descendant, et la barre de lecture Pousse apparaît sous lui. */}
       <header className="sticky top-0 z-30 bg-brand-900 [&_:focus-visible]:!outline-leaf">
         <span aria-hidden className="scroll-progress absolute inset-x-0 bottom-0 h-[3px] bg-leaf" />
         <div className={`${WRAP} flex flex-wrap items-center gap-3 py-3`}>
-          <Logo light />
+          <Logo light sprite />
           <nav aria-label={t('Sections de la page')} className="ml-6 hidden items-center gap-1 lg:flex">
             {NAV.map((n) => (
               <a key={n.href} href={n.href} className="rounded-full px-4 py-2 text-base font-medium text-sage transition-colors hover:bg-white/10 hover:text-white">
@@ -300,9 +306,9 @@ export default async function Home() {
                 <Link prefetch={false} href={a.href} className={`group flex aspect-[1/0.9] flex-col justify-between rounded-card p-4 transition-transform hover:-translate-y-0.5 active:scale-[0.98] md:aspect-[1.3/1] ${a.card}`}>
                   <span className="flex items-start justify-between">
                     <span className={`grid h-14 w-14 place-items-center rounded-full transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6 ${a.chip}`}>
-                      <Pictogram name={a.icon} size={28} />
+                      <Pictogram name={a.icon} size={28} sprite />
                     </span>
-                    <ArrowUpRight size={22} aria-hidden className="opacity-60" />
+                    <SpriteIcon name="fleche-haut-droite" size={22} className="opacity-60" />
                   </span>
                   <span className="font-display text-[1.3rem] leading-tight font-medium">{t(a.title)}</span>
                 </Link>
@@ -330,20 +336,20 @@ export default async function Home() {
                 <li key={t(p.title)} className="reveal rounded-card bg-bg p-5">
                   <h3 className="flex items-center gap-3 text-xl font-medium">
                     <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${p.icon === 'blood' || p.icon === 'emergency' ? 'bg-danger-50 text-[var(--color-danger-600)]' : 'bg-brand-100 text-brand-900'}`}>
-                      <Pictogram name={p.icon} size={22} />
+                      <Pictogram name={p.icon} size={22} sprite />
                     </span>
                     {t(p.title)}
                   </h3>
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     <p className="flex gap-2 text-base text-fg-muted">
-                      <X size={18} aria-hidden className="mt-1 shrink-0" />
+                      <SpriteIcon name="x" size={18} className="mt-1 shrink-0" />
                       <span>
                         <span className="sr-only">{t('Aujourd’hui :')} </span>
                         <span className="strike">{t(p.before)}</span>
                       </span>
                     </p>
                     <p className="slide-in flex gap-2 rounded-2xl bg-brand-100 p-3 text-base font-medium text-brand-900">
-                      <Check size={18} aria-hidden className="mt-1 shrink-0" />
+                      <SpriteIcon name="check" size={18} className="mt-1 shrink-0" />
                       <span>
                         <span className="sr-only">{t('Avec Ganji :')} </span>
                         {t(p.after)}
@@ -389,18 +395,18 @@ export default async function Home() {
                       <li key={s.key} data-i={i} data-open={i === 0 ? '' : undefined} className="svc-item">
                         <Link prefetch={false} href={s.href} className="svc-link group relative block h-full overflow-hidden rounded-card bg-brand-900 text-white">
                           <span className="svc-img absolute inset-0">
-                            <Illustration name={`service-${s.key}`} icon={s.icon} alt="" frame="h-full" position={s.pos} sizes="(min-width: 768px) 560px, 82vw" />
+                            <Illustration name={`service-${s.key}`} icon={s.icon} alt="" frame="h-full" position={s.pos} sizes="(min-width: 768px) 560px, 82vw" blur={false} />
                           </span>
                           <span aria-hidden className="svc-scrim absolute inset-0" />
                           <span className="svc-more absolute top-4 right-4 inline-flex items-center gap-2 rounded-full bg-white/90 py-1.5 pr-1.5 pl-3.5 text-sm font-semibold text-brand-900">
                             {t('Découvrir')}
                             <span className="grid h-6 w-6 place-items-center rounded-full bg-brand-900 text-white">
-                              <ArrowRight size={14} aria-hidden className="transition-transform group-hover:translate-x-0.5" />
+                              <SpriteIcon name="fleche-droite" size={14} className="transition-transform group-hover:translate-x-0.5" />
                             </span>
                           </span>
                           <span aria-hidden className="svc-mini absolute inset-x-3 bottom-4 flex-col items-start gap-2">
                             <span className="grid h-9 w-9 place-items-center rounded-full bg-white text-brand-900">
-                              <Pictogram name={s.icon} size={17} />
+                              <Pictogram name={s.icon} size={17} sprite />
                             </span>
                             <span className="font-display text-base leading-tight font-medium">{t(s.title)}</span>
                           </span>
@@ -431,7 +437,8 @@ export default async function Home() {
             </div>
             <Illustration name="hero-communaute" icon="people" alt="" sizes="(min-width: 768px) 36vw, 90vw" className="mx-auto max-w-[440px]" />
           </div>
-          <PersonaTabs personas={PERSONAS.map((x) => ({ ...x, name: t(x.name), role: t(x.role), need: t(x.need), benefits: x.benefits.map((b) => t(b)) }))} available={Object.fromEntries(PERSONAS.map((p) => [p.key, hasIllustration(`persona-${p.key}`)]))} placeholders={Object.fromEntries(PERSONAS.map((p) => [p.key, placeholderOf(`persona-${p.key}`)]))} />
+          {/* Aperçu flou pour le premier profil seulement : les autres onglets chargent leur image à l'ouverture. */}
+          <PersonaTabs personas={PERSONAS.map((x) => ({ ...x, name: t(x.name), role: t(x.role), need: t(x.need), benefits: x.benefits.map((b) => t(b)) }))} available={Object.fromEntries(PERSONAS.map((p) => [p.key, hasIllustration(`persona-${p.key}`)]))} placeholders={{ [PERSONAS[0].key]: placeholderOf(`persona-${PERSONAS[0].key}`) }} />
           </div>
         </section>
 
@@ -484,7 +491,7 @@ export default async function Home() {
         <section id="inclusion" aria-labelledby="h-5sans" className="below-fold sheet filigrane scroll-mt-24 bg-brand-900 py-16 text-white md:py-24 [&_:focus-visible]:!outline-leaf">
           {/* Deux calques de filigrane à des vitesses différentes : la trame, et le symbole géant qui tourne. */}
           <span aria-hidden className="filigrane-mark">
-            <GanjiSymbol size="100%" color="#0f4a35" />
+            <GanjiSymbol size="100%" color="#0f4a35" sprite />
           </span>
           <div className={`${WRAP} relative`}>
             <div className="reveal mb-10 max-w-[44rem] space-y-5 md:mb-14">
@@ -501,12 +508,12 @@ export default async function Home() {
                 <li key={f.href} className="sans-card" style={{ '--i': i, '--tilt': f.tilt, '--lift': f.lift, '--z': f.zoom, '--o': f.pos, '--sc-bg': f.bg, '--sc-fg': f.fg } as React.CSSProperties}>
                   <Link prefetch={false} href={f.href} className="sans-face">
                     <span className="sans-art">
-                      <Illustration name={f.art} icon={f.icon} alt="" frame="aspect-[5/4]" position={f.pos} sizes="(min-width: 1280px) 400px, 520px" />
+                      <Illustration name={f.art} icon={f.icon} alt="" frame="aspect-[5/4]" position={f.pos} sizes="(min-width: 1280px) 400px, 520px" blur={false} />
                       <span aria-hidden className="sans-badge">
-                        <Pictogram name={f.icon} size={20} />
+                        <Pictogram name={f.icon} size={20} sprite />
                       </span>
                       <span aria-hidden className="sans-arrow">
-                        <ArrowUpRight size={18} />
+                        <SpriteIcon name="fleche-haut-droite" size={18} />
                       </span>
                     </span>
                     <span className="mt-4 block px-2 text-xl leading-tight font-semibold">{t(f.title)}</span>
@@ -531,7 +538,7 @@ export default async function Home() {
               {['Un accès limité dans le temps, que vous retirez quand vous voulez', 'Chaque lecture écrite dans un journal que personne ne peut effacer', 'Des données chiffrées, hébergées au Bénin en production'].map((item) => (
                 <li key={item} className="flex gap-3 text-lg">
                   <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-leaf text-brand-900">
-                    <Check size={16} aria-hidden />
+                    <SpriteIcon name="check" size={16} />
                   </span>
                   {t(item)}
                 </li>
@@ -547,7 +554,7 @@ export default async function Home() {
               <ul className="space-y-2">
                 {JOURNAL.map((j) => (
                   <li key={t(j.text)} className={`slide-in flex gap-3 rounded-2xl px-3 py-2 text-base ${j.tone === 'denied' ? 'bg-ocre-100 text-ocre-700' : 'bg-bg'}`}>
-                    {j.tone === 'denied' ? <span className="pulse-ring mt-0.5 grid h-6 w-6 shrink-0 place-items-center"><ShieldX size={18} aria-hidden /></span> : <Check size={18} aria-hidden className="mt-1 shrink-0 text-brand-500" />}
+                    {j.tone === 'denied' ? <span className="pulse-ring mt-0.5 grid h-6 w-6 shrink-0 place-items-center"><ShieldX size={18} aria-hidden /></span> : <SpriteIcon name="check" size={18} className="mt-1 shrink-0 text-brand-500" />}
                     <span className="min-w-0">
                       <span className="block font-medium">{t(j.text)}</span>
                       <span className="block text-sm">{t(j.when)}</span>
@@ -594,11 +601,11 @@ export default async function Home() {
       <footer className="below-fold pt-20">
         <div className="motif-foret relative rounded-t-[2rem] pt-20 pb-6 text-white md:rounded-t-[3rem] md:pt-24 [&_:focus-visible]:!outline-leaf">
           <div className={WRAP}>
-            <GanjiSymbol size={144} color="#5FD08F" className="onde-heart absolute top-0 left-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 md:h-36 md:w-36" />
+            <GanjiSymbol size={144} color="#5FD08F" className="onde-heart absolute top-0 left-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 md:h-36 md:w-36" sprite />
             <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:items-end md:gap-8">
               <div className="text-center md:order-2">
                 <p className="flex justify-center text-[3.4rem] md:text-7xl">
-                  <Logotype label="Ganji" />
+                  <Logotype label="Ganji" sprite />
                 </p>
                 <p className="mt-3 text-lg text-sage">{t('Votre santé, suivie partout.')}</p>
                 <div className="mt-6 flex flex-wrap justify-center gap-3">
@@ -632,7 +639,7 @@ export default async function Home() {
                     {PROJECT_LINKS.map(([href, label]) => (
                       <li key={href}>
                         <a href={href} rel="noopener" className="inline-flex items-center gap-1 text-base underline-offset-4 hover:underline">
-                          {label} <ArrowUpRight size={16} aria-hidden className="shrink-0 text-leaf" />
+                          {label} <SpriteIcon name="fleche-haut-droite" size={16} className="shrink-0 text-leaf" />
                         </a>
                       </li>
                     ))}
@@ -659,7 +666,7 @@ export default async function Home() {
                 {PROOFS.map((proof) => (
                   <li key={proof} className="flex items-center gap-1.5 rounded-full bg-brand-700 py-1 pr-3 pl-1.5 text-sm font-semibold">
                     <span className="grid h-5 w-5 place-items-center rounded-full bg-leaf text-brand-900">
-                      <Check size={13} aria-hidden />
+                      <SpriteIcon name="check" size={13} />
                     </span>
                     {t(proof)}
                   </li>

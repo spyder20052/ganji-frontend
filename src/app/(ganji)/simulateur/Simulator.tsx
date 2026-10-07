@@ -7,6 +7,7 @@ import { ListenButton } from '@/components/ListenButton';
 import { useLocale, useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
 import { fmtTime, fmtPhone } from '@/lib/format';
+import { simulatorHeaders } from '@/lib/simulator';
 
 interface OutboxItem {
   id: string;
@@ -33,6 +34,7 @@ const LANG: Record<string, string> = { fr: 'français', en: 'anglais', fon: 'fon
 const HANDLED: Record<string, string> = {
   DON_ACCEPTE: 'Don accepté : la demande de sang est mise à jour en direct',
   DON_REFUSE: 'Refus enregistré : un autre donneur sera sollicité',
+  DON_EXPIRE: 'Trop tard : le besoin est déjà couvert, merci quand même',
   RAPPEL_CONFIRME: 'Rappel confirmé',
   RDV: 'Prochain rendez-vous envoyé',
   STOP: 'Désinscrit des appels au don',
@@ -84,6 +86,8 @@ export function Simulator({ initialTel }: { initialTel: string }) {
   const [sent, setSent] = useState<SentSms[]>([]);
   const [tab, setTab] = useState<'sms' | 'ussd'>('sms');
   const [tick, setTick] = useState<{ loading: boolean; text?: string; error?: string }>({ loading: false });
+  // Numéro que le simulateur ne peut pas montrer (vrai carnet créé dans un autre navigateur).
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
     api<DemoPhones>('/sms/phones')
@@ -119,12 +123,16 @@ export function Simulator({ initialTel }: { initialTel: string }) {
   const loadInbox = useCallback(() => {
     if (!phone) return;
     const current = phone;
-    api<OutboxItem[]>(`/sms/outbox?to=${encodeURIComponent(current)}`)
+    api<OutboxItem[]>(`/sms/outbox?to=${encodeURIComponent(current)}`, { headers: simulatorHeaders(current) })
       // Ignore une réponse arrivée après un changement de téléphone.
       .then((r) => {
-        if (phoneRef.current === current) setInbox(r);
+        if (phoneRef.current !== current) return;
+        setInbox(r);
+        setHidden(false);
       })
-      .catch(() => undefined);
+      .catch((e: unknown) => {
+        if (phoneRef.current === current && e instanceof ApiError && e.status === 404) setHidden(true);
+      });
   }, [phone]);
 
   const loadFeed = useCallback(() => {
@@ -146,7 +154,7 @@ export function Simulator({ initialTel }: { initialTel: string }) {
     const id = crypto.randomUUID();
     setSent((s) => [...s, { id, to: phone, body: text, at: new Date().toISOString() }]);
     try {
-      const r = await api<{ handled: string }>('/sms/inbound', { method: 'POST', json: { from: phone, body: text } });
+      const r = await api<{ handled: string }>('/sms/inbound', { method: 'POST', json: { from: phone, body: text }, headers: simulatorHeaders(phone) });
       setSent((s) => s.map((x) => (x.id === id ? { ...x, handled: r.handled } : x)));
     } catch (e) {
       setSent((s) => s.map((x) => (x.id === id ? { ...x, error: (e as Error).message } : x)));
@@ -270,7 +278,7 @@ export function Simulator({ initialTel }: { initialTel: string }) {
                 ))}
               </div>
               {tab === 'sms' ? (
-                <SmsPanel phone={phone} inbox={inbox} sent={sent.filter((s) => s.to === phone)} onReply={reply} />
+                <SmsPanel phone={phone} inbox={inbox} sent={sent.filter((s) => s.to === phone)} onReply={reply} hidden={hidden} />
               ) : (
                 <UssdPanel phone={phone} />
               )}
@@ -364,7 +372,7 @@ type ThreadItem =
   | { kind: 'in'; at: string; item: OutboxItem }
   | { kind: 'out'; at: string; sms: SentSms };
 
-function SmsPanel({ phone, inbox, sent, onReply }: { phone: string; inbox: OutboxItem[]; sent: SentSms[]; onReply: (body: string) => void }) {
+function SmsPanel({ phone, inbox, sent, onReply, hidden }: { phone: string; inbox: OutboxItem[]; sent: SentSms[]; onReply: (body: string) => void; hidden: boolean }) {
   const t = useT();
   const locale = useLocale();
   const [draft, setDraft] = useState('');
@@ -392,7 +400,10 @@ function SmsPanel({ phone, inbox, sent, onReply }: { phone: string; inbox: Outbo
     <div id="panel-sms" role="tabpanel" aria-labelledby="tab-sms" className="flex min-h-0 flex-1 flex-col">
       <div ref={scroller} className="flex-1 space-y-3 overflow-y-auto px-3 py-4" aria-live="polite" aria-relevant="additions">
         {!phone && <p className="p-4 text-center text-sm text-[#52635b]">{t('Choisissez un téléphone à gauche.')}</p>}
-        {phone && thread.length === 0 && <p className="p-4 text-center text-sm text-[#52635b]">{t('Aucun message reçu sur ce numéro pour le moment.')}</p>}
+        {phone && hidden && (
+          <p className="p-4 text-center text-sm text-[#52635b]">{t('Ce numéro n’est pas un téléphone de démonstration. Les SMS d’un carnet créé dans la démo ne sont visibles que depuis le navigateur qui l’a créé.')}</p>
+        )}
+        {phone && !hidden && thread.length === 0 && <p className="p-4 text-center text-sm text-[#52635b]">{t('Aucun message reçu sur ce numéro pour le moment.')}</p>}
         {thread.map((x) => {
           if (x.kind === 'out') {
             return (
@@ -491,7 +502,7 @@ function UssdPanel({ phone }: { phone: string }) {
   async function post(text: string) {
     setLoading(true);
     try {
-      const r = await api<{ text: string }>('/ussd', { method: 'POST', json: { from: phone, text } });
+      const r = await api<{ text: string }>('/ussd', { method: 'POST', json: { from: phone, text }, headers: simulatorHeaders(phone) });
       const end = r.text.startsWith('END');
       setScreen(r.text.replace(/^(CON|END)\s?/, ''));
       setStage(end ? 'ended' : 'session');

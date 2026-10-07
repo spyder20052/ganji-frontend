@@ -1,14 +1,21 @@
 /* Ganji : service worker. Coque de l'application et pages vitales disponibles hors ligne. */
-const VERSION = 'ganji-v3';
-const SHELL = ['/', '/offline', '/orientation', '/urgence', '/app', '/app/carte-urgence', '/app/hors-ligne', '/relais', '/manifest.webmanifest', '/icon.svg'];
-// Seules ces pages sont gardées pour le hors ligne. Jamais un dossier consulté par un soignant
-// (/pro/…), ni le carnet complet : il a sa copie chiffrée par PIN (lib/secure-store.ts).
-const OFFLINE_PAGES = new Set(['/', '/offline', '/orientation', '/urgence', '/carte', '/medicaments', '/alertes', '/app', '/app/carte-urgence', '/app/hors-ligne', '/relais']);
+const VERSION = 'ganji-v4';
+const SHELL = ['/', '/offline', '/orientation', '/urgence', '/app/carte-urgence', '/app/hors-ligne', '/manifest.webmanifest', '/icon.svg'];
+// Seules ces pages sont gardées pour le hors ligne : pages publiques, carte d'urgence et carnet par PIN.
+// Jamais l'accueil du carnet (prénoms, rendez-vous), ni un dossier consulté par un soignant (/pro/…) :
+// le carnet a sa copie chiffrée par PIN (lib/secure-store.ts). /relais : l'écran du relais (prénoms et
+// quartiers des visites), sur son propre appareil, purgé à la déconnexion.
+const OFFLINE_PAGES = new Set(['/', '/offline', '/orientation', '/urgence', '/carte', '/medicaments', '/alertes', '/app/carte-urgence', '/app/hors-ligne', '/relais']);
 // Lectures d'API sans donnée de santé nominative, utiles hors ligne.
 const API_CACHE = ['/api/triage/tree', '/api/geo/departments'];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => Promise.allSettled(SHELL.map((u) => c.add(u)))).then(() => self.skipWaiting()));
+  // Chaque page de la coque est gardée seulement si elle répond 200 sans redirection.
+  e.waitUntil(
+    caches.open(VERSION).then((c) =>
+      Promise.allSettled(SHELL.map((u) => fetch(u).then((res) => { if (res.ok && !res.redirected) return c.put(u, res); }))),
+    ).then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener('activate', (e) => {
@@ -33,12 +40,13 @@ self.addEventListener('fetch', (e) => {
   }
   if (url.pathname.startsWith('/api/')) return;
 
-  // Pages : réseau d'abord, puis cache, puis page hors ligne.
+  // Pages : réseau d'abord, puis cache, puis page hors ligne. Une réponse redirigée (session absente →
+  // /connexion) n'est jamais gardée : le navigateur refuse de la servir à une navigation.
   if (req.mode === 'navigate') {
     const keep = OFFLINE_PAGES.has(url.pathname);
     e.respondWith(
       fetch(req)
-        .then((res) => { if (keep && res.ok) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(url.pathname, copy)); } return res; })
+        .then((res) => { if (keep && res.ok && !res.redirected) { const copy = res.clone(); caches.open(VERSION).then((c) => c.put(url.pathname, copy)); } return res; })
         .catch(() => caches.match(keep ? url.pathname : '/offline').then((hit) => hit || caches.match('/offline'))),
     );
   }

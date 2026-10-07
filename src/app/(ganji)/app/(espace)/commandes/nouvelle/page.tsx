@@ -8,6 +8,7 @@ import { Empty, ErrorNote, Notice, PageHead } from '../../../_components/ui';
 import { getMe, load } from '../../../_lib/load';
 import type { OrderMode, OrderOptions } from '../_lib/orders';
 import { OrderFlow } from './OrderFlow';
+import { isUuid } from '@/lib/validate';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
@@ -16,7 +17,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 type Search = Record<string, string | string[] | undefined>;
 const one = (sp: Search, k: string) => (typeof sp[k] === 'string' ? (sp[k] as string) : undefined);
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
  * Nouvelle commande : depuis une ordonnance (?rx=…&mode=LIVRAISON|RETRAIT) ou depuis la recherche
@@ -34,7 +34,7 @@ export default async function NouvelleCommandePage({ searchParams }: { searchPar
   const qty = Math.min(10, Math.max(1, Number(one(sp, 'qty')) || 1));
 
   const head = <PageHead icon="delivery" title={t('Commander')} />;
-  if ((!rx || !UUID.test(rx)) && (!med || !UUID.test(med))) {
+  if ((!rx || !isUuid(rx)) && (!med || !isUuid(med))) {
     return (
       <>
         {head}

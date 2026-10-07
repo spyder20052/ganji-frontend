@@ -1,0 +1,224 @@
+/* Jetons, base et composants Ganji : partagés par toutes les feuilles de style (accueil et application).
+   Chargé par globals.css (application) et accueil.css (première page). */
+@custom-variant dark {
+  &:where([data-theme='dark'], [data-theme='dark'] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme='light']) *) {
+      @slot;
+    }
+  }
+}
+
+/* ── Jetons Ganji (charte « Ganji · identité visuelle ») ──────────────────
+   Forêt #0B3D2C : fonds sombres, titres, boutons · Vert #168A56 : symbole, pictogrammes ·
+   Pousse #5FD08F : accent (onglet actif, pastilles) · Sauge #B7D3C1 · Brume #E6F0E9 : cartes ·
+   Papier #F5F4EE : fond · Encre #0A1A14 : texte. Rouge #C62828 : urgence et sang UNIQUEMENT.
+   Le Vert sur blanc fait 4,37:1 : jamais pour du texte courant, seulement pour les pictogrammes. */
+@theme {
+  --color-brand-50: #eef5f0;
+  --color-brand-100: #e6f0e9;
+  --color-brand-200: #b7d3c1;
+  --color-leaf: #5fd08f;
+  --color-leaf-strong: #4cc47f;
+  --color-sage: #b7d3c1;
+  --color-brand-500: #168a56;
+  --color-brand-700: #145a40;
+  --color-brand-900: #0b3d2c;
+  --color-brand-950: #062418;
+  --color-ocre-100: #fbf0d6;
+  --color-ocre-500: #d99a1e;
+  --color-ocre-700: #8a5d06;
+  --color-danger-50: #fbe4e5;
+  --color-danger-600: #c62828;
+  --color-danger-800: #8e1b1b;
+  --color-surface: #f5f4ee;
+  --color-ink: #0a1a14;
+  --color-muted: #4b5a52;
+  --color-line: #d8e3db;
+  --radius-card: 1.5rem;
+  /* Alias courts des surfaces dynamiques (clair / sombre) : bg-card, text-fg-muted… */
+  --color-card: var(--card);
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-border: var(--border);
+  /* Lettres des langues nationales en premier : leur police ne couvre qu'elles (unicode-range), et passerait
+     sinon après la police de repli locale (Arial) que next/font ajoute à chaque famille. */
+  --font-sans: var(--font-afrique), var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-afrique), var(--font-bricolage), var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+  /* Graisses allégées : « gras » = demi-gras. */
+  --font-weight-bold: 600;
+}
+
+:root {
+  --bg: var(--color-surface);
+  --card: #ffffff;
+  --fg: var(--color-ink);
+  --fg-muted: var(--color-muted);
+  --border: var(--color-line);
+  --shadow-soft: 0 1px 2px rgb(10 26 20 / 0.05), 0 10px 28px -14px rgb(11 61 44 / 0.25);
+  color-scheme: light;
+}
+/* Thème sombre : surfaces sombres, et les fonds teintés (alerte, rappel, urgence) deviennent des
+   teintes sombres avec un texte clair de la même famille. Contrastes ≥ 4,5:1 vérifiés (axe-core). */
+:root[data-theme='dark'] {
+  --bg: #0c1512;
+  --card: #14201c;
+  --fg: #e6efeb;
+  --fg-muted: #9db0a7;
+  --border: #25352f;
+  --color-danger-50: #3b1717;
+  --color-danger-800: #ffb4ab;
+  --color-ocre-100: #3a2d0f;
+  --color-ocre-700: #f0c56a;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #0c1512;
+    --card: #14201c;
+    --fg: #e6efeb;
+    --fg-muted: #9db0a7;
+    --border: #25352f;
+    --color-danger-50: #3b1717;
+    --color-danger-800: #ffb4ab;
+    --color-ocre-100: #3a2d0f;
+    --color-ocre-700: #f0c56a;
+    color-scheme: dark;
+  }
+}
+
+html {
+  font-size: calc(100% * var(--text-scale, 1));
+}
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 1.125rem; /* 18 px minimum côté patient */
+  line-height: 1.55;
+  -webkit-tap-highlight-color: transparent;
+}
+h1, h2, h3, .font-display { font-family: var(--font-display); text-wrap: balance; line-height: 1.15; letter-spacing: -0.01em; }
+/* Paragraphes : pas de mot (ni d'année) seul sur la dernière ligne. */
+p, li, dd { text-wrap: pretty; }
+
+@layer components {
+  /* Cartes plates, sans bordure : c'est la différence de teinte avec le fond qui les dessine. */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius-card);
+    box-shadow: 0 1px 2px rgb(25 32 29 / 0.04);
+  }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    min-height: 3.25rem; padding: 0 1.4rem; border-radius: 999px; font-weight: 600;
+    transition: background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn:active { transform: scale(0.98); }
+  /* Action principale : Forêt, texte blanc (12,2:1), comme le bouton de la maquette. */
+  .btn-primary { background: var(--color-brand-900); color: #fff; }
+  .btn-primary:hover { background: var(--color-brand-700); }
+  .btn-soft { background: var(--color-brand-100); color: var(--color-ink); }
+  .btn-soft:hover { background: var(--color-brand-200); }
+  .btn-ghost { background: var(--card); color: var(--fg); box-shadow: inset 0 0 0 1px var(--border); }
+  .btn-danger { background: var(--color-danger-600); color: #fff; }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .chip-round {
+    display: inline-grid; place-items: center; width: 3rem; height: 3rem; border-radius: 999px;
+    background: var(--card); box-shadow: 0 1px 2px rgb(25 32 29 / 0.06);
+  }
+  /* Petite étiquette en casse normale (plus de majuscules espacées partout). */
+  .label { font-size: 0.875rem; font-weight: 500; color: var(--fg-muted); }
+  .input {
+    width: 100%; min-height: 3.25rem; border-radius: 1.25rem; border: 1px solid var(--border);
+    background: var(--card); padding: 0.5rem 1.1rem; color: var(--fg);
+  }
+  .pill { display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 999px; padding: 0.2rem 0.75rem; font-size: 0.875rem; font-weight: 600; }
+  .num { font-variant-numeric: tabular-nums; }
+  /* Grand chiffre fin, signature des références (« 120/80 », « 46,5 »). */
+  .display { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+}
+
+/* Anneau de focus à deux couleurs : blanc au contact de l'élément, puis Forêt (Pousse en sombre) : visible sur
+   fond clair, sombre ou rouge (tuiles d'urgence, en-têtes Forêt). */
+:focus-visible { outline: 3px solid var(--color-brand-900); outline-offset: 2px; border-radius: 6px; box-shadow: 0 0 0 2px #fff; }
+:root[data-theme='dark'] :focus-visible { outline-color: var(--color-leaf); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) :focus-visible { outline-color: var(--color-leaf); }
+}
+
+/* En thème sombre, une surface restée blanche (pastille, bouton sur fond rouge) garde les encres
+   du thème clair : sinon un texte rose pâle se retrouverait sur du blanc. */
+:root[data-theme='dark'] .bg-white {
+  --color-danger-50: #fbe4e5;
+  --color-danger-800: #8e1b1b;
+  --color-ocre-100: #f6ecd0;
+  --color-ocre-700: #8a5d06;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .bg-white {
+    --color-danger-50: #fbe4e5;
+    --color-danger-800: #8e1b1b;
+    --color-ocre-100: #f6ecd0;
+    --color-ocre-700: #8a5d06;
+  }
+}
+
+/* Rouge d'urgence employé comme texte sur fond sombre : éclairci pour rester lisible (≥ 4,5:1),
+   sauf sur les pastilles blanches où il garde sa valeur. */
+:root[data-theme='dark'] .text-\[var\(--color-danger-600\)\]:not(.bg-white) {
+  color: #ff8f85;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .text-\[var\(--color-danger-600\)\]:not(.bg-white) {
+    color: #ff8f85;
+  }
+}
+
+/* Vert foncé employé comme texte sur fond sombre : il passe au vert Pousse (lisible). */
+:root[data-theme='dark'] .text-\[var\(--color-brand-700\)\]:not(.bg-white) {
+  color: var(--color-leaf);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .text-\[var\(--color-brand-700\)\]:not(.bg-white) {
+    color: var(--color-leaf);
+  }
+}
+
+/* Mode économie (batterie faible) : pas d'animation. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* Trame Ganji (charte, motif « trame » en version Forêt) : en-têtes sombres. */
+.motif-foret {
+  background-color: var(--color-brand-900);
+  background-image: url('/motifs/trame-foret.svg');
+  background-size: 180px 180px;
+}
+
+/* « Utile même sans… » : bandeau Forêt, deux calques de filigrane en parallaxe (déplacés sans repeindre) :
+   la trame de la marque, plus lente que la page, et le symbole géant, plus rapide, qui tourne.
+   overflow: clip (et non hidden) : la section ne devient pas un conteneur de défilement, les animations
+   liées au défilement de ses enfants restent actives. */
+.filigrane { isolation: isolate; overflow: clip; }
+.filigrane::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -260px 0;
+  background: url('/motifs/trame-filigrane.svg') 0 0 / 180px 180px;
+}
+.filigrane-mark { position: absolute; z-index: -1; top: 10%; right: -30%; width: min(40rem, 105vw); aspect-ratio: 1; pointer-events: none; }
+@media (min-width: 768px) { .filigrane-mark { right: 4%; top: 12%; } }
+@keyframes trame-drift { from { translate: 0 -220px; } to { translate: 0 220px; } }
+@keyframes mark-drift { from { translate: 0 -65%; rotate: -35deg; } to { translate: 0 65%; rotate: 35deg; } }
+
+@supports (animation-timeline: view()) {
+  .filigrane { view-timeline-name: --filigrane; }
+  .filigrane::before { animation: trame-drift linear both; animation-timeline: --filigrane; }
+  .filigrane-mark { animation: mark-drift linear both; animation-timeline: --filigrane; }
+}

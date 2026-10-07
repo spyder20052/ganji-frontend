@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Check, ExternalLink } from 'lucide-react';
-import progress from '../../../docs/progress.json';
+import progress from '../../../../docs/progress.json';
 import { TopBar } from '@/components/TopBar';
 import { getLocale, getT } from '@/i18n/server';
 import { INTL, type Locale, type T } from '@/i18n/translate';

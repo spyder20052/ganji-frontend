@@ -6,17 +6,17 @@ import { getT } from '@/i18n/server';
 import { serverApi, ServerApiError } from '@/lib/server-api';
 import { BloodLive } from './BloodLive';
 import type { LiveRequest } from './types';
+import { isUuid } from '@/lib/validate';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
   return { title: t('Demande de sang en direct') };
 }
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default async function BloodRequestPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!UUID.test(id)) notFound();
+  if (!isUuid(id)) notFound();
   let initial: LiveRequest;
   try {
     initial = await serverApi<LiveRequest>(`/blood/requests/${id}`);

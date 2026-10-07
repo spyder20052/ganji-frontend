@@ -76,9 +76,9 @@ export function DateTile({ date, locale, tone = 'brand', size = 'md' }: { date: 
   return (
     <span aria-hidden className={`grid ${box} shrink-0 place-items-center rounded-2xl text-center ${bg}`}>
       <span className="leading-none">
-        <span className="block text-xs font-semibold uppercase">{fmtDate(date, { weekday: 'short' }, locale).replace('.', '')}</span>
+        <span className="block text-sm font-semibold uppercase">{fmtDate(date, { weekday: 'short' }, locale).replace('.', '')}</span>
         <span className={`display block ${size === 'lg' ? 'text-[2rem]' : 'text-[1.6rem]'}`}>{fmtDate(date, { day: 'numeric' }, locale)}</span>
-        <span className="block text-xs">{fmtDate(date, { month: 'short' }, locale).replace('.', '')}</span>
+        <span className="block text-sm">{fmtDate(date, { month: 'short' }, locale).replace('.', '')}</span>
       </span>
     </span>
   );

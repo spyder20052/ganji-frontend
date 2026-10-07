@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { CommuneSelect } from '@/components/CommuneSelect';
 import { useLocale, useT } from '@/i18n/client';
 import { api, ApiError } from '@/lib/api';
+import { rememberSimulatorKey, simulatorKeyFor } from '@/lib/simulator';
 import { ROLE_HOME, type Me } from '@/lib/types';
 
 type Step = 'phone' | 'code' | 'register';
@@ -27,18 +28,21 @@ export function LoginForm({ suite }: { suite?: string }) {
   }
 
   const [noAccount, setNoAccount] = useState(false);
+  // Démo : le simulateur ne montre les SMS d'un vrai carnet qu'au navigateur qui l'a créé (clé remise à l'inscription).
+  const [codeVisible, setCodeVisible] = useState(true);
   // Démo : l'API dit si le numéro a un compte (les remises à zéro de la démo effacent les comptes créés).
   const requestCode = () => run(async () => {
-    const r = await api<{ account?: boolean }>('/auth/otp/request', { method: 'POST', json: { phone } });
+    const r = await api<{ account?: boolean; demoPhone?: boolean; simulator?: boolean }>('/auth/otp/request', { method: 'POST', json: { phone } });
     if (r.account === false) {
       setNoAccount(true);
       setStep('register');
       return;
     }
+    setCodeVisible(!r.simulator || Boolean(r.demoPhone) || Boolean(simulatorKeyFor(phone)));
     setStep('code');
   });
   const verify = () => run(async () => {
-    const me = await api<Me & { profileDone?: boolean }>('/auth/otp/verify', { method: 'POST', json: { phone, code } });
+    const me = await api<Me>('/auth/otp/verify', { method: 'POST', json: { phone, code } });
     const target = suite?.startsWith(ROLE_HOME[me.role]) ? suite : ROLE_HOME[me.role];
     // Première connexion d'un carnet encore vide : l'accueil en cinq questions, puis la page visée.
     const welcome = (me.role === 'PATIENT' || me.role === 'CAREGIVER') && me.profileDone === false;
@@ -47,7 +51,9 @@ export function LoginForm({ suite }: { suite?: string }) {
   });
   const register = () => run(async () => {
     const { commune, ...rest } = reg;
-    await api('/auth/register', { method: 'POST', json: { ...rest, phone, lang: locale, ...(commune ? { commune } : {}) } });
+    const r = await api<{ simulatorKey?: string }>('/auth/register', { method: 'POST', json: { ...rest, phone, lang: locale, ...(commune ? { commune } : {}) } });
+    if (r.simulatorKey) rememberSimulatorKey(phone, r.simulatorKey);
+    setCodeVisible(true);
     setStep('code');
   });
 
@@ -106,7 +112,8 @@ export function LoginForm({ suite }: { suite?: string }) {
           </label>
           <button className="btn btn-primary w-full" disabled={busy || code.length !== 6}>{t('Me connecter')}</button>
           <p className="rounded-2xl bg-[var(--color-ocre-100)] p-3 text-base text-[var(--color-ocre-700)]">
-            {t('Démo : le SMS arrive dans le')} <Link href={`/simulateur?tel=${encodeURIComponent(phone)}`} target="_blank" className="font-bold underline">{t('simulateur de téléphone')}</Link>.
+            {t('Démo : le SMS arrive dans le')} <Link href={`/simulateur?tel=${encodeURIComponent(phone)}`} target="_blank" rel="noopener" className="font-bold underline">{t('simulateur de téléphone')}</Link>.
+            {!codeVisible && ` ${t('Le code d’un carnet créé dans la démo n’est visible que depuis le navigateur qui l’a créé.')}`}
           </p>
           <button type="button" className="btn btn-ghost w-full" onClick={() => { setStep('phone'); setCode(''); }}>{t('Changer de numéro')}</button>
         </form>

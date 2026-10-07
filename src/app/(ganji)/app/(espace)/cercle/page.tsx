@@ -11,13 +11,13 @@ import { Empty, ErrorNote, PageHead, Section } from '../../_components/ui';
 import { getMe, load } from '../../_lib/load';
 import { DoneButton, EscalationSwitch } from './CircleActions';
 import type { Channel, Circle, CircleEvent, CircleMember, ReminderState, TodayReminder } from './types';
+import { isUuid } from '@/lib/validate';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
   return { title: t('Cercle de soins') };
 }
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
  * Cercle de soins : qui veille sur le patient et quand chacun est prévenu. Le dessin encode le délai :
@@ -26,7 +26,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
  */
 export default async function CerclePage({ searchParams }: { searchParams: Promise<{ p?: string }> }) {
   const [t, locale, me, { p }] = await Promise.all([getT(), getLocale(), getMe(), searchParams]);
-  const patientId = p && UUID.test(p) ? p : undefined;
+  const patientId = p && isUuid(p) ? p : undefined;
   const res = await load<Circle>(`/me/circle${patientId ? `?patientId=${patientId}` : ''}`);
   const c = res.data;
   const owner = c?.viewer === 'OWNER';
@@ -152,7 +152,7 @@ function Ring({ circle, center, t }: { circle: Circle; center: string; t: T }) {
   );
   const ringLabel = (r: number, content: ReactNode) => (
     <span
-      className="absolute left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--card)] px-2 py-0.5 text-xs font-bold text-[var(--fg-muted)] ring-1 ring-[var(--border)]"
+      className="absolute left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--card)] px-2 py-0.5 text-sm font-bold text-[var(--fg-muted)] ring-1 ring-[var(--border)]"
       style={{ top: `${50 - r}%` }}
     >
       {content}

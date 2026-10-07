@@ -7,13 +7,13 @@ import { PageHead } from '../../app/_components/ui';
 import type { CounselorThread, ListenQueue } from '../../app/(espace)/ecoute/types';
 import { requireRole } from '../_lib/me';
 import { CounselorDesk } from './CounselorDesk';
+import { isUuid } from '@/lib/validate';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
   return { title: t('File d’écoute') };
 }
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /** Cellule d'écoute : réservée aux psychologues vérifiés (contrôle réel côté API). */
 export default async function ProEcoutePage({ searchParams }: { searchParams: Promise<{ c?: string }> }) {
@@ -40,7 +40,7 @@ export default async function ProEcoutePage({ searchParams }: { searchParams: Pr
   }
   const [queue, thread] = await Promise.all([
     tryServerApi<ListenQueue>('/listen/queue'),
-    c && UUID.test(c) ? tryServerApi<CounselorThread>(`/listen/${c}`) : Promise.resolve(null),
+    c && isUuid(c) ? tryServerApi<CounselorThread>(`/listen/${c}`) : Promise.resolve(null),
   ]);
   return (
     <I18nScope area="ecoute">

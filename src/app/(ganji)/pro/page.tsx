@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ChevronRight, Droplet, MessagesSquare } from 'lucide-react';
-import { PageHead } from '@/app/app/_components/ui';
+import { PageHead } from '@/app/(ganji)/app/_components/ui';
 import { getLocale, getT } from '@/i18n/server';
 import type { Locale, T } from '@/i18n/translate';
 import { tryServerApi } from '@/lib/server-api';

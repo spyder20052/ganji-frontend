@@ -85,7 +85,7 @@ export default async function AppHome() {
     ? { title: s?.discreetMode ? t('Rendez-vous de santé') : t(serviceOf(next.specialty).label), date: fmtDate(nextDate, { weekday: 'long', day: 'numeric', month: 'long' }, locale), time: hourOnly(nextDate, locale), place: next.facility.name }
     : null;
   const missing = missingVitals(s);
-  const showProfileBanner = Boolean(me.patientId) && ((me as { profileDone?: boolean }).profileDone === false || missing.length > 0);
+  const showProfileBanner = Boolean(me.patientId) && (me.profileDone === false || missing.length > 0);
   const listen = [
     `${greeting(firstName, t)}.`,
     next && nextVars

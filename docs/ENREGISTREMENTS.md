@@ -6,7 +6,7 @@ Le cahier des charges demande des messages vocaux dans au moins deux langues nat
 
 | Langue | État | Détail |
 |---|---|---|
-| Yoruba | **Voix de synthèse, à valider** | 34 messages (rappels, don de sang, urgence, orientation, conseils). Traduction rédigée par une IA (Claude) à partir du français, voix Meta MMS-TTS (licence CC-BY-NC 4.0). L’application le signale à l’écoute. Textes source et yoruba : `scripts/voix/yoruba.json` et `public/audio/manifest.json`. |
+| Yoruba | **Voix de synthèse, à valider** | 34 messages (rappels, don de sang, urgence, orientation, conseils). Traduction automatique (IA) à partir du français, voix Meta MMS-TTS (licence CC-BY-NC 4.0). L’application le signale à l’écoute. Textes source et yoruba : `scripts/voix/yoruba.json` et `public/audio/manifest.json`. |
 | Fon | **Voix de synthèse, à valider** | 12 messages essentiels (accueil, urgence, don de sang, rappels, orientation), phrases courtes. Même méthode que le yoruba ; relecture par un locuteur fon indispensable. Textes : `scripts/voix/fon.json`. |
 | Bariba | À enregistrer | Pas de traducteur automatique ; voix de synthèse possible dès qu’un texte validé existe. |
 | Dendi | À enregistrer | — |

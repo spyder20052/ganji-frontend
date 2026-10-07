@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { TopBar } from '@/components/TopBar';
 import { I18nScope } from '@/i18n/I18nScope';
 import { getT } from '@/i18n/server';
+import { safeSuite } from '@/lib/validate';
 import { DemoPicker, type PersonaCard } from './DemoPicker';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -27,9 +28,8 @@ const PERSONAS: PersonaCard[] = [
 ];
 
 export default async function DemoPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const raw = (await searchParams).suite;
   // Retour après connexion (chemin interne seulement).
-  const suite = typeof raw === 'string' && raw.startsWith('/') && !raw.startsWith('//') && !raw.startsWith('/\\') ? raw : undefined;
+  const suite = safeSuite((await searchParams).suite);
   const t = await getT();
   // Les noms sont des données (non traduits), sauf les mentions génériques entre parenthèses.
   const personas = PERSONAS.map((p) => ({ ...p, name: t(p.name), role: t(p.role), story: t(p.story), shows: t(p.shows) }));

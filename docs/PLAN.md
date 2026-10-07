@@ -11,7 +11,7 @@
 |---|----------|----------------------|
 | P1 | **Le parcours héros d'abord** (Koffi a besoin de plaquettes) | Chaque chantier garde le parcours démontrable de bout en bout ; rien n'est « à moitié branché ». |
 | P2 | **Règle des 5 sans** : sans réseau, sans smartphone, sans savoir lire, sans argent immédiat, sans compte | Tout écran patient a une icône, un bouton « écouter », un repli hors ligne ; chaque action critique a un équivalent SMS dans le simulateur. |
-| P3 | **Aucune donnée de santé lue sans consentement ou motif d'urgence tracé** | Vérification côté serveur à chaque requête (garde `ConsentGuard`) ; journal d'accès en ajout seul, visible par le patient. |
+| P3 | **Aucune donnée de santé lue sans consentement ou motif d'urgence tracé** | Vérification côté serveur à chaque requête (`AccessService.assert`, point de décision unique) ; journal d'accès en ajout seul, visible par le patient. |
 | P4 | **Public = réel, personnel = fictif** | Établissements, communes, médicaments essentiels, calendrier vaccinal : réels. Patients, soignants, stocks : fictifs, générés par le seed. Bandeau « Données fictives : démonstration » permanent. |
 | P5 | **Une seule logique métier** | Web, SMS et voix passent par la même API et le même contrôle d'accès. |
 | P6 | **Livrer petit, livrer souvent** | Un commit + push sur `develop` à la fin de chaque module fonctionnel. `main` ne bouge que sur demande explicite. |
@@ -24,14 +24,14 @@
 flowchart LR
   subgraph Client
     U[PWA Next.js<br/>patients, soignants,<br/>pharmacies, ANTS, ministère]
-    SW[Service worker<br/>+ IndexedDB chiffré]
+    SW[Service worker<br/>+ copie locale chiffrée par PIN]
   end
   subgraph Vercel_Front[Vercel : ganji-frontend]
     N[Next.js 15<br/>App Router]
     RW[/api/* rewrite<br/>même origine/]
   end
   subgraph Vercel_Back[Vercel : ganji-backend]
-    A[NestJS 10<br/>fonction serverless]
+    A[NestJS 11<br/>fonction serverless]
     CR[Vercel Cron<br/>rappels, outbox, simulateur stocks]
   end
   DB[(PostgreSQL<br/>Neon via Vercel)]
@@ -65,13 +65,13 @@ flowchart LR
 
 | Couche | Choix | Détail |
 |--------|-------|--------|
-| Frontend | Next.js 15 (App Router, React 19), Tailwind CSS 4 | Server Components pour un JS initial < 100 Ko ; composants client uniquement là où il faut interagir. |
+| Frontend | Next.js 15 (App Router, React 19), Tailwind CSS 4 | Server Components ; composants client uniquement là où il faut interagir. JS initial mesuré ≈ 115 Ko (plancher React + Next ≈ 100 Ko), première page < 200 Ko contrôlée en CI. |
 | PWA | `sw.js` écrit à la main + `manifest.webmanifest` | Cache-first pour la coque, network-first pour l'API, file de synchronisation (Background Sync, avec repli sur `online`). |
-| Stockage local | IndexedDB, AES-GCM (WebCrypto), clé dérivée du PIN (PBKDF2, 310 000 itérations) | Fiche vitale, carte QR, rappels, carnet résumé. |
+| Stockage local | `localStorage`, AES-GCM (WebCrypto), clé dérivée du PIN (PBKDF2, 310 000 itérations) | Carnet résumé chiffré ; carte d'urgence en clair (lisible écran verrouillé) ; tout est purgé à la déconnexion. |
 | Cartes | Leaflet + tuiles OpenStreetMap | Chargées à la demande (import dynamique). |
-| Backend | NestJS 10, Prisma 5, `class-validator` | Modules par domaine, guards `Roles` + `Consent`, Swagger sur `/docs`. |
+| Backend | NestJS 11, Prisma 6, `class-validator` | Modules par domaine, garde de session et de rôles, `AccessService` pour tout dossier patient, Swagger sur `/docs`. |
 | Base | PostgreSQL 16 (Neon) | Migrations Prisma versionnées ; seed idempotent. |
-| Sécurité | Helmet, CSP stricte, rate limiting (`@nestjs/throttler`), AES-256-GCM par champ, NPI haché (HMAC-SHA256) | Voir `SECURITY.md`. |
+| Sécurité | Helmet, CSP par nonce côté frontend et `default-src 'none'` côté API, rate limiting (`@nestjs/throttler`) doublé de compteurs en base, AES-256-GCM par champ, NPI haché (HMAC-SHA256) | Voir `SECURITY.md`. |
 | Tests | Vitest (logique métier, garde de consentement), Supertest (autorisations, IDOR), Playwright + axe-core (parcours, accessibilité) | Couverture visée ≥ 70 % sur les services. |
 | CI | GitHub Actions : lint, typecheck, tests, `npm audit`, gitleaks, CodeQL | Badge dans les README. |
 
@@ -114,19 +114,19 @@ flowchart LR
 
 | Domaine | Endpoints | Garde |
 |---------|-----------|-------|
-| Auth (M1) | `POST /auth/otp/request` · `POST /auth/otp/verify` · `POST /auth/demo/:persona` · `POST /auth/logout` · `GET /me` | rate limit 5/min/IP |
-| Consentement (M1) | `GET/POST/DELETE /consents` · `POST /share/qr` · `POST /share/redeem` · `GET /me/access-log` | patient propriétaire |
-| Carnet (M2) | `GET /patients/:id/summary` · `/timeline` · `/observations` · `POST /documents` | `ConsentGuard` |
-| Soins (M3) | `GET/POST /careplans` · `/reminders` · `POST /symptoms` | équipe de soins |
-| Sang (M4) | `POST /blood/requests` · `GET /blood/stocks` · `POST /blood/requests/:id/alert-donors` · `POST /donors/respond` | soignant, ANTS |
-| Médicaments (M5) | `GET /medications/search?q=` · `GET /pharmacies/nearby` · `POST /prescriptions` · `POST /prescriptions/:id/dispense` | pharmacien vérifié |
-| Télé-expertise (M6) | `POST /tele-expertise` · `POST /tele-expertise/:id/answer` | soignant |
-| Urgence (M7) | `GET /emergency/:qrToken` (public, fiche minimale) · `POST /emergency/break-glass` · `POST /sos` | journalisé, patient notifié |
+| Auth (M1) | `POST /auth/otp/request` · `POST /auth/otp/verify` · `POST /auth/register` · `POST /auth/demo/:persona` · `POST /auth/logout` · `GET /auth/me` | rate limit 5/min |
+| Consentement (M1) | `POST /me/share` · `GET /me/consents` · `DELETE /me/consents/:id` · `POST /share/redeem` · `GET /me/access-log` · `GET/POST/DELETE /me/delegations` | patient titulaire ; soignant vérifié pour `redeem` |
+| Carnet (M2) | `GET /patients/:id/summary` · `/timeline` · `/observations` · `/documents` · `POST /patients/:id/documents` | `AccessService.assert` par volet |
+| Soins (M3) | `GET /care/plan` · `POST /care/reminders/:id/confirm` · `GET/POST /care/symptoms` | titulaire, aidant « rappels », équipe |
+| Sang (M4) | `POST /blood/requests` · `GET /blood/stocks` · `POST /blood/requests/:id/alert-donors` · `/reserve` · `/served` · `/cancel` · `POST /blood/donor/alerts/:id/respond` · `GET /blood/nearby` | soignant, ANTS, donneur |
+| Médicaments (M5) | `GET /medications/search?q=` · `GET /pharmacies/on-duty` · `POST /prescriptions` · `POST /prescriptions/verify` · `POST /prescriptions/dispense` | pharmacien d'une officine |
+| Télé-expertise (M6) | `GET/POST /tele-expertise` · `GET /tele-expertise/:id` (ouvre l'accès du spécialiste, 72 h) · `POST /tele-expertise/:id/answer` | soignant |
+| Urgence (M7) | `GET /emergency/card/:qrToken` (public, fiche minimale) · `POST /emergency/break-glass` · `POST /emergency/sos` | journalisé, patient notifié |
 | Pilotage (M9) | `GET /dashboard/national` (agrégats, seuil ≥ 10) | rôle ministère |
-| Mère-enfant (M10) | `GET/POST /pregnancies` · `POST /pregnancies/:id/danger-signs` · `GET /children/:id/immunizations` | patient, relais |
-| Orientation (M11) | `POST /triage` (public, anonyme) · `GET /facilities/nearby` | public |
-| Alertes (M13) | `GET /alerts?commune=` · `POST /community-reports` | public, relais |
-| Canaux | `POST /sms/inbound` · `GET /sms/outbox` (simulateur) · `POST /ussd` | signature du webhook |
+| Mère-enfant (M10) | `GET /maternal/pregnancy` · `POST /maternal/pregnancy/:id/danger-signs` · `GET /maternal/children/:id/immunizations` · `GET /maternal/verify/:payload` | patient, aidant, relais de la commune |
+| Orientation (M11) | `POST /triage` (public, anonyme, rejoué côté serveur) · `GET /facilities/nearby` | public |
+| Alertes (M13) | `GET /alerts?commune=` · `POST /alerts` · `GET/POST /community-reports` | public ; ministère ; relais |
+| Canaux | `POST /sms/inbound` · `GET /sms/outbox` · `POST /ussd` (simulateur, clé par navigateur) · `GET/POST /jobs/tick` | signature du webhook hors démo, secret du cron |
 
 ---
 
@@ -134,12 +134,12 @@ flowchart LR
 
 | Menace | Mesure implémentée | Où |
 |--------|--------------------|----|
-| Soignant curieux | `ConsentGuard` : rôle **et** consentement actif **ou** membre de l'équipe **ou** bris de glace ; sinon 403 + `AuditEvent(allowed=false)` | `backend/src/common/guards/consent.guard.ts` |
-| IDOR | UUID v4 partout ; l'appartenance est vérifiée dans chaque service ; tests Supertest dédiés | `test/authz.e2e-spec.ts` |
+| Soignant curieux | `AccessService` : rôle **et** consentement actif **ou** membre de l'équipe **ou** bris de glace ; sinon 403 + `AuditEvent(allowed=false)` | `backend/src/common/access.service.ts` |
+| IDOR | UUID v4 partout ; l'appartenance est vérifiée dans chaque service ; tests Supertest dédiés | `test/api.integration.spec.ts` |
 | Fuite de base | AES-256-GCM par champ (diagnostics, notes, résultats) ; NPI en HMAC-SHA256 + 4 derniers chiffres | `common/crypto` |
 | Fausse ordonnance | QR = `id.signature` (HMAC-SHA256, clé serveur) ; statut `DISPENSED` atomique (transaction) | `prescriptions.service.ts` |
 | Vol de compte | OTP 6 chiffres haché, 5 essais, expiration 5 min ; alerte « nouvelle connexion » ; session soignant 30 min | `auth` |
-| Injection / XSS | Prisma paramétré ; `ValidationPipe({ whitelist, forbidNonWhitelisted })` ; CSP stricte côté Next | — |
+| Injection / XSS | Prisma paramétré ; `ValidationPipe({ whitelist, forbidNonWhitelisted })` ; CSP par nonce côté Next, `default-src 'none'` côté API | `src/middleware.ts`, `app.factory.ts` |
 | Journal falsifié | Trigger PostgreSQL qui refuse `UPDATE` / `DELETE` sur `AuditEvent` | migration SQL |
 | SMS qui divulgue | Le corps d'un SMS ne contient jamais de donnée médicale : seulement un code ou un lien | `outbox.service.ts` |
 | Téléphone perdu | Stockage local chiffré par PIN ; mode discret ; QR d'urgence sans détail | frontend `lib/secure-store.ts` |
@@ -157,7 +157,7 @@ Les deux planches de référence (CliniQ, Beefit) donnent le ton : cartes très 
 | `--accent` | `#D99A1E` (jaune ocre) | Rappels, actions secondaires, badges |
 | `--danger` | `#C62828` | **Uniquement** urgence et sang |
 | `--surface` | `#F5F7F6` | Fond d'application |
-| Typo | Atkinson Hyperlegible, 18 px minimum côté patient | Lisibilité pour les malvoyants |
+| Typo | Atkinson Hyperlegible ; 18 px pour le texte courant côté patient, 14 px minimum pour les mentions secondaires | Lisibilité pour les malvoyants |
 | Rayons | 24 px (cartes), 999 px (puces, boutons ronds) | — |
 | Cibles tactiles | ≥ 48 px | Handicap moteur |
 

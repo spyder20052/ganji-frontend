@@ -24,7 +24,12 @@ export async function serverApi<T>(path: string, opts: { allowAnonymous?: boolea
   });
   if (res.status === 401 && !opts.allowAnonymous) redirect('/connexion');
   const text = await res.text();
-  const data = text ? JSON.parse(text) : null;
+  let data: { message?: string; code?: string } | null = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    throw new ServerApiError(res.status, 'Le service ne répond pas pour le moment.');
+  }
   if (!res.ok) throw new ServerApiError(res.status, data?.message ?? 'Erreur', data?.code);
   return data as T;
 }

@@ -307,7 +307,7 @@ export function BookingFlow({
                   >
                     <span className="text-sm font-semibold uppercase opacity-80">{fmtDate(at, { weekday: 'short' }, locale).replace('.', '')}</span>
                     <span className="display text-[2rem] font-normal">{fmtDate(at, { day: 'numeric' }, locale)}</span>
-                    <span className="text-xs opacity-80">{fmtDate(at, { month: 'short' }, locale).replace('.', '')}</span>
+                    <span className="text-sm opacity-80">{fmtDate(at, { month: 'short' }, locale).replace('.', '')}</span>
                   </button>
                 </li>
               );

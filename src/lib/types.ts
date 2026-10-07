@@ -11,6 +11,8 @@ export interface Me {
   demoPersona: string | null;
   patientId: string | null;
   facilityId: string | null;
+  /** Faux tant que le carnet n'a pas été rempli une première fois (accueil après inscription). */
+  profileDone: boolean;
   practitioner: { title: string; specialty: string; verifiedAt: string | null; facility: { id: string; name: string; shortName: string | null } | null } | null;
   delegations: { relation: string; scopes: string[]; patient: { id: string; firstName: string; lastName: string } }[];
 }
@@ -23,9 +25,12 @@ export interface Summary {
   birthDate: string;
   sex: string;
   bloodGroup: string | null;
+  /** DECLARE (par la personne) ou VERIFIE (par un soignant, un laboratoire). */
+  bloodGroupSource: 'DECLARE' | 'VERIFIE' | null;
   allergies: string[];
   treatments: string | null;
   conditions: { id: string; code: string | null; label: string | null; since: string | null }[];
+  /** Toujours vrai sans le volet « sensible » : rien n'indique si des données sensibles existent. */
   hiddenSensitive: boolean;
   emergencyContact: { name: string; phone: string | null } | null;
   commune: string | null;

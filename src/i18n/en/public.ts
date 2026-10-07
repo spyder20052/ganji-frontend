@@ -238,4 +238,7 @@ export const publicPages: Messages = {
   'Mon carnet (copie protégée par PIN)': 'My health record (PIN-protected copy)',
   'J’ai un symptôme': 'I have a symptom',
   'Urgence : sapeurs-pompiers 118. Sans téléphone qui fonctionne, montrez votre carte QR imprimée.': 'Emergency: fire and rescue 118. If your phone does not work, show your printed QR card.',
+  // Ajouts du durcissement d'octobre 2026
+  'Trop tard : le besoin est déjà couvert, merci quand même': 'Too late: the need is already covered, thank you anyway',
+  'Ce numéro n’est pas un téléphone de démonstration. Les SMS d’un carnet créé dans la démo ne sont visibles que depuis le navigateur qui l’a créé.': 'This number is not a demo phone. Text messages for a record created in the demo are only visible from the browser that created it.',
 };

@@ -66,10 +66,10 @@ export function CounselorDesk({ head, initialQueue, initialThread }: { head: Rea
           <h2 id="h-file" className="text-xl font-semibold">{t('File d’écoute')}</h2>
           {groups.map((g) => (
             <div key={g.key} className="space-y-2">
-              <h2 className="flex items-center gap-2 text-base font-semibold">
+              <h3 className="flex items-center gap-2 text-base font-semibold">
                 {g.key === 'urgent' && <Siren size={16} aria-hidden className="text-[var(--color-danger-600)]" />}
                 {g.title} <span className="num text-[var(--fg-muted)]">({g.items.length})</span>
-              </h2>
+              </h3>
               {g.items.length === 0 ? (
                 <p className="rounded-2xl bg-[var(--bg)] p-3 text-base text-[var(--fg-muted)]">{g.key === 'urgent' ? t('Aucune détresse signalée.') : t('Rien ici pour le moment.')}</p>
               ) : (

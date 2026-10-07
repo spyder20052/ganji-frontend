@@ -49,12 +49,15 @@ async function firstPageHtml() {
   }
 }
 const html = await firstPageHtml();
-const fonts = [...new Set(html.match(/\/_next\/static\/media\/[\w.-]+\.woff2/g) ?? [])];
-// Les polices woff2 sont déjà compressées : on compte leur taille brute.
+// Polices chargées d'emblée : celles que next/font marque à précharger (suffixe « -s.p ») dans les feuilles de style de
+// la page, plus celles citées dans le HTML. Les indications de préchargement émises dans le HTML varient d'un build à
+// l'autre : lire les feuilles de style donne une mesure stable. Les woff2 sont déjà compressées : taille brute.
+const cssText = assets.filter((f) => f.endsWith('.css')).map((f) => readFileSync(join(NEXT, f), 'utf8')).join('\n');
+const fonts = [...new Set([...(html.match(/\/_next\/static\/media\/[\w.-]+\.woff2/g) ?? []), ...(cssText.match(/\/_next\/static\/media\/[\w.-]+-s\.p\.woff2/g) ?? [])])];
 const fontBytes = fonts.reduce((n, f) => n + readFileSync(join(NEXT, f.replace('/_next/', ''))).length, 0);
 const page = gzipSync(html).length + css + js + fontBytes;
 
-console.log(`Première page : ${kb(page)} (HTML ${kb(gzipSync(html).length)}, CSS ${kb(css)}, JS ${kb(js)}, polices ${kb(fontBytes)}) · budget ${kb(PAGE_BUDGET)}`);
+console.log(`Première page : ${kb(page)} (HTML ${kb(gzipSync(html).length)}, CSS ${kb(css)}, JS ${kb(js)}, polices ${kb(fontBytes)} : ${fonts.length}) · budget ${kb(PAGE_BUDGET)}`);
 console.log(`JavaScript initial : ${kb(js)} · cible ${kb(JS_TARGET)}, plancher React + Next ≈ 100 Ko`);
 
 let failed = false;

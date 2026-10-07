@@ -62,7 +62,7 @@ export async function saveProfile(patch: ProfilePatch): Promise<Profile> {
 
 /** Langue de l'interface (cookie lu par le serveur) et des SMS (compte). Recharger la page pour l'appliquer. */
 export async function saveLocale(l: Locale) {
-  document.cookie = `${LOCALE_COOKIE}=${l}; path=/; max-age=31536000; samesite=lax`;
+  document.cookie = `${LOCALE_COOKIE}=${l}; path=/; max-age=31536000; samesite=lax${location.protocol === 'https:' ? '; secure' : ''}`;
   await api('/me/lang', { method: 'POST', json: { lang: l } }).catch(() => undefined);
 }
 

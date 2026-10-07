@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Paperclip } from 'lucide-react';
-import { PageHead } from '@/app/app/_components/ui';
+import { PageHead } from '@/app/(ganji)/app/_components/ui';
 import { getLocale, getT } from '@/i18n/server';
 import type { Locale, T } from '@/i18n/translate';
 import { fmtDate } from '@/lib/format';

@@ -30,7 +30,7 @@ function apply(p: Prefs) {
 /** Langue de l'interface : cookie lu par le serveur (et langue des SMS si l'on est connecté), puis la page
  *  est rechargée dans la nouvelle langue. */
 async function setLocale(l: Locale) {
-  document.cookie = `${LOCALE_COOKIE}=${l}; path=/; max-age=31536000; samesite=lax`;
+  document.cookie = `${LOCALE_COOKIE}=${l}; path=/; max-age=31536000; samesite=lax${location.protocol === 'https:' ? '; secure' : ''}`;
   await fetch('/api/me/lang', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ lang: l }) }).catch(() => undefined);
   window.location.reload();
 }

@@ -12,19 +12,19 @@ import { serverApi, ServerApiError } from '@/lib/server-api';
 import type { Series, Summary, TimelineItem } from '@/lib/types';
 import { SPECIALTY_LABEL } from '../../_lib/labels';
 import { getMe } from '../../_lib/me';
-import { PageHead } from '@/app/app/_components/ui';
+import { PageHead } from '@/app/(ganji)/app/_components/ui';
 import { I18nScope } from '@/i18n/I18nScope';
 import { ActionBar } from './ActionBar';
 import { BreakGlassForm } from './BreakGlassForm';
 import { SharedRecords } from './SharedRecords';
 import { VitalsVerify } from './VitalsVerify';
+import { isUuid } from '@/lib/validate';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
   return { title: t('Dossier patient') };
 }
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const KIND: Record<string, { icon: LucideIcon; label: string; danger?: boolean }> = {
   CONSULTATION: { icon: Stethoscope, label: 'Consultation' },
@@ -39,19 +39,21 @@ const KIND: Record<string, { icon: LucideIcon; label: string; danger?: boolean }
 /** PLT d'abord (parcours hématologie), puis les autres dans un ordre clinique stable. */
 const SERIES_ORDER = ['PLT', 'HB', 'WBC', 'GLY', 'TA_SYS', 'TA_DIA', 'WEIGHT', 'HEIGHT'];
 
-/** Lecture d'une partie du dossier : `null` si ce volet n'est pas couvert par l'accès. */
-async function part<T>(path: string): Promise<T | null> {
+/** Lecture d'un volet du dossier : non partagé par le patient (403), ou service indisponible (autre erreur). */
+type Part<T> = { data: T } | { locked: true } | { error: string };
+async function part<T>(path: string): Promise<Part<T>> {
   try {
-    return await serverApi<T>(path);
+    return { data: await serverApi<T>(path) };
   } catch (e) {
-    if (e instanceof ServerApiError) return null;
+    if (e instanceof ServerApiError && e.status === 403) return { locked: true };
+    if (e instanceof ServerApiError) return { error: e.message };
     throw e;
   }
 }
 
 export default async function PatientPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!UUID.test(id)) notFound();
+  if (!isUuid(id)) notFound();
   const [t, locale] = await Promise.all([getT(), getLocale()]);
 
   let summary: Summary;
@@ -63,7 +65,9 @@ export default async function PatientPage({ params }: { params: Promise<{ id: st
     throw e;
   }
 
-  const [me, timeline, series] = await Promise.all([getMe(), part<TimelineItem[]>(`/patients/${id}/timeline`), part<Series[]>(`/patients/${id}/observations`)]);
+  const [me, timelinePart, seriesPart] = await Promise.all([getMe(), part<TimelineItem[]>(`/patients/${id}/timeline`), part<Series[]>(`/patients/${id}/observations`)]);
+  const timeline = 'data' in timelinePart ? timelinePart.data : null;
+  const series = 'data' in seriesPart ? seriesPart.data : null;
   const sortedSeries = [...(series ?? [])].sort((a, b) => rank(a.code) - rank(b.code));
 
   return (
@@ -92,7 +96,7 @@ export default async function PatientPage({ params }: { params: Promise<{ id: st
 
       <VitalCard s={summary} t={t} locale={locale} />
       <I18nScope area="compte">
-        <VitalsVerify patientId={summary.id} bloodGroup={summary.bloodGroup} source={(summary as Summary & { bloodGroupSource?: string | null }).bloodGroupSource} allergies={summary.allergies} />
+        <VitalsVerify patientId={summary.id} bloodGroup={summary.bloodGroup} source={summary.bloodGroupSource} allergies={summary.allergies} />
       </I18nScope>
 
       <ActionBar patientId={summary.id} firstName={summary.firstName} bloodGroup={summary.bloodGroup} canPrescribe={me.role === 'PRACTITIONER'} />
@@ -102,7 +106,9 @@ export default async function PatientPage({ params }: { params: Promise<{ id: st
           <h2 id="h-timeline" className="text-xl font-bold">
             {t('Chronologie de soins')}
           </h2>
-          {timeline === null ? (
+          {'error' in timelinePart ? (
+            <p role="alert" className="mt-3 rounded-2xl bg-[var(--color-ocre-100)] p-3 text-[var(--color-ocre-700)]">{t('Chronologie indisponible pour le moment : {error}', { error: timelinePart.error })}</p>
+          ) : timeline === null ? (
             <NotShared text={t('Le patient n’a pas partagé la chronologie avec vous.')} />
           ) : timeline.length === 0 ? (
             <p className="mt-3 text-[var(--fg-muted)]">{t('Aucun évènement enregistré.')}</p>
@@ -136,7 +142,9 @@ export default async function PatientPage({ params }: { params: Promise<{ id: st
           <h2 id="h-obs" className="text-xl font-bold">
             {t('Analyses')}
           </h2>
-          {series === null ? (
+          {'error' in seriesPart ? (
+            <p role="alert" className="mt-3 rounded-2xl bg-[var(--color-ocre-100)] p-3 text-[var(--color-ocre-700)]">{t('Analyses indisponibles pour le moment : {error}', { error: seriesPart.error })}</p>
+          ) : series === null ? (
             <NotShared text={t('Le patient n’a pas partagé les résultats d’analyses avec vous.')} />
           ) : sortedSeries.length === 0 ? (
             <p className="mt-3 text-[var(--fg-muted)]">{t('Aucun résultat enregistré.')}</p>
@@ -150,7 +158,7 @@ export default async function PatientPage({ params }: { params: Promise<{ id: st
                       {s.unit} · {s.points.length > 1 ? t('{n} mesures', { n: s.points.length }) : t('{n} mesure', { n: s.points.length })}
                     </span>
                   </h3>
-                  <LineChart series={{ ...s, label: t(s.label) }} height={160} />
+                  <LineChart series={{ ...s, label: t(s.label) }} height={160} t={t} />
                 </div>
               ))}
             </div>

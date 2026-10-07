@@ -10,13 +10,13 @@ import { getMe } from '../../_lib/me';
 import type { TeleDetail, TeleItem } from '../../_lib/types';
 import { Pill } from '../../_lib/ui';
 import { AnswerForm } from './AnswerForm';
+import { isUuid } from '@/lib/validate';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getT();
   return { title: t('Demande d’avis') };
 }
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /** Type d'image deviné depuis l'en-tête base64 (JPEG, PNG, WebP). */
 function dataUrl(b64: string) {
@@ -26,7 +26,7 @@ function dataUrl(b64: string) {
 
 export default async function TeleDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!UUID.test(id)) notFound();
+  if (!isUuid(id)) notFound();
   const [t, locale] = await Promise.all([getT(), getLocale()]);
 
   let req: TeleDetail;
