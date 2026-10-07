@@ -49,7 +49,7 @@ cp .env.example .env.local   # BACKEND_URL=http://localhost:4000
 npm install && npm run dev   # http://localhost:3000
 ```
 
-Tests : `npm test` (unitaires, Vitest). `npm run test:e2e` (Playwright : parcours héros, consentement, orientation, langue, axe-core) suppose l'API lancée sur `:4000` et l'application sur `:3000` (`npm run build && npm start`, ou `npm run dev`).
+Tests : `npm test` (Vitest : modules purs sous Node, composants sous jsdom avec Testing Library ; copie locale chiffrée, file hors ligne, orientation, simulateur, connexion, suivi d'une demande de sang, partage, carte d'urgence, écoute, préférences). `npm run test:e2e` (Playwright : parcours héros, consentement, orientation, langue, axe-core) suppose l'API lancée sur `:4000` et l'application sur `:3000` (`npm run build && npm start`, ou `npm run dev`).
 
 ## Audience
 
