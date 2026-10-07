@@ -1,0 +1,6 @@
+# Faux jeton de QR dans des jeux d'essai (remplacé depuis par « jeton-test ») : rien de secret.
+95ee5b2bb819d0a46b80d8817d6892cc42aeec2c:src/app/(ganji)/app/_lib/emergency-card.test.ts:generic-api-key:26
+95ee5b2bb819d0a46b80d8817d6892cc42aeec2c:src/app/(ganji)/app/_lib/emergency-card.test.ts:generic-api-key:48
+95ee5b2bb819d0a46b80d8817d6892cc42aeec2c:src/app/(ganji)/app/carte-urgence/EmergencyCardView.test.tsx:generic-api-key:13
+95ee5b2bb819d0a46b80d8817d6892cc42aeec2c:src/app/(ganji)/app/carte-urgence/EmergencyCardView.test.tsx:generic-api-key:20
+95ee5b2bb819d0a46b80d8817d6892cc42aeec2c:src/app/(ganji)/app/carte-urgence/EmergencyCardView.test.tsx:generic-api-key:71

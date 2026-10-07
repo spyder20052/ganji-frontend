@@ -10,14 +10,14 @@ import { EmergencyCardView } from './EmergencyCardView';
 
 const CARD: EmergencyCard = {
   firstName: 'Koffi', lastNameInitial: 'A', age: 9, bloodGroup: 'O+', allergies: ['Pénicilline'], treatments: 'Hydroxyurée 500 mg',
-  emergencyContact: { name: 'Afi Mensah', phone: '0197000002' }, qrToken: 'Zx9kL3mN8pQ2rS4tU6vW', savedAt: '2026-10-06T09:30:00Z',
+  emergencyContact: { name: 'Afi Mensah', phone: '0197000002' }, qrToken: 'jeton-test', savedAt: '2026-10-06T09:30:00Z',
 };
 const SUMMARY: Summary = {
   id: 'p1', firstName: 'Koffi', lastName: 'Adjovi', age: 9, birthDate: '2017-03-02', sex: 'M', bloodGroup: 'O+', bloodGroupSource: 'VERIFIE',
   allergies: ['Pénicilline'], treatments: 'Hydroxyurée 500 mg',
   conditions: [{ id: 'c1', code: 'D57.1', label: 'Drépanocytose SS', since: '2018-01-01' }],
   hiddenSensitive: true, emergencyContact: { name: 'Afi Mensah', phone: '0197000002' }, commune: 'Abomey-Calavi', department: 'Atlantique',
-  qrToken: 'Zx9kL3mN8pQ2rS4tU6vW', nextReminders: [], careTeam: [{ role: 'PRACTITIONER', name: 'Dr Houngbédji', specialty: 'HEMATOLOGIE' }],
+  qrToken: 'jeton-test', nextReminders: [], careTeam: [{ role: 'PRACTITIONER', name: 'Dr Houngbédji', specialty: 'HEMATOLOGIE' }],
   pregnancy: null, children: [], discreetMode: false, access: { via: 'OWNER', expiresAt: null },
 };
 
@@ -68,7 +68,7 @@ describe('en ligne', () => {
     expect(await cardHeading()).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith('/api/me/summary', expect.objectContaining({ credentials: 'same-origin', cache: 'no-store' }));
     const raw = localStorage.getItem(CARD_KEY) ?? '';
-    expect(JSON.parse(raw)).toMatchObject({ firstName: 'Koffi', lastNameInitial: 'A', bloodGroup: 'O+', qrToken: 'Zx9kL3mN8pQ2rS4tU6vW' });
+    expect(JSON.parse(raw)).toMatchObject({ firstName: 'Koffi', lastNameInitial: 'A', bloodGroup: 'O+', qrToken: 'jeton-test' });
     for (const secret of ['Drépanocytose', 'Adjovi', 'Houngbédji']) {
       expect(raw).not.toContain(secret);
       expect(document.body.textContent).not.toContain(secret);

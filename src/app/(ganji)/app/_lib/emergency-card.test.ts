@@ -23,7 +23,7 @@ const SUMMARY: Summary = {
   emergencyContact: { name: 'Afi Mensah', phone: '0197000002' },
   commune: 'Abomey-Calavi',
   department: 'Atlantique',
-  qrToken: 'Zx9kL3mN8pQ2rS4tU6vW',
+  qrToken: 'jeton-test',
   nextReminders: [{ id: 'r1', kind: 'MEDICATION', title: 'Hydroxyurée', dueAt: '2026-10-08T07:00:00Z', place: null }],
   careTeam: [{ role: 'PRACTITIONER', name: 'Dr Houngbédji', specialty: 'HEMATOLOGIE' }],
   pregnancy: null,
@@ -45,7 +45,7 @@ describe('carte d’urgence locale', () => {
       allergies: ['Pénicilline'],
       treatments: 'Hydroxyurée 500 mg',
       emergencyContact: { name: 'Afi Mensah', phone: '0197000002' },
-      qrToken: 'Zx9kL3mN8pQ2rS4tU6vW',
+      qrToken: 'jeton-test',
       savedAt: expect.any(String),
     });
     const raw = JSON.stringify(card);
